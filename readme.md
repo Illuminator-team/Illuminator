@@ -4,7 +4,7 @@ Development kit to demystify energy system operation, illustrate challenges
 that arise due to the energy transition to a broader community and test 
 state-of-the-art energy management concepts. we utilise Raspberry Pis to work 
 as the individual components of the power system emulator (or network), 
-and the simulation is based on Mosaik.
+and the simulation is based on [Mosaik](https://mosaik.offis.de/).
 
 ## Contact/Support
 * This project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
