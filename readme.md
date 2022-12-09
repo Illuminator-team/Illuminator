@@ -1,4 +1,4 @@
-#Illuminator
+# Illuminator
 The Illuminator is being developed as an easy-to-use Energy System Integration 
 Development kit to demystify energy system operation, illustrate challenges 
 that arise due to the energy transition to a broader community and test 
@@ -6,11 +6,11 @@ state-of-the-art energy management concepts. we utilise Raspberry Pis to work
 as the individual components of the power system emulator (or network), 
 and the simulation is based on Mosaik.
 
-##Contact/Support
+## Contact/Support
 * This project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
 * For more in-depth, developer-driven support, please contact with us through email: illuminator@tudelft.nl.
 
-##The Illuminator structure
+## The Illuminator structure
 There is one master RasPi and several client RasPis, and
 the master RasPi has permission to access and control the
 client RasPis through Secure Shell Protocol (SSH). Once we
