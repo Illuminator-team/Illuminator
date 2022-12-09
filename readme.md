@@ -116,7 +116,7 @@ to make sure the master can access the client model.
    The `connection.xml` file can be build through hard draw in the web my script software through run the script `drawpptx.py`, draw what you want to connect in the simulation case study, 
    save what you drawed as `example.pptx`, and finally run the `readppt_connectionxml.py` to set the `connection.xml`.
 3. The model parameters, how to show the results and if we do the real time simulation are set in the file `buildmodelse.py`. 
-4. Finally run the `final_version_scenario.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+4. Finally run the `demo.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
 
 ## Demos
 We build a case study as a demo to show how to use Illuminator to demonstrate this system at
