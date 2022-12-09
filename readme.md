@@ -175,7 +175,7 @@ to achieve power balance, then use Electrolyser or Fuel cell
 to achieve power balance. All the input data are in file `Input profiles` and all the output data are in file `Output profiles`.
 
 <div align="center">
-	<img align="center" src="docs/Figure/case study.jpg" width="500">
+	<img align="center" src="docs/Figure/case study.jpg" width="300">
 </div>
 
 
