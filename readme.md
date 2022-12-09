@@ -65,7 +65,7 @@ to make sure the master can access the client model.
    chmod -R a+X *dir*
    ```
 
-## User document 
+## User guide document 
 1. The users can change the `config.xml` to change the configuration of the simulation study.
    Here is an example of the information in the config.xml file. 
    It means we would like build only Wind and PV models in our simulation study. 
@@ -154,6 +154,20 @@ to make sure the master can access the client model.
 	#0 as soon as possible. 1/60 using 1 second simulate 1 mintes
 	```
 5. Finally run the `demo.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+
+## Provided models and document explanation
+### `Input Profiles`
+This file include all the input profiles, which include wind data, pv data and load data.Wind data chosen is from an on-shore site situated in The Netherlands at a height of 100m at 5 minutes interval. PV data is from the Meteonorm software, solar radiation and positioning values were obtained for the region of Rotterdam. With the new updates, it was possible to extract 15 minute interval data from within meteonorm. 15 minute interval data option from meteonorm does not provide the values for azimuth angle of the sun which are essential to the calculation. To do this, the pvlib for python from sandia was used which takes the location coordinates as the inputs. The Load profile is typical residential load profile in the Netherlands.
+### `Output Profiles`
+This simulation results is saved as an `.csv` document in this file.
+### `Models`
+All the simulation models are located in this file, which include PV, Wind, Battery, Electrolyser, Fuel cell and hydrogen tank models. 
+#### PV model
+The PV model set is shown as below.
+```
+
+```
+
 
 ## Demos
 We build a case study as a demo to show how to use Illuminator to demonstrate this system at
