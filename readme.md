@@ -24,7 +24,7 @@ to a ’.csv’ file for later analysis.
 	<img align="center" src="docs/Figure/Structure.pdf" width="800">
 </div>
 
-##Illuminator Environment set up for Raspberry pi cluster
+## Illuminator Environment set up for Raspberry pi cluster
 1. [Install Raspberry pi OS using raspberry pi imager.](https://www.raspberrypi.com/software/)
 2. Set static ip address for the raspberry pi.
     Use the following command from in terminal to open the dhcpcd.conf file:
@@ -56,16 +56,16 @@ to a ’.csv’ file for later analysis.
    ```
 5. Send the illuminator package to all client Raspberry pis. Use the following command in the master Raspberry pi terminal to check the connection 
 between master and client Raspberry pis. 
-  ```
-  ssh illuminator@ip #ip represent your client ip address
-  ```
+   ```
+   ssh illuminator@ip #ip represent your client ip address
+   ```
 6. Run the ‘buildcilentremoterun.py’ file at each clients and give all users execute permission to all the documents in “runshfile” in order 
 to make sure the master can access the client model.
    ```
    chmod -R a+X *dir*
    ```
 
-##User document 
+## User document 
 1. The users can change the `config.xml` to change the configuration of the simulation study.
    Here is an example of the information in the config.xml file. 
    It means we would like build only Wind and PV models in our simulation study. 
@@ -118,7 +118,7 @@ to make sure the master can access the client model.
 3. The model parameters, how to show the results and if we do the real time simulation are set in the file `buildmodelse.py`. 
 4. Finally run the `final_version_scenario.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
 
-##Demos
+## Demos
 We build a case study as a demo to show how to use Illuminator to demonstrate this system at
 a general user level and verify the Illuminator’s performance. The demo include Households,
 PV panels, Wind generators, Battery and Hydrogen system
@@ -136,12 +136,13 @@ capacity for charging or discharging to achieve power balance,
 use the Battery first. If Battery doesn’t have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
 to achieve power balance. All the input data are in file `input` and all the output data are in file `output'
+
 <div align="center">
 	<img align="center" src="docs/Figure/case study.pdf" width="800">
 </div>
 
 
-##License & Contributing Development
+## License & Contributing Development
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
 The Illuminator team accepts contributions to Illuminator source, test files, documentation, and other materials distributed with the program.
 If you are interested in contributing, please start there, but feel free to reach out to the team.
