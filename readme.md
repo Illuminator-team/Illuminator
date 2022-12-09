@@ -21,7 +21,7 @@ RasPi and client RasPis through the socket. The Master RasPi
 can show the results through Dashboard and save the results
 to a ’.csv’ file for later analysis. 
 <div align="center">
-	<img align="center" src="docs/Figure/Structure.jpg" width="800">
+	<img align="center" src="docs/Figure/Structure.jpg" width="500">
 </div>
 
 ## Illuminator Environment set up for Raspberry pi cluster
@@ -138,7 +138,7 @@ to achieve power balance, then use Electrolyser or Fuel cell
 to achieve power balance. All the input data are in file `input` and all the output data are in file `output`.
 
 <div align="center">
-	<img align="center" src="docs/Figure/case study.jpg" width="800">
+	<img align="center" src="docs/Figure/case study.jpg" width="500">
 </div>
 
 
