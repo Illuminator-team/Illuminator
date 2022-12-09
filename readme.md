@@ -172,7 +172,7 @@ simple logic to achieve self-sufficiency. If Battery has enough
 capacity for charging or discharging to achieve power balance,
 use the Battery first. If Battery doesn’t have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
-to achieve power balance. All the input data are in file `input` and all the output data are in file `output`.
+to achieve power balance. All the input data are in file `Input profiles` and all the output data are in file `Output profiles`.
 
 <div align="center">
 	<img align="center" src="docs/Figure/case study.jpg" width="500">
