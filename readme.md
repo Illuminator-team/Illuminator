@@ -24,7 +24,7 @@ to a ’.csv’ file for later analysis.
 	<img align="center" src="docs/Figure/Structure.jpg" width="500">
 </div>
 
-## Illuminator Environment set up for Raspberry pi cluster
+## Illuminator environment set up for Raspberry Pi cluster
 1. [Install Raspberry pi OS using raspberry pi imager.](https://www.raspberrypi.com/software/)
 2. Set static ip address for the raspberry pi.
     Use the following command from in terminal to open the dhcpcd.conf file:
@@ -66,7 +66,7 @@ to make sure the master can access the client model.
    ```
 
 More detials are in the [user guide document](User%20guide%20document.md) and [model build up document](Models.md).
-## License & Contributing Development
+## License & Contributing development
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
 The Illuminator team accepts contributions to Illuminator source, test files, documentation, and other materials distributed with the program.
 If you are interested in contributing, please start there, but feel free to reach out to the team.
