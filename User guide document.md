@@ -89,37 +89,7 @@
 	```
 5. Finally run the `demo.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
 
-## Provided models and document explanation
-### `Input Profiles`
-This file include all the input profiles, which include wind data, pv data and load data.Wind data chosen is from an on-shore site situated in The Netherlands at a height of 100m at 5 minutes interval. PV data is from the Meteonorm software, solar radiation and positioning values were obtained for the region of Rotterdam. With the new updates, it was possible to extract 15 minute interval data from within meteonorm. 15 minute interval data option from meteonorm does not provide the values for azimuth angle of the sun which are essential to the calculation. To do this, the pvlib for python from sandia was used which takes the location coordinates as the inputs. The Load profile is typical residential load profile in the Netherlands.
-### `Output Profiles`
-This simulation results is saved as an `.csv` document in this file.
-### `Models`
-All the simulation models are located in this file, which include PV, Wind, Battery, Electrolyser, Fuel cell and hydrogen tank models. 
-#### PV model
-The PV model set and explanation is shown as below.
-```
-pv_panel_set ={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
-          'Power_output_at_STC': 250}
-pv_set={'m_tilt':14,'m_az':180,'cap':50,'output_type':'power'}
 
-#'Module_area' # module area. available in the spec sheet of a pv module
-#'NOCT'  #module temperature under the standard test conditions (STC) and stands for Nominal Operating Cell Temperature
-#'Module_Efficiency'
-#'Irradiance_at_NOCT'# W/m2 This is the irradiance that falls on the panel under NOCT conditions
-#'Power_output_at_STC'# Watts. Available in spec sheet of a module
-# m_tilt #module tilt angle
-# m_az #azimuth of the module
-# cap #capacity
-#output_type #power or energy
-#azimuth of the module is set to 90
-```
-Calculation the irradiance on the PV module
-
-Calculating the irradiance on a module at a specific location is essential to calculate the output of
-a PV system, and is governed by multiple factors. Irradiance is defined as the incoming power of
-the solar radiation over a unit area and is measured in W/m2. Due to rotation and revolution of the
-earth, the positioning of the sun is not constant, and hence the amount of irradiation received changes continuously with time of the day, month, and year. Location on the earth also factors in for the amount of irradiance received. Due to the changing elevation and azimuth angle of the sun throughout the day, the incoming solar radiations are not normal to the surface. The angle between the normal of the surface and the solar radiation is called Angle of Incidence (AOI) and it affects the amount of irradiance of the module surface.
 ## Demos
 We build a case study as a demo to show how to use Illuminator to demonstrate this system at
 a general user level and verify the Illuminator’s performance. The demo include Households,
