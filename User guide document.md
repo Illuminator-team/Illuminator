@@ -2,9 +2,9 @@
 ## Configuration and simulation
 1. The users can change the `config.xml` to change the configuration of the simulation study.
    Here is an example of the information in the config.xml file. 
-   It means we would like build only Wind and PV models in our simulation study. 
-   The wind model is running and import from python file, and the PV model is running in another Raspi which ip address is ‘192.168.0.1’, 
-   and the master get the pv model information from the port ’5123’.
+   It means we would like to build only Wind and PV models in our simulation study. 
+   The wind model is running and imported from a python file, and the PV model is running in another Raspi whose ip address is '192.168.0.1', 
+   and the Master get the PV model information from port' 5123'.
    ```
     #'Wind' ,'python','Models.Wind.wind_mosaik:WindSim'
     #'PV','connect', '192.168.0.1:5123'
@@ -25,10 +25,10 @@
       </row>
    ```
    
-2. The users can change the `connection.xml` to set how the message transferred from one model to others. 
+2. The users can change the `connection.xml` to set how the message is transferred from one model to another. 
    Here is an example of the information in the connection file.  
-   The model ctrl send the information ‘flow2e’ to electrolyser to control its hydrogen generating speed. 
-   The electrolyser send the ‘h2_gen’ information to model h2storage ‘h2_in’ to control the hydrogen storing speed.
+   The model 'ctrl' sends the information 'flow2e' to Electrolyser to control its hydrogen-generating speed. 
+   The Electrolyser sends the 'h2_gen' information to model h2storage 'h2_in' to control the hydrogen storing speed.
    ```
     #['ctrl', 'electrolyser', 'flow2e'],
     #['electrolyser', 'h2storage', 'h2_gen', 'h2_in'],
@@ -47,9 +47,9 @@
         <message>h2_gen</message>
         <more>h2_in</more>
    ```
-   The `connection.xml` file can be build through hard draw in the web my script software through run the script `drawpptx.py`, draw what you want to connect in the simulation case study, 
-   save what you drawed as `example.pptx`, and finally run the `readppt_connectionxml.py` to set the `connection.xml`.
-3. The model parameters, how to show the results and if we do the real time simulation are set in the file `buildmodelse.py`.
+   The `connection.xml` file can be built through the hard draw in the web my script software by running the script `drawpptx.py`, draw what you want to connect in the simulation case study, 
+   save what you drew as `example.pptx`, and finally, run the `readppt_connectionxml.py` to set the `connection.xml`.
+3. The model parameters, how to show the results, and if we do the real-time simulation are set in the file `buildmodelse.py`.
 	```
 	Battery_initialset = {'initial_soc': 20}
 	Battery_set = {'max_p': 500, 'min_p': -500, 'max_energy': 500,
@@ -81,20 +81,20 @@
 
 	RESULTS_SHOW_TYPE={'write2csv':True, 'dashboard_show':True, 'Finalresults_show':True}
 	#'write2csv':True/Flause   Write the results to csv file
-	# #'Realtime_show':True/Flause, show the results in dashboard
+	# #'Realtime_show':True/Flause, show the results in Dashboard
 	# 'Finalresults_show':True/Flause, show the results after finish the simulation
 
 	realtimefactor=0
 	#0 as soon as possible. 1/60 using 1 second simulate 1 mintes
 	```
-5. Finally run the `demo.py` to run the simulation. If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+5. Finally, run the `demo.py` to run the simulation. If the user wants to see the results in the Dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
 
 
 ## Demos
 We build a case study as a demo to show how to use Illuminator to demonstrate this system at
-a general user level and verify the Illuminator’s performance. The demo include Households,
-PV panels, Wind generators, Battery and Hydrogen system
-to achieve electric power self-sufficiency. The controller’s
+a general user level and verify the Illuminator's performance. The demo includes Households,
+PV panels, Wind generators, Batteries and Hydrogen systems
+to achieve electric power self-sufficiency. The controller's
 algorithm in the case study runs in the Master RasPi, and
 the rest simulators are separately deployed in different Client
 RasPis.The data flow between the simulators is also shown in
@@ -105,11 +105,10 @@ controller decides the power from the Battery and Fuel cell
 and the power to the Electrolyser. In the case study, we use
 simple logic to achieve self-sufficiency. If Battery has enough
 capacity for charging or discharging to achieve power balance,
-use the Battery first. If Battery doesn’t have enough capacity
+use the Battery first. If Battery doesn't have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
-to achieve power balance. All the input data are in file `Input profiles` and all the output data are in file `Output profiles`.
+to achieve power balance. All the input data are in the folder `Input profiles,` and all the output data are in the folder `Output profiles`.
 
 <div align="center">
 	<img align="center" src="docs/Figure/case study.jpg" width="500">
 </div>
-
