@@ -87,7 +87,7 @@
 	realtimefactor=0
 	#0 as soon as possible. 1/60 using 1 second simulate 1 mintes
 	```
-5. Finally, run the `demo.py` to run the simulation. If the user wants to see the results in the Dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+5. Finally, run the `Simulation creator.py` to run the simulation. If the user wants to see the results in the Dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
 
 
 ## Demos
@@ -107,7 +107,7 @@ simple logic to achieve self-sufficiency. If Battery has enough
 capacity for charging or discharging to achieve power balance,
 use the Battery first. If Battery doesn't have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
-to achieve power balance. All the input data are in the folder `Input profiles,` and all the output data are in the folder `Output profiles`.
+to achieve power balance. All the input data are in the folder `Scenario,` and all the output data are in the folder `Result`.
 
 <div align="center">
 	<img align="center" src="docs/Figure/case study.jpg" width="500">
