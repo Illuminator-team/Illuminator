@@ -65,7 +65,7 @@ to make sure the leader can access the follower model.
    chmod -R a+X *dir*
    ```
 
-More detialed instructions are given in the [user guide document](User%20guide%20document.md) and [model build up document](Models.md).
+More detialed instructions are given in the [user guide document](User%20guide.md) and [model build up document](Models.md).
 ## License & Contributing development
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
 The Illuminator team accepts contributions to the Illuminator source, test files, documentation, and other materials distributed with the program.
