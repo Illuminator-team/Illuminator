@@ -83,9 +83,9 @@ START_DATE = '2012-06-01 00:00:00'
 # START_DATE = '2012-06-30 23:45:00'
 end = 1 * 24 * 3600  #last one interval is not computed
 
-WIND_DATA = 'input/winddata_NL.txt'
-Pv_DATA = 'input/pv_data_Rotterdam_NL-15min.txt'  # solar data file ########################
-load_DATA = 'input/load_data.txt' #######################
+WIND_DATA = 'Scenario/winddata_NL.txt'
+Pv_DATA = 'Scenario/pv_data_Rotterdam_NL-15min.txt'  # solar data file ########################
+load_DATA = 'Scenario/load_data.txt' #######################
 #set up the "world" of the scenario
 world = mosaik.World(sim_config, debug=True)
 
@@ -194,7 +194,7 @@ if RESULTS_SHOW_TYPE['Finalresults_show']==True:
     matplotlib.use('TkAgg')
     import pandas as pd
 
-    data=pd.read_csv('output/results.csv')
+    data=pd.read_csv('Result/results.csv')
         # Get all axes of figure
     fig= plt.figure()
     fig.subplots_adjust(hspace=0.5,wspace = 0.5)
