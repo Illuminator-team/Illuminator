@@ -1,43 +1,43 @@
 # Illuminator
-The Illuminator is being developed as an easy-to-use Energy System Integration 
+The Illuminator is an easy-to-use Energy System Integration 
 Development kit to demystify energy system operation, illustrate challenges 
-that arise due to the energy transition to a broader community and test 
-state-of-the-art energy management concepts. we utilise Raspberry Pis to work 
-as the individual components of the power system emulator (or network), 
-and the simulation is based on [Mosaik](https://mosaik.offis.de/).
+that arise due to the energy transition and test 
+state-of-the-art energy management concepts. we utilise Raspberry Pis
+as the individual components of the energy system emulator, 
+and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 
 ## Contact/Support
 * This project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
-* For more in-depth, developer-driven support, please contact with us through email: illuminator@tudelft.nl.
+* For more in-depth support contact: illuminator@tudelft.nl.
 
-## The Illuminator structure
-There is one master RasPi and several client RasPis, and
-the master RasPi has permission to access and control the
-client RasPis through Secure Shell Protocol (SSH). Once we
-set the simulation configuration, the master RasPi will retain
-the client RasPis to run the defined simulator. And during the
-simulation, the information will be exchanged between master
-RasPi and client RasPis through the socket. The Master RasPi
-can show the results through Dashboard and save the results
+## The Illuminator setup in short
+The setup consists of one leader RasPi and several follower RasPis.
+The leader RasPi has permission to access and control the
+follower RasPis through Secure Shell Protocol (SSH). Once we
+set the simulation configuration, the leader RasPi will engage
+the follower RasPis to run the specified simulators. During the
+simulation, the information will be exchanged between RasPis via socket connection.
+The leader RasPi shows the results through Dashboard and saves the results
 to a ’.csv’ file for later analysis. 
+Since the Illuminator is Python based, this code also runs on regular machines.
 <div align="center">
 	<img align="center" src="docs/Figure/Structure.jpg" width="500">
 </div>
 
-## Illuminator environment set up for Raspberry Pi cluster
+## Illuminator environment set up for a Raspberry Pi cluster
 1. [Install Raspberry pi OS using raspberry pi imager.](https://www.raspberrypi.com/software/)
-2. Set static ip address for the raspberry pi.
+2. Set static IP address for the Raspberry Pi.
     Use the following command from in terminal to open the dhcpcd.conf file:
     ```
     sudo nano /etc/dhcpcd.conf
     ```
-   In the dhcpcd.conf file, find the information to change the ip address as static as following:
+   In the dhcpcd.conf file, find the information to change the IP address as static as following:
    ```
    interface etho
-   static ip_address=192.168.0.1/24#change the ip address as you want
+   static ip_address=192.168.0.1/24#change the IP address as you want
    ```
    Finally reboot the Raspberry Pi through `sudo reboot` in the terminal.
-3. [Set master to connect clients without password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
+3. [Set leader RasPi to connect followers without password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 4. Install the required packages in the python.
    ```
    pandas
@@ -54,19 +54,19 @@ to a ’.csv’ file for later analysis.
    wandb
    matplotlib
    ```
-5. Send the illuminator package to all client Raspberry pis. Use the following command in the master Raspberry pi terminal to check the connection 
-between master and client Raspberry pis. 
+5. Send the Illuminator package to all follower Raspberry Pis. Use the following command in the leader Raspberry Pi terminal to check the connection 
+between leader and follower Raspberry Pis. 
    ```
-   ssh illuminator@ip #ip represent your client ip address
+   ssh illuminator@ip #ip represent your follower IP address
    ```
-6. Run the ‘buildcilentremoterun.py’ file at each clients and give all users execute permission to all the documents in “runshfile” in order 
-to make sure the master can access the client model.
+6. Run the ‘buildcilentremoterun.py’ file at each follower and give all users execute permission to all the documents in “runshfile” in order 
+to make sure the leader can access the follower model.
    ```
    chmod -R a+X *dir*
    ```
 
-More detials are in the [user guide document](User%20guide%20document.md) and [model build up document](Models.md).
+More detialed instructions are given in the [user guide document](User%20guide%20document.md) and [model build up document](Models.md).
 ## License & Contributing development
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
-The Illuminator team accepts contributions to Illuminator source, test files, documentation, and other materials distributed with the program.
-If you are interested in contributing, please start there, but feel free to reach out to the team.
+The Illuminator team accepts contributions to the Illuminator source, test files, documentation, and other materials distributed with the program.
+If you are interested in contributing, please start there, and feel free to reach out to the team using illuminator@tudelft.nl. The Illuminator team does not take any responsibility for the damage or loss that this code might provide. 
