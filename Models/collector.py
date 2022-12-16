@@ -20,7 +20,7 @@ class Collector(mosaik_api.Simulator):
         self.data = collections.defaultdict(lambda: collections.defaultdict(dict))
 
     def init(self, sid, time_resolution, start_date, results_show,
-             date_format='%Y-%m-%d %H:%M:%S', output_file='output/results.csv',
+             date_format='%Y-%m-%d %H:%M:%S', output_file='Result/results.csv',
              print_results=False):
         self.time_resolution = time_resolution
         self.start_date = pd.to_datetime(start_date, format=date_format)
