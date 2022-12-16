@@ -1,5 +1,5 @@
 # PV Model
-##Data input
+## Data input
 The PV data is obtained from the Meteonorm software, and solar radiation and positioning values were obtained for the region
 of Rotterdam. With the new updates, it was possible to extract 15-minute interval data from within
 meteonorm. The input data and parameter setting for PV models are through the '.csv' or '.txt' file in the `Scenario` folder
@@ -65,7 +65,7 @@ P_AC=cap * sf/P_STC*m_area*g_all*efficiency*inv_eff*mppt_eff*losses
 
 ```
 # Wind Model
-##Data input
+## Data input
 Wind data chosen is from an on-shore site situated in The Netherlands at 100m at 5 minutes intervals. 
 The input data and parameter setting for Wind models are through the '.csv' or '.txt' file in the `Scenario` folder
 and the file 'buildmodelset.py' in the configuration folder. The input data from '.csv' or '.txt' file is the wind speed 'u'.
