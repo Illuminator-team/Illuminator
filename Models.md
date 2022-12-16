@@ -67,7 +67,7 @@ P_AC=cap * sf/P_STC*m_area*g_all*efficiency*inv_eff*mppt_eff*losses
 # Wind Model
 ##Data input
 Wind data chosen is from an on-shore site situated in The Netherlands at 100m at 5 minutes intervals. 
-The input data and parameter setting for Wind models are through the '.csv' or '.txt' file in the 'Input profile 'folder
+The input data and parameter setting for Wind models are through the '.csv' or '.txt' file in the `Scenario` folder
 and the file 'buildmodelset.py' in the configuration folder. The input data from '.csv' or '.txt' file is the wind speed 'u'.
 The parameters set in the python file are shown as follows,
 
