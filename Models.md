@@ -2,7 +2,7 @@
 ##Data input
 The PV data is obtained from the Meteonorm software, and solar radiation and positioning values were obtained for the region
 of Rotterdam. With the new updates, it was possible to extract 15-minute interval data from within
-meteonorm. The input data and parameter setting for PV models are through the '.csv' or '.txt' file in the 'Input profile 'folder
+meteonorm. The input data and parameter setting for PV models are through the '.csv' or '.txt' file in the `Scenario` folder
 and the file 'buildmodelset.py' in the configuration folder. The input data from '.csv' or '.txt' file are as follows,
 ```
 `G_Gh'GHI global horizontal irradiance
