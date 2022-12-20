@@ -2,17 +2,17 @@
 import pandas as pd
 from pptx import Presentation
 #######################################################
-# modeltype_all2=['pv', 'wind', 'load', 'battery', 'h2storage']
-# file="example.pptx"
-# config_model=[]
-# prs = Presentation(file)
-# for slide in prs.slides:
-#     for shape in slide.shapes:
-#         if hasattr(shape, "text"):
-#             if shape.text.lower() in modeltype_all2:
-#                 config_model.append(shape.text)
+modeltype_all2=['pv', 'wind', 'load', 'battery', 'h2storage']
+file="example.pptx"
+config_model=[]
+prs = Presentation(file)
+for slide in prs.slides:
+    for shape in slide.shapes:
+        if hasattr(shape, "text"):
+            if shape.text.lower() in modeltype_all2:
+                config_model.append(shape.text)
 ###########################################################
-config_model=['PV','Wind','Load','Battery','H2storage']
+#config_model=['PV','Wind','Load','Battery','H2storage']
 
 ###########################################################
 config_model=pd.DataFrame(config_model,columns=['model'])
@@ -66,5 +66,22 @@ with open('connection.xml','w') as file:
 
 
 
+sim_config=[['Wind' ,'python','Models.Wind.wind_mosaik:WindSim'],
+            ['PV' ,'python', 'Models.PV.pv_mosaik:PvAdapter'],
+            ['Load','python', 'Models.Load.load_mosaik:loadSim'],
+            ['Collector','python', 'Models.collector:Collector'],
+            ['CSVB','python', 'mosaik_csv:CSV'],
+            ['Controller','python', 'Models.Controller.controller_mosaik:controlSim'],
+            ['Battery','python', 'Models.Battery.battery_mosaik:BatteryholdSim'],
+            #['H2storage','connect', '192.168.0.2:5123'],
+            #['PV','connect', '192.168.0.1:5123'],
+            ['Electrolyser','python', 'Models.Electrolyser.electrolyser_mosaik:ElectrolyserSim'],
+            ['H2storage','python', 'Models.H2storage.h2storage_mosaik:compressedhydrogen'],
+            ['Fuelcell','python', 'Models.Fuelcell.fuelcell_mosaik:FuelCellSim'],
+            ]
+sim_config_df=pd.DataFrame(sim_config, columns=['model','method','location'])
+sim_config_data=sim_config_df.to_xml()
 
+with open('config.xml','w') as file:
+    file.write(sim_config_data)
 
