@@ -13,7 +13,7 @@ import pandas as pd
 #      A condition checks the battery SOC and then initiates the electrolyser.
 
 meta = {
-    'type': 'event-based',
+    'type': 'hybrid',
     'models': {
         'Batteryset': {
             'public': True,
@@ -41,7 +41,7 @@ meta = {
                 'energy_drain',
                 'energy_consumed',
             ],
-            'trigger': ['flow2b'],
+            'trigger': [],              #'flag2b' if we want async behaviour
         },
     },
 }
@@ -65,7 +65,7 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
 
 
         # this command runs only once when the simulation starts from the scenario file
-    def init(self, sid, time_resolution, step_size=1 ):  # sid and time_resolution are the positional arguments. Rest all we want to put will be keyword argument
+    def init(self, sid, time_resolution,step_size=900 ):  # sid and time_resolution are the positional arguments. Rest all we want to put will be keyword argument
         self.sid = sid
         self.time_resolution = time_resolution
         self.step_size = step_size
@@ -75,6 +75,7 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
         self.start = pd.to_datetime(sim_start)
         # next_eid=len(self.model)
         self._entities = []
+
         # for i in range(next_eid,next_eid+num):
 
         # num is the number of models of battery we want.
@@ -96,7 +97,7 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
             # for every eid_b, we want to communicate the initial soc, and hence for every eid_b, we store the soc value.
             self.soc[self.eid] = initial_set['initial_soc']
             self.flag[self.eid] = battery_set['flag']
-
+            self._cache[self.eid] = {'soc': self.soc[self.eid], 'flag': self.flag[self.eid], 'p_out': 0, 'p_in' : 0, 'mod' : 0}
             # self.battery_flag={}
 
             # the empty entities list will hold the following information.
@@ -116,13 +117,11 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
             # print(eid)
             # print(attrs)
 
-            # In {'p_ask': {'CSVB-0.BATTEYP_0': 0.5}}, 'p_ask' is the attr, and 0.5 is vals
             for attr, vals in attrs.items():
                 if attr == 'flow2b':
-                    energy_ask = list(vals.values())[0]
+                    self._cache[eid] = self.entities[eid].output_power(sum(vals.values()), self.soc[eid])
 
-                    # todo: Add conditions for checking SOC of battery and making a decision
-                    self._cache[eid] = self.entities[eid].output_power(energy_ask, self.soc[eid])
+                    # self._cache[eid] = self.entities[eid].output_power(energy_ask, self.soc[eid])          # * max_advance if trigger
 
                     # print(self._cache[eid])
                     # [p_out:,soc:,flag:]
@@ -130,7 +129,7 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
                     self.flag = self._cache[eid]['flag']
                     check = list(self.soc.values())
                     check2 = check[0]  # this is so that the value that battery sends is dictionary and not a dictionary of a dictionary.
-                    out = yield self.mosaik.set_data({'Battery-0': {'Controller-0.ctrl_0': {'soc': check2}}})  # this code is supposed to hold the soc value and
+                #    out = yield self.mosaik.set_data({'Battery-0': {'Controller-0.ctrl_0': {'soc': check2}}})  # this code is supposed to hold the soc value and
 
 
         return None

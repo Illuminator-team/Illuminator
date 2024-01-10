@@ -3,132 +3,111 @@
 class hydrogenstorage_python:
     def __init__(self, initial_set, h2_set):
         self.h2storage_soc = initial_set['initial_soc']
-        self.h2storage_soc_min = h2_set['h2storage_soc_min']  # an attribute
-        self.h2storage_soc_max = h2_set['h2storage_soc_max']  # an attribute
-        self.p_in = None
-        self.p_out = None
-        self.eff = 0.94  # approx efficiency of compressed hydrogen storage tanks. Roundtrip efficiency
+        self.h2storage_soc_min = h2_set['h2storage_soc_min']
+        self.h2storage_soc_max = h2_set['h2storage_soc_max']
+        self.eff = h2_set['eff']
         self.max_h2 = h2_set['max_h2']
         self.min_h2 = h2_set['min_h2']
-        self.capacity=h2_set['capacity']
+        self.capacity = h2_set['capacity']
+        self.resolution=h2_set['resolution']
+        self.flag = 0
+        self.output_show=0
+        self.output2_show=0
 
-    def charge_h2(self, h2_in):
-
-        h2_flow = min(self.max_h2, h2_in)  # kWh
-        if (h2_flow > 0) and (self.flag != 1):
-            self.h2discharge = h2_flow * self.eff  # (+ve)  We multiply it with efficiency because while charging we are not 100% efficient, so we should end up with less energy than incoming
-            h2_capacity = ((self.h2storage_soc_max - self.h2storage_soc) / 100) * self.capacity  # gives amount of energy that can be stored in the battery
+    def charge_h2(self, flow2h2s_net):
+        h2_flow = min(self.max_h2, flow2h2s_net)  # m^3/min
+        if h2_flow > 0:
+            h2discharge = h2_flow * self.eff * self.resolution                # m^3
+            h2_capacity = ((self.h2storage_soc_max - self.h2storage_soc) / 100) * self.capacity
             if self.h2storage_soc >= self.h2storage_soc_max:
                 self.flag = 1
-                self.h2out = 0
+                self.output_show = 0
             else:
-                if self.h2discharge <= h2_capacity:
-                    h2_consumed = self.h2discharge
-                    self.h2storage_soc = self.h2storage_soc + (self.h2discharge / self.capacity * 100)
-                    # self.powerout = 0  # because we are consuming the incoming energy and nothing is going out
-                    self.flag = 0  # Set flag as ready to discharge or charge
-                    output_show = h2_flow  # just for showing purpose that what ever is extra is being consumed while internally, a bit less is used to charge battery because of losses
+                if h2discharge <= h2_capacity:
+                    self.h2storage_soc = self.h2storage_soc + (h2discharge / self.capacity * 100)
+                    self.flag = 0
+                    self.output_show = h2_flow
 
                 else:  # Fully-charge Case
-                    h2_consumed = h2_capacity / self.eff  # because to reach full soc, it needs more energy considering the losses. Since now we have the option to draw in more energy because it is surplus, we can do this, I think
-                    h2_excess = self.h2discharge - h2_consumed
-                    output_show = h2_consumed
-                    # self.powerout = 0
-                    # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
+                    h2_consumed = h2_capacity / self.eff
+                    h2_excess = h2discharge - h2_consumed
+                    self.output2_show = h2_excess / self.resolution
+                    self.output_show = h2_consumed/self.resolution                #m^3/min
                     self.h2storage_soc = self.h2storage_soc_max
-                    self.flag = 1  # Set flag as 1 to show fully discharged state
-        elif (h2_flow == 0) and (self.flag == 1):
-            output_show = 0
+                    self.flag = 1
+        elif h2_flow == 0:
+            self.output_show = 0
         self.h2storage_soc = round(self.h2storage_soc, 3)
-        re_params = {
-                     # 'p_out': self.powerout,
-                     'h2_stored': output_show,
-                     'h2_given': 0,
-                     'h2storage_soc_min': self.h2storage_soc_min,
-                     'h2storagesoc_max': self.h2storage_soc_max,
-                     # 'energy_drain': 0,
+        re_params = {'h2_flow': self.output_show,
+                     'h2_excess_flow': self.output2_show,
                      'h2_soc': self.h2storage_soc,
                      'mod': 1,
                      'flag': self.flag}
-
         return re_params
 
-    def discharge_h2(self, h2_out):
-        h2_flow = max(self.min_h2, h2_out)  # kWh
-        if (h2_flow < 0) and (self.flag != -1):
-            self.h2discharge = h2_flow / self.eff  # (+ve)  We multiply it with efficiency because while charging we are not 100% efficient, so we should end up with less energy than incoming
-            h2_capacity = ((self.h2storage_soc_min - self.h2storage_soc) / 100) * self.capacity  # gives amount of energy that can be stored in the battery
+    def discharge_h2(self, flow2h2s_net):
+        h2_flow = max(self.min_h2, flow2h2s_net)   # m^3/min
+        if h2_flow < 0:
+            h2discharge = h2_flow / self.eff * self.resolution               # m^3
+            h2_capacity = ((self.h2storage_soc_min - self.h2storage_soc) / 100) * self.capacity
             if self.h2storage_soc <= self.h2storage_soc_min:
                 self.flag = -1
-                self.h2out = 0
+                self.output_show = 0
             else:
-                if self.h2discharge > h2_capacity:
-                    h2_given = self.h2discharge
-                    self.h2storage_soc = self.h2storage_soc + (self.h2discharge / self.capacity * 100)
-                    # self.powerout = 0  # because we are consuming the incoming energy and nothing is going out
-                    self.flag = 0  # Set flag as ready to discharge or charge
-                    output_show = h2_flow  # just for showing purpose that what ever is extra is being consumed while internally, a bit less is used to charge battery because of losses
+                if h2discharge > h2_capacity:
+                    h2_given = h2discharge
+                    self.h2storage_soc = self.h2storage_soc + (h2discharge / self.capacity * 100)
+                    self.flag = 0
+                    self.output_show = h2_flow
 
                 else:  # Fully-discharge Case
                     h2_given = h2_capacity * self.eff
-                    h2_excess = self.h2discharge - h2_given
-                    output_show = h2_given
-                    # self.powerout = 0
-                    # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
+                    h2_excess = h2discharge - h2_given
+                    self.output2_show=h2_excess/self.resolution
+                    self.output_show = h2_given/self.resolution               #m^3/min
                     self.h2storage_soc = self.h2storage_soc_min
-                    self.flag = -1  # Set flag as 1 to show fully discharged state
+                    self.flag = -1
         else:
-            output_show = 0
+            self.output_show = 0
         self.h2storage_soc = round(self.h2storage_soc, 3)
         re_params = {
-            # 'p_out': self.powerout,
-            'h2_stored': 0,
-            'h2_given': output_show,
-            'h2storage_soc_min': self.h2storage_soc_min,
-            'h2storage_soc_max': self.h2storage_soc_max,
-            # 'energy_drain': 0,
+            'h2_flow': self.output_show,
+            'h2_excess_flow':self.output2_show,
             'h2_soc': self.h2storage_soc,
             'mod': 1,
             'flag': self.flag}
 
         return re_params
 
-    def output_h2(self, h2_in, h2_out, soc):  # charging power: positive; discharging power:negative
-        self.h2storage_soc = soc  # here we assign the value of soc we provide to the attribute self.soc
-        data_ret = {}
-        # {'p_out',
-        # 'soc',
-        # 'mod',  # 0 = noaction,1 = charge,-1=discharge
-        # 'flag',} # 1 means full charge, -1 means full discharge, 0 means available for control
-        # conditions start:
-        if h2_in == 0 and h2_out == 0:  # i.e when there isn't a demand of power at all,
-
-            # soc can never exceed the limit so when it is equal to the max, we tell it is completely charged
+    def output_h2(self, flow2h2s, eleh2_in, fuelh2_out, soc):
+        self.h2storage_soc = soc
+        flow2h2s_net=flow2h2s+eleh2_in-fuelh2_out
+        if flow2h2s_net == 0:  # i.e when there isn't a demand of hydrogen at all,
             if self.h2storage_soc >= self.h2storage_soc_max:
-                self.flag = 1  # meaning battery object we created is fully charged
-
-            # soc can never exceed the limit so when it is equal to the min, we tell it is completely discharged
+                self.flag = 1  # meaning battery object is fully charged
             elif self.h2storage_soc <= self.h2storage_soc_min:
-                self.flag = -1
-
-            # if the soc is between the min and max values, it is ready to be discharged or charged as per the situation
+                self.flag = -1  # meaning battery object is fully discharged
             else:
                 self.flag = 0  # meaning it is available to operate.
-
-            # here we are sending the current state of the battery
-            re_params = {
-                         # 'h2_out': 0,
+            re_params = {'flow2h2s': flow2h2s,
+                         'eleh2_in': eleh2_in,
+                         'fuelh2_out': fuelh2_out,
+                         'h2_flow': 0,
+                         'h2_excess_flow': 0,
                          'h2_soc': self.h2storage_soc,
-                         'h2storage_soc_min': self.h2storage_soc_min,
-                         'h2storgae_soc_max': self.h2storage_soc_max,
-                         'h2_stored': 0,
-                         'h2_given': 0,
                          'mod': 0,
                          'flag': self.flag}
-        elif h2_out < 0:  # discharge
-            re_params = self.discharge_h2(h2_out)
 
-        else:
-            re_params = self.charge_h2(h2_in)
+        elif flow2h2s_net < 0:  # discharge
+            re_params={'flow2h2s': flow2h2s,
+                         'eleh2_in': eleh2_in,
+                         'fuelh2_out': fuelh2_out}
+            re_params.update(self.discharge_h2(flow2h2s_net))
+
+        else:           # charge
+            re_params = {'flow2h2s': flow2h2s,
+                           'eleh2_in': eleh2_in,
+                           'fuelh2_out': fuelh2_out}
+            re_params.update(self.charge_h2(flow2h2s_net))
 
         return re_params

@@ -38,7 +38,7 @@ class BatteryModel:
 
         hours = self.resolution / 60
         flow = max(self.min_p, flow2b)
-        if (flow < 0) and (self.flag != -1):
+        if (flow < 0):
             energy2discharge = flow * hours / self.discharge_efficiency  # (-ve)
             energy_capacity = ((self.soc_min - self.soc) / 100) * self.max_energy
             if self.soc <= self.soc_min:
@@ -73,7 +73,7 @@ class BatteryModel:
     def charge_battery(self, flow2b):
         hours = self.resolution / 60
         flow = min(self.max_p, flow2b)
-        if (flow > 0) and (self.flag != 1):
+        if (flow > 0):
             energy2charge = flow * hours * self.charge_efficiency  # (-ve)
             energy_capacity = ((self.soc_max - self.soc) / 100) * self.max_energy
             if self.soc >= self.soc_max:
