@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<data>
+  <row>
+    <index>0</index>
+    <model>Grid</model>
+    <method>python</method>
+    <location>Models.EleDisNetworkSim.simulator:Pandapower</location>
+  </row>
+  <row>
+    <index>1</index>
+    <model>Load</model>
+    <method>python</method>
+    <location>Models.LoadinNetSim.mosaik-model:LoadholdSim</location>
+  </row>
+  <row>
+    <index>2</index>
+    <model>Collector</model>
+    <method>python</method>
+    <location>Models.collector:Collector</location>
+  </row>
+  <row>
+    <index>3</index>
+    <model>CSVB</model>
+    <method>python</method>
+    <location>Models.mosaik_csv:CSV</location>
+  </row>
+  <row>
+    <index>4</index>
+    <model>Controller</model>
+    <method>python</method>
+    <location>Controllers.NetVoltageControllerSim.mosaik-model:controlSim</location>
+  </row>
+</data>

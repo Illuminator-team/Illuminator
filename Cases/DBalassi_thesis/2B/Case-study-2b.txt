@@ -1,0 +1,271 @@
+PV: 5kWp
+
+metrics = {'prosumer_s2_0': {'MC': [0.07, 0.10], 'MB': [0.12],'MO': [0.05, 0.25], 'MR': [0.40]},
+           'prosumer_s2_1': {'MC': [0.27], 'MB': [0.20], 'MO': [0], 'MR': [0.33]},
+           'prosumer_s2_2': {'MC': [0.33, 0.07], 'MB': [0.18], 'MO': [0.09, 0.22], 'MR': [0.15]},
+           'prosumer_s2_3': {'MC': [0], 'MB': [0.50], 'MO': [0], 'MR': [0.50]},
+           'prosumer_s2_4': {'MC': [0.10,0.37], 'MB': [0.44], 'MO': [0.01, 0.20], 'MR': [0.20]},
+           'prosumer_s2_5': {'MC': [0.12], 'MB': [0.28], 'MO': [0.17], 'MR': [0.19]},
+}
+
+    # Agent 0 -------------------------------------------------------------------------------------
+
+    # Load
+    ['load[0]', 'gpctrl[0]', 'load_dem', 'demand[0]'],
+    ['load[0]', 'monitor', 'load_dem'],
+    ['gpctrl[0]', 'prosumer_s2[0]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[0]', 'monitor', 'demand[0]'],
+
+    # Wind
+    ['wind[0]', 'gpctrl[0]', 'wind_gen', 'generator[0]'],
+    ['wind[0]', 'monitor', 'wind_gen'],
+    ['gpctrl[0]', 'prosumer_s2[0]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[0]', 'monitor', 'generator[0]'],
+
+    # PV
+    ['pv[0]', 'gpctrl[0]', 'pv_gen', 'generator[1]'],
+    ['pv[0]', 'monitor', 'pv_gen'],
+    ['gpctrl[0]', 'prosumer_s2[0]', 'generator[1]', 'generator[1]'],
+    ['gpctrl[0]', 'monitor', 'generator[1]'],
+
+    # Gpctrl
+    ['gpctrl[0]', 'monitor', 'net'],
+    ['gpctrl[0]', 'monitor', 'excess'],
+    ['gpctrl[0]', 'monitor', 'deficit'],
+
+    # Agent 1 -------------------------------------------------------------------------------------
+
+    # Load
+    ['load[1]', 'gpctrl[1]', 'load_dem', 'demand[0]'],
+    ['load[1]', 'monitor', 'load_dem'],
+    ['gpctrl[1]', 'prosumer_s2[1]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[1]', 'monitor', 'demand[0]'],
+
+    # PV
+    ['pv[1]', 'gpctrl[1]', 'pv_gen', 'generator[0]'],
+    ['pv[1]', 'monitor', 'pv_gen'],
+    ['gpctrl[1]', 'prosumer_s2[1]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[1]', 'monitor', 'generator[0]'],
+
+    # Gpctrl
+    ['gpctrl[1]', 'monitor', 'net'],
+    ['gpctrl[1]', 'monitor', 'excess'],
+    ['gpctrl[1]', 'monitor', 'deficit'],
+
+    # Agent 2 -----------------------------------------------------------------------------------
+
+    # Load
+    ['load[2]', 'gpctrl[2]', 'load_dem', 'demand[0]'],
+    ['load[2]', 'monitor', 'load_dem'],
+    ['gpctrl[2]', 'prosumer_s2[2]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[2]', 'monitor', 'demand[0]'],
+
+    # Wind
+    ['wind[1]', 'gpctrl[2]', 'wind_gen', 'generator[0]'],
+    ['wind[1]', 'monitor', 'wind_gen'],
+    ['gpctrl[2]', 'prosumer_s2[2]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[2]', 'monitor', 'generator[0]'],
+
+    # Battery
+    ['battery[0]', 'gpctrl[2]', 'soc', 'storage[0]'],
+    ['battery[0]', 'monitor', 'soc'],
+    ['battery[0]', 'monitor', 'flow2b'],
+    ['gpctrl[2]', 'prosumer_s2[2]', 'storage[0]', 'storage[0]'],
+    ['gpctrl[2]', 'monitor', 'storage[0]'],
+    ['gpctrl[2]', 'battery[0]', 'flow2b[0]', 'flow2b'],
+    ['gpctrl[2]', 'monitor', 'flow2b[0]'],
+
+    # PV
+    ['pv[2]', 'gpctrl[2]', 'pv_gen', 'generator[1]'],
+    ['pv[2]', 'monitor', 'pv_gen'],
+    ['gpctrl[2]', 'prosumer_s2[2]', 'generator[1]', 'generator[1]'],
+    ['gpctrl[2]', 'monitor', 'generator[1]'],
+
+    # Gpctrl
+    ['gpctrl[2]', 'monitor', 'net'],
+    ['gpctrl[2]', 'monitor', 'excess'],
+    ['gpctrl[2]', 'monitor', 'deficit'],
+
+    # Agent 3 -----------------------------------------------------------------------------------
+
+    # Load
+    ['load[3]', 'gpctrl[3]', 'load_dem', 'demand[0]'],
+    ['load[3]', 'monitor', 'load_dem'],
+    ['gpctrl[3]', 'prosumer_s2[3]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[3]', 'monitor', 'demand[0]'],
+
+    # PV
+    ['pv[3]', 'gpctrl[3]', 'pv_gen', 'generator[0]'],
+    ['pv[3]', 'monitor', 'pv_gen'],
+    ['gpctrl[3]', 'prosumer_s2[3]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[3]', 'monitor', 'generator[0]'],
+
+    # Gpctrl
+    ['gpctrl[3]', 'monitor', 'net'],
+    ['gpctrl[3]', 'monitor', 'excess'],
+    ['gpctrl[3]', 'monitor', 'deficit'],
+
+    # Agent 4 -------------------------------------------------------------------------------------
+
+    # Load
+    ['load[4]', 'gpctrl[4]', 'load_dem', 'demand[0]'],
+    ['load[4]', 'monitor', 'load_dem'],
+    ['gpctrl[4]', 'prosumer_s2[4]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[4]', 'monitor', 'demand[0]'],
+
+    # Wind
+    ['wind[2]', 'gpctrl[4]', 'wind_gen', 'generator[0]'],
+    ['wind[2]', 'monitor', 'wind_gen'],
+    ['gpctrl[4]', 'prosumer_s2[4]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[4]', 'monitor', 'generator[0]'],
+
+    # PV
+    ['pv[4]', 'gpctrl[4]', 'pv_gen', 'generator[1]'],
+    ['pv[4]', 'monitor', 'pv_gen'],
+    ['gpctrl[4]', 'prosumer_s2[4]', 'generator[1]', 'generator[1]'],
+    ['gpctrl[4]', 'monitor', 'generator[1]'],
+
+    # Gpctrl
+    ['gpctrl[4]', 'monitor', 'net'],
+    ['gpctrl[4]', 'monitor', 'excess'],
+    ['gpctrl[4]', 'monitor', 'deficit'],
+
+    # Agent 5 -----------------------------------------------------------------------------------
+
+    # Load
+    ['load[5]', 'gpctrl[5]', 'load_dem', 'demand[0]'],
+    ['load[5]', 'monitor', 'load_dem'],
+    ['gpctrl[5]', 'prosumer_s2[5]', 'demand[0]', 'demand[0]'],
+    ['gpctrl[5]', 'monitor', 'demand[0]'],
+
+    # PV
+    ['pv[5]', 'gpctrl[5]', 'pv_gen', 'generator[0]'],
+    ['pv[5]', 'monitor', 'pv_gen'],
+    ['gpctrl[5]', 'prosumer_s2[5]', 'generator[0]', 'generator[0]'],
+    ['gpctrl[5]', 'monitor', 'generator[0]'],
+
+    # Gpctrl
+    ['gpctrl[5]', 'monitor', 'net'],
+    ['gpctrl[5]', 'monitor', 'excess'],
+    ['gpctrl[5]', 'monitor', 'deficit'],
+
+    # -- Games --------------------------------------------------------------------------------------
+
+    # RT price --------------------------------------------------------------------------------------
+    ['rtprice[0]', 'monitor', 'buy_price'],
+    ['rtprice[0]', 'monitor', 'sell_price'],
+
+    # Agent 0 in RT price
+    ['prosumer_s2[0]', 'rtprice[0]', 'rt_buy', 'buy[0]'],
+    ['prosumer_s2[0]', 'rtprice[0]', 'rt_sell', 'sell[0]'],
+    ['prosumer_s2[0]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[0]', 'monitor', 'rt_sell'],
+
+    # Agent 1 in RT price
+    ['prosumer_s2[1]', 'rtprice[0]', 'rt_sell', 'sell[1]'],
+    ['prosumer_s2[1]', 'rtprice[0]', 'rt_buy', 'buy[1]'],
+    ['prosumer_s2[1]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[1]', 'monitor', 'rt_sell'],
+
+    # Agent 2 in RT price
+    ['prosumer_s2[2]', 'rtprice[0]', 'rt_sell', 'sell[2]'],
+    ['prosumer_s2[2]', 'rtprice[0]', 'rt_buy', 'buy[2]'],
+    ['prosumer_s2[2]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[2]', 'monitor', 'rt_sell'],
+
+    # Agent 3 in RT price
+    ['prosumer_s2[3]', 'rtprice[0]', 'rt_sell', 'sell[3]'],
+    ['prosumer_s2[3]', 'rtprice[0]', 'rt_buy', 'buy[3]'],
+    ['prosumer_s2[3]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[3]', 'monitor', 'rt_sell'],
+
+    # Agent 4 in RT price
+    ['prosumer_s2[4]', 'rtprice[0]', 'rt_sell', 'sell[4]'],
+    ['prosumer_s2[4]', 'rtprice[0]', 'rt_buy', 'buy[4]'],
+    ['prosumer_s2[4]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[4]', 'monitor', 'rt_sell'],
+
+    # Agent 5 in RT price
+    ['prosumer_s2[5]', 'rtprice[0]', 'rt_sell', 'sell[5]'],
+    ['prosumer_s2[5]', 'rtprice[0]', 'rt_buy', 'buy[5]'],
+    ['prosumer_s2[5]', 'monitor', 'rt_buy'],
+    ['prosumer_s2[5]', 'monitor', 'rt_sell'],
+
+    # --- Emarket ----------------------------------------------------------------------------------------------
+    ['emarket[0]', 'monitor', 'market_price'],
+    ['emarket[0]', 'monitor', 'market_quantity'],
+
+    # Agent 0 in Emarket
+    ['prosumer_s2[0]', 'emarket[0]', 'em_supply_bids', 'supply_bids[0]'],
+    ['prosumer_s2[0]', 'emarket[0]', 'em_demand_bids', 'demand_bids[0]'],
+    ['emarket[0]', 'prosumer_s2[0]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[0]', 'monitor', 'p2em'],
+
+    # Agent 1 in Emarket
+    ['prosumer_s2[1]', 'emarket[0]', 'em_supply_bids', 'supply_bids[1]'],
+    ['prosumer_s2[1]', 'emarket[0]', 'em_demand_bids', 'demand_bids[1]'],
+    ['emarket[0]', 'prosumer_s2[1]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[1]', 'monitor', 'p2em'],
+
+    # Agent 2 in Emarket
+    ['prosumer_s2[2]', 'emarket[0]', 'em_supply_bids', 'supply_bids[2]'],
+    ['prosumer_s2[2]', 'emarket[0]', 'em_demand_bids', 'demand_bids[2]'],
+    ['emarket[0]', 'prosumer_s2[2]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[2]', 'monitor', 'p2em'],
+
+    # Agent 3 in Emarket
+    ['prosumer_s2[3]', 'emarket[0]', 'em_supply_bids', 'supply_bids[3]'],
+    ['prosumer_s2[3]', 'emarket[0]', 'em_demand_bids', 'demand_bids[3]'],
+    ['emarket[0]', 'prosumer_s2[3]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[3]', 'monitor', 'p2em'],
+
+    # Agent 4 in Emarket
+    ['prosumer_s2[4]', 'emarket[0]', 'em_supply_bids', 'supply_bids[4]'],
+    ['prosumer_s2[4]', 'emarket[0]', 'em_demand_bids', 'demand_bids[4]'],
+    ['emarket[0]', 'prosumer_s2[4]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[4]', 'monitor', 'p2em'],
+
+    # Agent 5 in Emarket
+    ['prosumer_s2[5]', 'emarket[0]', 'em_supply_bids', 'supply_bids[5]'],
+    ['prosumer_s2[5]', 'emarket[0]', 'em_demand_bids', 'demand_bids[5]'],
+    ['emarket[0]', 'prosumer_s2[5]', 'accepted_bids', 'em_accepted_bids'],
+    ['prosumer_s2[5]', 'monitor', 'p2em'],
+
+    # -- p2ptrading ---------------------------------------------------------------------------
+    ['p2ptrading[0]', 'monitor', 'quantity_traded'],
+
+    # Agent 0 in p2ptrading
+    ['prosumer_s2[0]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[0]'],
+    ['prosumer_s2[0]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[0]'],
+    ['p2ptrading[0]', 'prosumer_s2[0]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[0]', 'monitor', 'p2p2pt'],
+
+    # Agent 1 in p2ptrading
+    ['prosumer_s2[1]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[1]'],
+    ['prosumer_s2[1]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[1]'],
+    ['p2ptrading[0]', 'prosumer_s2[1]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[1]', 'monitor', 'p2p2pt'],
+
+    # Agent 2 in p2ptrading
+    ['prosumer_s2[2]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[2]'],
+    ['prosumer_s2[2]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[2]'],
+    ['p2ptrading[0]', 'prosumer_s2[2]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[2]', 'monitor', 'p2p2pt'],
+
+    # Agent 3 in p2ptrading
+    ['prosumer_s2[3]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[3]'],
+    ['prosumer_s2[3]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[3]'],
+    ['p2ptrading[0]', 'prosumer_s2[3]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[3]', 'monitor', 'p2p2pt'],
+
+    # Agent 4 in p2ptrading
+    ['prosumer_s2[4]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[4]'],
+    ['prosumer_s2[4]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[4]'],
+    ['p2ptrading[0]', 'prosumer_s2[4]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[4]', 'monitor', 'p2p2pt'],
+
+    # Agent 5 in p2ptrading
+    ['prosumer_s2[5]', 'p2ptrading[0]', 'p2pt_supply_offers', 'supply_offers[5]'],
+    ['prosumer_s2[5]', 'p2ptrading[0]', 'p2pt_demand_requests', 'demand_requests[5]'],
+    ['p2ptrading[0]', 'prosumer_s2[5]', 'transactions', 'p2pt_transactions'],
+    ['prosumer_s2[5]', 'monitor', 'p2p2pt'],
