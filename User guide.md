@@ -1,10 +1,13 @@
 # User Guide document 
 ## Configuration
 There are three methods to configurate the cases.
-1. Through provide `config.xml` and `connection.xml` files in the `Cases` folder. We provide an example in
-the `Resisential Case` folder. Then run `interpreter.py` file in `configuration` folder to set the case configuration.
 
-   The `config.xml` file is used to define the models in the case and where to 
+
+1. Through provide `config.xml` and `connection.xml` files in the `Cases` folder. We provide four example in `Cases` folder: Residential Case study(`ResidentialCase`), Multienergy system case study(`MultienergyCase`), Electricity market game case study (`GameCase`), and distribution voltage control case study (`DNcontrolCase`) .
+For more information about the electricity market case study, you can reference the Msc thesis https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education
+   
+    
+The `config.xml` file is used to define the models in the case and where to 
    run the model. Here is an example of the information in the config.xml file. 
    It means we would like build only Wind and PV models in our simulation study. 
    The wind model is running and import from python file, and the PV model is running in another Raspi which ip address is ‘192.168.0.1’, 
@@ -51,64 +54,150 @@ the `Resisential Case` folder. Then run `interpreter.py` file in `configuration`
         <more>h2_in</more>
    ```
 
-2. The users can build case through run the scripts `build_configuration_xml`. Through running the scripts, the `config.xml` and `connection.xml`
-file will be automatically built. If you want to change the configuration, the user need to change the parameter 'sim_config' and 'sim_config'.
+2. The users can build case through run the python scripts `build_configuration_xml` in the folder `configuration`. Through running the scripts, the `config.xml` and `connection.xml`
+file will be automatically built. If you want to change the configuration, the user need to change the parameter 'sim_config' and 'connection'.
+
 3. The Illuminator also provide visualized method to do the configuration. The user can use smarter board, touch screen or mouse to configurate 
 the case. Firstly, run `drawpptx.py`, the user can draw their configuration by hard draw and save as 'example.pptx' file, such as below.
 <div align="center">
 	<img align="center" src="docs/Figure/config.png" width="300">
 </div>
-Then run the script 'readppt_connectionxml' to build the configuration.
+
+Then run the script `readppt_connectionxml.py` to build the configuration.
+
 ## Define models
 The model parameters, results presentation and real-time simulation are all set in the file `buildmodelse.py`.
-    ```
+```
+
     Battery_initialset = {'initial_soc': 20}
     Battery_set = {'max_p': 500, 'min_p': -500, 'max_energy': 500,
             'charge_efficiency': 0.9, 'discharge_efficiency': 0.9,
             'soc_min': 10, 'soc_max': 90, 'flag': 0, 'resolution': 15}  #p in kW
     #Set flag as 1 to show fully discharged state; -1 show fully charged,0 show ready to charge and discharge
 
-    h2storage_initial = {'initial_soc': 20}
-    h2_set = {'h2storage_soc_min': 10, 'h2storage_soc_max': 90, 'max_h2': 200, 'min_h2': -200, 'flag': -1}
-    #max_h2 in kWh; flag as 1 to show fully discharged state; -1 show fully charged,0 show ready to charge and discharge
-
+    h2storage_initial = {'initial_soc': 50}
+    ttrailers_initial = {'initial_soc': 20}
+    h2_set = {'h2storage_soc_min': 10, 'h2storage_soc_max': 90, 'max_h2': 0.3,
+              'min_h2': -0.3, 'flag': 0, 'capacity':30, 'eff': 0.94, 'resolution':resolution}
+    h2trailer_set = {'h2storage_soc_min': 10, 'h2storage_soc_max': 90, 'max_h2': 0.3,
+              'min_h2': -0.3, 'flag': 0, 'capacity':3000, 'eff': 0.94, 'resolution':resolution}
+    # max_h2 min_h2 in m^3/min;
+    # flag as 1 to show fully discharged state; -1 show fully charged,0 show ready to charge and discharge
+    # approx efficiency of compressed hydrogen storage tanks. Roundtrip efficiency
+    # Capacity is max m3 of hydrogen that it can contain
+    
     pv_panel_set ={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
-          'Power_output_at_STC': 250}
-    pv_set={'m_tilt':14,'m_az':180,'cap':500000,'output_type':'power'}
+              'Power_output_at_STC': 250,'peak_power':600}
+    pv_set={'m_tilt':14,'m_az':180,'cap':500,'output_type':'power'}
     # 'NOCT':degree celsius; 'Irradiance_at_NOCT':W/m2 This is the irradiance that falls on the panel under NOCT conditions
-    # Watts. Available in spec sheet of a module
-    load_set={'houses':200, 'output_type':'power'}
-
-    Wind_set={'p_rated':110, 'u_rated':10.3, 'u_cutin':2.8, 'u_cutout':25, 'cp':0.40, 'diameter':22, 'output_type':'power'}
+    # KW. Available in spec sheet of a module
+    load_set={'houses':1000, 'output_type':'power'}
+    
+    Wind_set={'p_rated':300, 'u_rated':10.3, 'u_cutin':2.8, 'u_cutout':25, 'cp':0.40, 'diameter':22, 'output_type':'power'}
+    Wind_on_set={'p_rated':300, 'u_rated':10.3, 'u_cutin':2.8, 'u_cutout':25, 'cp':0.40, 'diameter':22, 'output_type':'power'}
+    Wind_off_set={'p_rated':200, 'u_rated':7.5, 'u_cutin':2.8, 'u_cutout':15, 'cp':0.40, 'diameter':15, 'output_type':'power'}
     #  p_rated  # kW power it generates at rated wind speed and above
     # u_rated  # m/s #windspeed it generates most power at
     #  u_cutin  # m/s #below this wind speed no power generation
     # u_cutout  # m/s #above this wind speed no power generation. Blades are pitched
     # cp  # coefficient of performance of a turbine. Usually around0.40. Never more than 0.59
     # powerout = 0  # output power at wind speed u
-    fuelcell_set={'eff':0.45}
-
-    electrolyser_set={'eff':0.60,'fc_eff':0.45,'resolution':15}
-
-    RESULTS_SHOW_TYPE={'write2csv':True, 'dashboard_show':True, 'Finalresults_show':True}
+    fuelcell_set={'eff':0.45, 'term_eff': 0.2,'max_flow':100, 'min_flow':0,'resolution':resolution}
+    
+    electrolyser_set={'eff':0.60,'resolution':resolution, 'term_eff': 0.2,'rated_power':2.3,'ramp_rate':1.5}
+    # term_eff:  percentage of power transformed in effective heat
+    
+    RESULTS_SHOW_TYPE={'write2csv':True, 'dashboard_show':False, 'Finalresults_show':True,'database':False,'mqtt':False}
     #'write2csv':True/Flause   Write the results to csv file
     # #'Realtime_show':True/Flause, show the results in dashboard
     # 'Finalresults_show':True/Flause, show the results after finish the simulation
-
+    
+    enetwork_set={'max_congestion': 1000, 'p_loss_m': 0.56, 'length': 300}
+    
+    h2network_set={'max_congestion': 700, 'V': 0.0314, 'leakage': 0.03, 'ro': 0.0899}
+    # max_congestion: max internal pressure bar
+    # leakage: % of internal flow loss
+    # ro: gas density kg/m^2 at STP
+    
+    heatnetwork_set = {'max_temperature': 300 + 275.15, 'insulation': 0.02, 'ext_temp': 25 + 275.15, 'therm_cond': 0.05,
+                    'length': 100, 'diameter': 0.3, 'density': 1000,  'c': 4.18}
+    # max_temperature : max_temperature allowed before congestion # K
+    # insulation:  insulation layer diameter #m
+    # ext_temp: external temperature # K
+    # therm_cond: thermal conductivity # W/(m·K)
+    # leght: lenght of pipeline # m
+    # diameter: pipe diameter # m
+    # density: water density # kg/m^3
+    # c : Thermal capacity of the medium #kJ/(kg·K)
+    
+    h2demand_r_set={'houses':0.5}
+    h2demand_fs_set={'tanks':1}
+    h2demand_ev_set={'cars':1}
+    h2product_set={'houses':1}
+    
+    
+    heatstorage_set = {'soc_init': 20, 'max_temperature': 300 + 275.15, 'min_temperature': 25+275.15, 'insulation': 0.20,
+                    'ext_temp': 25 + 275.15, 'therm_cond': 0.03,
+                    'length': 2.5, 'diameter': 1.5, 'density': 1000,  'c': 4.18, 'eff': 0.85, 'max_q': 300, 'min_q': -300}
+    # max_temperature : max_temperature allowed before soc max # K
+    # min_temperature : max_temperature allowed before soc min # K
+    # insulation:  insulation layer diameter #m
+    # ext_temp: external temperature # K
+    # therm_cond: thermal conductivity # W/(m·K)
+    # leght: lenght of pipeline # m
+    # diameter: pipe diameter # m
+    # density: water density # kg/m^3
+    # c: Thermal capacity of the medium #kJ/(kg·K)
+    # eff: charge/discharge efficiency
+    
+    # Seasonal storage
+    heatstorage_s_set = {'soc_init': 80, 'max_temperature': 300 + 275.15, 'min_temperature': 25+275.15, 'insulation': 0.20,
+                    'ext_temp': 25 + 275.15, 'therm_cond': 0.03,
+                    'length': 10, 'diameter': 2, 'density': 1000,  'c': 4.18, 'eff': 0.85, 'max_q': 300, 'min_q': -300}
+    # Daily storage
+    heatstorage_d_set = {'soc_init': 80, 'max_temperature': 300 + 275.15, 'min_temperature': 25+275.15, 'insulation': 0.20,
+                    'ext_temp': 25 + 275.15, 'therm_cond': 0.03,
+                    'length': 0.5, 'diameter': 1, 'density': 1000,  'c': 4.18, 'eff': 0.85, 'max_q': 300, 'min_q': -300}
+    
+    heatdemand_i_set={'factories':1}
+    heatdemand_r_set={'houses':1}
+    heatproduct_set={'utilities':1}
+    
+    hp_params = {'hp_model': 'Air_8kW',
+                 'heat_source': 'air',
+                 'cons_T': 35,
+                 'heat_source_T': 4,
+                 'T_amb': 25,
+                 'calc_mode': 'fast',
+                 'number': 15}
+    
+    eboiler_set = { 'capacity':30, 'min_load':5, 'max_load':10, 'standby_loss':0.2,
+                    'efficiency':0.8,'resolution':resolution}
+    
     realtimefactor=0
     #0 as soon as possible. 1/60 using 1 second simulate 1 mintes
-    ```
-## Simulation
-Run the `simulation creator.py` to create and run the simulation based on the provided case and scenario. 
-If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+    
+    metrics = {'prosumer_s1_0': {'MC': [0.07, 0.10], 'MB': [0.12],'MO': [0.05, 0.25], 'MR': [0.40]},
+               'prosumer_s1_1': {'MC': [0.27], 'MB': [0.20], 'MO': [0], 'MR': [0.33]},
+               'prosumer_s1_2': {'MC': [0.33, 0.07], 'MB': [0.18], 'MO': [0.09, 0.22], 'MR': [0.15]},
+               'prosumer_s1_3': {'MC': [0], 'MB': [0.50], 'MO': [0], 'MR': [0.50]},
+               'prosumer_s1_4': {'MC': [0.10,0.37], 'MB': [0.44], 'MO': [0.01, 0.20], 'MR': [0.20]},
+               'prosumer_s1_5': {'MC': [0.12], 'MB': [0.28], 'MO': [0.17], 'MR': [0.19]},
+    }
 
+```
+## Simulation
+Run the `simulation creator_**.py` to create and run the simulation based on the provided case and scenario. 
+If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
+There is also a simple example `simple.py` that show a simple case with the configuration inside of the file.
 
 ## Demos
-We build a case study as a demo to show how to use Illuminator to demonstrate this system at
-a general user level and verify the Illuminator’s performance. The demo include Households,
+We build four case study as demos to show how to use Illuminator to demonstrate this system at
+a general user level and verify the Illuminator’s performance. 
+1. The first demo shows the residential energy community system which include Households,
 PV panels, Wind generators, Battery and Hydrogen system
 to achieve electric power self-sufficiency. The controller’s
-algorithm in the case study runs in the Master RasPi, and
+algorithm in the case study runs in the Master RasPi `Controllers\ResidentialController` , and
 the rest simulators are separately deployed in different Client
 RasPis.The data flow between the simulators is also shown in
 the figure. Based on the inputs, including the generated power
@@ -120,9 +209,20 @@ simple logic to achieve self-sufficiency. If Battery has enough
 capacity for charging or discharging to achieve power balance,
 use the Battery first. If Battery doesn’t have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
-to achieve power balance. All the input data are in file `Scenarios` and all the output data are in file `Result`.
+to achieve power balance. All the input data are in file `Scenarios` and all the output data are in file `Result\ResidentialCase`.
 
 <div align="center">
-	<img align="center" src="docs/Figure/case study.jpg" width="500">
+	<img align="center" src="docs/Figure/case study.jpg" width="300">
 </div>
 
+2. The second demo shows the Multi-carriers energy system, which including teh electricity
+network, hydrogen network and heat network. All the energy assets are shown in the below figure. 
+
+<div align="center">
+	<img align="center" src="docs/Figure/Multienergy.jpg" width="400">
+</div>
+
+3. The third demon shows the electricity trade game and more details please refer to the Msc thesis https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education
+
+4. The fourth demon shows the voltage control in the CIGRE LV voltage network. The network model is in the folder 
+`Models\EleDisNetworkSim`, the control method is in the `Controllers\NetVoltageControllerSim`

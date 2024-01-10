@@ -8,7 +8,9 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 
 ## Contact/Support
 * This project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
-* For more in-depth support contact: illuminator@tudelft.nl.
+* For more in-depth support contact: illuminator@tudelft.nl, or the main contributors Aihui Fu (A.Fu@tudelft.nl), Dr.ir. Milos Cvetkovic (M.Cvetkovic@tudelft.nl)
+
+
 
 ## The Illuminator setup in short
 The setup consists of one leader RasPi and several follower RasPis.
@@ -19,7 +21,8 @@ the follower RasPis to run the specified simulators. During the
 simulation, the information will be exchanged between RasPis via socket connection.
 The leader RasPi shows the results through Dashboard and saves the results
 to a ’.csv’ file for later analysis. 
-Since the Illuminator is Python based, this code also runs on regular machines.
+Since the Illuminator is Python based, this code can also run on regular machines(PC). If you run 
+the Illuminator in one regular PC, then you don't need to do the Illuminator environment set up.
 <div align="center">
 	<img align="center" src="docs/Figure/Structure.jpg" width="500">
 </div>
@@ -53,6 +56,7 @@ Since the Illuminator is Python based, this code also runs on regular machines.
    mosaik.util
    wandb
    matplotlib
+   itertools
    ```
 5. Send the Illuminator package to all follower Raspberry Pis. Use the following command in the leader Raspberry Pi terminal to check the connection 
 between leader and follower Raspberry Pis. 
@@ -70,3 +74,7 @@ More detialed instructions are given in the [user guide document](User%20guide.m
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
 The Illuminator team accepts contributions to the Illuminator source, test files, documentation, and other materials distributed with the program.
 If you are interested in contributing, please start there, and feel free to reach out to the team using illuminator@tudelft.nl. The Illuminator team does not take any responsibility for the damage or loss that this code might provide. 
+
+Reference for the Illuminator: A. Fu, R. Saini, R. Koornneef, A. van der Meer, P. Palensky and M. Cvetković, "The Illuminator: An Open Source Energy System Integration Development Kit," 2023 IEEE Belgrade PowerTech, Belgrade, Serbia, 2023, pp. 01-05, doi: 10.1109/PowerTech55446.2023.10202816.
+
+The Illuminator V2 thanks the contribution of Raghav Saini and Niki Balassi
