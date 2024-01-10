@@ -16,7 +16,7 @@ META = {
         'loadmodel': {
             'public': True,
             'params': ['sim_start', 'houses', 'output_type'],
-            'attrs': ['load_id','load_dem','load',],
+            'attrs': ['load_id','load_dem','load', 'forecast'],
             'trigger': [],
         },
     },
@@ -29,6 +29,7 @@ class loadSim(mosaik_api.Simulator):
         self.eid_prefix = 'load_'  # every entity that we create will start with 'wind_'
         self.entities = {}  # we store the model entity of our technology model
         self._cache = {}  # used in the step function to store the values after running the python model of the technology
+        self.time = 0
         # self.start_date = None
 
     # the following API call is will be called only once when we initiate the model in the scenario file.
@@ -57,22 +58,17 @@ class loadSim(mosaik_api.Simulator):
         return entities
 
     def step(self, time, inputs, max_advance):
-
+        self.time = time
         current_time = (self.start +
                         pd.Timedelta(time * self.time_resolution,
                                      unit='seconds'))  # timedelta represents a duration of time
         print('from load %%%%%%%%%%%', current_time)
 
         for eid, attrs in inputs.items():
-            # print(eid)
-            # print(attrs)
+
             for attr, vals in attrs.items():
-                # if attr == 'u':
-                u = list(vals.values())[0]
-                # print(u)
-                self._cache[eid] = self.entities[eid].demand(u)  # not necessary to have u in brackets. It is not necessary to keep the same name as the one in python file
-                # print(self._cache)
-        return None
+                self._cache[eid] = self.entities[eid].demand(list(vals.values())[0])
+        return time + 900
 
     def get_data(self, outputs):
         data = {}
@@ -81,6 +77,7 @@ class loadSim(mosaik_api.Simulator):
             for attr in attrs:
                 if attr == 'load_dem':
                     data[eid][attr] = self._cache[eid]['load_dem']
+                    data['time'] = self.time
         return data
 def main():
     mosaik_api.start_simulation(loadSim(), 'load Simulator')

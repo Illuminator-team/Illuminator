@@ -8,26 +8,17 @@ import math
 
 class wind_py_model:
 
-    def __init__(self, p_rated, u_rated, u_cutin, u_cutout, diameter, cp, output_type):
+    def __init__(self, p_rated, u_rated, u_cutin, u_cutout, diameter, cp, output_type='power',resolution=15):
         self.p_rated = p_rated  # kW power it generates at rated wind speed and above
         self.u_rated = u_rated  # m/s #windspeed it generates most power at
         self.u_cutin = u_cutin  # m/s #below this wind speed no power generation
         self.u_cutout = u_cutout  # m/s #above this wind speed no power generation. Blades are pitched
         self.cp = cp  # coefficient of performance of a turbine. Usually around0.40. Never more than 0.59
         self.powerout = 0  # output power at wind speed u
-        self.output_type = output_type
         self.dia = diameter
-
-    # def windprofile(self):
-    #     """ Assuming that the wind speed data is measured at 10m height, it will be changed to a height of 80m
-    #     which is a general hub height of a wind turbine"""
-
-    # def noproduction(self, u):
-    #     re_params = {'p_out': 0}
-    #
-    #     return re_params
-
-
+        self.output_type = output_type  # 'power' or 'energy'
+        self.resolution = resolution
+        self.time_interval = self.resolution / 60  # hours (15 minutes time interval/ number of minites in an hour)
     def production(self, u):
         radius = self.dia/2
         air_density = 1.225
@@ -49,9 +40,6 @@ class wind_py_model:
         u60 = u * ((60 / 100) ** 0.14)
         u25 = u60 * (np.log(20 / 0.2) / np.log(60 / 0.2))
 
-        # radius = 27
-        air_density = 1.225
-
         if u25 >= self.u_rated:
             if u25 == self.u_rated:
                 if self.output_type == 'power':
@@ -63,7 +51,6 @@ class wind_py_model:
                     re_params = {'wind_gen': (self.p_rated), 'u': u25}
                 elif self.output_type == 'energy':
                     re_params = {'wind_gen': (self.p_rated * self.time_interval), 'u': u25}
-                # return re_params
             else:
                 re_params = {'wind_gen': 0, 'u': u25}
                 # return re_params
@@ -71,16 +58,5 @@ class wind_py_model:
             re_params = {'wind_gen': 0, 'u': u25}
         else:
             re_params = self.production(u)
-        # if u == self.u_rated:
-        #     p = (0.5 * (self.u_rated ** 3) * (math.pi * (radius ** 2.0)) * air_density * self.cp * 0.59)
-        #     re_params = {'p_out': p}
-        # else:
-        #     if u < self.u_cutin:
-        #         re_params = self.noproduction(u)
-        #     elif u > self.u_cutout:
-        #         re_params = self.noproduction(u)
-        #     elif
-        #     else:
-        #         re_params = self.production(u)
         return re_params
 

@@ -1,13 +1,13 @@
 
 import itertools
 import mosaik_api
-#import PV.PV_model_new as PV_model_new
+#import PV.PV_model as PV_model
 try:
-    import Models.PV.pv_model_new as PV_model_new
+    import Models.PV.pv_model as PV_model
 except ModuleNotFoundError:
-    import pv_model_new as PV_model_new
+    import pv_model as PV_model
 else:
-    import Models.PV.pv_model_new as PV_model_new
+    import Models.PV.pv_model as PV_model
 import pandas as pd
 import itertools
 
@@ -47,7 +47,7 @@ class PvAdapter(mosaik_api.Simulator):
 
             # we are creating an instance for PV and call the python file for that. **model_params refers to the
             # parameters we have mentioned above in the META. New instance will have those parameters.
-            model_instance = PV_model_new.PV_py_model(**model_params)
+            model_instance = PV_model.PV_py_model(**model_params)
             self.entities[eid] = model_instance
             entities.append({'eid': eid, 'type': model})
         # print(entities)
