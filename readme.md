@@ -8,7 +8,9 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 
 ## Contact/Support
 * This project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
-* For more in-depth support contact: illuminator@tudelft.nl, or the main contributors Aihui Fu (A.Fu@tudelft.nl), Dr.ir. Milos Cvetkovic (M.Cvetkovic@tudelft.nl)
+* For more comprehensive support, please contact us at illuminator@tudelft.nl. Additionally, you can reach out to the main contributors for specific inquiries:
+	Aihui Fu: A.Fu@tudelft.nl
+	Dr.ir. Milos Cvetkovic: M.Cvetkovic@tudelft.nl
 
 
 
