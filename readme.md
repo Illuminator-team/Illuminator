@@ -76,7 +76,14 @@ More detialed instructions are given in the [user guide document](User%20guide.m
 Illuminator is available under a GNU Lesser General Public License (LGPL) license.
 The Illuminator team accepts contributions to the Illuminator source, test files, documentation, and other materials distributed with the program.
 If you are interested in contributing, please start there, and feel free to reach out to the team using illuminator@tudelft.nl. The Illuminator team does not take any responsibility for the damage or loss that this code might provide. 
-
+## Reference
 Reference for the Illuminator: A. Fu, R. Saini, R. Koornneef, A. van der Meer, P. Palensky and M. Cvetković, "The Illuminator: An Open Source Energy System Integration Development Kit," 2023 IEEE Belgrade PowerTech, Belgrade, Serbia, 2023, pp. 01-05, doi: 10.1109/PowerTech55446.2023.10202816.
+## Acknowledge
+The Illuminator team extends its sincere gratitude for the invaluable support and contributions of our dedicated members:
 
-The Illuminator V2 thanks the contribution of Raghav Saini and Niki Balassi
+Aihui Fu, who played a pivotal role as the main developer for both Versions 1.0 and 2.0.
+Remko Koornneef, whose expertise in hardware development has been instrumental.
+Siva Kaviya, for her significant contributions to developing the initial version.
+Raghav Saini, for his substantial involvement in developing the models for Version 1.0.
+Niki Balassi, for his crucial role in advancing the multi-energy system models in Version 2.0.
+Each of these individuals has been essential in shaping the success and evolution of our project. We are profoundly thankful for their dedication and expertise.
