@@ -15,7 +15,7 @@ sim_config={
 world = mosaik.World(sim_config, debug=True)
 
 collector = world.start('Collector', start_date=START_DATE,
-                        results_show={'write2csv':True, 'dashboard_show':False, 'Finalresults_show':False,'database':True, 'mqtt':True},
+                        results_show={'write2csv':True, 'dashboard_show':False, 'Finalresults_show':False,'database':True, 'mqtt':False},
                         output_file='Result/forecast.csv',db_file='Result/result3.db',
                         mqtt_broker='mqtt://192.168.10.90:1883', mqtt_topic='TGVFCBB75')
 monitor = collector.Monitor()
