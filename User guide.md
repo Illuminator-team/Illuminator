@@ -189,7 +189,8 @@ The model parameters, results presentation and real-time simulation are all set 
 ## Simulation
 Run the `simulation creator_**.py` to create and run the simulation based on the provided case and scenario. 
 If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
-There is also a simple example `simple.py` that show a simple case with the configuration inside of the file.
+There is also a simple example `simple_test.py` that show a simple case with the configuration inside of the file.
+
 
 ## Demos
 We build four case study as demos to show how to use Illuminator to demonstrate this system at
