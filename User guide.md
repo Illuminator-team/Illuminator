@@ -111,6 +111,7 @@ The model parameters, results presentation and real-time simulation are all set 
     #'write2csv':True/Flause   Write the results to csv file
     # #'Realtime_show':True/Flause, show the results in dashboard
     # 'Finalresults_show':True/Flause, show the results after finish the simulation
+    # 'mqtt'::True/Flause, send the results outside through mqtt protocol. When this is True, you must set the receiver correctly.
     
     enetwork_set={'max_congestion': 1000, 'p_loss_m': 0.56, 'length': 300}
     
