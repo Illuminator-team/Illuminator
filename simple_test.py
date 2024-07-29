@@ -1,4 +1,6 @@
 import mosaik.util
+# pv_set, pv_panel_set and realtimefactor ar the only things missing. So an import * is excessive
+# also buildmodelset is just a list of predefined variables
 from configuration.buildmodelset import *
 
 START_DATE = '2012-01-01 00:00:00'
