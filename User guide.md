@@ -3,34 +3,38 @@
 There are three methods to configurate the cases.
 
 
-1. Through provide `config.xml` and `connection.xml` files in the `Cases` folder. We provide four example in `Cases` folder: Residential Case study(`ResidentialCase`), Multienergy system case study(`MultienergyCase`), Electricity market game case study (`GameCase`), and distribution voltage control case study (`DNcontrolCase`) .
-For more information about the electricity market case study, you can reference the Msc thesis https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education
+1. Through provide `config.xml` and `connection.xml` files in the `Cases` folder. We provide four example in `Cases` folder: 
+  * Residential Case study(`ResidentialCase`) 
+  * Multienergy system case study(`MultienergyCase`) 
+  * Electricity market game case study (`GameCase`), and 
+  * Distribution voltage control case study (`DNcontrolCase`) .
+For more information about the electricity market case study, you can reference the [Msc thesis](https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education)
    
-    
+
 The `config.xml` file is used to define the models in the case and where to 
-   run the model. Here is an example of the information in the config.xml file. 
-   It means we would like build only Wind and PV models in our simulation study. 
-   The wind model is running and import from python file, and the PV model is running in another Raspi which ip address is ‘192.168.0.1’, 
-   and the master get the pv model information from the port ’5123’.
-      ```
-       #'Wind' ,'python','Models.Wind.wind_mosaik:WindSim'
-       #'PV','connect', '192.168.0.1:5123'
-       
-       <?xml version='1.0' encoding='utf-8'?>
-       <data>
-         <row>
-           <index>0</index>
-           <model>Wind</model>
-           <method>python</method>
-           <location>Models.Wind.wind_mosaik:WindSim</location>
-         </row>
-         <row>
-           <index>1</index>
-           <model>PV</model>
-           <method>connect</method>
-           <location>192.168.0.1:5123</location>
-         </row>
-      ```
+run the model. Here is an example of the information in the config.xml file. 
+It means we would like build only Wind and PV models in our simulation study. 
+The wind model is running and import from python file, and the PV model is running in another Raspi which ip address is ‘192.168.0.1’, and the master get the pv model information from the port ’5123’.
+
+  ```xml
+    #'Wind' ,'python','Models.Wind.wind_mosaik:WindSim'
+    #'PV','connect', '192.168.0.1:5123'
+    
+    <?xml version='1.0' encoding='utf-8'?>
+    <data>
+      <row>
+        <index>0</index>
+        <model>Wind</model>
+        <method>python</method>
+        <location>Models.Wind.wind_mosaik:WindSim</location>
+      </row>
+      <row>
+        <index>1</index>
+        <model>PV</model>
+        <method>connect</method>
+        <location>192.168.0.1:5123</location>
+      </row>
+  ```
    The `connection.xml` file is to set how the message transferred from one model to others. 
    Here is an example of the information in the connection file.  
    The model ctrl send the information ‘flow2e’ to electrolyser to control its hydrogen generating speed. 
@@ -67,7 +71,8 @@ Then run the script `readppt_connectionxml.py` to build the configuration.
 
 ## Define models
 The model parameters, results presentation and real-time simulation are all set in the file `buildmodelse.py`.
-```
+
+```python
 
     Battery_initialset = {'initial_soc': 20}
     Battery_set = {'max_p': 500, 'min_p': -500, 'max_energy': 500,
