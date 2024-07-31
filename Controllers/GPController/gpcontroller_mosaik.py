@@ -9,12 +9,12 @@ else:
 import sys
 sys.path.insert(1,'/home/illuminator/Desktop/Final_illuminator')
 
-try:
-    import Models.Battery.battery_model as batterymodel
-except ModuleNotFoundError:
-    import battery_model as batterymodel
-else:
-    import Models.Battery.battery_model as batterymodel
+# try:
+#     import Models.Battery.battery_model as batterymodel
+# except ModuleNotFoundError:
+#     import battery_model as batterymodel
+# else:
+import Models.Battery.battery_model as batterymodel
 
 META = {
     'type': 'hybrid',

@@ -12,6 +12,9 @@ sim_config_file="Cases/ResidentialCase/"
 sim_config_ddf=pd.read_xml(sim_config_file+'config.xml')
 sim_config={row[1]:{row[2]:row[3]}for row in sim_config_ddf.values}
 
+# ERROR:
+# No errors found. Runs fine
+
 tosh=sim_config_ddf[sim_config_ddf['method']=='connect']
 #! /usr/bin/env python
 if not tosh.empty:

@@ -15,6 +15,12 @@ import Models.Elenetwork.electricity_network_mosaik as en
 from configuration.buildmodelset import *
 from configuration.bids.initial_bids import *
 
+# Error:
+# AttributeError: Can only use .dt accessor with datetimelike values. Did you mean: 'at'?
+
+# Error:
+# With the combined yml file this now works. So issues are really with the versions of the modules
+
 outputfile='Result/GameCase/results.csv'
 outputfolder='Result/GameCase/'
 sim_config_file="Cases/GameCase/"
