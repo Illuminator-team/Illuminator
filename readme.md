@@ -6,7 +6,6 @@ state-of-the-art energy management concepts.
 The kit utilises Raspberry Pi's as individual components of an energy system emulator, 
 and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 
-
 ## Installation
 
 [Describe the steps  that users (not developers) should follow to install the code in each of the intended platforms (e.g. Window 10, MacOS, etc.).]
@@ -75,16 +74,17 @@ The **master** provides a Dashboard to viazulize the results, and saves them to 
    matplotlib
    itertools
    ```
-5. Send the Illuminator package [TODO: What is the illuminator package] to all *clients*. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
+5. Send the Illuminator package [TODO: What is the illuminator package?] to all *clients*. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
 
-   ```
+   ```shell
    ssh illuminator@ip #ip represent your follower IP address
    ```
    [TODO: This suggest that all Pi's need a user with the name 'illuminator']
 
 6. Run the `buildcilentremoterun.py` file on each *client* and give all users execute permission to all the documents in `runshfile/` in order 
 to make sure the leader can access the *client* model.
-   ```
+   
+   ```shell
    chmod -R a+X *dir*
    ```
 
@@ -94,6 +94,7 @@ More detialed instructions are given in the [user guide document](user-guide.md)
 
 Since the Illuminator is Python based, this code can also run on regular machines(PC). If you run 
 the Illuminator in one regular PC, then you don't need to do the Illuminator environment set up.
+
 [TODO: More details are needed here]
 
 ## Contributing Guidelines
@@ -127,5 +128,5 @@ The Illuminator project is supported by [TU Delft PowerWeb](https://www.tudelft.
 ## Contact and Support
 
 For more comprehensive support, please contact us at [illuminator@tudelft.nl](mailto:illuminator@tudelft.nl). Additionally, you can reach out to the main contributors for specific inquiries:
-* [Aihui Fu](mailto:A.Fu@tudelft.nl)
+* [Aihui Fu](mailto:A.Fu@tudelft.nl) [TODO: should we keep this name?]
 * [Dr.ir. Milos Cvetkovic](mailto:M.Cvetkovic@tudelft.nl)
