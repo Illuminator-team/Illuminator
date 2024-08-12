@@ -47,6 +47,20 @@ def average(self:list, dates:list) -> list:
 
 class prosumer_python(ABC):
     def __init__(self, eid, forecasted_data, metrics):
+        """
+        prosumer_python class constructor
+
+        ...
+
+        Parameters
+        ----------
+        eid : list
+            Something
+        forcasted_data : list
+            Something
+        metrics : list
+            Something
+        """
         self.eid = eid
         self.time = []
         self.current_time = None
@@ -92,13 +106,13 @@ class prosumer_python(ABC):
         Parameters
         ----------
         start : pandas.Timestamp
-            ???
+            A timestamp representing the starting point in time.
         time : pandas.Timestamp
-            ???
+            A timestamp representing the current point in time. It is the same as `start` at the beginning
         generators : pandas.DataFrame
-            ???
+            A dataframe of generated values
         demands : pandas.DataFrame
-            ???
+            A dataframe of demand values
         storages : pandas.DataFrame
             ???
         em_accepted_bids : list
@@ -173,12 +187,12 @@ class prosumer_python(ABC):
 
     def play_flexibility_trading(self, time:pd.Timestamp, p2p_transactions:list) -> dict:
         """
-        A method to simulate flexibility trading?
+        A method to simulate flexibility trading (?)
 
         Parameters
         ----------
         time : pandas.Timestamp
-            ???
+            A timestamp representing a point in time.
         p2p_transactions : list
             ???
 
@@ -244,7 +258,7 @@ class prosumer_python(ABC):
         Returns
         -------
         re_params : dictionary
-            A dictionary representing a specific step of trading
+            A dictionary representing a specific step of trading based on supply and demand
 
         """
         re_params = {}
@@ -295,9 +309,9 @@ class prosumer_python(ABC):
         Parameters
         ----------
         ex_excess : list
-            ???
+            The list of excess energy(?) in chronological order
         metric : str
-            ???
+            A 2 character string. Options:[MC, MB, MO, MR]
 
         Returns
         -------
@@ -333,16 +347,16 @@ class prosumer_python(ABC):
             bids = None
         return bids
 
-    def demand(self, ex_deficit, metric):
+    def demand(self, ex_deficit:list, metric:str) -> list:
         """
         Provides a list of demand
 
         Parameters
         ----------
-        ex_excess : list
-            ???
+        ex_deficit : list
+            The list of energy(?) deficits in chronological order
         metric : str
-            ???
+            A 2 character string. Options:[MC, MB, MO, MR]
 
         Returns
         -------

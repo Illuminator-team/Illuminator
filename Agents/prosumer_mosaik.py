@@ -32,7 +32,26 @@ class prosumerSim(mosaik_api.Simulator):
         self.entities = {}
         self._cache = {}
 
-    def init(self, sid, time_resolution, step_size=900):
+    def init(self, sid:str, time_resolution:float, step_size:int=900) -> dict:
+        """
+        Since this method has an additional sim_param, step_size, it overrides the `init` method defined in mosaik_api.Simulator.
+
+        ...
+
+        Parameters
+        ----------
+        sid : str
+            ID in string format
+        time_resolution : float
+            Set the self.time_resolution variable
+        step_size : int
+            Set the self.step_size variable
+
+        Returns
+        -------
+        self.meta : dict
+            Returns meta data
+        """
         self.step_size = step_size
         self.sid = sid
         self.time_resolution = time_resolution
@@ -44,7 +63,28 @@ class prosumerSim(mosaik_api.Simulator):
                     self.incr_attr.append(attr)
         return self.meta
 
-    def create(self, num, model, sim_start, strategy, **model_params):
+    def create(self, num:int, model:str, sim_start:str, strategy:str, **model_params) -> list:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        num : int
+            An integer setting the loop range for prosumer
+        model : str
+            A string representing the name of the model
+        sim_start : str
+            A string representing the start date of the simulation
+        strategy : str
+            Set the strategy as [s1, s2, s3].
+
+        Returns
+        -------
+        self._entities : list | dict
+            Returns an empty list if no model is created. Otherwise returns a list of dictionaries of model instances with their EIDs as keys.
+        """
         self.start = pd.to_datetime(sim_start)
         self._entities = []
 
@@ -64,7 +104,26 @@ class prosumerSim(mosaik_api.Simulator):
 
         return self._entities
 
-    def step(self, time, inputs, max_advance):
+    def step(self, time:int, inputs:dict, max_advance:int) -> int:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        time : int
+            An integer representing time in seconds.
+        inputs : dict
+            A dictionary containing parameters
+        max_advance : int
+            Unused in this method
+
+        Returns
+        -------
+        self.time + self.step_size : int
+            A sum of time + step size returned as an integer
+        """
         current_time = (self.start +
                         pd.Timedelta(time * self.time_resolution,
                                      unit='seconds'))  # timedelta represents a duration of time
@@ -132,7 +191,22 @@ class prosumerSim(mosaik_api.Simulator):
         self._cache = _cache
         return self.time + self.step_size
 
-    def get_data(self, outputs):            # to be implemented
+    def get_data(self, outputs:dict) -> dict:            # to be implemented
+        """
+        Extracts data from outputs and cached data into a combined dictionary object
+
+        ...
+
+        Parameters
+        ----------
+        outputs : dict
+            Dictionary with specific output actions i.e. buy, sell (?)
+
+        Returns
+        -------
+        data : dict
+            Dictionary with attached values of specific actions
+        """
         data = {}
         for eid, attrs in outputs.items():
             # model = self.entities[eid]
