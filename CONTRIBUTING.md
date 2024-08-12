@@ -36,7 +36,7 @@ The sections below outlines the steps to make your contribution to the software 
 
 If you are a part of the Illuminator team and have write access to the Illuminator GitHub repository, skip to the next subsection [Develop your contribution](CONTRIBUTING.md#develop-your-contribution). If you are a first-time contributor, follow the below steps:
 
-1. Go to the [Illuminator GitHub repository](url-repository) and click on 'Fork'. This will create a copy of the aeolis-python repository in your GitHub account. 
+1. Go to the [Illuminator GitHub repository](url-repository) and click on 'Fork'. This will create a copy of the Illuminator repository in your GitHub account. 
             
 1. Clone the project to your local computer:
         
