@@ -89,11 +89,23 @@ class Collector(mosaik_api.Simulator):
                 wandb.log({key: value[0],
                            "custom_step":time/900})
 
-        if self.results_show['write2csv']==True:
+        if self.results_show['write2csv'] == True:
             if time == 0:
+                # Overwrite the CSV file at the first time step
                 df.to_csv(self.output_file, mode='w', header=True)
             else:
-                df.to_csv(self.output_file, mode='a', header=False)
+                if os.path.exists(self.output_file):
+                    # Read existing CSV
+                    existing_df = pd.read_csv(self.output_file, index_col='date', parse_dates=True)
+
+                    # Align the columns
+                    combined_df = existing_df.append(df)
+
+                else:
+                    combined_df = df
+
+                # Write the merged data to CSV
+                combined_df.to_csv(self.output_file, mode='w', header=True)
 
 
         if self.results_show['database']==True:
