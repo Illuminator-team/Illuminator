@@ -7,16 +7,17 @@ A contribution can be associated with the following cases:
 - You have a question.
 - You think you may have found a bug, including unexpected behavior.
 - You want to make changes to the code base to fix a bug, make improvements, add a new functionality, or to update the documentation.
+- You want to improve the Illuminator's documentation
 
 The sections below outlines the steps to make your contribution to the software for each of the aforementioned cases.
 
-## You have a question
+## A.  You have a question
 
 1. Use the search functionality [here](link-to-issues) to see if someone already filed the same issue.
 1. If your issue search did not yield any relevant results, open a new issue.
 1. Apply the "Question" label. Additionally, apply other labels when relevant.
 
-## You think you may have found a bug
+## B. You think you may have found a bug
 
 1. Use the search functionality [here](link-to-issues) to see if someone already filed the same issue.
 1. If your issue search did not yield any relevant results, open a new issue and provide enough information to understand the cause and the context of the problem. Depending on the issue, you may also want to include:
@@ -24,7 +25,8 @@ The sections below outlines the steps to make your contribution to the software 
     - some identifying information (name and version number) for dependencies you're using
     - information about the operating system
 
-## You want to make changes to the code base
+## C. You want to make changes to the code base
+
 
 ### Announce your plan
 
@@ -85,12 +87,28 @@ If you are a part of the Illuminator team and have write access to the Illuminat
 
 6. Write tests for any new lines of code you add. 
 
-7. Include in-code documentation in form of comments and docstrings. Update the user documentation if relevant. Use the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard) documentation style.
+7. Include in-code documentation in form of comments and docstrings. Use the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard) documentation style.
+
+8. Update the user/developer documentation if relevant. Undocumented contributions might not be merged.
+
 
 ### Submitting your contribution
 
 1. Push your feature branch to (your fork of) the Illuminator GitHub repository.
 
 1. Create a pull request, for an example, following the instructions [here](https://help.github.com/articles/creating-a-pull-request/).
+
+
+## D. You want to improve the Illuminator's documentation
+
+We use Sphinx and Markdown to write documentation for the Illuminator. The root of the documentation is the `docs/` directory.
+
+1. [Announce your plan.](#announce-your-plan)
+1. Follow the same steps to set up a development environment for [making changes to the code base](#set-up-a-local-development-environment-to-work-on-your-changes).
+1. Install the dependencies in `docs/requirements.txt` using `pip install -r docs/requirments.txt` (Sphnix will also be installed).
+1. Update the documentation using Markdown. If familiar with writing Markdown for MyST consult their [guides and documentation](https://myst-parser.readthedocs.io/en/latest/syntax/optional.html)
+1. Make sure your contributions are built without errors. Go to the `docs` directory in the terminal with `cd docs/`. Then, build the documentation using `make html`.
+1. [Submit your contribution](#submitting-your-contribution) for review.
+
 
 In case you feel you've made a valuable contribution, but you don't know how to write or run tests for it, or how to generate the documentation; don't let this discourage you from making the pull request. We can help you! Just go ahead and submit the pull request. But keep in mind that you might be asked to append additional commits to your pull request.
