@@ -203,6 +203,9 @@ Model parameters, results presentation and real-time simulation are all set in t
 ```
 
 ## Running Simulations
+
+> This was set up as a shortcut to collect data and do plotting
+
 Run the `simulation creator_**.py` to create and run the simulation based on the provided case and scenario. 
 To see the results via the dashboard, you need Internet and sign up in [wandb software](https://wandb.ai/site).
 The `simple_test.py` shows a simple case with the configuration inside of the file.
