@@ -10,6 +10,10 @@ from configuration.buildmodelset import *
 # Incorrect format at position 1172 within the given csv
 # ERROR 2:
 # Could not import module controller
+# !!! Error update
+# When ran with environment given by alex, it runs until it receives the following error:
+# mosaik.exceptions.SimulationError:
+# "Loop ['Controller-0', 'Grid-0'] reached maximal iteration count of 100. Adjust `max_loop_iterations` in the scenario if needed"
 
 
 

@@ -55,11 +55,11 @@ class prosumer_python(ABC):
         Parameters
         ----------
         eid : list
-            Something
+            ???
         forcasted_data : list
-            Something
+            ???
         metrics : list
-            Something
+            ???
         """
         self.eid = eid
         self.time = []
@@ -309,7 +309,7 @@ class prosumer_python(ABC):
         Parameters
         ----------
         ex_excess : list
-            The list of excess energy(?) in chronological order
+            The list of excess energy in chronological order (???)
         metric : str
             A 2 character string. Options:[MC, MB, MO, MR]
 

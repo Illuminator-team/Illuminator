@@ -2,7 +2,70 @@ import pandas as pd
 
 
 class gpcontroller_python:
-    def __init__(self, soc_min, soc_max, h2_soc_min, h2_soc_max, fc_eff):
+    def __init__(self, soc_min:int, soc_max:int, h2_soc_min:int, h2_soc_max:int, fc_eff:float):
+        """
+        Constructor for the gpcontroller_python class
+
+        ...
+
+        Parameters
+        ----------
+        soc_min : int 
+            ???
+        soc_max : int 
+            ???
+        h2_soc_min : int
+            ???
+        h2_soc_max : int
+            ???
+        fc_eff : float
+            ???
+
+        Attributes
+        ----------
+        soc_max_b : int
+            = soc_max
+        soc_min_b : int
+            = soc_min
+        soc_max_h2 : int
+            = h2_soc_max
+        soc_min_h2 : int
+            = h2_soc_min
+        fc_eff : float
+            = fc_eff
+
+        net : int
+            = 0 
+        deficit : int 
+            = 0
+        excess : int
+            = 0
+        flow_b : list
+            = []
+        flow_e : int
+            = 0
+        fc_out : int
+            = 0
+        h_out : int
+            = 0 
+
+        generators : pd.DataFrame()
+            Empty Dataframe
+        demands : pd.DataFrame()
+            Empty Dataframe
+        batteries : pd.DataFrame()
+            Empty Dataframe
+        h2_soc : list
+            Empty list
+        p_gen : list
+            Empty list
+        p_dem : list
+            Empty list
+        soc : list
+            Empty list
+        curtailment : Boolean
+            False bool
+        """
         self.soc_max_b = soc_max
         self.soc_min_b = soc_min
         self.soc_max_h2 = h2_soc_max
@@ -27,7 +90,7 @@ class gpcontroller_python:
         self.curtailment = False
 
 
-    def gpcontrol(self, generators, demands, batteries, curtail):#, fc_gen):
+    def gpcontrol(self, generators:pd.DataFrame, demands:pd.DataFrame, batteries:pd.DataFrame, curtail:int) -> dict:#, fc_gen):
 
         self.generators = generators
         self.demands = demands
