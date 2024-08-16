@@ -99,8 +99,7 @@ class Collector(mosaik_api.Simulator):
                     existing_df = pd.read_csv(self.output_file, index_col='date', parse_dates=True)
 
                     # Align the columns
-                    combined_df = existing_df.append(df)
-
+                    combined_df = pd.concat([existing_df, df])
                 else:
                     combined_df = df
 
