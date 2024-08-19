@@ -1,0 +1,9 @@
+# a scenarion consist of simulators
+# TODO: organize the structure of the file bases on xml configuration files. 
+scenario:
+
+  simulator: 
+    name: "ExampleSim"
+    module: "example_sim"
+    interpreter: "python" # or cmd or other
+    
