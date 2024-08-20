@@ -9,6 +9,9 @@ import Models.H2network.gas_network_mosaik as h2n
 import Models.Heatnetwork.heat_network_mosaik as qn
 from configuration.buildmodelset import *
 
+# ERROR:
+# mosaik.exceptions.ScenarioError: Simulator "HeatPump" could not be started: Could not import module: No module named 'Heat_Pump_Model' --> No module named 'Heat_Pump_Model'
+
 outputfile='Result/MultienergyCase/results.csv'
 sim_config_file="Cases/MultienergyCase/"
 sim_config_ddf=pd.read_xml(sim_config_file+'config.xml')

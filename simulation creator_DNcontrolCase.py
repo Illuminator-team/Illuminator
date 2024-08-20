@@ -1,8 +1,17 @@
 import mosaik
 from mosaik.util import connect_many_to_one
-from Models.EleDisNetworkSim.network import *
+# Doing this causes issues: an example is that it tries to import the incorrect numpy classes
+# from Models.EleDisNetworkSim.network import * 
+from Models.EleDisNetworkSim.network import create_cigre_lv_resident
 import pandas as pd
 from configuration.buildmodelset import *
+
+# ERROR 1:
+# Incorrect format at position 1172 within the given csv
+# ERROR 2:
+# Could not import module controller
+
+
 
 outputfile='Result/DNcontrolCase/results.csv'
 sim_config_file="Cases/DNcontrolCase/"
