@@ -9,7 +9,7 @@ else:
     import Models.Controller.controller_model as controller_model
 #import Battery.model as batterymodel
 import sys
-sys.path.insert(1,'/home/illuminator/Desktop/Final_illuminator')
+sys.path.insert(1, '/home/illuminator/Desktop/Final_illuminator')
 
 try:
     import Models.Battery.battery_model as batterymodel
