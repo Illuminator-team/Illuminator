@@ -28,5 +28,3 @@ connections:
   to: collector
   attrs: [val]  # common attribute names between the two models
 
-
-    
