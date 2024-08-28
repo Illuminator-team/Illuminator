@@ -1,0 +1,32 @@
+scenario: ExampleScenario # in mosaik so called world
+scenario_data: '' #path to the scenario data file ()
+start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+end_time: 10 # duration in seconds 
+simulators: 
+- name: ExampleSim
+  type: hybrid
+  program: python # program that will start the simulator
+  path: 'simulator_mosaik:ExampleSimulator' # path to the simulator's code
+  models: 
+  - name: ExampleModel
+    public: true
+    params: [init_val]
+    attrs: [delta, val]
+    trigger: [delta]
+- name: collector
+  type: event-based
+  program: cmd
+  path: '%(python)s tutorial/collector.py %(addr)s'
+  models: 
+    - name: Monitor
+      public: true
+      any_input: true
+      params: []
+      attrs: [] 
+connections:
+- from: ExampleSim
+  to: collector
+  attrs: [val]  # common attribute names between the two models
+
+
+    
