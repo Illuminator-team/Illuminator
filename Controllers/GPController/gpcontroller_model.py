@@ -24,15 +24,15 @@ class gpcontroller_python:
         Attributes
         ----------
         soc_max_b : int
-            = soc_max
+            Uses parameter soc_max
         soc_min_b : int
-            = soc_min
+            Uses parameter soc_min
         soc_max_h2 : int
-            = h2_soc_max
+            Uses parameter h2_soc_max
         soc_min_h2 : int
-            = h2_soc_min
+            Uses parameter h2_soc_min
         fc_eff : float
-            = fc_eff
+            Uses parameter fc_eff
 
         net : int
             = 0 
@@ -50,21 +50,21 @@ class gpcontroller_python:
             = 0 
 
         generators : pd.DataFrame()
-            Empty Dataframe
+            Empty Dataframe (???)
         demands : pd.DataFrame()
-            Empty Dataframe
+            Empty Dataframe (???)
         batteries : pd.DataFrame()
-            Empty Dataframe
+            Empty Dataframe (???)
         h2_soc : list
-            Empty list
+            Empty list (???)
         p_gen : list
-            Empty list
+            Empty list (???)
         p_dem : list
-            Empty list
+            Empty list (???)
         soc : list
-            Empty list
+            Empty list (???)
         curtailment : Boolean
-            False bool
+            False bool (???)
         """
         self.soc_max_b = soc_max
         self.soc_min_b = soc_min
@@ -91,7 +91,27 @@ class gpcontroller_python:
 
 
     def gpcontrol(self, generators:pd.DataFrame, demands:pd.DataFrame, batteries:pd.DataFrame, curtail:int) -> dict:#, fc_gen):
+        """
+        Constructor for the gpcontroller_python class
 
+        ...
+
+        Parameters
+        ----------
+        generators : pd.DataFrame
+            ???
+        demands : pd.DataFrame
+            ???
+        batteries : pd.DataFrame
+            ???
+        curtail : int
+            ???
+        
+        Returns
+        -------
+        re_params : dict
+            ???
+        """
         self.generators = generators
         self.demands = demands
         self.batteries = batteries

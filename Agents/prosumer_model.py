@@ -12,14 +12,14 @@ def average(self:list, dates:list) -> list:
     Parameters
     ----------
     self : list
-        A 2D list containing the calculated energy values for a specific date
+        A nested list containing the calculated energy values for a specific date
     dates : list
-        A list of dates for a specific date in "YYYY-MM-DD hh:mm:ss" format
+        A nested list of dates for a specific date in "YYYY-MM-DD hh:mm:ss" format
 
     Returns
     -------
     hourly_average : list
-        A 2D list containin the calculated hourly averages for a given date range
+        A nested list containin the calculated hourly averages for a given date range
     """
     from collections import defaultdict
     # Creates a dict with list type as values
@@ -106,15 +106,15 @@ class prosumer_python(ABC):
         Parameters
         ----------
         start : pandas.Timestamp
-            A timestamp representing the starting point in time.
+            The starting point in time
         time : pandas.Timestamp
-            A timestamp representing the current point in time. It is the same as `start` at the beginning
+            A representation of the current point in time
         generators : pandas.DataFrame
-            A dataframe of generated values
+            Generated values used for populating the self.generator variable with forecasted data
         demands : pandas.DataFrame
-            A dataframe of demand values
+            Demand values used for populating the self.demands variable with forecasted data
         storages : pandas.DataFrame
-            ???
+            Storage values used for populating the self.storages variable with forecasted data
         em_accepted_bids : list
             ???
         p2p_transactions : list
@@ -179,7 +179,7 @@ class prosumer_python(ABC):
         Returns
         -------
         re_params : list
-            A list containin the calculated hourly averages for a given date range
+            Returns the calculated hourly averages for a given date range
         """
         index = self.time.index(self.current_time)
         re_params = {'rt_buy': self.ex_deficit[index], 'rt_sell': self.ex_excess[index]}
@@ -192,14 +192,14 @@ class prosumer_python(ABC):
         Parameters
         ----------
         time : pandas.Timestamp
-            A timestamp representing a point in time.
+            A representation of a point in time
         p2p_transactions : list
             ???
 
         Returns
         -------
         re_params : dictionary
-            A dictionary representing a specific step of trading
+            The representation of a specific step of trading
 
         """
         re_params = {}
@@ -251,7 +251,7 @@ class prosumer_python(ABC):
         Parameters
         ----------
         time : pandas.Timestamp
-            ???
+            A representation of a point in time
         em_accepted_bids : list
             ???
 
@@ -311,7 +311,7 @@ class prosumer_python(ABC):
         ex_excess : list
             The list of excess energy in chronological order (???)
         metric : str
-            A 2 character string. Options:[MC, MB, MO, MR]
+            A two character string. Options:[MC, MB, MO, MR]
 
         Returns
         -------
@@ -354,14 +354,14 @@ class prosumer_python(ABC):
         Parameters
         ----------
         ex_deficit : list
-            The list of energy(?) deficits in chronological order
+            The energy deficits in chronological order
         metric : str
-            A 2 character string. Options:[MC, MB, MO, MR]
+            A two character string. Options:[MC, MB, MO, MR]
 
         Returns
         -------
         bids : list
-            List object representing demand
+            The representation of demand
 
         """
         bids = []

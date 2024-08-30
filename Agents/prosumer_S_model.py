@@ -11,24 +11,24 @@ class prosumer_S1(prosumer_python):
         Parameters
         ----------
         start : pandas.Timestamp
-            Description
+            The starting point in time.
         time : pandas.Timestamp
-            Description
+            A representation of the current point in time.
         generators : pandas.DataFrame
-            Description
+            Generated values used for populating the self.generator variable with forecasted data
         demands : pandas.DataFrame
-            Description
+            Demand values used for populating the self.demands variable with forecasted data
         storages : pandas.DataFrame
-            Description
+            Storage values used for populating the self.storages variable with forecasted data
         em_accepted_bids : list
-            Description
+            ???
         ft_transactions : list
-            Description
+            ???
 
         Returns
         -------
         self.re_params : dict
-            Returns a dictionary used in steps
+            Returns a dictionary used in steps (???)
             
         """
         self.initialize(start, time, generators, demands, storages, em_accepted_bids, ft_transactions)
@@ -63,19 +63,19 @@ class prosumer_S2(prosumer_python):
         Parameters
         ----------
         start : pandas.Timestamp
-            Description
+            The starting point in time.
         time : pandas.Timestamp
-            Description
+            A representation of the current point in time.
         generators : pandas.DataFrame
-            Description
+            Generated values used for populating the self.generator variable with forecasted data
         demands : pandas.DataFrame
-            Description
+            Demand values used for populating the self.demands variable with forecasted data
         storages : pandas.DataFrame
-            Description
+            Storage values used for populating the self.storages variable with forecasted data
         em_accepted_bids : list
-            Description
+            ???
         ft_transactions : list
-            Description
+            ???
 
         Returns
         -------
@@ -108,6 +108,6 @@ class prosumer_S2(prosumer_python):
 
 class prosumer_S3(prosumer_python):
     """
-    Inherits Prosumer_pthon, does nothing else different
+    Inherits Prosumer_python, does nothing else different
     """
     pass

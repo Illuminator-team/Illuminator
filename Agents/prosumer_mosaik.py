@@ -34,18 +34,18 @@ class prosumerSim(mosaik_api.Simulator):
 
     def init(self, sid:str, time_resolution:float, step_size:int=900) -> dict:
         """
-        Since this method has an additional sim_param, step_size, it overrides the `init` method defined in mosaik_api.Simulator.
+        Because this method has an additional sim_param, step_size, it overrides the `init` method defined in mosaik_api.Simulator.
 
         ...
 
         Parameters
         ----------
         sid : str
-            ID in string format
+            The ID in string format
         time_resolution : float
-            Set the self.time_resolution variable
+            Sets the self.time_resolution variable
         step_size : int
-            Set the self.step_size variable
+            Sets the self.step_size variable
 
         Returns
         -------
@@ -72,13 +72,13 @@ class prosumerSim(mosaik_api.Simulator):
         Parameters
         ----------
         num : int
-            An integer setting the loop range for prosumer
+            Sets the loop range for prosumer
         model : str
-            A string representing the name of the model
+            The name of the model
         sim_start : str
-            A string representing the start date of the simulation
+            The start date of the simulation
         strategy : str
-            Set the strategy as [s1, s2, s3].
+            A two character string that sets the strategy as one of the following: [s1, s2, s3].
 
         Returns
         -------
@@ -113,15 +113,15 @@ class prosumerSim(mosaik_api.Simulator):
         Parameters
         ----------
         time : int
-            An integer representing time in seconds.
+            Time in seconds
         inputs : dict
-            A dictionary containing parameters
+            A dictionary containing parameters (???)
         max_advance : int
-            Unused in this method
+            INVALID: Unused in this method
 
         Returns
         -------
-        self.time + self.step_size : int
+        step : int
             A sum of time + step size returned as an integer
         """
         current_time = (self.start +
@@ -200,12 +200,12 @@ class prosumerSim(mosaik_api.Simulator):
         Parameters
         ----------
         outputs : dict
-            Dictionary with specific output actions i.e. buy, sell (?)
+            Contains specific output actions such as buy or sell (???)
 
         Returns
         -------
         data : dict
-            Dictionary with attached values of specific actions
+            The values related to the previously given actions
         """
         data = {}
         for eid, attrs in outputs.items():
