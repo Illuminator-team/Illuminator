@@ -1,45 +1,49 @@
-# User Guide document 
+# User's Guide
+
 ## Configuration
 There are three methods to configurate the cases.
 
 
-1. Through provide `config.xml` and `connection.xml` files in the `Cases` folder. We provide four example in `Cases` folder: 
+### 1. Using Existing Cases
+
+You can use the  provided `config.xml` and `connection.xml` files in the `Cases/` directory. 
+We provide four example in `Cases` folder: 
   * Residential Case study(`ResidentialCase`) 
   * Multienergy system case study(`MultienergyCase`) 
-  * Electricity market game case study (`GameCase`), and 
+  * Electricity market game case study (`GameCase`) For more information about the electricity market case study, you can reference the [Msc thesis](https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education), and 
   * Distribution voltage control case study (`DNcontrolCase`) .
-For more information about the electricity market case study, you can reference the [Msc thesis](https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education)
-   
+
 
 The `config.xml` file is used to define the models in the case and where to 
-run the model. Here is an example of the information in the config.xml file. 
-It means we would like build only Wind and PV models in our simulation study. 
-The wind model is running and import from python file, and the PV model is running in another Raspi which ip address is ‘192.168.0.1’, and the master get the pv model information from the port ’5123’.
+run the model. 
+For example in the `config.xml` below, we built a simulation with only Wind and PV models.
+In the configuration below, the wind model runs (localy? in the master?) and the PV model runs in a **client** with IP '192.168.0.1', and the **master** get the PV model's information from the port the **client**'s port `5123`.
 
-  ```xml
-    #'Wind' ,'python','Models.Wind.wind_mosaik:WindSim'
-    #'PV','connect', '192.168.0.1:5123'
-    
-    <?xml version='1.0' encoding='utf-8'?>
-    <data>
-      <row>
-        <index>0</index>
-        <model>Wind</model>
-        <method>python</method>
-        <location>Models.Wind.wind_mosaik:WindSim</location>
-      </row>
-      <row>
-        <index>1</index>
-        <model>PV</model>
-        <method>connect</method>
-        <location>192.168.0.1:5123</location>
-      </row>
-  ```
-   The `connection.xml` file is to set how the message transferred from one model to others. 
-   Here is an example of the information in the connection file.  
-   The model ctrl send the information ‘flow2e’ to electrolyser to control its hydrogen generating speed. 
-   The electrolyser send the ‘h2_gen’ information to model h2storage ‘h2_in’ to control the hydrogen storing speed.
-   ```
+```xml
+  #'Wind' ,'python','Models.Wind.wind_mosaik:WindSim'
+  #'PV','connect', '192.168.0.1:5123'
+  
+  <?xml version='1.0' encoding='utf-8'?>
+  <data>
+    <row>
+      <index>0</index>
+      <model>Wind</model>
+      <method>python</method>
+      <location>Models.Wind.wind_mosaik:WindSim</location>
+    </row>
+    <row>
+      <index>1</index>
+      <model>PV</model>
+      <method>connect</method>
+      <location>192.168.0.1:5123</location>
+    </row>
+```
+
+The `connection.xml` file sets how the message are transfered from one model to others. 
+For example in the snippet below, the `ctrl` model sends information about 'flow2e' to `electrolyser` to control its hydrogen generating speed. 
+The `electrolyser` send the 'h2_gen' information to model `h2storage` ‘h2_in’ to control the hydrogen storing speed.
+
+```xml
     #['ctrl', 'electrolyser', 'flow2e'],
     #['electrolyser', 'h2storage', 'h2_gen', 'h2_in'],
     
@@ -56,24 +60,30 @@ The wind model is running and import from python file, and the PV model is runni
         <receive>h2storage</receive>
         <message>h2_gen</message>
         <more>h2_in</more>
-   ```
+```
 
-2. The users can build case through run the python scripts `build_configuration_xml` in the folder `configuration`. Through running the scripts, the `config.xml` and `connection.xml`
-file will be automatically built. If you want to change the configuration, the user need to change the parameter 'sim_config' and 'connection'.
+### 2. Using the 'build configuration' Script
 
-3. The Illuminator also provide visualized method to do the configuration. The user can use smarter board, touch screen or mouse to configurate 
-the case. Firstly, run `drawpptx.py`, the user can draw their configuration by hard draw and save as 'example.pptx' file, such as below.
+User can configure a case using the python scripts `build_configuration_xml` in the folder `configuration/` directory. By executing the script, the `config.xml` and `connection.xml`
+file will be automatically built. Use  change the configuration by changing the parameters `sim_config` and `connection`.
+
+
+### 3. Drawing Configurations
+
+The Illuminator also provide visualized method to create configuration. The user can use a smart board, touch screen or mouse to configurate 
+the case. To to this, firstly, run `drawpptx.py`. 
+Secondly, draw a configuration by hand and save as a PowerPoint file with a `.pptx` file extension. For example:
+
 <div align="center">
-	<img align="center" src="docs/Figure/config.png" width="300">
+	<img align="center" src="../_static/img/config.png" width="400">
 </div>
 
-Then run the script `readppt_connectionxml.py` to build the configuration.
+Thirdly, run the script `readppt_connectionxml.py` to build the configuration files.
 
-## Define models
-The model parameters, results presentation and real-time simulation are all set in the file `buildmodelse.py`.
+## Defining Models
+Model parameters, results presentation and real-time simulation are all set in the file `buildmodelse.py`.
 
 ```python
-
     Battery_initialset = {'initial_soc': 20}
     Battery_set = {'max_p': 500, 'min_p': -500, 'max_energy': 500,
             'charge_efficiency': 0.9, 'discharge_efficiency': 0.9,
@@ -190,46 +200,56 @@ The model parameters, results presentation and real-time simulation are all set 
                'prosumer_s1_4': {'MC': [0.10,0.37], 'MB': [0.44], 'MO': [0.01, 0.20], 'MR': [0.20]},
                'prosumer_s1_5': {'MC': [0.12], 'MB': [0.28], 'MO': [0.17], 'MR': [0.19]},
     }
-
 ```
-## Simulation
+
+## Running Simulations
+
+> This was set up as a shortcut to collect data and do plotting
+
 Run the `simulation creator_**.py` to create and run the simulation based on the provided case and scenario. 
-If the user want to see the results shown in the dashboard, you need internet and sign up in [wandb software](https://wandb.ai/site).
-There is also a simple example `simple_test.py` that show a simple case with the configuration inside of the file.
+To see the results via the dashboard, you need Internet and sign up in [wandb software](https://wandb.ai/site).
+The `simple_test.py` shows a simple case with the configuration inside of the file.
 
 
 ## Demos
-We build four case study as demos to show how to use Illuminator to demonstrate this system at
-a general user level and verify the Illuminator’s performance. 
-1. The first demo shows the residential energy community system which include Households,
+Four case studies show how to use Illuminator, and to verify the Illuminator’s performance. 
+
+
+### 1. Residencial Case 
+
+The first demo shows a residential energy community system which include Households,
 PV panels, Wind generators, Battery and Hydrogen system
-to achieve electric power self-sufficiency. The controller’s
-algorithm in the case study runs in the Master RasPi `Controllers\ResidentialController` , and
-the rest simulators are separately deployed in different Client
-RasPis.The data flow between the simulators is also shown in
-the figure. Based on the inputs, including the generated power
+to achieve electric power self-sufficiency. 
+The controller’s algorithm in this case runs in the **master** RasPi `Controllers/ResidentialController`, and
+the rest **client** simulators are separately deployed in different 
+RasPis. The data flow between the simulators (clients) is also shown in
+the figure below. Based on the inputs, including the generated power
 from PV and Wind, the consuming power of households, and
 the state of charge (Soc) of the Battery and Hydrogen, the
 controller decides the power from the Battery and Fuel cell
-and the power to the Electrolyser. In the case study, we use
+and the power to the Electrolyser. 
+
+In the case study, we use
 simple logic to achieve self-sufficiency. If Battery has enough
 capacity for charging or discharging to achieve power balance,
 use the Battery first. If Battery doesn’t have enough capacity
 to achieve power balance, then use Electrolyser or Fuel cell
-to achieve power balance. All the input data are in file `Scenarios` and all the output data are in file `Result\ResidentialCase`.
+to achieve power balance. All the input data are in the `Scenarios/` directory and all the output data are in file `Result/ResidentialCase/`.
 
 <div align="center">
-	<img align="center" src="docs/Figure/case study.jpg" width="300">
+	<img align="center" src="../_static/img/case study.jpg" width="300">
 </div>
 
-2. The second demo shows the Multi-carriers energy system, which including teh electricity
+### 2. Multi-carriers Case 
+The second demo shows the Multi-carriers energy system, which incorporate the electricity
 network, hydrogen network and heat network. All the energy assets are shown in the below figure. 
 
 <div align="center">
-	<img align="center" src="docs/Figure/Multienergy.jpg" width="400">
+	<img align="center" src="../_static/img/Multienergy.jpg" width="400">
 </div>
 
-3. The third demon shows the electricity trade game and more details please refer to the Msc thesis https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education
+### 3. Electricity Trade Game 
+The third demo shows the electricity trade game and more details please refer to this [Msc thesis](https://repository.tudelft.nl/islandora/object/uuid:58029e39-5541-4a17-90cd-cc487383beec?collection=education)
 
-4. The fourth demon shows the voltage control in the CIGRE LV voltage network. The network model is in the folder 
-`Models\EleDisNetworkSim`, the control method is in the `Controllers\NetVoltageControllerSim`
+### 4. CIGRE LV Case
+The fourth demo shows the voltage control in the CIGRE LV voltage network. The network model is in the `Models/EleDisNetworkSim/` directory, and the control method is in `Controllers/NetVoltageControllerSim/`

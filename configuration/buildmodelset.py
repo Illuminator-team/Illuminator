@@ -1,4 +1,9 @@
-
+# [Manuel] FROM Balassis thesis:
+# The buildmodelset.py file holds the parameters for each simulator. It is imported into the Main file and used to
+# instantiate the models with the appropriate setup. This file allows for the specification of various parameters related
+# to physical energy assets, like the initial SoC of batteries or the rated power of wind turbines. Additionally, economic
+# parameters, such as the marginal cost or benefit of each asset in agents’ portfolios, can also be defined among the
+# available parameters.
 
 resolution=15
 Battery_initialset = {'initial_soc': 20}
