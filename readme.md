@@ -88,7 +88,7 @@ to make sure the leader can access the *client* model.
    chmod -R a+X *dir*
    ```
 
-More detialed instructions are given in the [user guide document](user-guide.md) and the [model build up document](Models.md).
+More detialed instructions are given in the [user guide document](docs/user/user-guide.md) and the [model build up document](Models.md).
 
 ## PC Setup
 
