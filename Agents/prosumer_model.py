@@ -3,12 +3,34 @@ from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
 
 
-def average(self, dates):
+def average(self:list, dates:list) -> list:
+    """
+    Calculate the average of the hourly curve for the day
+
+    ...
+
+    Parameters
+    ----------
+    self : list
+        A nested list containing the calculated energy values for a specific date
+    dates : list
+        A nested list of dates for a specific date in "YYYY-MM-DD hh:mm:ss" format
+
+    Returns
+    -------
+    hourly_average : list
+        A nested list containin the calculated hourly averages for a given date range
+    """
     from collections import defaultdict
+    # Creates a dict with list type as values
+    # Self is not really "self". It contains different values to the class below
+    # In reality it is ex_p_gen or ex_p_dem
     hourly_curve = defaultdict(list)
     hourly_average = []
 
+    # Loops over all items in self
     for row in self:
+        # Adds values for 
         for i in range(len(row)):
             hour = dates[i][11:13]
             hourly_curve[hour].append(row[i])
@@ -25,6 +47,20 @@ def average(self, dates):
 
 class prosumer_python(ABC):
     def __init__(self, eid, forecasted_data, metrics):
+        """
+        prosumer_python class constructor
+
+        ...
+
+        Parameters
+        ----------
+        eid : list
+            ???
+        forcasted_data : list
+            ???
+        metrics : list
+            ???
+        """
         self.eid = eid
         self.time = []
         self.current_time = None
@@ -61,7 +97,29 @@ class prosumer_python(ABC):
     def prosumer(self, start, time, generators, demands, storages, em_accepted_bids, p2p_transactions):
         pass
 
-    def initialize(self, start, time, generators, demands, storages, em_accepted_bids, p2p_transactions):
+    def initialize(self, start:pd.Timestamp, time:pd.Timestamp, generators:pd.DataFrame, demands:pd.DataFrame, storages:pd.DataFrame, em_accepted_bids:list, p2p_transactions:list) -> None:
+        """
+        An initilization function used for calculation and variable assignment
+
+        ...
+
+        Parameters
+        ----------
+        start : pandas.Timestamp
+            The starting point in time
+        time : pandas.Timestamp
+            A representation of the current point in time
+        generators : pandas.DataFrame
+            Generated values used for populating the self.generator variable with forecasted data
+        demands : pandas.DataFrame
+            Demand values used for populating the self.demands variable with forecasted data
+        storages : pandas.DataFrame
+            Storage values used for populating the self.storages variable with forecasted data
+        em_accepted_bids : list
+            ???
+        p2p_transactions : list
+            ???
+        """
         self.em_accepted_bids = em_accepted_bids
         self.p2p_transactions = p2p_transactions
         # Initialize forecasted data and update real time info
@@ -112,12 +170,38 @@ class prosumer_python(ABC):
                 self.initialized = True
         return
 
-    def play_realtime_price(self):
+    def play_realtime_price(self) -> list:
+        """
+        Gets the real-time price based on the current time
+        
+        ...
+
+        Returns
+        -------
+        re_params : list
+            Returns the calculated hourly averages for a given date range
+        """
         index = self.time.index(self.current_time)
         re_params = {'rt_buy': self.ex_deficit[index], 'rt_sell': self.ex_excess[index]}
         return re_params
 
-    def play_flexibility_trading(self, time, p2p_transactions):
+    def play_flexibility_trading(self, time:pd.Timestamp, p2p_transactions:list) -> dict:
+        """
+        A method to simulate flexibility trading (?)
+
+        Parameters
+        ----------
+        time : pandas.Timestamp
+            A representation of a point in time
+        p2p_transactions : list
+            ???
+
+        Returns
+        -------
+        re_params : dictionary
+            The representation of a specific step of trading
+
+        """
         re_params = {}
         if self.steps_p2p == [True, False, False]:  # Step 1: make bids
             self.generators['MO'] = self.MO
@@ -160,7 +244,23 @@ class prosumer_python(ABC):
 
         return re_params
 
-    def play_electricity_market(self, time, em_accepted_bids):
+    def play_electricity_market(self, time:pd.Timestamp, em_accepted_bids:list) -> dict:
+        """
+        A method to simulate the electricity market?
+
+        Parameters
+        ----------
+        time : pandas.Timestamp
+            A representation of a point in time
+        em_accepted_bids : list
+            ???
+
+        Returns
+        -------
+        re_params : dictionary
+            A dictionary representing a specific step of trading based on supply and demand
+
+        """
         re_params = {}
         if self.steps_em == [True, False, False]:  # Step 1: make bids
             self.generators['MC'] = self.MC
@@ -202,7 +302,23 @@ class prosumer_python(ABC):
                         re_params = {'p2em': -bid[1]}
         return re_params
 
-    def supply(self, ex_excess, metric):
+    def supply(self, ex_excess:list, metric:str) -> list:
+        """
+        Provides a list of supplies
+
+        Parameters
+        ----------
+        ex_excess : list
+            The list of excess energy in chronological order (???)
+        metric : str
+            A two character string. Options:[MC, MB, MO, MR]
+
+        Returns
+        -------
+        bids : list
+            List object representing supply
+
+        """
         bids = []
         for excess in ex_excess:
             if excess > 0:
@@ -231,7 +347,23 @@ class prosumer_python(ABC):
             bids = None
         return bids
 
-    def demand(self, ex_deficit, metric):
+    def demand(self, ex_deficit:list, metric:str) -> list:
+        """
+        Provides a list of demand
+
+        Parameters
+        ----------
+        ex_deficit : list
+            The energy deficits in chronological order
+        metric : str
+            A two character string. Options:[MC, MB, MO, MR]
+
+        Returns
+        -------
+        bids : list
+            The representation of demand
+
+        """
         bids = []
         for time in self.time:
             hour = self.time.index(time)

@@ -1,8 +1,36 @@
 from Agents.prosumer_model import prosumer_python
-
+import pandas as pd
 
 class prosumer_S1(prosumer_python):
-    def prosumer(self, start, time, generators, demands, storages, em_accepted_bids, ft_transactions):
+    def prosumer(self, start:pd.Timestamp, time:pd.Timestamp, generators:pd.DataFrame, demands:pd.DataFrame, storages:pd.DataFrame, em_accepted_bids:list, ft_transactions:list) -> dict:
+        """
+        Initializes all given parameters and returns 
+
+        ...
+
+        Parameters
+        ----------
+        start : pandas.Timestamp
+            The starting point in time.
+        time : pandas.Timestamp
+            A representation of the current point in time.
+        generators : pandas.DataFrame
+            Generated values used for populating the self.generator variable with forecasted data
+        demands : pandas.DataFrame
+            Demand values used for populating the self.demands variable with forecasted data
+        storages : pandas.DataFrame
+            Storage values used for populating the self.storages variable with forecasted data
+        em_accepted_bids : list
+            ???
+        ft_transactions : list
+            ???
+
+        Returns
+        -------
+        self.re_params : dict
+            Returns a dictionary used in steps (???)
+            
+        """
         self.initialize(start, time, generators, demands, storages, em_accepted_bids, ft_transactions)
 
         self.re_params = {}
@@ -27,6 +55,35 @@ class prosumer_S1(prosumer_python):
 
 class prosumer_S2(prosumer_python):
     def prosumer(self, start, time, generators, demands, storages, em_accepted_bids, ft_transactions):
+        """
+        Initializes all given parameters and returns 
+
+        ...
+
+        Parameters
+        ----------
+        start : pandas.Timestamp
+            The starting point in time.
+        time : pandas.Timestamp
+            A representation of the current point in time.
+        generators : pandas.DataFrame
+            Generated values used for populating the self.generator variable with forecasted data
+        demands : pandas.DataFrame
+            Demand values used for populating the self.demands variable with forecasted data
+        storages : pandas.DataFrame
+            Storage values used for populating the self.storages variable with forecasted data
+        em_accepted_bids : list
+            ???
+        ft_transactions : list
+            ???
+
+        Returns
+        -------
+        self.re_params : dict
+            Returns a dictionary used in steps
+            
+            
+        """
         self.initialize(start, time, generators, demands, storages, em_accepted_bids, ft_transactions)
 
         self.re_params = {}
@@ -50,4 +107,7 @@ class prosumer_S2(prosumer_python):
 
 
 class prosumer_S3(prosumer_python):
+    """
+    Inherits Prosumer_python, does nothing else different
+    """
     pass
