@@ -2,8 +2,38 @@ import numpy as np
 import cvxpy as cp
 import pandapower as pp
 
+# So far nothing here is used by the 3 usual tests. Will have to test when I am home with DNcontrolCase and multienergyCase
 class controller_python:
     def __init__(self, net, room):
+        """
+        Constructor for the controller_python class
+
+        ...
+
+        Parameters
+        ----------
+        net : ???
+            ???
+        room : ???
+            ???
+
+        Attributes
+        ----------
+        self.net : ???
+            ???
+        self.uproom_p : ???
+            ???
+        self.uproom_q : ???
+            ???
+        self.downroom_p : ???
+            ???
+        self.downroom_q : ???
+            ???
+        self.upvollimit : ???
+            ???
+        self.downvollimit : ???
+            ???
+        """
         self.net=net
         self.uproom_p=room['uproom_p']
         self.uproom_q=room['uproom_q']
@@ -12,7 +42,18 @@ class controller_python:
         self.upvollimit=room['upvollimit']
         self.downvollimit=room['downvollimit']
 
-    def sensitivitycal(self):
+    def sensitivitycal(self) -> tuple:
+        """
+        Calculation of sensitivity (?)
+
+        ...
+
+        Returns
+        -------
+        sensitivity : tuple
+            Tuple (senp, senq) (?)
+
+        """
         m1 = np.zeros(((len(self.net.bus)), (len(self.net.bus))))
         m2 = np.zeros(((len(self.net.bus)), (len(self.net.bus))))
         # pp.runpp(net, algorithm='nr')#, algorithm='nr'
@@ -45,7 +86,26 @@ class controller_python:
             senq = m2
         return senp, senq
 
-    def optcentral(self, sen_p, sen_q,voltage):
+    def optcentral(self, sen_p, sen_q, voltage) -> tuple:
+        """
+        Returns the optimal value (?)
+
+        ...
+
+        Parameters
+        ----------
+        sen_p : ???
+            Sensitivity values of p
+        sen_q : ???
+            Sensitivity values of q
+        voltage : ???
+            ???
+
+        Returns
+        -------
+        optimal : tuple
+            Tuple (opt_p, opt_q) (?)
+        """
         # adjust b_p and b_q
         opt_p = np.zeros(len(self.net.bus))
         opt_q = np.zeros(len(self.net.bus))
@@ -82,7 +142,28 @@ class controller_python:
         return opt_p, opt_q
 
 
-    def control(self, p_mw,q_mvar,vm_pu,attr_names):
+    def control(self, p_mw, q_mvar, vm_pu, attr_names) -> dict:
+        """
+        Description 
+
+        ...
+
+        Parameters
+        ----------
+        p_mw : ???
+            ???
+        q_mvar : ???
+            ???
+        vm_pu : ???
+            ???
+        attr_names : ???
+            ???
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
 
         # def control(self,soc , pv_gen, load_dem, wind_gen):
 

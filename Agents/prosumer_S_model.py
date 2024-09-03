@@ -54,7 +54,7 @@ class prosumer_S1(prosumer_python):
 
 
 class prosumer_S2(prosumer_python):
-    def prosumer(self, start, time, generators, demands, storages, em_accepted_bids, ft_transactions):
+    def prosumer(self, start:pd.Timestamp, time:pd.Timestamp, generators:pd.DataFrame, demands:pd.DataFrame, storages:pd.DataFrame, em_accepted_bids:list, ft_transactions:list) -> dict:
         """
         Initializes all given parameters and returns 
 

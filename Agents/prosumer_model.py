@@ -46,7 +46,7 @@ def average(self:list, dates:list) -> list:
 
 
 class prosumer_python(ABC):
-    def __init__(self, eid, forecasted_data, metrics):
+    def __init__(self, eid, forecasted_data, metrics) -> None:
         """
         prosumer_python class constructor
 

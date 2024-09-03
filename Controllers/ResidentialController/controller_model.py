@@ -1,6 +1,46 @@
 
 class controller_python:
-    def __init__(self, soc_min, soc_max, h2_soc_min, h2_soc_max, fc_eff):
+    def __init__(self, soc_min:int, soc_max:int, h2_soc_min:int, h2_soc_max:int, fc_eff:float) -> None:
+        """
+        Default constructor for the controller_python class
+
+        ...
+
+        Parameters
+        ----------
+        soc_min : int 
+            The minimum state of charge (SOC)
+        soc_max : int 
+            The maximum state of charge (SOC)
+        h2_soc_min : int
+            ???
+        h2_soc_max : int
+            ???
+        fc_eff : float
+            ???
+
+        Attributes
+        ----------
+        self.soc_min : int 
+            The minimum state of charge (SOC)
+        self.soc_max : int 
+            The maximum state of charge (SOC)
+        self.soc_max_h2 : ???
+            ???
+        self.soc_min_h2 : ???
+            ???
+        self.fc_eff : ???
+            ???
+        
+        self.dump : int
+            ???
+        self.flow_b : int
+            ???
+        self.flow_e : int
+            ???
+        self.fc_out : int
+            ???
+        """
         self.soc_max_b = soc_max
         self.soc_min_b = soc_min
         self.soc_max_h2 = h2_soc_max
@@ -12,9 +52,31 @@ class controller_python:
         self.flow_e = 0
         self.fc_out = 0
 
-    def control(self, wind_gen, pv_gen, load_dem, soc, h2_soc):#, fc_gen):
+    def control(self, wind_gen:float, pv_gen:float, load_dem:float, soc:int, h2_soc:int) -> dict:#, fc_gen):
     # def control(self,soc , pv_gen, load_dem, wind_gen):
+        """
+        Checks the state of flow based on wind and solar energy generation compared to demand.
 
+        ...
+
+        Parameters
+        ----------
+        wind_gen : float
+            ???
+        pv_gen : float 
+            ???
+        load_dem : float
+            ???
+        soc : int
+            Value representing the state of charge (SOC)
+        h2_soc : int
+            ???
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         self.soc_b = soc
         self.soc_h = h2_soc
         flow = wind_gen + pv_gen - load_dem  # kW
