@@ -49,7 +49,7 @@ class controlSim(mosaik_api.Simulator):
         Attributes
         ----------
         self.meta : dict
-            Contains metadata of the control sim such as type, models, parameters, attributes, etc.. Created via gpcontrolSim's parent class.
+            Contains metadata of the control sim such as type, models, parameters, attributes, etc.. Created via controlSim's parent class.
         self.eid_prefix : string
             The prefix with which each entity's name/eid will start
         self.entities : dict
@@ -87,7 +87,7 @@ class controlSim(mosaik_api.Simulator):
         time_resolution : float
             ???
         step_size : int
-            The size of the time step. The unit is arbitrary, bit it has to be consistent among all simulators used in a simulation.
+            The size of the time step. The unit is arbitrary, but it has to be consistent among all simulators used in a simulation.
 
         Returns
         -------

@@ -4,7 +4,24 @@ from datetime import datetime, timedelta
 import csv
 
 
-def match_trades(supply_offers, demand_requests):
+def match_trades(supply_offers:list, demand_requests:list) -> list:
+    """
+    Matches supply offers and demand requests to create trades. 
+
+    ...
+
+    Parameters
+    ----------
+    supply_offers : list
+        Unsorted list of supply offers containing the name of the supplier, the offers's date and value
+    demand_requests : list
+        Unsorted list of demand requests containing the name of the trader, the request's date and value
+
+    Returns
+    -------
+    trades : list
+        Returns a sorted list of trades based on supply and demand
+    """
     trades = []
 
     # Sort demand requests in descending order based on price
@@ -51,15 +68,56 @@ def match_trades(supply_offers, demand_requests):
 
 
 class p2ptrading_python:
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Constructor for the p2ptrading_python class
+        
+        ...
+
+        Attributes
+        ----------
+        self.supply_offers : list
+            ???
+        self.demand_requests : list
+            ???
+        self.players : pd.DataFrame
+            ???
+        self.cleared : bool
+            ???
+        self.trades : list
+            ???
+        self.transactions : dict
+            ???
+        """
         self.supply_offers = []
         self.demand_requests = []
-        self.players = pd.DataFrame
+        self.players = pd.DataFrame # Seemingly another misunderstanding of how to create a DF object
         self.cleared = False
         self.trades = []
         self.transactions = {}
 
-    def p2ptrading(self, current_time, players):
+    def p2ptrading(self, current_time:pd.Timestamp, players:pd.DataFrame) -> dict:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        current_time : pd.Timestamp
+            The current time during trading
+        players : pd.Dataframe
+            The players, their names, demand bids and supply bids (?)
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        
+        See Also
+        --------
+        This method creates the Ftrading_results.csv, saving data into it.
+        """
         re_params = {'quantity_traded': 0, 'transactions': None}
         if not players.empty and not self.cleared:
             self.players = players

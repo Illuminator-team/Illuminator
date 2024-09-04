@@ -35,11 +35,11 @@ class prosumerSim(mosaik_api.Simulator):
         Attributes
         ----------
         self.meta : dict
-            Contains metadata of the control sim such as type, models, parameters, attributes, etc.. Created via gpcontrolSim's parent class.
+            Contains metadata of the control sim such as type, models, parameters, attributes, etc.. Created via prosumerSim's parent class.
         self.eid_prefix : string
-            ???
+            The prefix with which each entity's name/eid will start
         self.entities : dict
-            ???
+            The stored model entity of the technology model
         self._cache : doct
             Used in the step function to store the values after running the python model of the technology
         """
@@ -61,7 +61,7 @@ class prosumerSim(mosaik_api.Simulator):
         time_resolution : float
             ???
         step_size : int
-            The size of the time step. The unit is arbitrary, bit it has to be consistent among all simulators used in a simulation.
+            The size of the time step. The unit is arbitrary, but it has to be consistent among all simulators used in a simulation.
 
         Returns
         -------

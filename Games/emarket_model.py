@@ -2,8 +2,32 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import csv
+from typing import Union
 
-def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_bid):
+# This method is not used (at least by 3/5 tests)
+def find_accepted_bids(sorted_supply_bids:list, sorted_demand_bids:list, num_s_bid:int, num_d_bid:int) -> tuple:
+    """
+    Function for finding and returning  the lists of accepted supply and demand bids
+
+    ...
+
+    Parameters
+    ----------
+    sorted_supply_bids : list
+        Pre-sorted supply bids (?)
+    sorted_demand_bids : list
+        Pre-sorted demand bids (?) 
+    num_s_bids : int
+        ???
+    num_d_bids : int
+        ???
+    
+    Returns
+    -------
+    tuple
+        Contains the list of accepted supply bids and the list of accepted demand bids.
+        Supply bids are in position 0, while demand bids are in position 1
+    """
     accepted_supply_bids = []
     for i in range(num_s_bid+1):
         accepted_supply_bids.append(sorted_supply_bids[i])
@@ -14,7 +38,31 @@ def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_
 
     return accepted_supply_bids, accepted_demand_bids
 
-def clear(date_time, supply_bids, demand_bids):
+def clear(date_time:str, supply_bids:list, demand_bids:list) -> Union[list,tuple]:
+    """
+    Calculates the market information based on supply bids and demand bids
+
+    ...
+
+    Parameters
+    ----------
+    date_time : str
+        The current date and time
+    supply_bids : list
+        Collection of supply bids at a given datetime
+    demand_bids : list
+        Collection of demand bids at a given datetime
+    
+    Returns
+    -------
+    list or tuple
+        Returns the following market details: 
+
+        [market quantity, market price, clearing quantity, 
+        clearing bid, accepted supply bids, accepted demand bids]
+
+        Return type is given as a list if supply and demand bids exist, otherwise returns a tuple with None values.
+    """
     # Filter bids for the chosen date and time
     supply_bids_for_date_time = [bid for bid in supply_bids if bid[0] == date_time]
     demand_bids_for_date_time = [bid for bid in demand_bids if bid[0] == date_time]
@@ -145,12 +193,61 @@ def clear(date_time, supply_bids, demand_bids):
 
 
 class emarket_python:
-    def __init__(self, sim_start, sim_end, initial_supply_bids, initial_demand_bids):
+    def __init__(self, sim_start:str, sim_end:str, initial_supply_bids:list, initial_demand_bids:list) -> None:
+        """
+        Constructor for the emarket_python class
+
+        ...
+
+        Parameters
+        ----------
+        sim_start : str
+            Simulation start in YYYY-MM-DD hh:mm:ss format
+        sim_end : str
+            Simulation end in YYYY-MM-DD hh:mm:ss format
+        initial_supply_bids : list
+            ???
+        initial_demand_bids : list
+            ???
+        
+        Attributes
+        ----------
+        self.sim_start : datetime
+            Simulation start time converted into datetime format from `sim_start` parameter
+        self.sim_end : datetime
+            Simulation end time converted into datetime format from `sim_end` parameter
+        self.supply_bids : ???
+            The current supply bids, initialized using `initial_supply_bids` parameter
+        self.demand_bids : ???
+            The current demand bids, initialized using `initial_demand_bids` parameter
+        self.players : pd.DataFrame
+            ???
+        self.s_bidding : bool
+            ???
+        self.d_bidding : bool
+            ???
+        self.em_prices : list
+            ???
+        self.em_quantities : list
+            ???
+        self.cleared : bool
+            ???
+        self.accepted_bids : dict
+            ???
+        self.clearing_bids : list
+            ???
+        self.clearing_quantities : list
+            ???
+        self.accepted_demand_bids : list
+            ???
+        self.accepted_supply_bids : list
+            ???
+        """
         self.sim_start = datetime.strptime(sim_start, '%Y-%m-%d %H:%M:%S')
         self.sim_end = datetime.strptime(sim_end, '%Y-%m-%d %H:%M:%S')
         self.supply_bids = initial_supply_bids
         self.demand_bids = initial_demand_bids
-        self.players = pd.DataFrame
+        self.players = pd.DataFrame # I am pretty sure the intent here was to create an DF object but instead self.player is the class itself
         self.s_bidding = True
         self.d_bidding = True
         self.em_prices = []
@@ -162,7 +259,29 @@ class emarket_python:
         self.accepted_demand_bids = []
         self.accepted_supply_bids = []
 
-    def emarket(self, current_time, players):
+    def emarket(self, current_time:pd.Timestamp, players:pd.DataFrame) -> dict:
+        """
+        Emarket simulation function
+        
+        ...
+
+        Parameters
+        ----------
+        current_time : pd.Timestamp
+            The current time of the emarket (?)
+        players : pd.Dataframe
+            The players, their names, demand bids and supply bids (?)
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+            Parameters are: market_quantity, market_price, accepted_bids.
+        
+        See Also
+        --------
+        This method also creates the Emarket_results.csv file, saving data into it.
+        """
         re_params = {}
         if not players.empty and not self.cleared:
             self.players = players
