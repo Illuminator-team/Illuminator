@@ -6,17 +6,23 @@ from configuration.buildmodelset import *
 # ERRORS:
 # No errors found, passes
 
-START_DATE = '2012-01-01 00:00:00'
+START_DATE = '2012-01-02 00:00:00'
+# QUESTION: Why do you prefer to use a duration in seconds instead of a datetime object?
 end = 1 * 24 * 3600  # last one interval is not computed
 
+
+# 
 PV_DATA = 'Scenarios/pv_data_Rotterdam_NL-15min.txt'
 
 
+# Configuration for collector, 
 sim_config={
     'Collector':{'python':'Models.collector:Collector'},
     'CSVB':{'python':'Models.mosaik_csv:CSV'},
     'PV':{'python':'Models.PV.pv_mosaik:PvAdapter'},
 }
+
+
 world = mosaik.World(sim_config, debug=True)
 
 collector = world.start('Collector', start_date=START_DATE,
