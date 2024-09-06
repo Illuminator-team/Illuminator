@@ -5,18 +5,18 @@ end_time: 10 # duration in seconds
 simulators: 
 - name: ExampleSim
   type: hybrid
-  program: python # program that will start the simulator
-  path: 'simulator_mosaik:ExampleSimulator' # path to the simulator's code
+  program: python # program that will start the simulator. In XML this parameter is called 'method'
+  path: 'simulator_mosaik:ExampleSimulator' # path to the simulator's code. Path can also be a remote path such as host:port
   models: 
   - name: ExampleModel
     public: true
-    params: [init_val]
-    attrs: [delta, val]
+    params: [init_val] #  This might be relevant for adding models to the illuminator.
+    attrs: [delta, val]  # idem
     trigger: [delta]
 - name: collector
   type: event-based
   program: cmd
-  path: '%(python)s tutorial/collector.py %(addr)s'
+  path: '%(python)s tutorial/collector.py %(addr)s' # this is not a common case.
   models: 
     - name: Monitor
       public: true
@@ -26,5 +26,8 @@ simulators:
 connections:
 - from: ExampleSim
   to: collector
-  attrs: [val]  # common attribute names between the two models
+  attrs: [ExampleSim.val, collector.val]  # common attribute names between the two models. Make sure attributes are declared in pairs. 
+  
+  
+
 
