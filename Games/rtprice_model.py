@@ -4,7 +4,7 @@ class rtprice_python():
 
     def __init__(self) -> None:
         """
-        Constructor for the rtprice_python class
+        Used in Python based Mosaik simulations as an addition to the rtprice_mosaik.rtpriceSim class.
 
         ...
 
@@ -27,7 +27,7 @@ class rtprice_python():
 
         See Also
         --------
-        This constructor also creates the RTprice_result.csv file.
+        Instantiating this class also creates the RTprice_result.csv file.
         """
         self.consumption = 0
         self.buy_price = 0

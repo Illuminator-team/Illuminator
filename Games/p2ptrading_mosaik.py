@@ -26,7 +26,8 @@ incremental_attributes = ['supply_offers', 'demand_requests']
 class p2ptradingSim(mosaik_api.Simulator):
     def __init__(self) -> None:
         """
-        Constructor for the gpcontrollerSim class with the mosaik_api.Simulator class as its Parent class
+        Inherits the Mosaik API Simulator class and is used for python based simulations.
+        For more information properly inheriting the Mosaik API Simulator class please read their given documentation.
 
         ...
 

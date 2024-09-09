@@ -4,7 +4,8 @@ import pandas as pd
 class gpcontroller_python:
     def __init__(self, soc_min:int, soc_max:int, h2_soc_min:int, h2_soc_max:int, fc_eff:float) -> None:
         """
-        Constructor for the gpcontroller_python class
+        Used in Python based Mosaik simulations as an addition to the gpcontroller_mosaik.gpcontrolSim class.
+
 
         ...
 

@@ -6,7 +6,7 @@ import pandapower as pp
 class controller_python:
     def __init__(self, net, room):
         """
-        Constructor for the controller_python class
+        Used in Python based Mosaik simulations as an addition to the mosaik-model.controlSim class.
 
         ...
 

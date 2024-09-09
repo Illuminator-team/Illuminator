@@ -2,7 +2,7 @@
 class controller_python:
     def __init__(self, soc_min:int, soc_max:int, h2_soc_min:int, h2_soc_max:int, fc_eff:float) -> None:
         """
-        Default constructor for the controller_python class
+        Used in Python based Mosaik simulations as an addition to the controller_mosaik.controlSim class.
 
         ...
 

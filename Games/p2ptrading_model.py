@@ -70,7 +70,7 @@ def match_trades(supply_offers:list, demand_requests:list) -> list:
 class p2ptrading_python:
     def __init__(self) -> None:
         """
-        Constructor for the p2ptrading_python class
+        Used in Python based Mosaik simulations as an addition to the p2ptrading_mosaik.p2ptradingSim class.
         
         ...
 

@@ -195,7 +195,7 @@ def clear(date_time:str, supply_bids:list, demand_bids:list) -> Union[list,tuple
 class emarket_python:
     def __init__(self, sim_start:str, sim_end:str, initial_supply_bids:list, initial_demand_bids:list) -> None:
         """
-        Constructor for the emarket_python class
+        Used in Python based Mosaik simulations as an addition to the emarket_mosaik.emarketSim class.
 
         ...
 
