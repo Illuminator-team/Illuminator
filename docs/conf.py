@@ -31,8 +31,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_css_files = [
+    'css/custom.css',
+]
 html_logo = "_static/img/illuminator.jpg"
 html_theme_options = {
     'logo_only': True,
     'display_version': False,
+    'collapse_navigation': True,
 }
+
