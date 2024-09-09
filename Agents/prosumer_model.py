@@ -44,11 +44,12 @@ def average(self:list, dates:list) -> list:
 
     return hourly_average
 
-
+# NOTE: Mosaik avoids using ABC to prevent python version issues.
 class prosumer_python(ABC):
-    def __init__(self, eid, forecasted_data, metrics):
+    def __init__(self, eid:list, forecasted_data:list, metrics:list) -> None:
         """
-        prosumer_python class constructor
+        Used in Python based Mosaik simulations as an addition to the prosumer_mosaik.prosumerSim class.
+
 
         ...
 

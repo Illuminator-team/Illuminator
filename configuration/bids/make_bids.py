@@ -3,7 +3,7 @@ import random
 from datetime import datetime, timedelta
 
 # Function to generate data
-def generate_data(start_date, end_date, bid_range, num_bids_per_day, mc_range):
+def generate_data(start_date, end_date, bid_range, num_bids_per_day, mc_range) -> list:
     """
     Unknown description.
     Not used by any of the 5 test cases
@@ -12,14 +12,20 @@ def generate_data(start_date, end_date, bid_range, num_bids_per_day, mc_range):
 
     Parameters
     ----------
-    supply_offers : list or dictionary (hard to tell)
+    start_date : ???
         ???
-    demand_requests : list or dictionary (hard to tell)
+    end_date : ???
+        ???
+    bid_range : ???
+        ???
+    num_bids_per_day : ???
+        ???
+    mc_range : ???
         ???
 
     Returns
     -------
-    trades : list
+    data : list
         Description
     """
     current_date = start_date
@@ -61,10 +67,6 @@ def write_data_to_file(data, bid_type, file) -> None:
         ???
     file : ???
         ???
-
-    Returns
-    -------
-    None
     """
     file.write(f"{bid_type} =")
     file.write("[")
