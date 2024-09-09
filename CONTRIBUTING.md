@@ -9,7 +9,9 @@ A contribution can be associated with the following cases:
 - You want to make changes to the code base to fix a bug, make improvements, add a new functionality, or to update the documentation.
 - You want to improve the Illuminator's documentation
 
-The sections below outlines the steps to make your contribution to the software for each of the aforementioned cases.
+The figure below summarizes the workflow our team follow for developing the Illuminator, we encourage contributors to adopt it whenever possible. The sections below outlines the steps to make a contribution to the the Illuminator for each of the aforementioned cases.
+
+![illuminator's development workflow](docs/_static/img/illuminator-workflow.png)
 
 ## A.  You have a question
 
