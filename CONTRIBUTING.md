@@ -1,6 +1,7 @@
 # Contributing guidelines
 
 Any kind of contribution to **The Illuminator** is welcome, from a simple comment or a question, to a full fledged [pull request](https://help.github.com/articles/about-pull-requests/). 
+You can reach out the team via [illuminator@tudelft.nl](mailto:illuminator@tudelft.nl) 
 
 A contribution can be associated with the following cases:
 
