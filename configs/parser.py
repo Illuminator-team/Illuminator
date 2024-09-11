@@ -1,9 +1,9 @@
 from ruamel.yaml import YAML
 import sys
 import json
-from modeling_schema import schema
+from modelling_schema import schema
 
-_file = open('./configs/modeling-example.yaml', 'r')
+_file = open('./configs/modelling-example.yaml', 'r')
 
 yaml = YAML(typ='safe')
 data = yaml.load(_file)
