@@ -3,7 +3,7 @@ import sys
 import json
 from modeling_schema import schema
 
-_file = open('./configs/example.yaml', 'r')
+_file = open('./configs/modeling-example.yaml', 'r')
 
 yaml = YAML(typ='safe')
 data = yaml.load(_file)
@@ -13,6 +13,6 @@ data = yaml.load(_file)
 val = schema.validate(data)
 print(val)
 
-json_data = json.dumps(data, indent=4)
+# json_data = json.dumps(data, indent=4)
 # print(json_data)
 
