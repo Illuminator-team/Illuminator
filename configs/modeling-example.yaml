@@ -1,7 +1,8 @@
-scenario: ExampleScenario # in mosaik so called world
-scenario_data: 'path/to/file' #path to the scenario data file ()
-start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
-end_time: 10 # duration in seconds 
+scenario:
+  name: "ExampleScenario" # in mosaik so called world
+  scenario_data: 'path/to/file' #path to the scenario data file ()
+  start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+  end_time: 10 # duration in seconds 
 nodes: # list of node for the grid network t
 - name: Battery1 # name for the node
   model: BatteryModel # name of the model registered in the Illuminator
