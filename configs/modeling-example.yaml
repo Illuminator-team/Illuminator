@@ -6,22 +6,22 @@ scenario:
 nodes: # list of node for the grid network t
 - name: Battery1 # name for the node
   model: BatteryModel # name of the model registered in the Illuminator
-  Inputs: [demand_power_flow=0] 
-  Outputs: [effective_power_flow=0, soc=None]
-  Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
-  States: [initial_soc=0.5]
+  inputs: [demand_power_flow=0] 
+  outputs: [effective_power_flow=0, soc=None]
+  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
+  states: [initial_soc=0.5]
 - name: Battery2
   model: BatteryModel # nodes can reuse the same model
-  Inputs: [demand_power_flow=0] 
-  Outputs: [effective_power_flow=0, soc=None]
-  Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
-  States: [initial_soc=0.5]
+  inputs: [demand_power_flow=0] 
+  outputs: [effective_power_flow=0, soc=None]
+  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
+  states: [initial_soc=0.5]
 - name: PV1
   model: PVModel
-  Inputs: [demand_power_flow=0] 
-  Outputs: [effective_power_flow=0, soc=None]
-  Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
-  States: [initial_soc=0.5]
+  inputs: [demand_power_flow=0] 
+  outputs: [effective_power_flow=0, soc=None]
+  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
+  states: [initial_soc=0.5]
 connections:
 - from: Battery1 # start node
   to: Battery2 # end node
