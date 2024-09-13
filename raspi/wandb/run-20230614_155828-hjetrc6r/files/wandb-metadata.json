@@ -1,0 +1,50 @@
+{
+    "os": "Linux-5.15.32-v8+-aarch64-with-glibc2.31",
+    "python": "3.9.2",
+    "heartbeatAt": "2023-06-14T13:58:32.322928",
+    "startedAt": "2023-06-14T13:58:28.866412",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "-m thonny.plugins.cpython.__main__",
+    "host": "client",
+    "username": "illuminator",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 4,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 1400.0,
+        "min": 600.0,
+        "max": 1400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1400.0,
+            "min": 600.0,
+            "max": 1400.0
+        },
+        {
+            "current": 1400.0,
+            "min": 600.0,
+            "max": 1400.0
+        },
+        {
+            "current": 1400.0,
+            "min": 600.0,
+            "max": 1400.0
+        },
+        {
+            "current": 1400.0,
+            "min": 600.0,
+            "max": 1400.0
+        }
+    ],
+    "disk": {
+        "total": 14.473518371582031,
+        "used": 4.811492919921875
+    },
+    "memory": {
+        "total": 0.8884201049804688
+    }
+}
