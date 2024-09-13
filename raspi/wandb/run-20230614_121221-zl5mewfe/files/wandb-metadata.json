@@ -1,0 +1,36 @@
+{
+    "os": "Windows-10-10.0.19044-SP0",
+    "python": "3.8.16",
+    "heartbeatAt": "2023-06-14T10:12:22.132053",
+    "startedAt": "2023-06-14T10:12:21.582780",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "C:\\Users\\aihuifu\\OneDrive - Delft University of Technology\\illuminator\\Illuminator-code\\simulation creator.py",
+    "codePath": "simulation creator.py",
+    "host": "TUD259917",
+    "username": "aihuifu",
+    "executable": "C:\\Users\\aihuifu\\.conda\\envs\\conda_Illuminator\\python.exe",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 1803.0,
+        "min": 0.0,
+        "max": 2304.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1803.0,
+            "min": 0.0,
+            "max": 2304.0
+        }
+    ],
+    "disk": {
+        "total": 476.32519149780273,
+        "used": 158.65260696411133
+    },
+    "memory": {
+        "total": 15.668075561523438
+    }
+}
