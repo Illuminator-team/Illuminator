@@ -1,0 +1,35 @@
+scenario: ExampleScenario # in mosaik so called world
+scenario_data: '' #path to the scenario data file ()
+start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+end_time: 10 # duration in seconds 
+models: 
+- name: Batteries
+  path: 'Models/example_illuminator_2' # path to the models's code
+  models: 
+  - name: Battery1
+    Inputs: [demand_power_flow=0] # Positive values are charging, negative values are discharging
+    Outputs: [effective_power_flow=0, soc=None]
+    Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
+    States: [initial_soc=0.5]
+  - name: Battery2
+    Inputs: [demand_power_flow=0] # Positive values are charging, negative values are discharging
+    Outputs: [effective_power_flow=0, soc=None]
+    Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
+    States: [initial_soc=0.5]
+- name: PV
+  path: 'Models/example_illuminator_2' # path to the models's code
+  models: 
+  - name: PV1
+    Inputs: [demand_power_flow=0] # Positive values are charging, negative values are discharging
+    Outputs: [effective_power_flow=0, soc=None]
+    Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
+    States: [initial_soc=0.5]
+  - name: PV2
+    Inputs: [demand_power_flow=0] # Positive values are charging, negative values are discharging
+    Outputs: [effective_power_flow=0, soc=None]
+    Parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
+    States: [initial_soc=0.5]
+connections:
+- from: PV2:effective_power_flow # from: model_name:outputs
+  to: Battery2:demand_power_flow # to: model_name:inputs
+  # attrs: [reque]  # common attribute names between the two models
