@@ -3,38 +3,47 @@ scenario:
   scenario_data: 'path/to/file' #path to the scenario data file ()
   start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
   end_time: 10 # duration in seconds 
-nodes: # list of node for the grid network t
-- name: Battery1 # name for the node
-  model: BatteryModel # name of the model registered in the Illuminator
-  inputs: [demand_power_flow=0] 
-  outputs: [effective_power_flow=0, soc=None]
+models: # list of model for the energy network
+- name: Battery1 # name for the model (must be unique)
+  type: BatteryModel # name of the model registered in the Illuminator
+  inputs: [input1=0] 
+  outputs: [output1=0, output2=None]
   parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
   states: [initial_soc=0.5]
 - name: Battery2
-  model: BatteryModel # nodes can reuse the same model
-  inputs: [demand_power_flow=0] 
-  outputs: [effective_power_flow=0, soc=None]
+  type: BatteryModel # models can reuse the same type
+  inputs: [input1=0] 
+  outputs: [output1=0, output2=None]
   parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
   states: [initial_soc=0.5]
 - name: PV1
-  model: PVModel
-  inputs: [demand_power_flow=0] 
-  outputs: [effective_power_flow=0, soc=None]
+  type: PVModel
+  inputs: [input3=0, input4=0] 
+  outputs: [output4=0, output5=None]
   parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
   states: [initial_soc=0.5]
 connections:
-- from: Battery1 # start node
-  to: Battery2 # end node
-  data: !!pairs # a list values to be exchanged between the nodes. 'pairs' is a YAML keyword
-    - val1: val2 # output of 'from node': input of 'to node'
-    - val3: val4 
-    - val5: val6
-- from: PV 
-  to: Battery2 
+- from: Battery1 # start model
+  to: PV1 # end model
+  data: !!pairs # a list values to be exchanged between the model. 'pairs' is a YAML keyword
+    - output1: input3 # output of 'from model': input of 'to model'
+    - output2: input4
+- from: Battery2
+  to: PV1
   data: !!pairs # using the generic 'data' keyword to define what it is exchanged between the nodes
-    - val1: val2
-    - val3: val4
-   
+    - output1: input3
+    - output2: input4
+monitor:  # a list of models, its inputs, output and states to be monitored and logged
+- name: Battery1 # name of the model
+  inputs: [input1] 
+  outputs: [output1, output2] # list of input, output, state names to be monitored
+  states: [initial_soc]
+- name: Battery2
+  # not all inputs, outputs and states are required, but at least one must be defined
+  outputs: [output1, output2]
+- name: PV1
+  outputs: [output4, output5]
+
      
 
     
