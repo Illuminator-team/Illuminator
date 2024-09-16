@@ -11,6 +11,8 @@ from configuration.buildmodelset import *
 
 # ERROR:
 # mosaik.exceptions.ScenarioError: Simulator "HeatPump" could not be started: Could not import module: No module named 'Heat_Pump_Model' --> No module named 'Heat_Pump_Model'
+# !!!UPDATE ON ERROR:
+# With the environment yaml alex gave, this actually runs
 
 outputfile='Result/MultienergyCase/results.csv'
 sim_config_file="Cases/MultienergyCase/"
