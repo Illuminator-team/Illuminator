@@ -1,7 +1,34 @@
 import csv
+import pandas as pd
 class rtprice_python():
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the rtprice_mosaik.rtpriceSim class.
+
+        ...
+
+        Attributes
+        ----------
+        self.consumption : int
+            ???
+        self.buy_price : int
+            ???
+        self.sell_price : int
+            ???
+        self.bought : dict
+            ???
+        self.sold : dict
+            ???
+        self.TC : dict
+            ???
+        self.TR : dict
+            ???
+
+        See Also
+        --------
+        Instantiating this class also creates the RTprice_result.csv file.
+        """
         self.consumption = 0
         self.buy_price = 0
         self.sell_price = 0
@@ -14,7 +41,34 @@ class rtprice_python():
             writer.writerow(['Time', 'Player', 'Sell', 'Buy', 'Total Costs', 'Total Revenue'])
 
 
-    def clear(self, time, buy_price, sell_price, buy, sell):
+    def clear(self, time:pd.Timestamp, buy_price:float, sell_price:float, buy:dict, sell:dict) -> dict:
+        """
+        Methods for acquiring buy and sell prices alongside bookkeeping for overall results.
+
+        ...
+
+        Parameters
+        ----------
+        time : pd.Timestamp
+            The current timestamp
+        buy_price : float
+            The proposed buy price (?)
+        sell_price : float
+            The proposed sell price (?)
+        buy : dict
+            A collection of players/customers and their proposed buy values
+        sell : dict
+            A collection of players/customers and their proposed sell values
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+            Parameters are: buy_price, sell_price.
+        See Also
+        --------
+        In addition to its function, this method also appends data to the RTprice_results.csv file 
+        """
         self.buy_price = buy_price
         self.sell_price = sell_price
         if buy:

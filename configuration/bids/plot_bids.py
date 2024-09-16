@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from initial_bids import *
 import datetime
+from initial_bids import *
+from typing import Union
 
 
-def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_bid):
+def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_bid) -> tuple:
     """
     Unknown description.
     Not used by any of the 5 test cases
@@ -24,7 +25,8 @@ def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_
 
     Returns
     -------
-    None
+    tuple
+        Contains the lists of accepted supply and demand bids
     """
     accepted_supply_bids = []
     for i in range(num_s_bid+1):
@@ -36,7 +38,7 @@ def find_accepted_bids(sorted_supply_bids, sorted_demand_bids, num_s_bid, num_d_
 
     return accepted_supply_bids, accepted_demand_bids
 
-def clear(date_time, supply_bids, demand_bids):
+def clear(date_time, supply_bids, demand_bids) -> Union[None,tuple]:
     """
     Unknown description.
     Not used by any of the 5 test cases
@@ -52,10 +54,11 @@ def clear(date_time, supply_bids, demand_bids):
         ???
     demand_bids : ???
         ???
-
+    
     Returns
     -------
-    None
+    None or tuple
+        ???
     """
     supply_bids_for_date_time = [bid for bid in supply_bids if bid[0] == date_time]
     demand_bids_for_date_time = [bid for bid in demand_bids if bid[0] == date_time]
@@ -239,10 +242,6 @@ def plot_bids(date_time) -> None:
     ----------
     date_time : ???
         ???
-
-    Returns
-    -------
-    None
     """
     # Filter bids for the chosen date and time
 
