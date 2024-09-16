@@ -1,7 +1,7 @@
 from ruamel.yaml import YAML
 import sys
 import json
-from modelling_schema import schema
+from modelling_schema import schema, validate_monitor
 
 _file = open('./configs/modelling-example.yaml', 'r')
 
@@ -11,8 +11,9 @@ data = yaml.load(_file)
 # yaml.dump(data, sys.stdout)
 
 val = schema.validate(data)
+validate_monitor(data)
 print(val)
 
-# json_data = json.dumps(data, indent=4)
-# print(json_data)
+json_data = json.dumps(data, indent=4)
+print(json_data)
 
