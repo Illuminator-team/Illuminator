@@ -76,6 +76,7 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
     def init(self, sid, step_size):
         self.sid = sid # Store the simulation ID
         self.model = model # Store the model name to ensure uniqueness of entity IDs. Sometimes called eid_prefix.
+        self.model_name = "SSM_Battery" # Store the model name
         self.step_size = step_size # Store the step size
         return self.meta
 
@@ -83,12 +84,12 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
         # Create num entities
         entities = []
         for i in range(num):
-            eid = f'{self.model_name}_{i}' # Create unique entity ID
+            eid = f'{self.model_name}_{i+1}' # Create unique entity ID
             new_model = self.model( # Create a new model instance, passing the inputs, outputs, parameters, and states
                 inputs=inputs,
                 outputs=outputs,
                 parameters=parameters,
-                states=states
+                states=states,
                 step_size=self.step_size
             )
             self.entities[eid] = new_model # Store the model instance internally
@@ -99,9 +100,11 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
         self.time = time
         # Process inputs and step the model
         for eid, entity_inputs in inputs.items():
-            current_model = self.entities[eid] # Get the model instance
+            current_model = self.entities[eid]  # Get the model instance
             # Update the inputs
-            for attr, value in entity_inputs.items():
+            for attr, value_dict in entity_inputs.items():
+                # Extract the actual value from the nested dictionary
+                value = list(value_dict.values())[0]  # Extract the value for the current time step
                 current_model.inputs[attr] = value
                 current_model.time = time
 

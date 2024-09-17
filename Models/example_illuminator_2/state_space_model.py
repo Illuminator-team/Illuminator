@@ -19,13 +19,13 @@ class Model:
         # Calculate the effective energy flow
         if requested_energy_flow >= 0:
             # Charging the battery
-            effective_energy_flow = min(requested_energy_flow, max(energy_in_battery - requested_energy_flow, 0))
+            effective_energy_flow = min(requested_energy_flow, capacity - energy_in_battery)
         else:
             # Discharging the battery
-            effective_energy_flow = max(requested_power_flow, -energy_in_battery)
+            effective_energy_flow = max(requested_energy_flow, -energy_in_battery)
 
         # Update the state of charge
-        soc += (energy_in_battery + effective_energy_flow) / capacity
+        soc += effective_energy_flow / capacity
 
         effective_power_flow = effective_energy_flow * 60 / self.step_size # Convert energy back to power in KW
 
