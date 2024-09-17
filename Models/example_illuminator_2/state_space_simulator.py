@@ -1,10 +1,10 @@
 import mosaik_api_v3
 try:
-    from models.state_space_model import Model as model # Modify model.state_space_model to  model.<model_name>_model
-except ImportError:
+    from Models.example_illuminator_2.state_space_model import Model as model # Modify model.state_space_model to  model.<model_name>_model
+except ModuleNotFoundError:
     from state_space_model import Model as model # Modify model.state_space_model to  model.<model_name>_model
 else:
-    raise ImportError('Model not found.')
+    from Models.example_illuminator_2.state_space_model import Model as model # Modify model.state_space_model to  model.<model_name>_model
 # END OF IMPORTS
 
 """ Mandatory prefilled .yaml file
@@ -15,7 +15,7 @@ else:
     Inputs: [demand_power_flow=0] # Positive values are charging, negative values are discharging
     Outputs: [effective_power_flow=0] # effective_power_flow is the actual power flow
     Parameters: [capacity=1000] # capacity is the battery capacity in kWh
-    States: [soc=500]  # soc is the state of charge in kWh
+    States: [soc=0.5]  # soc is the percentage (50%=0.5) of the battery capacity that is currently charged
 """
 
 META = {
@@ -37,22 +37,21 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
     1) Files:
         - Make a new folder in the models directory with the name of your model.
         - Copy the state_space_simulator.py and state_space_model.py into the new folder.
-        - Modify the name of the file as such: <model_name>_simulator.py and <model_name>_model.py.
+        - Rename the file as such: <model_name>_simulator.py and <model_name>_model.py.
     2) Simulator:
-        - Change the model import to point to your model.
+        - Change the model import to point to <model_name>_model.py.
         - Modify the META dictionary:
             - Include the model name.
             - Include the model parameters, which in a SSM model are the states + parameters.
-            - Include the model attributes, which in a SSM model are the inputs + outputs.
-        - Modify the empty .yaml file at the top:
+            - Include the model attributes, which in a SSM model are the inputs + outputs + states.
+        - Modify the .yaml file at the top:
             - Include the model name.
             - Include the model inputs. Make sure to select good default values, that ensure stability. Or set the default to None.
             - Include the model outputs. Make sure to select good default values, that ensure stability. Or set the default to None.
             - Include the model parameters. Set relevant default values and explain the meaning of the parameters and when the defaults are valid.
             - Include the model states. Set relevant default values and explain the meaning of the states and when the defaults are valid.
     3) Model:
-        - Modify the model to include the model logic.
-        - Modify the model to include the model step function.
+        - Modify the model step to include the model logic.
 
     Attributes:
         entities (dict): A dictionary storing all instances of this model by ID.
@@ -74,10 +73,9 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
         super().__init__(META)
         self.entities = {}  # Stores all instances of this model by ID
 
-    def init(self, sid, step_size, model_name):
+    def init(self, sid, step_size):
         self.sid = sid # Store the simulation ID
-        self.model = model # Pointer to model to create such as: 'Battery', 'PV', 'Wind', etc.
-        self.model_name = model_name # Store the model name to ensure uniqueness of entity IDs. Sometimes called eid_prefix.
+        self.model = model # Store the model name to ensure uniqueness of entity IDs. Sometimes called eid_prefix.
         self.step_size = step_size # Store the step size
         return self.meta
 
@@ -91,12 +89,13 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
                 outputs=outputs,
                 parameters=parameters,
                 states=states
+                step_size=self.step_size
             )
             self.entities[eid] = new_model # Store the model instance internally
             entities.append({'eid': eid, 'type': self.model}) # Append the entity ID and type to the list of entities
         return entities 
 
-    def step(self, time, inp                        uts):
+    def step(self, time, inputs):
         self.time = time
         # Process inputs and step the model
         for eid, entity_inputs in inputs.items():
@@ -104,6 +103,7 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
             # Update the inputs
             for attr, value in entity_inputs.items():
                 current_model.inputs[attr] = value
+                current_model.time = time
 
             # Perform a simulation step
             current_model.step()
@@ -119,9 +119,9 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
             for attr in attrs:
                 # Get model outputs:
                 try:
-                    data[eid][attr] = getattr(model, attr) # Get the attribute value from the model instance
-                except ValueError as e:
-                    print(f'Error getting attribute {attr} for entity {eid}: {e}') # Log an error if the attribute is not found
+                    data[eid][attr] = model.outputs[attr] # Get the output
+                except ValueError: # Sometimes people want to monitor the state of the model
+                    data[eid][attr] = model.states[attr] # Try the state attribute              
         return data
     
 
