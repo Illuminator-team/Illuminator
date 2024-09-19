@@ -11,7 +11,45 @@ class BatteryModel:
                               #soc_min,soc_max,flag, resolution
     #'initial_set',  # initial_soc
 
-    def __init__(self, initial_set, battery_set):  # this is called a method (since it is basically a function)
+    def __init__(self, initial_set:dict, battery_set:dict) -> None:  
+        """
+        Used in Python based Mosaik simulations as an addition to the battery_mosaik.BatteryholdSim class.
+
+        ...
+
+        Parameters
+        ----------
+        initial_set : dict
+            ???
+        battery_set : dict
+            ???
+
+        Attributes
+        ----------
+        self.soc : int
+            The current state of charge (SOC)
+        self.powerout : int 
+            ???
+        self.soc_min : int 
+            The minimum state of charge (SOC)
+        self.soc_max : int 
+            The maximum state of charge (SOC)
+        self.max_p : int(?) 
+            (???) represented in kW
+        self.min_p : int(?) 
+            (???) represented in kW
+        self.max_energy : int(?)  
+            (???) represented in kWh
+        self.charge_efficiency : ???  
+            ???
+        self.discharge_efficiency : ???
+            ???
+        self.flag : ???
+            ???
+        self.resolution : ???
+            ???
+        """
+        # this is called a method (since it is basically a function)
   #  by using '__int__' we are making our own constructor. This helps us to pass all the attributes we want to the
   # object that is instantiated.
   # 'self' refers to the object calling it. Eg: If we want an object BatteryModel-1,
@@ -34,8 +72,22 @@ class BatteryModel:
 
 
     # this method is called from the output_power method when conditions are met.
-    def discharge_battery(self, flow2b):  #flow2b is in kw
+    def discharge_battery(self, flow2b:int) -> dict:  #flow2b is in kw
+        """
+        Discharge the battery, calculate the state of charge and return parameter information
 
+        ...
+
+        Parameters
+        ----------
+        flow2b : int
+            (???) in kW
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         hours = self.resolution / 60
         flow = max(self.min_p, flow2b)
         if (flow < 0):
@@ -70,7 +122,22 @@ class BatteryModel:
         # here we are returning the values of these parameters which will be needed by another python model
         return re_params
 
-    def charge_battery(self, flow2b):
+    def charge_battery(self, flow2b:int) -> dict:
+        """
+        Charge the battery, calculate the state of charge and return parameter information
+
+        ...
+
+        Parameters
+        ----------
+        flow2b : int
+            (???) in kW
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         hours = self.resolution / 60
         flow = min(self.max_p, flow2b)
         if (flow > 0):
@@ -106,7 +173,26 @@ class BatteryModel:
 # first, this is checked. As per the p_ask and soc, everything happens.
 # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
     # when we want to make a battery model.
-    def output_power(self, flow2b, soc):#charging power: positive; discharging power:negative
+    def output_power(self, flow2b:int, soc:int) -> dict:#charging power: positive; discharging power:negative
+        """
+        Gives information depending on the current flow2b and soc value.
+        If there is no power demand it gives in current battery state of charge information.
+        If there is a negative demand for power then it discharged the battery. Alternatively it charges the battery.
+        
+        ...
+
+        Parameters
+        ----------
+        flow2b : int
+            ???
+        soc : int
+            The current state of charge (SOC)
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         self.soc = soc  # here we assign the value of soc we provide to the attribute self.soc
         data_ret = {}
         # {'p_out',
