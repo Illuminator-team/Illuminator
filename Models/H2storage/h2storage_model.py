@@ -2,6 +2,43 @@
 
 class hydrogenstorage_python:
     def __init__(self, initial_set, h2_set):
+        """
+        Used in Python based Mosaik simulations as an addition to the controller_mosaik.controlSim class.
+
+        ...
+
+        Parameters
+        ----------
+        initial_set : ???
+            ???
+        h2_set : ???
+            ???
+
+        Attributes
+        ----------
+        self.h2storage_soc : ???
+            ???
+        self.h2storage_soc_min : ???
+            ???
+        self.h2storage_soc_max : ???
+            ???
+        self.eff : ???
+            ???
+        self.max_h2 : ???
+            ???
+        self.min_h2 : ???
+            ???
+        self.capacity : ???
+            ???
+        self.resolution : ???
+            ???
+        self.flag : int
+            ???
+        self.output_show : int
+            ???
+        self.output2_show : int
+            ???
+        """
         self.h2storage_soc = initial_set['initial_soc']
         self.h2storage_soc_min = h2_set['h2storage_soc_min']
         self.h2storage_soc_max = h2_set['h2storage_soc_max']
