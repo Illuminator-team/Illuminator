@@ -1,0 +1,3 @@
+label;comp_type;busses;bus_param;bus_P_ref;bus_char;bus_base;design;offdesign;design_path;local_design;local_offdesign
+sink ambient;Sink;[];[];[];[];[];[];[];nan;False;False
+sink intercool;Sink;[];[];[];[];[];[];[];nan;False;False
