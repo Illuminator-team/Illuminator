@@ -1,0 +1,46 @@
+scenario: ExampleScenario # in mosaik so called world
+start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+end_time: 1000 # duration in minutes
+simulators: 
+- model_type: Adder
+  step_size: 1 # step size in minutes
+  models:
+    - name: Adder1
+      Inputs:
+        In1: 0  # In1 is the first input
+        In2: 0  # In2 is the second input
+      Outputs:
+        Out1: 0  # Out1 is the first output
+      Parameters:
+      States:
+      Triggers:
+- model_type: Multiplier
+  step_size: 1 # step size in minutes
+  models:
+    - name: Multiplier1
+      Inputs:
+      Outputs:
+        Out1: 0  # Out1 is the first output 
+      Parameters:
+        Multiplier: 2  # multiplier is a parameter
+      States:
+        Product: 1  # Product is a state
+      Triggers:
+    - name: Multiplier2
+      Inputs:
+      Outputs:
+        Out1: 0  # Out1 is the first output
+      Parameters:
+        Multiplier: 2  # multiplier is a parameter
+      States:
+        Product: 3  # Product is a state
+      Triggers:
+connections:
+- from: Multiplier1.Out1
+  to: Adder1.In1
+- from: Multiplier2.Out1
+  to: Adder1.In2
+monitor:
+  - Multiplier1.Product
+  - Multiplier2.Product
+  - Adder1.Out1
