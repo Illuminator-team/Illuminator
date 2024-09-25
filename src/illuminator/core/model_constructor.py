@@ -10,6 +10,11 @@ class SimulatorType(Enum):
     HYBRID = 'hybrid'
 
 
+
+
+
+
+
 @dataclass
 class ModelConstructor(ABC):
     """ 
@@ -75,6 +80,15 @@ class ModelConstructor(ABC):
         """
         # TODO: this should be to call the mosaik_api method to create a simulator
 
+    # TODO: this should be part of a test when registering a model in the library
+    def validate_args(self, *args) -> None:
+        """
+        Validates the arguments passed to the compute_step method
+        """
+        for arg in args:
+            if arg not in self.inputs or arg not in self.outputs or arg not in self.states:
+                raise ValueError(f"{arg} is not a valid argument")
+
     @abstractmethod
     def compute_step(self, *args) -> Any:
         """ 
@@ -83,12 +97,16 @@ class ModelConstructor(ABC):
         Computations must be defined in terms of inputs, outputs and states. 
         """
 
+        
+
         # TODO: valid arguments are inputs, outputs, states,
         # that are defined by the concrete class. We need to write code 
         # to validate this.
 
         raise NotImplementedError
     
+
+
 
 if __name__ == "__main__":
 
@@ -119,11 +137,11 @@ if __name__ == "__main__":
             'current_charge': 10
         }
         
-        def compute_step(self, current_charge, incoming_power, outgoing_power) -> None:
+        def compute_step(self, current_charge, incoming_power, outgoing_power, voltage) -> None:
             """
             Updates the current capacity of the battery
             """
-            # Not a sensible or meaningful example
+
             self.states['current_charge'] = current_charge + (incoming_power - outgoing_power)/100
 
             return self.time + self.time_step
@@ -134,4 +152,4 @@ if __name__ == "__main__":
     print(battery.model_parameters, battery.triggers)
     print(battery.time_step, battery.time)
 
-    print(battery.step_function(10, 10, 10))
+    print(battery.compute_step(10, 10, 10, 5))
