@@ -18,6 +18,9 @@ models: # list of models for the energy network
     capacity: 1000
   states: 
     initial_soc: 0.5
+  triggers:   # list of triggers for the of another model??. It must be an input, output or state of the model
+    - capacity
+    - soc_min
   scenario_data: 'path/to/file' #path to the scenario data file for the model. This should be optional
 - name: Battery2
   type: BatteryModel # models can reuse the same type

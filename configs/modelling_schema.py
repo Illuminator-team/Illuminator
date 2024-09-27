@@ -43,6 +43,7 @@ schema = Schema( # a mapping of mappings
                 "outputs": And(dict, len, error="if 'outputs' is used, it must contain at least one key-value pair"),
                 Optional("parameters"): And(dict, len, error="if 'parameters' is used, it must contain at least one key-value pair"),
                 Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
+                Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
                 Optional("scenario_data"): And(str, len, error="you must provide a scenario data file if using 'scenario_data'"),
             } ]
         ),
@@ -64,3 +65,4 @@ schema = Schema( # a mapping of mappings
 # Any input, output, or state declared in the connection section must be declared in the models section
 
 # TODO: Write a validator for the scenario data file. It should check that the fiel exists 
+# TODO: write a validator for triggers. It should check that the trigger is a valid input, output, or state. 
