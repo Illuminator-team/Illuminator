@@ -41,38 +41,26 @@ schema = Schema( # a mapping of mappings
                 "type": And(str, len),
                 "inputs": And(dict, len, error="if 'inputs' is used, it must contain at least one key-value pair"),
                 "outputs": And(dict, len, error="if 'outputs' is used, it must contain at least one key-value pair"),
-                Optional("parameters"): And(list, lambda l: all(isinstance(x, str) for x in l)),
-                Optional("states"): And(list, lambda l: all(isinstance(x, str) for x in l)),
-                Optional("scenario_data"): And(str, len),
+                Optional("parameters"): And(dict, len, error="if 'parameters' is used, it must contain at least one key-value pair"),
+                Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
+                Optional("scenario_data"): And(str, len, error="you must provide a scenario data file if using 'scenario_data'"),
             } ]
         ),
         "connections":  Schema( # a sequence of mappings
             [{
                 "from": And(str, len),
                 "to": And(str, len),
-                "data": And(list, lambda l: all(And(isinstance(x, tuple), len(x) == 2 ) for x in l)),
             }]
         ),
-        "monitor":  Schema( # a sequence of mappings
-            [{
-                "name": And(str, len),
-                Optional("inputs"):  And(list, lambda l: all(And(isinstance(x, str)) for x in l)),
-                Optional("outputs"):  And(list, lambda l: all(And(isinstance(x, str)) for x in l)),
-                Optional("states"): And(list, lambda l: all(And(isinstance(x, str)) for x in l)),
-            }]
-        )
+        "monitor":  And(list, len, error="you must provide an item to monitor"),
     }
 )
 
 
-# validades monitor contains at least one set of inputs, outputs, or states
-def at_least_one_set(d):
-    return any(d.get(key) for key in ["inputs", "outputs", "states"])
+# TODO: Write a more rubust validator for the monitor section
+# Any input, output, or state declared in the monitor section must be declared in the models section
 
+# TODO: Write a more rubust validator for connections section
+# Any input, output, or state declared in the connection section must be declared in the models section
 
-def validate_monitor(data) -> bool:
-    for item in data.get("monitor", []):
-        print(item)
-        if not at_least_one_set(item):
-            raise SchemaError("At least one of 'inputs', 'outputs', or 'states' must be set in each monitor item.")    
-    return True
+# TODO: Write a validator for the scenario data file. It should check that the fiel exists 
