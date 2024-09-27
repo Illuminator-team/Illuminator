@@ -1,55 +1,53 @@
 scenario:
   name: "ExampleScenario" # in mosaik so called world
-  scenario_data: 'path/to/file' #path to the scenario data file ()
   start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
-  end_time: 10 # duration in seconds 
-models: # list of model for the energy network
+  end_time: '2012-01-02 00:00:10' # duration in seconds 
+models: # list of models for the energy network
 - name: Battery1 # name for the model (must be unique)
   type: BatteryModel # name of the model registered in the Illuminator
-  inputs: [input1=0] 
-  outputs: [output1=0, output2=None]
-  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
-  states: [initial_soc=0.5]
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+    discharge_power_max: 200
+    soc_min: 0.1 
+    soc_max: 0.9 
+    capacity: 1000
+  states: 
+    initial_soc: 0.5
+  scenario_data: 'path/to/file' #path to the scenario data file for the model. This should be optional
 - name: Battery2
   type: BatteryModel # models can reuse the same type
-  inputs: [input1=0] 
-  outputs: [output1=0, output2=None]
-  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=5000]
-  states: [initial_soc=0.5]
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+  states: 
+    soc: 0.5  # initial value for the state, optional
 - name: PV1
   type: PVModel
-  inputs: [input3=0, input4=0] 
-  outputs: [output4=0, output5=None]
-  parameters: [charge_power_max=100, discharge_power_max=200, soc_min=0.1, soc_max=0.9, capacity=1000]
-  states: [initial_soc=0.5]
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+    input2: 0
+  outputs: 
+    output1: 0 
+  parameters: 
+    power_max: 100
+  states: 
+    initial_soc: 0.5
 connections:
-- from: Battery1 # start model
-  to: PV1 # end model
-  data: !!pairs # a list values to be exchanged between the model. 'pairs' is a YAML keyword
-    - output1: input3 # output of 'from model': input of 'to model'
-    - output2: input4
-- from: Battery2
-  to: PV1
-  data: !!pairs # using the generic 'data' keyword to define what it is exchanged between the nodes
-    - output1: input3
-    - output2: input4
+- from: Battery1.output2 # start model, pattern: model_name.output_name/input_name
+  to: PV1.input1 # end model
+- from: Battery2.output
+  to: PV1.input2
 monitor:  # a list of models, its inputs, output and states to be monitored and logged
-- name: Battery1 # name of the model
-  inputs: [input1] 
-  outputs: [output1, output2] # list of input, output, state names to be monitored
-  states: [initial_soc]
-- name: Battery2
-  # not all inputs, outputs and states are required, but at least one must be defined
-  outputs: [output1, output2]
-- name: PV1
-  outputs: [output4, output5]
-
-     
-
-    
-
-
-  
-  
-
-
+- Battery1.input1 # pattern model_name.state_name
+- Battery2.output1  # no duplicates allowed
+- PV1.soc # pattern model_name.state_name
+- PV1.output1
