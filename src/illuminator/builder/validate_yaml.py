@@ -1,7 +1,7 @@
 from ruamel.yaml import YAML
 import sys
 import json
-from modelling_schema import schema
+from illuminator.builder.scenario_schema import schema
 
 # this if a yaml file complies with the modelling schema
 
