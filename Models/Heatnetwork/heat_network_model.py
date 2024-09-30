@@ -3,7 +3,58 @@ import pandas as pd
 
 class heat_network_python:
     def __init__(self, max_temperature, insulation, ext_temp, therm_cond, length, diameter,
-                 density, c):
+                 density, c) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the h2storage_mosaik.compressedhydrogen class.
+
+        ...
+
+        Parameters
+        ----------
+        max_temperature : ???
+            ???
+        insulation : ???
+            ???
+        ext_temp : ???
+            ???
+        therm_cond : ???
+            ???
+        length : ???
+            ???
+        diameter : ???
+            ???
+        density : ???
+            ???
+        c : ???
+            ???
+
+        Attributes
+        ----------
+        self.max_temperature : ???
+            ???
+        self.insulation : ???
+            ???
+        self.ext_temp : ???
+            ???
+        self.t_int : ???
+            ???
+        self.therm_cond : ???
+            ???
+        self.length : ???
+            ???
+        self.diameter : ???
+            ???
+        self.density : ???
+            ???
+        self.c : ???
+            ???
+        self.congestion : bool
+            ???
+        self.q_in : int
+            ???
+        self.q_out : int
+            ???
+        """
         self.max_temperature = max_temperature
         self.insulation = insulation
         self.ext_temp = ext_temp
@@ -17,7 +68,24 @@ class heat_network_python:
         self.q_in = 0
         self.q_out = 0
 
-    def heatnetwork(self, q_in, q_out):
+    def heatnetwork(self, q_in:int, q_out:int) -> dict:
+        """
+        Description (?)
+
+        ...
+
+        Parameters
+        ----------
+        q_in : int
+            ???
+        q_out : int
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+        """
         self.q_in = q_in
         self.q_out = q_out
         q_tot = sum(q_in) - sum(q_out)
@@ -30,4 +98,4 @@ class heat_network_python:
 
         re_params = {'t_int': self.t_int, 'q_in': self.q_in, 'q_out': self.q_out, 'q_loss': q_loss,
                      'congestion': self.congestion}
-        return re_params
+        return re_params    

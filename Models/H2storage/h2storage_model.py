@@ -1,9 +1,9 @@
 # compressed hydrogen storage tank at 700bar and storing about 100kg of hydrogen
 
 class hydrogenstorage_python:
-    def __init__(self, initial_set, h2_set):
+    def __init__(self, initial_set:dict, h2_set:dict) -> None:
         """
-        Used in Python based Mosaik simulations as an addition to the controller_mosaik.controlSim class.
+        Used in Python based Mosaik simulations as an addition to the h2storage_mosaik.compressedhydrogen class.
 
         ...
 
@@ -16,21 +16,21 @@ class hydrogenstorage_python:
 
         Attributes
         ----------
-        self.h2storage_soc : ???
+        self.h2storage_soc : int
             ???
-        self.h2storage_soc_min : ???
+        self.h2storage_soc_min : int
             ???
-        self.h2storage_soc_max : ???
+        self.h2storage_soc_max : int
             ???
-        self.eff : ???
+        self.eff : float
             ???
-        self.max_h2 : ???
+        self.max_h2 : float
             ???
-        self.min_h2 : ???
+        self.min_h2 : float
             ???
-        self.capacity : ???
+        self.capacity : int
             ???
-        self.resolution : ???
+        self.resolution : int
             ???
         self.flag : int
             ???
@@ -51,7 +51,22 @@ class hydrogenstorage_python:
         self.output_show=0
         self.output2_show=0
 
-    def charge_h2(self, flow2h2s_net):
+    def charge_h2(self, flow2h2s_net) -> dict:
+        """
+        Description (?)
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2s_net : ???
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+        """
         h2_flow = min(self.max_h2, flow2h2s_net)  # m^3/min
         if h2_flow > 0:
             h2discharge = h2_flow * self.eff * self.resolution                # m^3
@@ -82,7 +97,22 @@ class hydrogenstorage_python:
                      'flag': self.flag}
         return re_params
 
-    def discharge_h2(self, flow2h2s_net):
+    def discharge_h2(self, flow2h2s_net) -> dict:
+        """
+        Description (?)
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2s_net : ???
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+        """
         h2_flow = max(self.min_h2, flow2h2s_net)   # m^3/min
         if h2_flow < 0:
             h2discharge = h2_flow / self.eff * self.resolution               # m^3
@@ -116,7 +146,28 @@ class hydrogenstorage_python:
 
         return re_params
 
-    def output_h2(self, flow2h2s, eleh2_in, fuelh2_out, soc):
+    def output_h2(self, flow2h2s:int, eleh2_in:int, fuelh2_out:float, soc:int) -> dict:
+        """
+        Description (?)
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2s : int
+            ???
+        eleh2_in : int
+            ???
+        fuelh2_out : float
+            ???
+        soc : int
+            The current state of charge (SOC)
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values.
+        """
         self.h2storage_soc = soc
         flow2h2s_net=flow2h2s+eleh2_in-fuelh2_out
         if flow2h2s_net == 0:  # i.e when there isn't a demand of hydrogen at all,
