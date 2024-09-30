@@ -1,18 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from mosaik_api import Simulator
 from typing import List, Dict, Optional, Any
+from datetime import datetime
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
     EVENT_BASED = 'event-based'
     HYBRID = 'hybrid'
-
-
-
-
-
 
 
 @dataclass
@@ -50,34 +45,77 @@ class ModelConstructor(ABC):
     NotImplementedError
         If the compute_step method is not implemented
 
+    Warining
+        If triggers are defined for a time-based simulator. After that triggers will be ignored.
+
     """
 
-    # When useing dataclasses, these become instance attributes 
-    # they are part of the __init__ method
-    model_parameters = {} # properties of the object being modeled, e.g. material the object is made of
-    inputs= {} # zero or many
-    outputs= {} # zero or many
-    states= {} # zero or many
+    @property
+    @abstractmethod
+    def model_parameters(self) -> Dict: # properties of the object being modeled, e.g. material the object is made of
+        pass
 
-    # TODO: add validation for triggers, it should be a list of strings, and trigger must be in inputs or outputs(?)
-    triggers= []
+    @property
+    @abstractmethod
+    def inputs(self) -> Dict:
+        # zero or many
+        pass
 
-    # TODO: add validation for time_step, it should be a positive integer and not zero
-    time_step = 1 
-    time = None
-    public = True  # TODO: when using type validation, attributes cannot be changed by the concrete class. We need
+    @property
+    @abstractmethod
+    def outputs(self) -> Dict:
+        # zero or many
+        pass
+
+    @property
+    @abstractmethod
+    def states(self) -> Dict:
+        pass
+
+    @property
+    def simulator_type(self) -> SimulatorType:
+        return SimulatorType.HYBRID
+
+    @property
+    def triggers(self) -> List:
+        return  [] # default value
+    
+    @property
+    @abstractmethod
+    def time_step_size(self) -> int:
+        pass
+
+    @property
+    def time(self) -> int:
+        return 1
+    
+    def __post_init__(self):
+        # triggers are only relevant for event-based or hybrid simulators
+        if self.simulator_type == SimulatorType.TIME_BASED and self.triggers is not None:
+            raise Warning("Triggers are not relevant for time-based simulators, they will be ignored")
+        
+        def validate_time_is_positive(self, time: int) -> None:
+            if time <= 1:
+                raise ValueError("Time must be a positive integer graeter than 1")
+        validate_time_is_positive(self.time_step_size)
+
+        def validate_trigger(self, triggers: list[str]) -> None:
+            if len(triggers) > 0:
+                for t in triggers:
+                    if t not in self.inputs or t not in self.outputs:
+                        raise ValueError(f"{t} is not a valid trigger")
+        
+        validate_trigger(self.triggers)
+
+    # public = True  #THIS is relevant only for META # TODO: when using type validation, attributes cannot be changed by the concrete class. We need
     # to find a way to validate this if that is a limiation of dataclasses
 
-    def __post_init__(self):
-        """
-        This method will be called after the instance has been created
-        """
-        self.step_function = self.compute_step
 
     def get_meta(self) -> Dict:
         """
         Returns the model meta data in MoSaik format
         """
+        pass
         # TODO: this should be to call the mosaik_api method to create a simulator
 
     # TODO: this should be part of a test when registering a model in the library
@@ -90,22 +128,19 @@ class ModelConstructor(ABC):
                 raise ValueError(f"{arg} is not a valid argument")
 
     @abstractmethod
-    def compute_step(self, *args) -> Any:
+    def step(self, *args) -> Any:
         """ 
         Defines the conputations that need to be performed in each 
         simulation step.
         Computations must be defined in terms of inputs, outputs and states. 
         """
-
-        
+        # THIS mostly SELF-CONTAINED. This is the method mostly define computatons based on the inputs, outputs and states
 
         # TODO: valid arguments are inputs, outputs, states,
         # that are defined by the concrete class. We need to write code 
         # to validate this.
 
         raise NotImplementedError
-    
-
 
 
 if __name__ == "__main__":
@@ -117,39 +152,17 @@ if __name__ == "__main__":
         A simple battery model
         """
 
-        model_parameters = {
-            'capacity': 1000,
-            'voltage': 12
-        }
-
-        inputs = {
-            'incoming_power': float
-        }
-
-        outputs = {
-            'outgoing_power': float
-        }
-
-        time_step = 1
-        time = 100
-
-        states = {
-            'current_charge': 10
-        }
+        def model_parameters(self) -> Dict:
+            self.inputs = {
+                'capacity': 100,  # defaults
+                'voltage': 5
+            }
         
-        def compute_step(self, current_charge, incoming_power, outgoing_power, voltage) -> None:
-            """
-            Updates the current capacity of the battery
-            """
 
-            self.states['current_charge'] = current_charge + (incoming_power - outgoing_power)/100
-
-            return self.time + self.time_step
-            
 
     battery = Battery()
 
     print(battery.model_parameters, battery.triggers)
     print(battery.time_step, battery.time)
 
-    print(battery.compute_step(10, 10, 10, 5))
+    print(battery.step(10, 10, 10, 5))
