@@ -97,36 +97,6 @@ class ModelConstructor(ABC):
     def time(self) -> int:
         return 1
     
-    def __post_init__(self):
-        # triggers are only relevant for event-based or hybrid simulators
-        if self.simulator_type == SimulatorType.TIME_BASED and self.triggers is not None:
-            raise Warning("Triggers are not relevant for time-based simulators, they will be ignored")
-        
-        def validate_time_is_positive(self, time: int) -> None:
-            if time <= 1:
-                raise ValueError("Time must be a positive integer graeter than 1")
-        validate_time_is_positive(self.time_step_size)
-
-        def validate_trigger(self, triggers: list[str]) -> None:
-            if len(triggers) > 0:
-                for t in triggers:
-                    if t not in self.inputs or t not in self.outputs:
-                        raise ValueError(f"{t} is not a valid trigger")
-        
-        validate_trigger(self.triggers)
-
-    # public = True  #THIS is relevant only for META # TODO: when using type validation, attributes cannot be changed by the concrete class. We need
-    # to find a way to validate this if that is a limiation of dataclasses
-
-
-    def get_meta(self) -> Dict:
-        """
-        Returns the model meta data in MoSaik format
-        """
-        pass
-        # TODO: this should be to call the mosaik_api method to create a simulator
-
-
     @abstractmethod
     def step(self, **kargs) -> Any:
         """ 
@@ -144,6 +114,36 @@ class ModelConstructor(ABC):
 
         raise NotImplementedError
 
+    def __post_init__(self):
+        # triggers are only relevant for event-based or hybrid simulators
+        if self.simulator_type == SimulatorType.TIME_BASED and self.triggers is not None:
+            raise Warning("Triggers are not relevant for time-based simulators, they will be ignored")
+        
+        # TODO: fix this
+        # def validate_time_is_positive() -> None:
+        #     print('>>>: ', self.time_step_size)
+        #     if self.time_step_size <= 1:
+        #         raise ValueError("Time must be a positive integer graeter than 1")
+        # validate_time_is_positive()
+
+        def validate_trigger(triggers: list[str]) -> None:
+            if len(triggers) > 0:
+                for t in triggers:
+                    if t not in self.inputs or t not in self.outputs:
+                        raise ValueError(f"{t} is not a valid trigger")
+        
+        validate_trigger(self.triggers)
+
+    # public = True  #THIS is relevant only for META # TODO: when using type validation, attributes cannot be changed by the concrete class. We need
+    # to find a way to validate this if that is a limiation of dataclasses
+
+
+    def get_meta(self) -> Dict:
+        """
+        Returns the model meta data in MoSaik format
+        """
+        pass
+        # TODO: this should be to call the mosaik_api method to create a simulator
 
 if __name__ == "__main__":
     pass
