@@ -2,7 +2,7 @@
 Unit test for the construct_model module
 """
 
-from illuminator.core.model_constructor import ModelConstructor
+from illuminator.builder.model_constructor import ModelConstructor
 
 
 class TestConstructModel:
