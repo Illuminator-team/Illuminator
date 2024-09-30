@@ -16,7 +16,7 @@ class ModelConstructor(ABC):
     A abstract class for adding models to the Illuminator.
     ...
 
-    Properties
+    Attributes
     ----------
 
     model_parameters: dict
@@ -47,10 +47,6 @@ class ModelConstructor(ABC):
     step(**kargs)
         An abstract method to define the computations that need to be performed in each simulation step.
         Computations must be defined in terms of inputs, outputs, states and model parameters.
-
-    Returns
-    -------
-    None
 
     Raises
     ------
@@ -150,7 +146,4 @@ class ModelConstructor(ABC):
 
 
 if __name__ == "__main__":
-
-    # Example of  adding a simple battery model
-
     pass
