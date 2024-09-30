@@ -118,27 +118,21 @@ class ModelConstructor(ABC):
         pass
         # TODO: this should be to call the mosaik_api method to create a simulator
 
-    # TODO: this should be part of a test when registering a model in the library
-    def validate_args(self, *args) -> None:
-        """
-        Validates the arguments passed to the compute_step method
-        """
-        for arg in args:
-            if arg not in self.inputs or arg not in self.outputs or arg not in self.states:
-                raise ValueError(f"{arg} is not a valid argument")
 
     @abstractmethod
-    def step(self, *args) -> Any:
+    def step(self, **kargs) -> Any:
         """ 
         Defines the conputations that need to be performed in each 
         simulation step.
-        Computations must be defined in terms of inputs, outputs and states. 
-        """
-        # THIS mostly SELF-CONTAINED. This is the method mostly define computatons based on the inputs, outputs and states
+        Computations must be defined in terms of inputs, outputs, states and model parametes. 
 
-        # TODO: valid arguments are inputs, outputs, states,
-        # that are defined by the concrete class. We need to write code 
-        # to validate this.
+        Parameters
+        ----------
+        **kargs : dict
+            A dictionary with additional arguments that are relevant for the model
+
+        """
+        # THIS mostly SELF-CONTAINED. This is the method mostly define computations based on the inputs, outputs and states
 
         raise NotImplementedError
 
@@ -147,22 +141,3 @@ if __name__ == "__main__":
 
     # Example of  adding a simple battery model
 
-    class Battery(ModelConstructor):
-        """
-        A simple battery model
-        """
-
-        def model_parameters(self) -> Dict:
-            self.inputs = {
-                'capacity': 100,  # defaults
-                'voltage': 5
-            }
-        
-
-
-    battery = Battery()
-
-    print(battery.model_parameters, battery.triggers)
-    print(battery.time_step, battery.time)
-
-    print(battery.step(10, 10, 10, 5))
