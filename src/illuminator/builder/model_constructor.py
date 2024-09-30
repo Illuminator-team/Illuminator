@@ -16,7 +16,7 @@ class ModelConstructor(ABC):
     A abstract class for adding models to the Illuminator.
     ...
 
-    Parameters
+    Properties
     ----------
 
     model_parameters: dict
@@ -33,8 +33,20 @@ class ModelConstructor(ABC):
     triggers: list
         A flag [input's or output's name] that causes the compute_step method to be called.
         Only relevant when a model is part of an event-based or hybrid simulator.
-    public: bool
-        ???
+    simulator_type: SimulatorType
+        The type of simulator that the model belongs to.
+    time_step_size: int
+        The time step size for the simulator.
+    time: int
+        The current time of the simulation.
+
+    Methods
+    -------
+    get_meta()
+        Returns the model meta data in MoSaik format
+    step(**kargs)
+        An abstract method to define the computations that need to be performed in each simulation step.
+        Computations must be defined in terms of inputs, outputs, states and model parameters.
 
     Returns
     -------
