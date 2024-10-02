@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+# [tool.hatch.build.targets.wheel]
+#       packages = ["src/illuminator"]
+
+[project]
+name = "illuminator"
+version = "0.1.0"
+description = "A development toolkit for simulating energy systems"
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+maintainers = [
+    { name = "Your Name", email = "you.email@example.com"}
+    ]
+dependencies = [
+    "arrow==1.2.3",
+    "lxml==4.9.3",
+    "matplotlib==3.7.2",
+    "paho-mqtt==1.6.1",
+    "pandapower==2.13.1",
+    "pandas==1.5.3",
+    "mosaik==3.1.1"
+]
+keywords = [
+    "energy",
+    "simulation",
+    "development",
+    "toolkit"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python"
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
+[project.urls]
+Homepage = "https://example.com"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/Illuminator-team/Illuminator.git"
+"Bug Tracker" = "https://github.com/Illuminator-team/Illuminator/issues"
+Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
