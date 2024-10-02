@@ -1,6 +1,6 @@
 name: deploy-docs
 
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 permissions:
   contents: write
@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Install dependencies
         run: |
           pip install -r docs/requirements.txt
@@ -18,8 +20,8 @@ jobs:
         run: |
           sphinx-build docs _build
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}

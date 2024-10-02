@@ -11,7 +11,7 @@ Development kit to demystify energy system operation, illustrate challenges
 that arise due to the energy transition and test 
 state-of-the-art energy management concepts. we utilise Raspberry Pis
 as the individual components of the energy system emulator, 
-and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
+and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
 .. toctree::
    :maxdepth: 2
