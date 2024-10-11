@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Heatstorage
+cd $3/Heatstorage
 python qstorage_mosaik.py $1:$2 --remote

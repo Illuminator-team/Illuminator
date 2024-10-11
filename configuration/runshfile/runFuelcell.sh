@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Fuelcell
+cd $3/Fuelcell
 python fuelcell_mosaik.py $1:$2 --remote

@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Controller
+cd $3/Controller
 python controller_mosaik.py $1:$2 --remote

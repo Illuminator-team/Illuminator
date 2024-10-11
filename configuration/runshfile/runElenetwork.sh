@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Elenetwork
+cd $3/Elenetwork
 python electricity_network_mosaik.py $1:$2 --remote

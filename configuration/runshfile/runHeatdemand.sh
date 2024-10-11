@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Heatdemand
+cd $3/Heatdemand
 python qdemand_mosaik.py $1:$2 --remote

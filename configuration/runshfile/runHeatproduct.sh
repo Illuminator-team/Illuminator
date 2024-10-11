@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Heatproduct
+cd $3/Heatproduct
 python qproduct_mosaik.py $1:$2 --remote

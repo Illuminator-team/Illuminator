@@ -1,3 +1,3 @@
 #! /bin/bash
-cd /home/illuminator/Desktop/Final_illuminator/Load
+cd $3/Load
 python load_mosaik.py $1:$2 --remote
