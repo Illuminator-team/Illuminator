@@ -11,9 +11,12 @@ for model in data['models']:
     model_type = model.get('type')
 
     method = model.get('method', {})
+    method_type = method.get('type')
+    location = method.get('location')
     connect_ip = method.get('connect_ip')
     connect_port = method.get('connect_port')
 
-    if connect_ip and connect_port:
-        print(f"lxterminal -e ssh illuminator@{connect_ip} '{run_path}run{model_type}.sh {connect_ip} {connect_port} {run_model}'&")
+    if method_type == 'connect':
+        if connect_ip and connect_port:
+            print(f"lxterminal -e ssh illuminator@{connect_ip} '{run_path}run{model_type}.sh {connect_ip} {connect_port} {run_model}'&")
 
