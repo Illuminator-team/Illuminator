@@ -4,6 +4,8 @@ sim_config_ddf=pd.read_xml('config.xml')
 
 sim_config={row[1]:{row[2]:row[3]}for row in sim_config_ddf.values}
 
+print (sim_config)
+
 tosh=sim_config_ddf[sim_config_ddf['method']=='connect']
 
 run_path='./Desktop/illuminatorclient/configuration/runshfile/'
