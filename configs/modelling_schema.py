@@ -9,6 +9,11 @@ import datetime
 # format: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
 
+# define a regex pattern for ip versions 4 and 6
+ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
+ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
+valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
+
 
 class ScenarioSchema(Schema):
     """
@@ -24,6 +29,7 @@ class ScenarioSchema(Schema):
             if start_time_ >= end_time_:
                 raise SchemaError("End time cannot be less than or equal to the start time.")
         return data
+    
 
 # Define the schema for the simulation configuration file
 schema = Schema( # a mapping of mappings
@@ -45,6 +51,12 @@ schema = Schema( # a mapping of mappings
                 Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                 Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
                 Optional("scenario_data"): And(str, len, error="you must provide a scenario data file if using 'scenario_data'"),
+                Optional("connect"): Schema( # a mapping of mappings
+                    {
+                        "ip": Regex(valid_ip, error="you must provide an IP address that matches versions IPv4 or IPv6"),
+                        Optional("port"): And(int),
+                    }
+                ),
             } ]
         ),
         "connections":  Schema( # a sequence of mappings
