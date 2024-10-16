@@ -8,12 +8,10 @@ import datetime
 
 # format: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
-
-# define a regex pattern for ip versions 4 and 6
+# regex pattern for ip versions 4 and 6
 ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
 valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
-
 
 class ScenarioSchema(Schema):
     """
@@ -30,7 +28,6 @@ class ScenarioSchema(Schema):
                 raise SchemaError("End time cannot be less than or equal to the start time.")
         return data
     
-
 # Define the schema for the simulation configuration file
 schema = Schema( # a mapping of mappings
             {
