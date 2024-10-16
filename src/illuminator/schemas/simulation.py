@@ -92,9 +92,6 @@ schema = Schema( # a mapping of mappings
 
 # TODO: Write a more rubust validator for the monitor section
 # Any input, output, or state declared in the monitor section must be declared in the models section
-
 # TODO: Write a more rubust validator for connections section
 # Any input, output, or state declared in the connection section must be declared in the models section
-
-# TODO: Write a validator for the scenario data file. It should check that the file exists 
 # TODO: write a validator for triggers. It should check that the trigger is a valid input, output, or state. 
