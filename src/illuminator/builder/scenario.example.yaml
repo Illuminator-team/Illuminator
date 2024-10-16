@@ -4,11 +4,9 @@ scenario:
   end_time: '2012-01-02 00:00:10' # duration in seconds 
 models: # list of models for the energy network
 - name: Battery1 # name for the model (must be unique)
-  type: Battery # name of the model registered in the Illuminator
-  inputs: 
-    input1: 0  # input-name: initial value, default value will be used if not defined
+  type: Battery # name of the model registered in the Illuminato
   outputs: 
-    output1: 0 
+    output1: 1 
     output2: null
   parameters: 
     charge_power_max: 100
@@ -22,6 +20,9 @@ models: # list of models for the energy network
     - capacity
     - soc_min
   scenario_data: 'path/to/file' #path to the scenario data file for the model. This should be optional
+  connect: # this is optional. If not defined, the model will be assumed to be local
+    ip:  
+    port:  # optional, if not defined, the default port will be used
 - name: Battery2
   type: BatteryModel # models can reuse the same type
   inputs: 

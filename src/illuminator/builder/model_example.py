@@ -5,6 +5,9 @@ from typing import Any
 
 from illuminator.builder import ModelConstructor
 
+
+# TODO: use the FActory pattern to create models.
+
 class Adder(ModelConstructor):
     """
     A model that adds things up
@@ -12,8 +15,17 @@ class Adder(ModelConstructor):
 
     # TODO: revisit the way this is implemented, so that
     # properties are set in the constructor
+
+    # TODO: can we have a solution like this?
+    inputs = {'a': int, 'b': int}
+
+    def step(self) -> None:
+        self.outputs["output"] = self.inputs["input1"] + self.inputs["input2"]
+        return None
+
     @property
     def model_parameters(self):
+
         return  {
             "a": int,
             "b": int
