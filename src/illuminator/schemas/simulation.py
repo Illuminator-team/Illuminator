@@ -1,13 +1,39 @@
 """
-A schema for validating a simulation configuration file
-in the Illuminaotr. 
+A schema for validating a simulation configuration file (YAML)
+in the Illuminator. 
 """
-from typing import Any, Dict
-from schema import Schema, And, Use, Regex, Optional, SchemaError
-import datetime
 
-# format: YYYY-MM-DD HH:MM:SS"
+import datetime
+import re
+import os
+from schema import Schema, And, Use, Regex, Optional, SchemaError
+
+# valid format for start and end times: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+# Ip versions 4 and 6 are valid
+ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
+ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
+valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
+# monitor and connections sections enforce a format such as <model>.<input/output/state>
+valid_monitor_connection = r'^\w+\.\w+$'
+
+def validate_monitor_list(items: list) -> list:
+    """
+    Validates the monitor section of the simulation configuration file.
+    """
+    pattern = re.compile(valid_monitor_connection)
+    for item in items:
+        if not pattern.match(item):
+            raise SchemaError(f"Invalid format for monitor item: {item}. Must be in the format: <model>.<item>")
+    return items
+
+def validate_scenario_data_file(file_path: str) -> str:
+    """
+    Validates the scenario data file exists.
+    """
+    if not os.path.isfile(file_path):
+        raise SchemaError(f"Scenario data file does not exist: {file_path}")
+    return file_path
 
 
 class ScenarioSchema(Schema):
@@ -24,7 +50,7 @@ class ScenarioSchema(Schema):
             if start_time_ >= end_time_:
                 raise SchemaError("End time cannot be less than or equal to the start time.")
         return data
-
+    
 # Define the schema for the simulation configuration file
 schema = Schema( # a mapping of mappings
             {
@@ -44,25 +70,28 @@ schema = Schema( # a mapping of mappings
                 Optional("parameters"): And(dict, len, error="if 'parameters' is used, it must contain at least one key-value pair"),
                 Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                 Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
-                Optional("scenario_data"): And(str, len, error="you must provide a scenario data file if using 'scenario_data'"),
+                Optional("scenario_data"): And(str, len, Use(validate_scenario_data_file)),
+                Optional("connect"): Schema( # a mapping of mappings
+                    {
+                        "ip": Regex(valid_ip, error="you must provide an IP address that matches versions IPv4 or IPv6"),
+                        Optional("port"): And(int),
+                    }
+                ),
             } ]
         ),
         "connections":  Schema( # a sequence of mappings
             [{
-                "from": And(str, len),
-                "to": And(str, len),
+                "from": Regex(valid_monitor_connection, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
+                "to": Regex(valid_monitor_connection, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
             }]
         ),
-        "monitor":  And(list, len, error="you must provide an item to monitor"),
+        "monitor":  And(list, len, Use(validate_monitor_list), error="you must provide at least one item to monitor"),
     }
 )
 
 
 # TODO: Write a more rubust validator for the monitor section
 # Any input, output, or state declared in the monitor section must be declared in the models section
-
 # TODO: Write a more rubust validator for connections section
 # Any input, output, or state declared in the connection section must be declared in the models section
-
-# TODO: Write a validator for the scenario data file. It should check that the fiel exists 
 # TODO: write a validator for triggers. It should check that the trigger is a valid input, output, or state. 
