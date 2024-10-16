@@ -1,3 +1,3 @@
-from .model_constructor import ModelConstructor as ModelConstructor
+from .model_builder import IlluminatorConstructor as ModelConstructor
 
 __all__ = ['ModelConstructor']
