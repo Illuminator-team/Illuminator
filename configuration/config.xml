@@ -60,4 +60,28 @@
     <method>python</method>
     <location>Models.Fuelcell.fuelcell_mosaik:FuelCellSim</location>
   </row>
+  <row>
+    <index>10</index>
+    <model>Wind</model>
+    <method>connect</method>
+    <location>192.168.0.1:5123</location>
+  </row>
+  <row>
+    <index>11</index>
+    <model>PV</model>
+    <method>connect</method>
+    <location>192.168.0.2:5123</location>
+  </row>
+  <row>
+    <index>12</index>
+    <model>Load</model>
+    <method>connect</method>
+    <location>192.168.0.3:5123</location>
+  </row>
+  <row>
+    <index>13</index>
+    <model>Battery</model>
+    <method>connect</method>
+    <location>192.168.0.4:5123</location>
+  </row>
 </data>
