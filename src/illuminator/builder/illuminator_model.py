@@ -10,8 +10,10 @@ class SimulatorType(Enum):
     HYBRID = 'hybrid'
 
 
+# TODO: continue here and reuse this file for the final version of 
+# a common interface for all models
 @dataclass
-class ModelConstructor(ABC):
+class IlluminatorModel(ABC):
     """ 
     A abstract class for adding models to the Illuminator.
     ...
