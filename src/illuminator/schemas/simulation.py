@@ -15,14 +15,14 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
 valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
 # monitor and connections sections enforce a format such as <model>.<input/output/state>
-valid_monitor_connection = r'^\w+\.\w+$'
+valid_model_item_format = r'^\w+\.\w+$'
 
-def validate_monitor_list(items: list) -> list:
+def validate_model_item_format(items: list) -> list:
     """
     Validates the monitor section of the simulation configuration file, as
     follows the format <model>.<item>
     """
-    pattern = re.compile(valid_monitor_connection)
+    pattern = re.compile(valid_model_item_format)
     for item in items:
         if not pattern.match(item):
             raise SchemaError(f"Invalid format for monitor item: {item}. Must be in the format: <model>.<item>")
@@ -83,11 +83,11 @@ schema = Schema( # a mapping of mappings
         ),
         "connections":  Schema( # a sequence of mappings
             [{
-                "from": Regex(valid_monitor_connection, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
-                "to": Regex(valid_monitor_connection, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
+                "from": Regex(valid_model_item_format, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
+                "to": Regex(valid_model_item_format, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
             }]
         ),
-        "monitor":  And(list, len, Use(validate_monitor_list, error="Items in 'monitor' must have the format: <model>.<item>"), 
+        "monitor":  And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
                         error="you must provide at least one item to monitor"),
     }
 )
@@ -97,4 +97,4 @@ schema = Schema( # a mapping of mappings
 # Any input, output, or state declared in the monitor section must be declared in the models section
 # TODO: Write a more rubust validator for connections section
 # Any input, output, or state declared in the connection section must be declared in the models section
-# TODO: write a validator for triggers. It should check that the trigger is a valid input, output, or state. 
+# TODO: write a validator for triggers. It should check that the trigger has been declared as input, output, or state. 
