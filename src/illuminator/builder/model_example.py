@@ -1,68 +1,31 @@
 """
-This defines a new model
+An example of creating a model for the illuminator
 """
-from typing import Any
+from illuminator.builder import IlluminatorModel, ModelConstructor
 
-from illuminator.builder import ModelConstructor
+# step 1: defin model properties
+battery = IlluminatorModel(
+    parameters={"material": "lithium"},
+    inputs={"voltage": 60},
+    outputs={"voltage": 20},
+    states={"voltage": 10}
+)
 
 
-# TODO: use the FActory pattern to create models.
-
-class Adder(ModelConstructor):
-    """
-    A model that adds things up
-    """
-
-    # TODO: revisit the way this is implemented, so that
-    # properties are set in the constructor
-
-    # TODO: can we have a solution like this?
-    inputs = {'a': int, 'b': int}
+# step 2: create a model by inheriting from ModelConstructor
+# and implementing the step method
+class BatteryModel(ModelConstructor):
 
     def step(self) -> None:
-        self.outputs["output"] = self.inputs["input1"] + self.inputs["input2"]
-        return None
+        return self._model.inputs["voltage"] - self._model.outputs["voltage"]
 
-    @property
-    def model_parameters(self):
 
-        return  {
-            "a": int,
-            "b": int
-        }
-        
-    @property
-    def inputs(self):
-        return {
-            "input1": int,
-            "input2": int
-        }
-    
-    @property
-    def outputs(self):
-        return {
-            "output1": int
-        }
-    
-    def states(self):
-        return {
-            "output1": int
-        }
-    
-    def simulator_type(self):
-        return "time-based"
-    
-    def time_step_size(self):
-        return 1
-    
-    def step(self) -> None:
-       self.outputs["output"] = self.inputs["input1"] + self.inputs["input2"]
-       return None # None is returned for consistency. What step must do is to compute values that
-       # update the states and outputs of the model
-    
-if __name__ == "__main__":
+# step 3: create an instance of the model
+battery_model = BatteryModel(battery)
 
-    import dataclasses as dc
-    model = Adder()
-    print(model)
+# step 3: properties can be overriden
+battery.inputs["voltage"] = 300
 
+# step 4: run the model
+print(battery_model.step())
+pass
