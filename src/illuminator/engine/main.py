@@ -1,7 +1,7 @@
 import mosaik
 import mosaik.util
 import argparse
-from Illuminator_Engine.yaml_interpreter import YamlInterpreter
+from .yaml_interpreter import YamlInterpreter
 
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
