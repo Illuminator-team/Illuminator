@@ -3,6 +3,8 @@ import mosaik.util
 # also buildmodelset is just a list of predefined variables
 from configuration.buildmodelset import *
 
+# TODO: move configuration to a src folder and make it a package
+
 # ERRORS:
 # No errors found, passes
 
