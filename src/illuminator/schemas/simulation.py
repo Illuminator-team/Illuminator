@@ -15,26 +15,26 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
 valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
 # monitor and connections sections enforce a format such as <model>.<input/output/state>
-valid_monitor_connection = r'^\w+\.\w+$'
+valid_model_item_format = r'^\w+\.\w+$'
 
-def validate_monitor_list(items: list) -> list:
+def validate_model_item_format(items: list) -> list:
     """
-    Validates the monitor section of the simulation configuration file.
+    Validates the monitor section of the simulation configuration file, as
+    follows the format <model>.<item>
     """
-    pattern = re.compile(valid_monitor_connection)
+    pattern = re.compile(valid_model_item_format)
     for item in items:
         if not pattern.match(item):
             raise SchemaError(f"Invalid format for monitor item: {item}. Must be in the format: <model>.<item>")
     return items
 
-def validate_scenario_data_file(file_path: str) -> str:
+def validate_file_path(file_path: str) -> str:
     """
-    Validates the scenario data file exists.
+    Validates that a file path exists.
     """
-    if not os.path.isfile(file_path):
-        raise SchemaError(f"Scenario data file does not exist: {file_path}")
+    if not os.path.exists(file_path):
+        raise SchemaError(f"File path does not exist: {file_path}")
     return file_path
-
 
 class ScenarioSchema(Schema):
     """
@@ -70,7 +70,9 @@ schema = Schema( # a mapping of mappings
                 Optional("parameters"): And(dict, len, error="if 'parameters' is used, it must contain at least one key-value pair"),
                 Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                 Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
-                Optional("scenario_data"): And(str, len, Use(validate_scenario_data_file)),
+                Optional("scenario_data"): And(str, 
+                                               Use(validate_file_path, error=f"'scenario_data' points to a file that doesn't exist"), 
+                                               error="If 'scenario_data' is used, a valid file path must be provided"), 
                 Optional("connect"): Schema( # a mapping of mappings
                     {
                         "ip": Regex(valid_ip, error="you must provide an IP address that matches versions IPv4 or IPv6"),
@@ -81,11 +83,12 @@ schema = Schema( # a mapping of mappings
         ),
         "connections":  Schema( # a sequence of mappings
             [{
-                "from": Regex(valid_monitor_connection, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
-                "to": Regex(valid_monitor_connection, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
+                "from": Regex(valid_model_item_format, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
+                "to": Regex(valid_model_item_format, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
             }]
         ),
-        "monitor":  And(list, len, Use(validate_monitor_list), error="you must provide at least one item to monitor"),
+        "monitor":  And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
+                        error="you must provide at least one item to monitor"),
     }
 )
 
@@ -94,4 +97,4 @@ schema = Schema( # a mapping of mappings
 # Any input, output, or state declared in the monitor section must be declared in the models section
 # TODO: Write a more rubust validator for connections section
 # Any input, output, or state declared in the connection section must be declared in the models section
-# TODO: write a validator for triggers. It should check that the trigger is a valid input, output, or state. 
+# TODO: write a validator for triggers. It should check that the trigger has been declared as input, output, or state. 
