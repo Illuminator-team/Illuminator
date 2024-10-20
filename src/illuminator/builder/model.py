@@ -18,7 +18,7 @@ class IlluminatorModel():
     ----------
 
     parameters: dict
-        Properties of the object being modeled, e.g. material the object is 
+        Properties of the object being modeled, e.g. material the object is
         made of.
     inputs: dict
         One or more name:value pairs to be regarded as inputs to the model.
