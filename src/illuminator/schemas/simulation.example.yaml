@@ -21,7 +21,7 @@ models: # list of models for the energy network
   triggers:   # list of triggers for the of another model??. It must be an input, output or state of the model
     - capacity
     - soc_min
-  scenario_data: '/Users/mgarciaalvarez/devel/Illuminator/src/illuminator/schemas/scenario_data.csv' #path to the scenario data file for the model. This should be optional
+  scenario_data: './src/illuminator/schemas/scenario_data.csv' #path to the scenario data file for the model. This should be optional
   connect: # this is optional. If not defined, the model will be assumed to be local
     ip: 127.0.0.1 # Ip version 4 or 6
     port: 5000 # optional, if not defined, the default port will be used
