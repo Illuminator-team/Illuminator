@@ -11,7 +11,6 @@ battery = IlluminatorModel(
     states={"voltage": 10}
 )
 
-
 # step 2: create a model by inheriting from ModelConstructor
 # and implementing the step method
 class BatteryModel(ModelConstructor):
