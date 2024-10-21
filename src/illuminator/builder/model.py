@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
-
+from datetime import datetime
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
@@ -44,15 +44,16 @@ class IlluminatorModel():
     parameters: Dict = field(default_factory=dict)    
     inputs: Optional[Dict] = field(default_factory=dict) 
     outputs: Dict = field(default_factory=dict)
-    states: Dict = field(default_factory=list)
-    triggers: Optional[List] = field(default_factory=list)
-    simulator_type: SimulatorType = SimulatorType.TIME_BASED
+    states: Dict = field(default_factory=dict)
+    triggers: Optional[Dict] = field(default_factory=list)
+    # simulator_type: SimulatorType = SimulatorType.TIME_BASED
     time_step_size: int = 1
+    time: Optional[datetime] = None 
 
     def __post_init__(self):
         self.validate_states()
         self.validate_triggers()
-        self.validate_simulator_type()
+        # self.validate_simulator_type()
 
     def validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
