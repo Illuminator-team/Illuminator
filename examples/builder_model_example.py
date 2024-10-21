@@ -3,7 +3,7 @@ An example of creating a model for the illuminator
 """
 from illuminator.builder import IlluminatorModel, ModelConstructor
 
-# step 1: defin model properties
+# step 1: define model properties
 battery = IlluminatorModel(
     parameters={"material": "lithium"},
     inputs={"voltage": 60},
