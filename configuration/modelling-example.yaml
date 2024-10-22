@@ -22,11 +22,9 @@ models: # list of models for the energy network
     - capacity
     - soc_min
   scenario_data: 'path/to/file' #path to the scenario data file for the model. This should be optional
-  method: 
-    type: connect     # can be python for local or connect for remote
-    location: null
-    connect_ip: 192.168.0.1
-    connect_port: 5123
+  connect:
+    ip: 192.168.0.1
+    port: 5000
 - name: Battery2
   type: Battery # models can reuse the same type
   inputs: 
@@ -38,11 +36,47 @@ models: # list of models for the energy network
     charge_power_max: 100
   states: 
     soc: 0.5  # initial value for the state, optional
-  method: 
-    type: connect     # can be python for local or connect for remote
-    location: null
-    connect_ip: 192.168.0.2
-    connect_port: 5123
+  connect:
+    ip: 192.168.0.2
+    port: 5000
+- name: Battery3
+  type: Battery # models can reuse the same type
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+  states: 
+    soc: 0.5  # initial value for the state, optional
+  connect:
+    port: 5000
+- name: Battery4
+  type: Battery # models can reuse the same type
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+  states: 
+    soc: 0.5  # initial value for the state, optional
+  connect:
+    ip: 
+    port: 5000
+- name: Battery5
+  type: Battery # models can reuse the same type
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+  states: 
+    soc: 0.5  # initial value for the state, optional
 - name: PV1
   type: PV
   inputs: 
@@ -54,11 +88,8 @@ models: # list of models for the energy network
     power_max: 100
   states: 
     initial_soc: 0.5
-  method: 
-    type: connect     # can be python for local or connect for remote
-    location: null
-    connect_ip: 192.168.0.3
-    connect_port: 5123
+  connect:
+    ip: 192.168.0.3
 connections:
 - from: Battery1.output2 # start model, pattern: model_name.output_name/input_name
   to: PV1.input1 # end model
