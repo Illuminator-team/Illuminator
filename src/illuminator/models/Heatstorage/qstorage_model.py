@@ -3,6 +3,79 @@ import numpy as np
 class heatstorage_python:
     def __init__(self, soc_init, max_temperature, min_temperature, insulation, ext_temp, therm_cond,
                  length, diameter, density, c, eff, max_q, min_q,resolution=15):
+        """
+        Used in Python based Mosaik simulations as an addition to the qstorage_mosaik.heatstorageSim class.
+
+
+        ...
+
+        Parameters
+        ----------
+        soc_init : ???
+            ???
+        max_temperature : float
+            ???
+        min_temperature : float
+            ???
+        insulation : ???
+            ???
+        ext_temp : float
+            ???
+        therm_cond : ???
+            ???
+        length : float
+            ???
+        diameter : float
+            ???
+        density : float
+            ???
+        c : ???
+            ???
+        eff : ???
+            ???
+        max_q : ???
+            ???
+        min_q : ???
+            ???
+        resolution : ???
+            ???
+
+        Attributes
+        ----------
+        self.flag : int
+            ???
+        self.q_soc : ???
+            ???
+        self.max_temperature : float
+            ???
+        self.min_temperature : float
+            ???
+        self.insulation : ???
+            ???
+        self.ext_temp : float
+            ???
+        self.therm_cond : ???
+            ???
+        self.area : float
+            ??? np.pi*(diameter/2)**2
+        self.length : float
+            ???
+        self.density : float
+            ???
+        self.c : ???
+            ???
+        self.eff : ???
+            ???
+        self.max_q : ???
+            ???
+        self.min_q : ???
+            ???
+
+        self.t_int = (max_temperature - min_temperature) * soc_init / 100 + min_temperature
+        self.capacity = (max_temperature - min_temperature) * self.density * self.area * self.length * self.c
+        self.q_loss = 0
+        self.resolution=resolution #min
+        """
         self.flag = 0
         self.q_soc = soc_init
         self.max_temperature = max_temperature
@@ -23,7 +96,23 @@ class heatstorage_python:
         self.q_loss = 0
         self.resolution=resolution #min
 
-    def charge_q(self, flow2qs):
+    def charge_q(self, flow2qs:float) -> dict:
+        """
+        Description (?)
+        Returns the parameters `q_flow`, `t_int`, `q_soc`, `mod`, `flag`, `q_loss`
+
+        ...
+
+        Parameters
+        ----------
+        flow2qs : float
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         q_flow = min(self.max_q, flow2qs)  #kW
         if q_flow > 0:
             qcharge = q_flow * self.eff * self.resolution / 60               # kWh
@@ -58,7 +147,23 @@ class heatstorage_python:
                     'q_loss': self.q_loss}
         return re_params
 
-    def discharge_q(self, flow2qs):
+    def discharge_q(self, flow2qs:float) -> dict:
+        """
+        Description (?)
+        Returns the parameters `q_flow`, `t_int`, `q_soc`, `mod`, `flag`, `q_loss`
+
+        ...
+
+        Parameters
+        ----------
+        flow2qs : float
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         q_flow = max(self.min_q, flow2qs)
         if q_flow < 0:
             qdischarge = -q_flow / self.eff * self.resolution / 60
@@ -94,7 +199,23 @@ class heatstorage_python:
 
         return re_params
 
-    def output_q(self, flow2qs):
+    def output_q(self, flow2qs:float) -> dict:
+        """
+        Description (?)
+        Returns the parameters `q_flow`, `t_int`, `q_soc`, `mod`, `flag`, `q_loss`
+
+        ...
+
+        Parameters
+        ----------
+        flow2qs : float
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         self.q_loss = (self.therm_cond/self.insulation)*self.area*(self.t_int - self.ext_temp)
         flow2qs -= self.q_loss
         if flow2qs == 0:
