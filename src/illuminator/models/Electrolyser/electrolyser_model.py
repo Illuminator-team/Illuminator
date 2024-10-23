@@ -1,5 +1,43 @@
+from typing import Union
 class electrolyser_python:
-    def __init__(self, eff,  resolution, term_eff, rated_power, ramp_rate):
+    def __init__(self, eff:float,  resolution:int, term_eff:float, rated_power:float, ramp_rate:float) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the electrolyser_mosaik.ElectrolyserSim class
+        
+        ...
+
+        Parameters
+        ----------
+        eff : float
+            ???
+        resolution : int
+            ???
+        term_eff : float
+            ???
+        rated_power : float
+            ???
+        ramp_rate : float
+            ???
+
+        Attributes
+        ----------
+        self.p_in : ???
+            ???
+        self.h_out : ???
+            ???
+        self.eff : float
+            ???
+        self.resolution : int
+            ???
+        self.term_eff : float
+            ???
+        self.rated_power : float
+            ???
+        self.ramp_rate : float
+            ???
+        self.p_in_last : int  
+            Power input during the last step
+        """
         self.p_in = None
         self.h_out = None
         self.eff = eff
@@ -10,14 +48,47 @@ class electrolyser_python:
         self.p_in_last = 0  # power input during the last step
 
 
-    def ramp_rate_limit(self, desired_power):
-        # Limit the change in power based on the ramp rate
+    def ramp_rate_limit(self, desired_power:Union[float, int]) -> Union[float, int]:
+        """
+        Limits the change in power based on the ramp rate
+
+        ...
+
+        Parameters
+        ----------
+        desired_power : float or int
+            ???
+        
+        Returns
+        -------
+        desired_power : float or int
+            ???
+        """
         power_change = desired_power - self.p_in_last
         if abs(power_change) > self.ramp_rate:
             desired_power = self.p_in_last + self.resolution * self.ramp_rate
         return desired_power
 
-    def electrolyser(self, flow2e, temperature=15, pressure=100):
+    def electrolyser(self, flow2e:int, temperature:int=15, pressure:int=100) -> dict:
+        """
+        Unknown description (???) 
+        
+        ...
+
+        Parameters
+        ----------
+        flow2e : int
+            ???
+        temperature : int
+            ???
+        pressure : int
+            ???
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         q_product=0
         desired_power = min(self.rated_power, flow2e)
         e_consume = self.ramp_rate_limit(desired_power)

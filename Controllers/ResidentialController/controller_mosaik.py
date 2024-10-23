@@ -11,7 +11,7 @@ else:
 import sys
 sys.path.insert(1,'/home/illuminator/Desktop/Final_illuminator')
 
-# try:
+# try: 
 #     import Models.Battery.battery_model as batterymodel
 # except ModuleNotFoundError:
 #     import battery_model as batterymodel
@@ -176,7 +176,7 @@ class controlSim(mosaik_api.Simulator):
 
         inputs : dict
             Dict of dicts mapping entity IDs to attributes and dicts of values (each simulator has to decide on its own how to reduce 
-            the values (e.g., as its sum, average or maximum)::
+            the values (e.g., as its sum, average or maximum))::
 
             {
                 'dest_eid': {

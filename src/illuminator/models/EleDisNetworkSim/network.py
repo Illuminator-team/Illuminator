@@ -5,8 +5,13 @@ def create_cigre_lv_resident():
     """
     Create the CIGRE LV Grid from final Report of Task Force C6.04.02:
     "Benchmark Systems for Network Integration of Renewable and Distributed Energy Resources”, 2014.
-    OUTPUT:
-        **net** - The pandapower format network.
+    
+    ...
+
+    Returns
+    -------
+    net : object
+        The pandapower format network.
     """
     net_cigre_lv = pp.create_empty_network()
 

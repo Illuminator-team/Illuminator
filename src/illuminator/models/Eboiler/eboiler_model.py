@@ -1,12 +1,30 @@
 class eboiler_python:
-    """A class representing an electric boiler."""
-
-    def __init__(self, eboiler_set):
+    # Need to check if used in DNcontrol or multienergy
+    def __init__(self, eboiler_set:dict) -> None:
         """
-        Initializes the EBoilerPython instance with the given settings.
+        Used in Python based Mosaik simulations as an addition to the controller_mosaik.controlSim class.
+        
+        ...
 
-        Parameters:
-        eboiler_set (dict): A dictionary containing the boiler settings.
+        Parameters
+        ----------
+        eboiler_set : dict
+            The collection of the boiler settings
+        
+        Attributes
+        ----------
+        self.capacity : ???  
+            Capacity of the boiler in kW, converting to W
+        self.min_load : ???  
+            Minimum load in kW, converting to W
+        self.max_load : ???  
+            Maximum load in kW, converting to W
+        self.standby_loss : ???  
+            Standby loss as a fraction of the capacity
+        self.efficiency : ???  
+            Efficiency under maximum load
+        self.resolution : ???
+            Resolution of the system
         """
         self.capacity = eboiler_set['capacity']  # Capacity of the boiler in kW, converting to W
         self.min_load = eboiler_set['min_load']  # Minimum load in kW, converting to W
@@ -15,15 +33,22 @@ class eboiler_python:
         self.efficiency = eboiler_set['efficiency']  # Efficiency under maximum load
         self.resolution = eboiler_set['resolution']  # Resolution of the system
 
-    def demand(self, eboiler_dem):
+    def demand(self, eboiler_dem:dict) -> dict:
         """
         Calculates the demand of the electric boiler based on the input demand and heat source temperature.
 
-        Parameters:
-        inputs (dict): A dictionary with keys 'Q_Demand' (heat demand in W) and 'heat_source_T' (temperature in °C).
+        ...
 
-        Returns:
-        dict: A dictionary containing the heat supplied and electricity consumed.
+        Parameters
+        ----------
+        inputs : dict 
+            Electric boiler demand data. 
+            {'Q_Demand': (heat demand in W), 'heat_source_T' : (temperature in °C)}
+
+        Returns
+        -------
+        dict
+            Returns electric boiler data on the heat supplied and electricity consumed.
         """
         Q_Demand = eboiler_dem
         #heat_source_T = inputs['heat_source_T']
