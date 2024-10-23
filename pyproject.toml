@@ -24,7 +24,7 @@ dependencies = [
     "paho-mqtt==1.6.1",
     "pandapower==2.13.1",
     "pandas==1.5.3",
-    "mosaik==3.1.1"
+    "mosaik>=3.3.3"
 ]
 keywords = [
     "energy",
@@ -36,7 +36,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python"
 ]
-
 
 [project.optional-dependencies]
 dev = [

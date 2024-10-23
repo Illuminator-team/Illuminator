@@ -1,17 +1,17 @@
 from ruamel.yaml import YAML
 import sys
 import json
-from modelling_schema import schema
+from illuminator.schemas.simulation import schema
 
 # this if a yaml file complies with the modelling schema
 
-_file = open('./configs/modelling-example.yaml', 'r')
+_file = open('./src/illuminator/schemas/simulation.example.yaml', 'r')
 
 yaml = YAML(typ='safe')
 data = yaml.load(_file)
 
 val = schema.validate(data)
 
-json_data = json.dumps(data, indent=4)
-print(json_data)
+# json_data = json.dumps(data, indent=4)
+# print(json_data)
 
