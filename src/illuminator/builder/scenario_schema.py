@@ -1,7 +1,8 @@
 """
-A schema for validating a simulation configuration file
-in the Illuminaotr. 
+A schema for YAML files that define the simulation
+for the Illuminator.
 """
+
 from typing import Any, Dict
 from schema import Schema, And, Use, Regex, Optional, SchemaError
 import datetime
@@ -39,11 +40,11 @@ schema = Schema( # a mapping of mappings
             [ {
                 "name": And(str, len),
                 "type": And(str, len),
-                "inputs": And(dict, len, error="if 'inputs' is used, it must contain at least one key-value pair"),
-                "outputs": And(dict, len, error="if 'outputs' is used, it must contain at least one key-value pair"),
+                Optional("inputs"): And(dict, len, error="if 'inputs' is used, it must contain at least one key-value pair"),
+                Optional("outputs"): And(dict, len, error="if 'outputs' is used, it must contain at least one key-value pair"),
                 Optional("parameters"): And(dict, len, error="if 'parameters' is used, it must contain at least one key-value pair"),
                 Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
-                Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
+                Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one item"),
                 Optional("scenario_data"): And(str, len, error="you must provide a scenario data file if using 'scenario_data'"),
             } ]
         ),
@@ -58,8 +59,10 @@ schema = Schema( # a mapping of mappings
 )
 
 
+
 # TODO: Write a more rubust validator for the monitor section
 # Any input, output, or state declared in the monitor section must be declared in the models section
+# A model must have either an input or output. 
 
 # TODO: Write a more rubust validator for connections section
 # Any input, output, or state declared in the connection section must be declared in the models section
