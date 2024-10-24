@@ -2,7 +2,40 @@ import pandas as pd
 
 
 class gas_network_python:
-    def __init__(self, max_congestion, V, leakage):
+    def __init__(self, max_congestion, V, leakage) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the gas_network_mosaik.gasnetworkSim class.
+
+        ...
+
+        Parameters
+        ----------
+        max_congestion : ???
+            ???
+        V : ???
+            ???
+        leakage : ???
+            ???
+
+        Attributes
+        ----------
+        self.max_congestion : ???
+            ???
+        self.congestion : bool
+            ???
+        self.V : ???
+            ??? volume?
+        self.leakage : leakage
+            ???
+        self.p_int : int
+            ???
+        self.T : float       
+            ??? Kelvin STP
+        self.R : int            
+            Gas constant, R = 4124 in J/(kg*K)
+        self.M : float
+            ??? molar msass kg/mol
+        """
         self.max_congestion = max_congestion
         self.congestion = False
         self.V = V                      #volume
@@ -12,7 +45,24 @@ class gas_network_python:
         self.R = 4124            # gas constant J/(kg*K)
         self.M = 0.002016         # molar msass kg/mol
 
-    def gasnetwork(self, flow_in, flow_out):
+    def gasnetwork(self, flow_in, flow_out) -> dict:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        flow_in : ???
+            ???
+        flow_out : ???
+            ???
+        
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         for i in range(len(flow_in)):
             flow_in[i] = flow_in[i] / 60           #kg/s
         for i in range(len(flow_out)):

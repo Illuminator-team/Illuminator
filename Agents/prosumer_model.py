@@ -179,7 +179,7 @@ class prosumer_python(ABC):
 
         Returns
         -------
-        re_params : list
+        re_params : dict
             Returns the calculated hourly averages for a given date range
         """
         index = self.time.index(self.current_time)
