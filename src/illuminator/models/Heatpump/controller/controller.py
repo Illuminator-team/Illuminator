@@ -2,8 +2,104 @@ import jsonpickle
 
 class Controller():
 
-    def __init__(self, params):
+    def __init__(self, params:dict) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the controller_mosaik.ControllerSimulator class.
 
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            ???
+
+        Attributes
+        ----------
+        self.T_amb : ???
+            ???
+        self.heat_source_T : ???
+            ???
+        self.sh_demand : ???
+            ???
+        self.sh_supply : ???
+            ???
+        self.dhw_demand : ???
+            ???
+        self.dhw_supply : ???
+            ???
+        self.hp_demand : ???
+            ???
+        self.hp_supply : ???
+            ???
+        self.heat_demand : ???
+            ???
+        self.heat_supply : ???
+            ???
+        self.hwt_connections : ???
+            ???
+        self.T_mean : ???
+            ???
+
+        self.sh_in_F : ???
+            ???
+        self.sh_in_T : ???
+            ???
+        self.sh_out_F : ???
+            ???
+
+        self.dhw_in_F : ???
+            ???
+        self.dhw_in_T : ???
+            ???
+        self.dhw_out_F : ???
+            ???
+
+        self.hp_in_F : ???
+            ???
+        self.hp_in_T : ???
+            ???
+        self.hp_out_F : ???
+            ???
+        self.hp_out_T : ???
+            ???
+        self.hp_cond_m : ???
+            ???
+        self.hp_on_fraction : ???
+            ???
+
+        self.hwt_mass : ???
+            ???
+
+        self.hwt_hr_P_th_set : ???
+            ???
+
+        self.hp_signal : ???
+            ???
+        self.heater_signal : ???
+            ???
+        self.hp_status : ???
+            ???
+
+        self.T_hp_sp_h : ???
+            ???
+        self.T_hp_sp_l : ???
+            ???
+        self.T_hr_sp : ???
+            ???
+        self.T_max : ???
+            ???
+        self.T_min : ???
+            ???
+        self.dhw_in_T : ???
+            ???
+        self.sh_dT : ???
+            ???
+
+
+        self.i : int
+            ???
+        """
         self.T_amb = None
         self.heat_source_T = None
         self.sh_demand = None
@@ -51,7 +147,10 @@ class Controller():
 
         self.i = 0
 
-    def step(self):
+    def step(self) -> None:
+        """
+        Description
+        """
 
         if self.heat_demand is None or self.heat_demand < 0:
             self.heat_demand = 0
@@ -119,7 +218,26 @@ class Controller():
             else:
                 self.hwt_hr_P_th_set = 0
 
-    def calc_dhw_supply(self, step_size, hwt_connections):
+    def calc_dhw_supply(self, step_size, hwt_connections) -> tuple[float, float]:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        step_size : ???
+            ???
+        hwt_connections : ???
+            ???
+        
+        Returns
+        -------
+        sh_fraction : float
+            ???
+        dhw_m_flow : float
+            ???
+        """
 
         sh_fraction = 1 # remove later
 
@@ -141,7 +259,28 @@ class Controller():
 
                 return sh_fraction, dhw_m_flow
 
-    def calc_sh_supply(self, step_size,  hwt_connections, sh_fraction):
+    def calc_sh_supply(self, step_size,  hwt_connections, sh_fraction) -> tuple[float, float]:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        step_size : ???
+            ???
+        hwt_connections : ???
+            ???
+        sh_fraction : ???
+            ???
+        
+        Returns
+        -------
+        sh_m_flow : float
+            ???
+        sh_in_T : float
+            ???
+        """
 
         for key, connection in hwt_connections.items():
 
@@ -163,7 +302,18 @@ class Controller():
 
                 return sh_m_flow, sh_in_T
 
-    def get_hp_out_T (self, hwt_connections):
+    def get_hp_out_T (self, hwt_connections) -> None:
+        """
+        Set the `self.hp_out_T` variable based on the `hwt_connections` parameter
+        and if the connection is of type `hp_out`
+
+        ...
+
+        Parameters
+        ----------
+        hwt_connections : ???
+            ???   
+        """
 
         for key, connection in hwt_connections.items():
 

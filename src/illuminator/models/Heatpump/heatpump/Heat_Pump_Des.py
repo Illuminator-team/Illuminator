@@ -17,7 +17,81 @@ COP_M_DATA_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'cop_m
 
 class Heat_Pump_Des():
 
-    def __init__(self, params, COP_m_data=None):
+    def __init__(self, params:dict, COP_m_data=None) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the Heat_Pump_Model classes. 
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            Parameters which contain required values for all models including for specific calculation modes
+        COP_m_data : ???
+            ???
+
+        Attributes
+        ----------
+        self.hp_model : ???
+            ???
+        self.heat_source : ???
+            ???
+        self.calc_mode : ???
+            ???
+        self.Q_Demand : ???
+            ???
+        self.cons_T : ???
+            ???
+        self.heat_source_T : ???
+            ???
+        self.COP_fixed : ???
+            ???
+        self.HC_fixed : ???
+            ???
+        self.cond_m_fixed : ???
+            ???
+
+        self.LFE : ???
+            The temperature of the fluid leaving the evaporator
+        self.LFE_des : ???
+            The temperature of the water leaving the condenser in design case
+        self.LWC : ???
+            The temperature of the water leaving the condenser
+        self.LWC_des : ???
+            The temperature of the fluid leaving the evaporator in design case
+        self.heat_source_T_des : ???
+            The heat source temperature in design case
+        self.etas_des : ???
+            The compressor efficiency in design case
+        self.heatload_des : ???
+            The heating capacity in design case
+        self.cmp_stages : int
+            The number of stages of compression
+        self.ic : bool
+            Intercooler between the compressors, if more than one stage of compression
+        self.sh : bool
+            Super heater for the fluid entering the evaporator
+        self.idx : ???
+            Index to keep track of the current design point
+        self.nw : ???
+            The network with all the components
+        self.Q_Supplied : ???
+            Heat supplied by the heat pump
+        self.on_fraction : ???
+            The fraction of timestep for which the heat pump operates
+        self.cond_m : ???
+            The mass flow of water in condenser
+        self.Q_evap : ???
+            The heat extracted from source in the evaporator
+        self.COP_m_data : ???
+            The saved data for fast calculation mode
+        self.skip_step : bool
+            Used to skip a step in case of an error
+        self.hp : ???
+            ??? hpl.HeatPump(parameters)
+        self.cond_in_T : ???
+            ??? Same as cons_T minus 5
+        """
 
         # Parameters required for all models
         self.hp_model = params.get('hp_model')
@@ -77,10 +151,26 @@ class Heat_Pump_Des():
 
 
 
-    def _take_closest(self, myList, myNumber):
+    def _take_closest(self, myList:list, myNumber:int) -> int:
         """
-        Assumes myList is sorted. Returns closest value to myNumber.
+        Assuming `myList` is sorted, returns the closest value to `myNumber`.
         If two numbers are equally close, return the smallest number.
+        [Josip] Since this is just fetching an item from a sorted list, this could be replaced with a binary search algorithm
+
+        ...
+
+        Parameters
+        ----------
+        myList : list
+            A sorted list from which to take the closest value
+        myNumber : int
+            The number we wish to find the closest match to
+
+        Returns
+        -------
+        int
+            The closest value found to `myNumber`
+
         """
         pos = bisect_left(myList, myNumber)
         if pos == 0:
@@ -95,7 +185,10 @@ class Heat_Pump_Des():
             return before
 
 
-    def _etas_heatload_id(self):
+    def _etas_heatload_id(self) -> None:
+        """
+        Sets heat and heatload parameters/attributes(?)
+        """
         with open(JSON_DATA_FILE, "r") as read_file_1:
             data_1 = json.load(read_file_1)
 
@@ -169,7 +262,11 @@ class Heat_Pump_Des():
 
 
     # Method to design the heat pump
-    def _design_hp(self):
+    def _design_hp(self) -> None:
+        """
+        Method to design the heat pump.
+        (?) Seems like nothing more than attribute/parameter setting.
+        """
 
         # The parameters that will vary for the different heat pump models are defined here
         if 'air_6kw' in self.hp_model.lower():
@@ -396,7 +493,10 @@ class Heat_Pump_Des():
         # self.nw.print_results()
         self.nw.save('heat_pump')
 
-    def p_cop_calc(self):
+    def p_cop_calc(self) -> None:
+        """
+        (?)Sets parameters/attributes
+        """
 
         self.P_cons = (self.nw.get_comp('compressor 1').P.val +
                        self.nw.get_comp('evaporator recirculation pump').P.val +
@@ -414,7 +514,17 @@ class Heat_Pump_Des():
         if self.COP < 1 or self.COP > 20:
             self.step_error()
 
-    def step(self, inputs):
+    def step(self, inputs:dict) -> None:
+        """
+        (?)Sets parameters/attributes
+
+        ...
+
+        Parameters
+        ----------
+        inputs : dict
+            Values from which to acquire necessary parameters/attributes
+        """
 
         self.skip_step = False
         self.on_fraction = 1
@@ -544,7 +654,11 @@ class Heat_Pump_Des():
         else:
             self.step_error()
 
-    def step_error(self):
+    def step_error(self) -> None:
+        """
+        (?)Sets parameters/attributes
+        """
+
         self.skip_step = True
         self.P_cons = 0
         self.COP = 0

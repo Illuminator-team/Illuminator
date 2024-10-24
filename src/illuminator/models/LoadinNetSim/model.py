@@ -7,6 +7,39 @@ DATE_FORMAT = ['YYYY-MM-DD HH:mm', 'YYYY-MM-DD HH:mm:ss']
 
 class LoadModel:
     def __init__(self,meta,profile):
+        """
+        Used in Python based Mosaik simulations as an addition to the mosaik-model.LoadholdSim class.
+
+        ...
+
+        Parameters
+        ----------
+        meta : dict
+            The initial metadata
+        profile : pd.DataFrame
+            ???
+        
+        Attributes
+        ----------
+        self.start : ???
+            ???
+        self.resolution : ???
+            Resolution unit:min
+        self.unit : ???
+            ???
+        self.load_ids : list
+            Obtain id lists
+        self.loads : list
+            ???
+        self.data : ???
+            ???
+        self._data : pd.DataFrame
+            The data at minutes
+        self._last_date : ???
+            Last time instance
+        self._cache : series
+            Load power at cache
+        """
         #data={'start':'2015-02-01 00:00:00','resolution':15*60,'unit':'W'}
         #profile=dataframe of load profile
         self.start=meta['start']
@@ -29,10 +62,22 @@ class LoadModel:
         self._last_date=None#last time instance
         self._cache=None#load power at cache
 
-    def get(self,minutes):
+    def get(self,minutes:int):
         """
-        get the current load power for all loads at minutes since attr:'start'.
+        Get the current load power for all loads at minutes since attr:'start'.
 
+        Parameters
+        ----------
+        minutes : int
+            The minutes at which the load will be acquired
+        
+        Returns
+        --------
+        series
+            load power at cache
+
+        Notes
+        -----
         If the model uses a 15min resolution and minutes not multiple of 15,
         the next smaller multiple of 15 will be used. For example, if you
         pass ``minutes=23``, you'll get the value for ``15``.
@@ -56,14 +101,25 @@ class LoadModel:
         return self._cache
 
 
-    def get_delta(self,date):
-        """Get the amount of minutes between *date* and :attr:`start`.
+    def get_delta(self,date:str) -> int:
+        """
+        Get the amount of minutes between *date* and :attr:`start`.
 
-                The date needs to be a strings formated like :data:`DATE_FORMAT`.
-
-                Raise a :exc:`ValueError` if *date* is smaller than :attr:`start`.
-
-                """
+        Parameters
+        ----------
+        date : str
+            A string formated like :data:`DATE_FORMAT`.
+        
+        Raises
+        ------
+        ValueError
+            Raise a :exc:`ValueError` if *date* is smaller than :attr:`start`.
+        
+        Returns
+        -------
+        minutes : int
+            The number of minutes
+        """
         start_timestep=pd.to_datetime(self.start)
         getdate_timestep=pd.to_datetime(date)
         if getdate_timestep<start_timestep:
