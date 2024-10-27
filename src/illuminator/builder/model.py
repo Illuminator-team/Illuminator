@@ -47,8 +47,8 @@ class IlluminatorModel():
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
     # simulator_type: SimulatorType = SimulatorType.TIME_BASED
-    time_step_size: int = 1
-    time: Optional[datetime] = None 
+    time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
+    time: Optional[datetime] = None  # Shouldn't be modified by the user.
 
     def __post_init__(self):
         self.validate_states()
@@ -96,7 +96,7 @@ class ModelConstructor(ABC):
         """
         pass
 
-    def current_time(self):
+    def current_time(self): 
         """Returns the current time of the simulation"""
         pass
         # TODO: implement this method
