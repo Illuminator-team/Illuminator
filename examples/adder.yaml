@@ -2,6 +2,7 @@ scenario:
   name: "AddingNumbers" # in mosaik so called world
   start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
   end_time: '2012-01-02 00:00:10' # duration in seconds 
+  time_resotulion: 15*60 # time step in seconds. Defaults to 15 minutes 
 models: # list of models for the energy network
 - name: Adder1 # name for the model (must be unique)
   type: AdderModel # most match the class inheriting from IlluminatorConstructor

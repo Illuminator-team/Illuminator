@@ -16,13 +16,14 @@ adder = IlluminatorModel(
     time=None
 )
 
-
 # construct the model
 class AdderModel(ModelConstructor):
 
     def step(self) -> None:
         self._model.outputs["out1"] = self._model.inputs["in1"] + self._model.inputs["in2"]
         return self._model.outputs["out1"]
+    
+    # todo: adopt get_data() as defined by Mosaik
 
 if __name__ == '__main__':
     # Create a model by inheriting from ModelConstructor
