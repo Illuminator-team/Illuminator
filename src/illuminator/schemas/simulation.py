@@ -12,8 +12,6 @@ from schema import Schema, And, Use, Regex, Optional, SchemaError
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
 # Ip versions 4 and 6 are valid
 ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
-ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
-valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
 # monitor and connections sections enforce a format such as 
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
@@ -65,7 +63,7 @@ class ScenarioSchema(Schema):
 
 
 # Define the schema for the simulation configuration file
-schema = Schema(  # a mapping of mappings
+simulation_schema = Schema(  # a mapping of mappings
             {
                 "scenario": ScenarioSchema(
                     {
@@ -98,7 +96,7 @@ schema = Schema(  # a mapping of mappings
                                                     error="If 'scenario_data' is used, a valid file path must be provided"), 
                         Optional("connect"): Schema( # a mapping of mappings
                             {
-                                "ip": Regex(valid_ip, error="you must provide an IP address that matches versions IPv4 or IPv6"),
+                                "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),
                                 Optional("port"): And(int),
                     }
                 ),
