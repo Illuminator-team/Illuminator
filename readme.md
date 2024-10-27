@@ -125,15 +125,17 @@ Please cite this software as follows:
 
 ### Contributors
 
+Many people have contributed to the development of *Illuminator*, we list their names and contributions below:
+
 | [Role](https://credit.niso.org/contributor-roles-defined/) | Contributor |
 |------|--------|
-| Conceptualization |  |
-| Funding acquisition | |
-| Project management |  |
-| Research |Fu, A.,  van der Meer, A., Palensky, P., Cvetkovic, M.  |
-| Resources | Koornneef, R. |
-| Software | Fu, A., Saini, R., Balassi, N. |
-| Supervision |  |
+| Conceptualization | A. Fu, A. Neagu, M. Cvetkovic, M. Garcia Alvarez, M. Rom |
+| Funding acquisition | A. Fu, M. Cvetkovic,  P. Palensky |
+| Project management | A. Neagu, M. Cvetkovic  |
+| Research |A. Fu, M. Cvetkovic,  N. Balassi, R. Saini, S.K. Trichy Siva Raman |
+| Resources | R. Koornneef |
+| Software | A. Fu, J. Grguric, J. Pijpker, M. Garcia Alvarez,  M. Rom.  |
+| Supervision |  A. Neagu, M. Cvetkovic |
 
 ## Acknowledgements
 
@@ -147,7 +149,9 @@ The Illuminator team extends its sincere gratitude for the invaluable support an
 
 Each of these individuals has been essential in shaping the success and evolution of our project. We are profoundly thankful for their dedication and expertise.
 
-The Illuminator project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
+* The Illuminator project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
+* The development of the *Illuminator* was supported by the [Digital Competence Centre](https://dcc.tudelft.nl), Delft University of Technology.
+
 
 ## Contact and Support
 
