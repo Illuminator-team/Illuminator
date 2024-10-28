@@ -38,6 +38,16 @@ def validate_file_path(file_path: str) -> str:
         raise SchemaError(f"File path does not exist: {file_path}")
     return file_path
 
+def validate_directory_path(file_path: str) -> str:
+    """
+    Validates that a  directory exists.
+    """
+    directory = os.path.dirname( os.path.abspath(file_path))
+    print(directory)
+    if not os.path.isdir(directory):
+        raise SchemaError(f"Directory does not exist: {directory}")
+    return file_path
+
 
 class ScenarioSchema(Schema):
     """
@@ -109,8 +119,13 @@ simulation_schema = Schema(  # a mapping of mappings
                 "to": Regex(valid_model_item_format, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
             }]
         ),
-        "monitor":  And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
-                        error="you must provide at least one item to monitor"),
+        "monitor":  Schema(
+            {
+                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'results' does not exists..."), error="you must provide a non-empty string for 'results'"),
+                "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
+                        error="you must provide at least one item to monitor")
+            }
+        )
     }
 )
 
