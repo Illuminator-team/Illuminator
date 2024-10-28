@@ -1,13 +1,14 @@
 
 import itertools
-import mosaik_api
+import mosaik_api_v3 as mosaik_api
 #import PV.PV_model as PV_model
 try:
-    import Models.PV.pv_model as PV_model
+    import illuminator.models.PV.pv_model as PV_model
 except ModuleNotFoundError:
-    import pv_model as PV_model
-else:
-    import Models.PV.pv_model as PV_model
+    raise ModuleNotFoundError('PV model not found')
+    # import illuminator.models.PV as PV_model
+# else:
+#     import Models.PV.pv_model as PV_model
 import pandas as pd
 import itertools
 

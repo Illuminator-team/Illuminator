@@ -1,12 +1,13 @@
 import arrow
 
-import mosaik_api
+import mosaik_api_v3 as mosaik_api
 
 
 __version__ = '1.2.0'
 
 
-class CSV(mosaik_api.Simulator):
+class CSV(mosaik_api.Simulator): # simulator that reads a CSV file and provides data to entities. 
+    # this is an a middleware that reads a CSV file and provides data to entities and connects to another model.
     def __init__(self):
         super().__init__({'models': {}})
         self.time_resolution = None
