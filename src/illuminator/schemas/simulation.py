@@ -38,6 +38,7 @@ def validate_file_path(file_path: str) -> str:
         raise SchemaError(f"File path does not exist: {file_path}")
     return file_path
 
+
 def validate_directory_path(file_path: str) -> str:
     """
     Validates that a  directory exists.
@@ -73,7 +74,7 @@ class ScenarioSchema(Schema):
 
 
 # Define the schema for the simulation configuration file
-simulation_schema = Schema(  # a mapping of mappings
+schema = Schema(  # a mapping of mappings
             {
                 "scenario": ScenarioSchema(
                     {
