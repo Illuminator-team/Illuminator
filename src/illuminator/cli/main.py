@@ -8,7 +8,7 @@ import importlib.util
 import mosaik.util
 import argparse
 from ruamel.yaml import YAML
-from illuminator.schemas.simulation import simulation_schema
+from illuminator.schemas.simulation import schema
 
 def validate_config_data(config_file: str) -> dict:
     """Returns the content of an scenerio file writtent in YAML after
@@ -18,7 +18,8 @@ def validate_config_data(config_file: str) -> dict:
     _file = open(config_file, 'r')
     yaml = YAML(typ='safe')
     data = yaml.load(_file)
-    return simulation_schema.validate(data)
+    print(data)
+    return schema.validate(data)
 
 
 def get_collector_path() -> str:
@@ -63,7 +64,7 @@ def apply_default_values(config_simulation: dict) -> dict:
     return config_simulation
 
 
-def generate_mosaik_simulator_configuration(config_simulation:dict,  collector:str =None) -> dict:
+def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) -> dict:
     """
     Returns a configuration for the Mosaik simulator based on
     the Illuminators simulation definition.
@@ -98,6 +99,7 @@ def generate_mosaik_simulator_configuration(config_simulation:dict,  collector:s
     mosaik_configuration = {}
 
     default_collector = get_collector_path()
+    # print(default_collector)
 
     if collector is None:
         _collector = "%(python)s " +default_collector+ " %(addr)s"
@@ -123,7 +125,7 @@ def generate_mosaik_simulator_configuration(config_simulation:dict,  collector:s
 
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
-    parser.add_argument('file_path', nargs='?', default='examples/simulation.example.yaml', help='Path to the scenario file. [Default: config.yaml]')
+    parser.add_argument('file_path', nargs='?', default='simple_test.yaml', help='Path to the scenario file. [Default: config.yaml]')
     args = parser.parse_args()
     file_path = args.file_path
 
@@ -132,7 +134,7 @@ def main():
     config = apply_default_values(config)
     
     # Define the Mosaik simulation configuration
-    sim_config = generate_mosaik_simulator_configuration(config)
+    sim_config = generate_mosaik_configuration(config)
 
     # simulation time
     _start_time = config['scenario']['start_time']
@@ -140,8 +142,10 @@ def main():
     # output file with forecast results
     _results_file = config['results']
 
-    # Initialize the Mosaik world
+    # Initialize the Mosaik worlds
     world = mosaik.World(sim_config)
+    # TODO: collectors are also customisable simulators, define in the same way as models.
+    # A way to define custom collectors should be provided by the Illuminator.
     collector = world.start('Collector', 
                             time_resolution=_time_resolution, 
                             start_date=_start_time,  
@@ -155,9 +159,22 @@ def main():
 
     # Create the models based on the configuration
     # Each model is assgined to a simulator.
-    for model_name, model_data in config.models.items():
+    for model in config['models']:
         # Start the simulator in Mosaik and create a ModelFactory
-        simulator = world.start(sim_name='StateSpaceSimulator', sim_params={model_name: model_data})
+        model_name = model['name']
+        model_type = model['type']
+        if 'parameters' in model:
+            model_parameters = model['parameters']
+        else:
+            model_parameters = {}
+
+        if model_type == 'CSV':
+            # CONTINUE HERE
+           # TODO: START THE CSV SIMULATOR
+            pass
+        
+        simulator = world.start(sim_name=model_name,
+                                sim_params={model_type: model_parameters})
         
         # Create the model instances using the model name defined in meta
         entities = simulator.Model()
@@ -180,12 +197,12 @@ def main():
 
 if __name__ == '__main__':
 
-    config_yaml = 'examples/simulation.example.yaml'
+    # config_yaml = 'examples/simulation.example.yaml'
 
-    conf = validate_config_data(config_yaml)
-    print(conf)
+    # conf = validate_config_data(config_yaml)
+    # print(conf)
 
-    mosaik_conf= generate_mosaik_simulator_configuration(conf)
-    print(mosaik_conf)
+    # mosaik_conf= generate_mosaik_configuration(conf)
+    # print(mosaik_conf)
 
     main()
