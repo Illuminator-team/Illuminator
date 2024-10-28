@@ -33,6 +33,34 @@ def get_collector_path() -> str:
     return collector_path
     # TODO: write a unit test for this
 
+def apply_default_values(config_simulation: dict) -> dict:
+    """Applies Illuminator default values to the configuration if they are not
+    specified. 
+    
+    Parameters
+    ----------
+    config_simulation: dict
+        valid Illuminator's simulation configuration
+    
+    Returns
+    -------
+    dict
+        Illuminator's simulation configuration with default values applied.
+    """
+
+    # defaults
+    time_resolution = {'time_resolution': 900} # 15 minutes
+    results = {'results': './out.csv'}
+    # TODO: set other default values
+
+    if 'time_resolution' not in config_simulation:
+        config_simulation.update(time_resolution)
+    # file to store the results
+    if 'results' not in config_simulation:
+        config_simulation.update(results)
+
+    #TODO: Write a unit test for this
+    return config_simulation
 
 
 def generate_mosaik_simulator_configuration(config_simulation:dict,  collector:str =None) -> dict:
@@ -95,19 +123,31 @@ def generate_mosaik_simulator_configuration(config_simulation:dict,  collector:s
 
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
-    parser.add_argument('file_path', nargs='?', default='config.yaml', help='Path to the scenario file. [Default: config.yaml]')
+    parser.add_argument('file_path', nargs='?', default='examples/simulation.example.yaml', help='Path to the scenario file. [Default: config.yaml]')
     args = parser.parse_args()
     file_path = args.file_path
 
     # load and validate configuration file
     config = validate_config_data(file_path)
+    config = apply_default_values(config)
     
     # Define the Mosaik simulation configuration
     sim_config = generate_mosaik_simulator_configuration(config)
 
+    # simulation time
+    _start_time = config['scenario']['start_time']
+    _time_resolution = config['time_resolution']
+    # output file with forecast results
+    _results_file = config['results']
+
     # Initialize the Mosaik world
     world = mosaik.World(sim_config)
-    collector = world.start('Collector')
+    collector = world.start('Collector', 
+                            time_resolution=_time_resolution, 
+                            start_date=_start_time,  
+                            results_show={'write2csv':True, 'dashboard_show':False, 'Finalresults_show':False,'database':False, 'mqtt':False}, 
+                            output_file=_results_file)
+    
     monitor = collector.Monitor()
 
     # Dictionary to keep track of created model entities
