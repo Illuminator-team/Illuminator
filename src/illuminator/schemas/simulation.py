@@ -74,6 +74,10 @@ simulation_schema = Schema(  # a mapping of mappings
                         "end_time": Regex(valid_start_time, error="Invalid "
                                           "end_time format. Must be in the"
                                           "format: YYYY-MM-DDTHH:MM:SS"),
+                        Optional("time_resolution"): And(int, lambda n: n > 0,
+                                                  error="time resolution must be a "
+                                                  "positive integer"),
+                        Optional("results"): And(str, len, error="results must be a non-empty string"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
@@ -91,9 +95,6 @@ simulation_schema = Schema(  # a mapping of mappings
                                                     error="if 'parameters' is used, it must contain at least one key-value pair"),
                         Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                         Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
-                        Optional("scenario_data"): And(str, 
-                                                    Use(validate_file_path, error=f"'scenario_data' points to a file that doesn't exist"), 
-                                                    error="If 'scenario_data' is used, a valid file path must be provided"), 
                         Optional("connect"): Schema( # a mapping of mappings
                             {
                                 "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),
@@ -114,6 +115,9 @@ simulation_schema = Schema(  # a mapping of mappings
 )
 
 
+# TODO: write a validator for model types. It should check that a model exist in the illuminator.models package
+# We could generate a list of names in the models package and check that the model name is in that list.
+# The list should be updates when new models are added to the package
 # TODO: Write a more rubust validator for the monitor section
 # Any input, output, or state declared in the monitor section must be declared in the models section
 # TODO: Write a more rubust validator for connections section
