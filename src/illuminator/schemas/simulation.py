@@ -95,10 +95,10 @@ schema = Schema(  # a mapping of mappings
                     [{
                         "name": And(str, len),
                         "type": And(str, len),
-                        "inputs": And(dict, len, error="if 'inputs' is used,"
+                        Optional("inputs"): And(dict, len, error="if 'inputs' is used,"
                                       "it must contain at least one key-value "
                                       "pair"),
-                        "outputs": And(dict, len, error="if 'outputs' is used,"
+                        Optional("outputs"): And(dict, len, error="if 'outputs' is used,"
                                        " it must contain at least one "
                                        "key-value pair"),
                         Optional("parameters"): And(dict,
