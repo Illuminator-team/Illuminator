@@ -33,5 +33,8 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
    developer/start
 
+.. toctree::
+   :maxdepth: 2
+   :caption: References:
 
-
+   references/models.rst
