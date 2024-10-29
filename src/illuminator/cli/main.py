@@ -123,9 +123,61 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     return mosaik_configuration
 
 
+def start_simulators(world: mosaik.World, models: list) -> dict:
+        """
+        Instantiates simulators in the Mosaik world based on the model configurations .
+        
+        Parameters
+        ----------
+        world: mosaik.World
+            The Mosaik world object.
+        models: dict
+            A list of models to be started for the Mosaik world as defined by 
+            Illuminator's schema.
+
+        Returns
+        -------
+        dict
+            A dictionary of simulator entities (instances) created for the Mosaik world.
+        """
+
+        model_entities = {}
+
+        print(models)
+        for model in models:
+            model_name = model['name']
+            model_type = model['type']
+
+
+            if 'parameters' in model:
+                model_parameters = model['parameters']
+            else:
+                model_parameters = {}
+
+            if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
+                
+                if 'start' not in model_parameters.keys() or 'datafile' not in model_parameters.keys():
+                    raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
+                
+                print('model as csv', model_parameters)
+                simulator = world.start(sim_name=model_name,
+                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
+            else:
+                simulator = world.start(sim_name=model_name,
+                                    sim_params={model_type: model_parameters})
+            
+            entities = simulator.Model()
+            model_entities[model_name] = entities
+
+        return model_entities
+
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
-    parser.add_argument('file_path', nargs='?', default='simple_test.yaml', help='Path to the scenario file. [Default: config.yaml]')
+    parser.add_argument('file_path', nargs='?', default='simple_test.yaml', 
+                        help='Path to the scenario file. [Default: config.yaml]')
     args = parser.parse_args()
     file_path = args.file_path
 
@@ -155,7 +207,7 @@ def main():
     monitor = collector.Monitor()
 
     # Dictionary to keep track of created model entities
-    model_entities = {}
+    model_entities = start_simulators(world, config['models'])
 
     # Create the models based on the configuration
     # Each model is assgined to a simulator.
@@ -169,11 +221,11 @@ def main():
             model_parameters = {}
 
         if model_type == 'CSV':
-            # CONTINUE HERE
+            
            # TODO: START THE CSV SIMULATOR
             pass
-        
-        simulator = world.start(sim_name=model_name,
+        else:
+            simulator = world.start(sim_name=model_name,
                                 sim_params={model_type: model_parameters})
         
         # Create the model instances using the model name defined in meta
