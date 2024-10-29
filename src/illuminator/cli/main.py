@@ -18,7 +18,6 @@ def validate_config_data(config_file: str) -> dict:
     _file = open(config_file, 'r')
     yaml = YAML(typ='safe')
     data = yaml.load(_file)
-    print(data)
     return schema.validate(data)
 
 
@@ -143,7 +142,6 @@ def start_simulators(world: mosaik.World, models: list) -> dict:
 
         model_entities = {}
 
-        print(models)
         for model in models:
             model_name = model['name']
             model_type = model['type']
@@ -159,7 +157,6 @@ def start_simulators(world: mosaik.World, models: list) -> dict:
                 if 'start' not in model_parameters.keys() or 'datafile' not in model_parameters.keys():
                     raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
                 
-                print('model as csv', model_parameters)
                 simulator = world.start(sim_name=model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
             else:
