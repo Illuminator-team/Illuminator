@@ -15,10 +15,10 @@ import itertools
 meta = {
     'type': 'event-based', #if reading from a csv file then it is time based
     'models': {
-        'PVset': {
+        'PvAdapter': { # This must match the model type name in YAMl config file
             'public': True,
             'params': ['panel_data',
-                       'm_tilt','m_az', 'cap', 'sim_start', 'output_type'],
+                       'm_tilt','m_az', 'cap',  'sim_start', 'output_type'],
             # and are attrs the specific outputs we want from the code? to connect with other models
             'attrs': ['pv_id', 'G_Gh', 'G_Dh', 'G_Bn', 'Ta', 'hs', 'FF', 'Az', 'pv_gen', 'total_irr'],
         },
