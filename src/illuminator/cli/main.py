@@ -159,13 +159,48 @@ def start_simulators(world: mosaik.World, models: list) -> dict:
                 
                 simulator = world.start(sim_name=model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
+                
+                model_factory = getattr(simulator, model_type)
+                entity = model_factory.create(num=1)
+                
             else:
                 simulator = world.start(sim_name=model_name,
-                                    sim_params={model_type: model_parameters})
-            
-            entities = simulator.Model()
-            model_entities[model_name] = entities
+                                    # **model_parameters
+                                    # Some items must be passed here, and some other at create()
+                                    )
+        
+                # TODO: make all parameters in create() **kwargs
+                # TODO: model_type must match model name in META for the simulator
+                
+                # allows instantiating an entity by using the value of 'model_type' dynamically
+                model_factory = getattr(simulator, model_type) 
+                # Mulple entities entities for the same model will be created
+                # one at a time. This is by design.
+                # TODO: parameters must be passed as **kwargs in create().
+                # This should be fixed by adapting models to use the Illumnator's interface
 
+                # CONTINUE HERE: make this test pass by providing fixed values for the parameters
+                # this is a temporary solution to continue developing the CLI
+                entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
+                                            panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
+          'Power_output_at_STC': 250,'peak_power':600},
+                                            m_tilt=14, 
+                                            m_az=180, 
+                                            cap=500,
+                                            output_type='power'
+                                            )
+
+
+                # print("entities....", entities)
+                
+               
+                # print('hello >>>>>>>>>>>>>>>>>')
+                # model_instance = getattr(simulator, model_type)()
+                # print("model instance ", model_instance)
+                # print(model_instance)
+            model_entities[model_name] = entity
+            print(model_entities)
+            
         return model_entities
 
 
@@ -208,28 +243,29 @@ def main():
 
     # Create the models based on the configuration
     # Each model is assgined to a simulator.
-    for model in config['models']:
-        # Start the simulator in Mosaik and create a ModelFactory
-        model_name = model['name']
-        model_type = model['type']
-        if 'parameters' in model:
-            model_parameters = model['parameters']
-        else:
-            model_parameters = {}
+    # for model in config['models']:
+    #     # Start the simulator in Mosaik and create a ModelFactory
+    #     model_name = model['name']
+    #     model_type = model['type']
+    #     if 'parameters' in model:
+    #         model_parameters = model['parameters']
+    #     else:
+    #         model_parameters = {}
 
-        if model_type == 'CSV':
+    #     if model_type == 'CSV':
             
-           # TODO: START THE CSV SIMULATOR
-            pass
-        else:
-            simulator = world.start(sim_name=model_name,
-                                sim_params={model_type: model_parameters})
+    #        # TODO: START THE CSV SIMULATOR
+    #         pass
+    #     else:
+    #         simulator = world.start(sim_name=model_name,
+    #                             sim_params={model_type: model_parameters})
         
-        # Create the model instances using the model name defined in meta
-        entities = simulator.Model()
-        model_entities[model_name] = entities
+    #     # Create the model instances using the model name defined in meta
+    #     entities = simulator.Model()
+    #     model_entities[model_name] = entities
 
     # Connect the models based on the connections specified in the configuration
+    # CONTINUE HERE: code works up to this point. Complete the connection of the models
     for connection in config.connections:
         from_model = connection['from_model']
         from_attr = connection['from_attr']
