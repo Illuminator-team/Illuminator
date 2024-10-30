@@ -30,8 +30,10 @@ class CSV(mosaik_api.Simulator): # simulator that reads a CSV file and provides 
         self.next_date = self.start_date
 
         self.datafile = open(datafile)
-        self.modelname = next(self.datafile).strip()
+        self.modelname = 'CSV' # next(self.datafile).strip() 
+        # model name in META is set to the first line of the CSV file
 
+        next(self.datafile).strip() # Skip header line
         # Get attribute names and strip optional comments
         attrs = next(self.datafile).strip().split(self.delimiter)[1:]
         for i, attr in enumerate(attrs):
