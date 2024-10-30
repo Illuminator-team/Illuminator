@@ -13,14 +13,65 @@ else:
 
 
 class Heat_Pump_Design():
-    """Design of the Heat Pump based on the initial parameters"""
-    def __init__(self, params, COP_m_data):
+    """
+    This class does nothing other than call a different class to set a single attribute.
+    """
+    def __init__(self, params:dict, COP_m_data) -> None:
+        """
+        Design of the Heat Pump based on the initial parameters.
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            Contains the parameters required for the design of the heat pump.
+        COP_m_data : ???
+            ???
+        """
+
         self.Heat_Pump = Heat_PumpDes.Heat_Pump_Des(params, COP_m_data)
 
 
 class Heat_Pump_State():
-    """Attributes that define the state of the Heat_Pump"""
-    def __init__(self):
+    """
+    This class does nothing. It is a collection of attributes
+    """
+    def __init__(self) -> None:
+        """
+        Attributes that define the state of the Heat_Pump
+
+        ...
+
+        Attributes
+        ----------
+        self.P_Required : float
+            Power consumption of the heat pump in W
+        self.COP : float
+            COP of the heat pump
+        self.Q_Demand : float
+            The heat demand of the consumer in W
+        self.Q_Supplied : float
+            The heat supplied to the consumer in W
+        self.Q_evap : float
+            The heat removed in the evaporator in W
+        self.cons_T : float
+            The temperature at which heat is supplied to the consumer (in °C)
+        self.cond_in_T : float
+            The temperature at which the water reenters the condenser (in °C)
+        self.heat_source : float
+            The source of heat for the heat pump ('water' or 'air')
+        self.heat_source_T : float
+            The temperature of the heat source (in °C)
+        self.T_amb : float
+            The ambient temperature (in °C)
+        self.cond_m : float
+            The mass flow rate of water in the condenser of the heat pump (in kg/s)
+        self.cond_m_neg : float
+            ???
+        self.step_executed : bool
+            ???
+        """
         self.P_Required = 0
         """Power consumption of the heat pump in W"""
         self.COP = 0
@@ -48,10 +99,45 @@ class Heat_Pump_State():
 
 
 class Heat_Pump_Inputs():
-    """Inputs variables to the heat pump for each time step"""
+    """
+    This class does nothing other than setting attributes
+    """
     __slots__ = ['Q_Demand', 'heat_source', 'heat_source_T', 'cons_T', 'step_size', 'cond_in_T', 'T_amb']
 
-    def __init__(self, params):
+    def __init__(self, params:dict) -> None:
+        """
+        Inputs variables to the heat pump for each time step
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            Contains the parameters required for the design of the heat pump.
+            It should contain all the values mentioned in the attributes section
+            with the exception of `step_size`. Dict keys should have the same name as attributes.
+        
+        Attributes
+        ----------
+        self.Q_Demand : float
+            The heat demand of the consumer in W
+
+        self.heat_source : str
+            The source of heat ('water' or 'air')
+
+        self.heat_source_T : float
+            The temperature of the heat source (in °C)
+
+        self.T_amb : float
+            The ambient temperature (in °C)
+
+        self.cond_in_T : float
+            The temperature at which the water reenters the condenser (in °C)
+
+        self.step_size : int
+            step size in seconds
+        """
+
         self.Q_Demand = params.get('Q_Demand')
         """The heat demand of the consumer in W"""
 
@@ -99,7 +185,35 @@ class Heat_Pump():
 
     __slots__ = ['design', 'state', 'inputs']
 
-    def __init__(self, params, COP_m_data):
+    def __init__(self, params:dict, COP_m_data) -> None:
+        """
+        Simulation model of a heat pump based on the library TESPy.
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            Contains the parameters required for the design of the heat pump.
+            Example dictionary::
+            {
+            'cons_T': 35,
+            'heat_source_T': 12,
+            'T_amb': 12,
+            'heat_source': 'water' or 'air'
+            }
+        COP_m_data : ???
+            ???
+
+        Attributes
+        ----------
+        self.design : Heat_Pump_Model.Heat_Pump_Design
+            Design of the heatpump
+        self.state : Heat_Pump_Model.Heat_Pump_State
+            State variables of the heat pump
+        self.inputs : Heat_Pump_Model.Heat_Pump_Inputs
+            Input parameters of the heat pump model
+        """
         self.design = Heat_Pump_Design(params, COP_m_data)
         """stores the design of the heat pump in a
         :class:`.Heat_Pump_Model.Heat_Pump_Design` object"""
@@ -110,14 +224,12 @@ class Heat_Pump():
         """stores the input parameters of the heat pump model in a
         :class:`.Heat_Pump_Model.Heat_Pump_Inputs` object"""
 
-    def step(self):
+    def step(self) -> None:
         """
-        perform simulation step
-
+        Perform simulation step.
         The power consumption of the heat pump in the offdesign mode
         is calculated based on the consumer heat demand and the ambient
         fluid temperature.
-
         """
 
         step_inputs = {'heat_source_T': self.inputs.heat_source_T,

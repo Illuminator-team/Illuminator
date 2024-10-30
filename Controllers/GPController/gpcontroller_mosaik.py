@@ -71,7 +71,7 @@ class gpcontrolSim(mosaik_api.Simulator):
 
         Parameters
         ----------
-        sid : string
+        sid : str
             The String ID of the class (???)
         time_resolution : float
             ???
