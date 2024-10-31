@@ -232,7 +232,10 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         
             # Establish connections in the Mosaik world
             try:
-                world.connect(model_entities[from_model], model_entities[to_model], (from_attr, to_attr))
+                world.connect(model_entities[from_model][0], # entities for the same model type
+                              # are handled separately. Therefore, the entities list of a model only contains a single entity
+                               model_entities[to_model][0], 
+                               (from_attr, to_attr))
             except KeyError as e:
                 print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
                 exit(1)
