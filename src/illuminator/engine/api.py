@@ -1,5 +1,6 @@
 """
-API for buildiing simulations with Illuminator.
+API for buildiing simulations with Illuminator. It
+serves as a wrapper for the Mosaik API.
 By: M. Rom & M. Garcia Alvarez
 """
 
@@ -10,6 +11,27 @@ from mosaik.scenario import World as MosaikWorld
 from ruamel.yaml import YAML
 from illuminator.schemas.simulation import schema
 from datetime import datetime
+
+
+def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
+    """
+    Creates a Mosaik world object based on the simulation configuration.
+
+    Parameters
+    ----------
+    sim_config: dict
+        The simulation configuration for the Mosaik world.
+    time_resolution: int
+        The time resolution of the simulation in seconds.
+
+    Returns
+    -------
+    mosaik.World
+        The Mosaik world object.
+    """
+
+    world = MosaikWorld(sim_config, time_resolution=time_resolution)
+    return world
 
 
 def validate_config_data(config_file: str) -> dict:
