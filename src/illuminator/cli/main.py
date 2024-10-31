@@ -3,6 +3,7 @@ A CLI for running simulations in the Illuminator
 By: M. Rom & M. Garcia Alvarez
 """
 
+import math
 import importlib.util
 from mosaik.scenario import ModelMock as MosaikModel
 from mosaik.scenario import Entity as MosaikEntity
@@ -11,6 +12,7 @@ import mosaik.util
 import argparse
 from ruamel.yaml import YAML
 from illuminator.schemas.simulation import schema
+from datetime import datetime
 
 def validate_config_data(config_file: str) -> dict:
     """Returns the content of an scenerio file writtent in YAML after
@@ -240,8 +242,35 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
                 print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
                 exit(1)
 
-        # TODO: write a unit test for this. Cases: 1) connection established, 2) exception raised
+        # TODO: write a unit test for this. Cases: 1) all connections were established, 2) exception raised
         return world
+
+
+def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 900) -> int:
+    """
+    Computes the number to time steps for a Mosaik simulation given the start and end timestamps, and
+    a time resolution. Values are approximated to the lowest interger.
+    
+    Parameters
+    ----------
+    start_time: str
+        Start time as ISO 8601 time stamp. Example: '2012-01-01 00:00:00'.
+
+    end_time: str
+        Start time as ISO 8601 time stamp. Example: '2012-01-01 00:00:00'.
+    
+    time_resolution: number of seconds that correspond to one mosaik time step in this situation. Default is 900 secondd (15 min).
+
+    """
+
+    start = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+    end = datetime.strptime(end_time, '%Y-%m-%d %H:%M:%S')
+
+    duration_seconds = (end - start).total_seconds()
+    steps = math.floor(duration_seconds/time_resolution)
+
+    return steps
+
 
 
 def main():
@@ -308,7 +337,8 @@ def main():
     
 
     # Run the simulation until the specified end time
-    end_time = config.end_time
+    end_time = config['scenario']['end_time']
+
     print(f"Running simulation from {config.start_time} to {end_time}.")
     world.run(until=end_time)
 
