@@ -3,8 +3,10 @@ A CLI for running simulations in the Illuminator
 By: M. Rom & M. Garcia Alvarez
 """
 
-import mosaik
 import importlib.util
+from mosaik.scenario import ModelMock as MosaikModel
+from mosaik.scenario import Entity as MosaikEntity
+from mosaik.scenario import World as MosaikWorld
 import mosaik.util
 import argparse
 from ruamel.yaml import YAML
@@ -122,7 +124,7 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     return mosaik_configuration
 
 
-def start_simulators(world: mosaik.World, models: list) -> dict:
+def start_simulators(world: MosaikWorld, models: list) -> dict:
         """
         Instantiates simulators in the Mosaik world based on the model configurations .
         
@@ -204,6 +206,39 @@ def start_simulators(world: mosaik.World, models: list) -> dict:
         return model_entities
 
 
+def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict]) -> MosaikWorld:
+        """
+        Connects the model entities in the Mosaik world based on the connections specified in the YAML configuration file.
+        
+        Parameters
+        ----------
+        world: mosaik.World
+            The Mosaik world object.
+        model_entities: dict
+            A dictionary of model entities created for the Mosaik world.
+        connections: list
+            A list of connections to be established between the model entities.
+
+        Returns
+        -------
+        mosaik.World
+            The Mosaik world object with the connections established.
+        
+        """
+
+        for connection in connections:
+            from_model, from_attr =  connection['from'].split('.')
+            to_model, to_attr =  connection['to'].split('.')
+        
+            # Establish connections in the Mosaik world
+            try:
+                world.connect(model_entities[from_model], model_entities[to_model], (from_attr, to_attr))
+            except KeyError as e:
+                print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
+                exit(1)
+
+        # TODO: write a unit test for this. Cases: 1) connection established, 2) exception raised
+        return world
 
 
 def main():
@@ -227,7 +262,7 @@ def main():
     _results_file = config['results']
 
     # Initialize the Mosaik worlds
-    world = mosaik.World(sim_config)
+    world = MosaikWorld(sim_config)
     # TODO: collectors are also customisable simulators, define in the same way as models.
     # A way to define custom collectors should be provided by the Illuminator.
     collector = world.start('Collector', 
@@ -265,15 +300,9 @@ def main():
     #     model_entities[model_name] = entities
 
     # Connect the models based on the connections specified in the configuration
-    # CONTINUE HERE: code works up to this point. Complete the connection of the models
-    for connection in config.connections:
-        from_model = connection['from_model']
-        from_attr = connection['from_attr']
-        to_model = connection['to_model']
-        to_attr = connection['to_attr']
-        
-        # Establish connections in the Mosaik world
-        world.connect(model_entities[from_model], model_entities[to_model], (from_attr, to_attr))
+
+    world = build_connections(world, model_entities, config['connections'])
+    
 
     # Run the simulation until the specified end time
     end_time = config.end_time
