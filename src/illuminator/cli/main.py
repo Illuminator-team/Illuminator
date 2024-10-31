@@ -4,12 +4,10 @@ By: M. Rom & M. Garcia Alvarez
 """
 
 import math
+import argparse
 import importlib.util
-from mosaik.scenario import ModelMock as MosaikModel
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
-import mosaik.util
-import argparse
 from ruamel.yaml import YAML
 from illuminator.schemas.simulation import schema
 from datetime import datetime
@@ -57,10 +55,10 @@ def apply_default_values(config_simulation: dict) -> dict:
     results = {'results': './out.csv'}
     # TODO: set other default values
 
-    if 'time_resolution' not in config_simulation:
+    if 'time_resolution' not in config_simulation['scenario']:
         config_simulation.update(time_resolution)
     # file to store the results
-    if 'results' not in config_simulation:
+    if 'results' not in config_simulation['scenario']:
         config_simulation.update(results)
 
     #TODO: Write a unit test for this
@@ -194,14 +192,6 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                                             output_type='power'
                                             )
 
-
-                # print("entities....", entities)
-                
-               
-                # print('hello >>>>>>>>>>>>>>>>>')
-                # model_instance = getattr(simulator, model_type)()
-                # print("model instance ", model_instance)
-                # print(model_instance)
             model_entities[model_name] = entity
             print(model_entities)
             
@@ -273,7 +263,7 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
-                    monitor, monitor_config: dict) -> MosaikWorld:
+                    monitor:MosaikEntity, monitor_config: dict) -> MosaikWorld:
     """
     Connects model entities to the monitor in the Mosaik world.
 
@@ -321,7 +311,7 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
 
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
-    parser.add_argument('file_path', nargs='?', default='simple_test.yaml', 
+    parser.add_argument('file_path', nargs='?', default='simple_test2.yaml', 
                         help='Path to the scenario file. [Default: config.yaml]')
     args = parser.parse_args()
     file_path = args.file_path
@@ -335,12 +325,13 @@ def main():
 
     # simulation time
     _start_time = config['scenario']['start_time']
-    _time_resolution = config['time_resolution']
+    _end_time = config['scenario']['end_time']
+    _time_resolution = config['scenario']['time_resolution']
     # output file with forecast results
-    _results_file = config['results']
+    _results_file = config['scenario']['results']
 
     # Initialize the Mosaik worlds
-    world = MosaikWorld(sim_config)
+    world = MosaikWorld(sim_config, time_resolution=_time_resolution)
     # TODO: collectors are also customisable simulators, define in the same way as models.
     # A way to define custom collectors should be provided by the Illuminator.
     collector = world.start('Collector', 
@@ -362,9 +353,9 @@ def main():
     world = connect_monitor(world, model_entities, monitor, config['monitor'])
     
     # Run the simulation until the specified end time
-    mosaik_end_time =  compute_mosaik_end_time(config['scenario']['start_time'],
-                                            config['scenario']['end_time'],
-                                            config['scenario']['time_resolution']
+    mosaik_end_time =  compute_mosaik_end_time(_start_time,
+                                            _end_time,
+                                            _time_resolution
                                         )
 
     print(f"Running simulation from")
