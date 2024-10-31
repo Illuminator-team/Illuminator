@@ -272,6 +272,52 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
     return steps
 
 
+def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
+                    monitor, monitor_config: dict) -> MosaikWorld:
+    """
+    Connects model entities to the monitor in the Mosaik world.
+
+    Parameters
+    ----------
+    world: mosaik.World
+        The Mosaik world object.
+    model_entities: dict
+        A dictionary of model entities created for the Mosaik world.
+    monitor: mosaik.Entity
+        The monitor entity in the Mosaik world.
+    monitor_config: dict
+        The configuration for the monitor.
+
+    Returns
+    -------
+    mosaik.World
+        The Mosaik world object with model entities connected to the monitor.
+    """
+
+    for item in monitor_config['items']:
+            from_model, from_attr =  item.split('.')
+
+            to_attr = from_attr # enforce connecting attributes have the same name
+            try:
+                model_entity = model_entities[from_model][0]
+            except KeyError as e:
+                print(f"Error: {e}. Check the 'monitor' section in the configuration file for errors.")
+                exit(1)
+
+            # Establish connections in the Mosaik world
+            try:
+                world.connect(model_entity, 
+                              monitor, 
+                              (from_attr, to_attr)
+                            )
+            except Exception as e:
+                print(f"Error: {e}. Connection could not be established for {from_model} and the monitor.")
+                exit(1)
+        
+        # TODO: write a unit test for this. Cases: 1) all connections were established, 2) exception raised
+    return world
+
+
 
 def main():
     parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
@@ -303,53 +349,27 @@ def main():
                             results_show={'write2csv':True, 'dashboard_show':False, 'Finalresults_show':False,'database':False, 'mqtt':False}, 
                             output_file=_results_file)
     
+    # initialize monitor
     monitor = collector.Monitor()
 
     # Dictionary to keep track of created model entities
     model_entities = start_simulators(world, config['models'])
 
-    # Create the models based on the configuration
-    # Each model is assgined to a simulator.
-    # for model in config['models']:
-    #     # Start the simulator in Mosaik and create a ModelFactory
-    #     model_name = model['name']
-    #     model_type = model['type']
-    #     if 'parameters' in model:
-    #         model_parameters = model['parameters']
-    #     else:
-    #         model_parameters = {}
-
-    #     if model_type == 'CSV':
-            
-    #        # TODO: START THE CSV SIMULATOR
-    #         pass
-    #     else:
-    #         simulator = world.start(sim_name=model_name,
-    #                             sim_params={model_type: model_parameters})
-        
-    #     # Create the model instances using the model name defined in meta
-    #     entities = simulator.Model()
-    #     model_entities[model_name] = entities
-
     # Connect the models based on the connections specified in the configuration
-
     world = build_connections(world, model_entities, config['connections'])
+
+    # Connect monitor
+    world = connect_monitor(world, model_entities, monitor, config['monitor'])
     
-
     # Run the simulation until the specified end time
-    end_time = config['scenario']['end_time']
+    mosaik_end_time =  compute_mosaik_end_time(config['scenario']['start_time'],
+                                            config['scenario']['end_time'],
+                                            config['scenario']['time_resolution']
+                                        )
 
-    print(f"Running simulation from {config.start_time} to {end_time}.")
-    world.run(until=end_time)
+    print(f"Running simulation from")
+    world.run(until=mosaik_end_time)
 
 if __name__ == '__main__':
-
-    # config_yaml = 'examples/simulation.example.yaml'
-
-    # conf = validate_config_data(config_yaml)
-    # print(conf)
-
-    # mosaik_conf= generate_mosaik_configuration(conf)
-    # print(mosaik_conf)
 
     main()
