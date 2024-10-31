@@ -5,7 +5,7 @@ Unit tests for main.py of CLI package.
 import pytest
 import copy
 import mosaik
-from illuminator.cli.main import start_simulators
+from illuminator.cli.main import start_simulators, compute_mosaik_end_time
 
 
 @pytest.fixture
@@ -49,6 +49,40 @@ def yaml_models():
             'parameters': {'panel_data': None, 'm_tilt': None, 'm_az': None, 
                            'cap': None}
             }]
+
+
+@pytest.fixture
+def start_timestamp():
+    return '2012-01-01 00:00:00'
+
+
+@pytest.fixture
+def end_timestamp():
+    return '2012-01-01 04:00:00'
+
+
+class TestMosaikEndTime:
+    """
+    Tests for the compute_mosaik_end_time()
+    """
+
+    def test_step_count(self, start_timestamp, end_timestamp):
+        """Tests the correct number of steps is return"""
+
+        computed_steps = compute_mosaik_end_time(start_timestamp, end_timestamp)
+
+        assert computed_steps == 16
+
+    def test_approximation_to_floor(self, start_timestamp):
+        """Check values are approximated to the lowest interger"""
+
+        new_end_time = '2012-01-01 04:20:00'
+
+        computed_steps = compute_mosaik_end_time(start_timestamp, new_end_time)
+        assert isinstance(computed_steps, int)
+        assert computed_steps == 17
+
+        
 
 
 class TestStartSimulators:
