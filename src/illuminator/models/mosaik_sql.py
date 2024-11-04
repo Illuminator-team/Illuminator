@@ -22,7 +22,52 @@ meta = {
 class SQL(mosaik_api.Simulator):
     count = 0
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Inherits the Mosaik API Simulator class and is used for python based simulations.
+        For more information properly inheriting the Mosaik API Simulator class please read their given documentation.
+
+        ...
+
+        Attributes
+        ----------
+        self.meta : dict
+            Contains metadata of the control sim such as type, models, parameters, attributes, etc.. Created via gpcontrolSim's parent class.
+        self.eid : string
+            The prefix with which each entity's name/eid will start
+        self.index : int
+            ???
+        self.sid : ???
+            ???
+        self.step_size : ???
+            ???
+        self.duration : ???
+            ???
+        self.hostname : ???
+            ???
+        self.username : ???
+            ???
+        self.password : ???
+            ???
+        self.database : ???
+            ???
+        self.create_tables : ???
+            ???
+        self.table_name : ???
+            ???
+        self.buf_size : ???
+            ???
+        self._cur : ???
+            ???
+        self._my_connection : ???
+            ???
+        self.datetime_object : ???
+            ???
+        self._query_buf : dict
+            ???
+        self._insert_queries : dict
+            ???
+        """
         super().__init__(meta)
         self.eid = 'mosaik_sql'
         self.index = 0
@@ -48,23 +93,43 @@ class SQL(mosaik_api.Simulator):
         self._query_buf = {}
         self._insert_queries = {}
 
-    def init(self, sid, step_size, sim_start, hostname, username, password, database, create_tables=None,
-             table_name=None, buf_size=0):
-        '''
+    def init(self, sid:str, step_size:int, sim_start, hostname, username, password, database, create_tables:str=None,
+             table_name:str=None, buf_size:int=0):
+        """
+        Initialize the simulator with the ID `sid` and pass the `time_resolution` and additional parameters sent by mosaik.
 
-        :param sid:
-        :param step_size:
-        :param sim_start:
-        :param hostname:
-        :param username:
-        :param password:
-        :param database:
-        :param create_tables: Defines which database schema will be created to store the results. 'single' means
-        one table for all values. 'multi' means multiple tables are created. For each entity one.
-        :param table_name: If create_tables is 'single' this defines the name of this table.
-        :param buf_size: Size of the buffer storing data until it is written to database
-        :return:
-        '''
+        ...
+
+        Parameters
+        ----------
+        sid : str
+            The String ID of the class (???)
+        step_size : int
+            The size of the time step. The unit is arbitrary, but it has to be consistent among all simulators used in a simulation.
+
+        sim_start : ???
+            ???
+        hostname : ???
+            ???
+        username : ???
+            ???
+        password : ???
+            ???
+        database : ???
+            ???
+        create_tables : str
+            Defines which database schema will be created to store the results. 'single' means
+            one table for all values. 'multi' means multiple tables are created. For each entity one.
+        table_name : str
+            If create_tables is 'single' this defines the name of this table.
+        buf_size : int
+            Size of the buffer storing data until it is written to database
+        
+        Returns
+        -------
+        self.meta : dict
+            The metadata of the class
+        """
         self.sid = sid
         self.step_size = step_size
         self.datetime_object = datetime.datetime.strptime(sim_start, '%Y-%m-%d %H:%M:%S')  # needed to upload timestamp
@@ -78,7 +143,45 @@ class SQL(mosaik_api.Simulator):
 
         return self.meta
 
-    def create(self, num, modelname):
+    def create(self, num:int, modelname:str) -> list:
+        """
+        Create `num` instances of `model` using the provided `model_params`.
+
+        ...
+
+        Parameters
+        ----------
+        num : int
+            The number of model instances to create.
+        modelname : str
+            `modelname` needs to be a public entry in the simulator's ``meta['models']``.
+        
+        Returns
+        -------
+        model_list : list
+            Return a list of dictionaries describing the created model instances (entities). 
+            The root list must contain exactly `num` elements. The number of objects in sub-lists is not constrained::
+
+            [
+                {
+                    'eid': 'eid_1',
+                    'type': 'model_name',
+                    'rel': ['eid_2', ...],
+                    'children': [
+                        {'eid': 'child_1', 'type': 'child'},
+                        ...
+                    ],
+                },
+                ...
+            ]
+        
+        See Also
+        --------
+        The entity ID (*eid*) of an object must be unique within a simulator instance. For entities in the root list, `type` must be the same as the
+        `model` parameter. The type for objects in sub-lists may be anything that can be found in ``meta['models']``. *rel* is an optional list of
+        related entities; "related" means that two entities are somehow connect within the simulator, either logically or via a real data-flow (e.g.,
+        grid nodes are related to their adjacent branches). The *children* entry is optional and may contain a sub-list of entities.
+        """
         model_list = []
         for i in range(num):
             model_list.append({
@@ -96,10 +199,41 @@ class SQL(mosaik_api.Simulator):
 
         return model_list
 
-    def setup_done(self):
+    def setup_done(self) -> None:
+        """
+        Prints that setup is done
+        """
         print('setup done')
 
-    def step(self, time, inputs):
+    def step(self, time:int, inputs:dict) -> int:
+        """
+        Perform the next simulation step from time `time` using input values from `inputs`
+
+        ...
+
+        Parameters
+        ----------
+        time : int
+            A representation of time with the unit being arbitrary. Has to be consistent among 
+            all simulators used in a simulation.
+
+        inputs : dict
+            Dict of dicts mapping entity IDs to attributes and dicts of values (each simulator has to decide on its own how to reduce 
+            the values (e.g., as its sum, average or maximum)::
+
+            {
+                'dest_eid': {
+                    'attr': {'src_fullid': val, ...},
+                    ...
+                },
+                ...
+            }
+
+        Returns
+        -------
+        new_step : int
+            Return the new simulation time, i.e. the time at which ``step()`` should be called again.
+        """
         timestamp = self.datetime_object + datetime.timedelta(seconds=time)
 
         attr_dict = {}
@@ -117,7 +251,17 @@ class SQL(mosaik_api.Simulator):
 
         return time + self.step_size
 
-    def create_database(self, attr_dict):
+    def create_database(self, attr_dict) -> None:
+        """
+        Creates a database
+
+        ...
+
+        Parameters
+        ----------
+        attr_dict : dict
+            Contains attributes with key value pairs
+        """
         if self.create_tables == 'multi':
             for src_id in attr_dict:
                 query_drop_if_exists = "DROP TABLE IF EXISTS `" + src_id + "`;"
@@ -164,7 +308,19 @@ class SQL(mosaik_api.Simulator):
                                                     "%s,%s,%s,%s,%s)"
 
 
-    def insert_values(self, attr_dict, timestamp):
+    def insert_values(self, attr_dict:dict, timestamp) -> None:
+        """
+        Inserts values into the database
+
+        ...
+
+        Parameters
+        ----------
+        attr_dict : dict
+            Contains attributes with key value pairs
+        timestamp : ???
+            ???
+        """
         if self.create_tables == 'multi':
             for src_id in attr_dict:
                 attr_list = [str(timestamp)]
@@ -187,14 +343,20 @@ class SQL(mosaik_api.Simulator):
                 self._my_connection.commit()
                 self._query_buf[self.table_name] = []
 
-    def execute_insert(self):
+    def execute_insert(self) -> None:
+        """
+        Executes a query
+        """
         print('execute query')
         for src_id in self._query_buf.keys():
             self._cur.executemany(self._insert_queries[src_id], self._query_buf[src_id])
             self._my_connection.commit()
             self._query_buf[src_id] = []
 
-    def finalize(self):
+    def finalize(self) -> None:
+        """
+        Closes the `_my_connection` sql object
+        """
         if self.buf_size > 0:
             if len(self._query_buf) > 0:
                 print('finalize with not empty buffer')

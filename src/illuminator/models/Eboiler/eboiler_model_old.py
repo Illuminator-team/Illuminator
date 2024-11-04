@@ -14,7 +14,32 @@
 
 
 class eboiler_python:
-    def __init__(self, eboiler_set):
+    def __init__(self, eboiler_set:dict) -> None:
+        """
+        Used in Python based Mosaik simulations as an addition to the eboiler_mosaik.eboilerSim class.
+
+        ...
+
+        Parameters
+        ----------
+        eboiler_set : dict
+            The collection of the boiler settings
+
+        Attributes
+        ----------
+        self.capacity : ???  
+            Capacity of the boiler in kW, converting to W
+        self.min_load : ???  
+            Minimum load in kW, converting to W
+        self.max_load : ???  
+            Maximum load in kW, converting to W
+        self.standby_loss : ???  
+            Standby loss as a fraction of the capacity
+        self.efficiency : ???  
+            Efficiency under maximum load
+        self.resolution : ???
+            Resolution of the system
+        """
         # Capacity of the boiler in kW
         self.capacity = eboiler_set['capacity']
 
@@ -29,7 +54,23 @@ class eboiler_python:
         self.efficiency_under_max_load = eboiler_set['efficiency_under_max_load']
         self.resolution=eboiler_set['resolution']
 
-    def demand(self, eboiler_dem):
+    def demand(self, eboiler_dem:dict) -> dict:
+        """
+        Calculates the demand of the electric boiler based on the input demand and heat source temperature.
+        
+        ...
+
+        Parameters
+        ----------
+        eboiler_dem : dict
+            Electric boiler demand data. 
+            {'Q_Demand': (heat demand in W), 'heat_source_T' : (temperature in °C)}
+        
+        Returns
+        -------
+        dict
+            Returns eboiler data on demand, consumption, heat generation and standby loss.
+        """
         # Check if the electricity input is within the operation limits
         if  eboiler_dem< self.min_load:
             electricity_input=0

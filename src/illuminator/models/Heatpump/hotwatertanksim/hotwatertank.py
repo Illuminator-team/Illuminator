@@ -138,7 +138,68 @@ class HotWaterTank():
 
     """
 
-    def __init__(self, params, init_vals=None):
+    def __init__(self, params:dict, init_vals:dict=None) -> None:
+        """
+        Simulation model of a hotwater tank.
+        Used in Python based Mosaik simulations as an addition to the hotwatertank_mosaik.HotWaterTankSimulator class.
+
+
+        Parameters
+        ----------
+        params : dict
+            Hotwater tank parameters. 
+            An example of how the dictionary might look like::
+
+                params = {
+                    'height': 2100,
+                    'diameter': 1200,
+                    'T_env': 20.0,
+                    'htc_walls': 1.0,
+                    'htc_layers': 20,
+                    'n_layers': 3,
+                    'n_sensors': 3,
+                    'connections': {
+                        'cc_in': {'pos': 0},
+                        'cc_out': {'pos': 2099},
+                        'gcb_in': {'pos': 1700},
+                        'gcb_out': {'pos': 500}
+                        },
+                    'heating_rods': {
+                        'hr_1': {
+                            'pos': 1800,
+                            'P_th_stages': [0, 500, 1000, 2000, 3000]
+                            }
+                        }
+                    }
+        init_vals : dict
+            Initial values for the temperature distribution in the tank or the
+            initial el. power of the heating rod.
+
+        Attributes
+        ----------
+        self.height : ???
+            ???
+        self.htc_walls : ???
+            ???
+        self.htc_layers : ???
+            ???
+        self.T_env : ???
+            ???
+        self.surface_between_layers : ???
+            ???
+        self.mass : ???
+            ???
+        self.layers : []
+            ???
+        self.connections : dict
+            ???
+        self.sensors : dict
+            ???
+        self.heating_rods : dict
+            ???
+        self._nested_attrs : dict
+            ???
+        """
         if init_vals is None:
             init_vals = {
                 'layers': {'T': 20}
@@ -259,8 +320,19 @@ class HotWaterTank():
         self._nested_attrs = dict()
         # dict to buffer information about nested attributes
 
-    def step(self, step_size, adapted_step_size_mode=False):
-        """Perform simulation step with step size step_size"""
+    def step(self, step_size, adapted_step_size_mode:bool=False) -> None:
+        """
+        Perform simulation step with step size step_size
+        
+        ...
+
+        Parameters
+        ----------
+        step_size : ???
+            ???
+        adapted_step_size_mode : bool
+            ???
+        """
 
         # update mass flows out of the tank and into
         # the tank
@@ -380,6 +452,21 @@ class HotWaterTank():
             connection.update(adapted_step_size_mode)
 
     def get_nested_attr(self, nested_attr):
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        nested_attr : ???
+            ???
+
+        Returns
+        -------
+        ???
+            Returns defined attribute
+        """
         try:
             name, attr = self._nested_attrs[nested_attr]['parts']
         except KeyError:
@@ -398,11 +485,30 @@ class HotWaterTank():
 
     @property
     def snapshot(self):
-        """serialize to json"""
+        """
+        Serialize to json
+        
+        ...
+
+        Returns
+        -------
+        ???
+            ???
+        """
         return jsonpickle.encode(self.connections)
 
     @property
     def T_layers(self):
+        """
+        Description
+        
+        ...
+
+        Returns
+        -------
+        T_layers : list
+            ???
+        """
         T_layers = []
         for layer in self.layers:
             T_layers.append(layer.T)
@@ -410,6 +516,16 @@ class HotWaterTank():
 
     @property
     def T_sensors(self):
+        """
+        Description
+
+        ...
+
+        Returns
+        -------
+        list
+            ???
+        """
         # T_sensors = []
         keys_sorted = sorted(self.sensors.keys(),
                              key=lambda x: self.sensors[x].pos)
@@ -417,7 +533,16 @@ class HotWaterTank():
 
     @property
     def T_mean(self):
-        """Returns mean temperature of hotwatertank in °C"""
+        """
+        Returns mean temperature of hotwatertank in °C
+        
+        ...
+        
+        Returns
+        -------
+        T_mean : float
+            ???
+        """
         T_sum = 0
         for layer in self.layers:
             T_sum += layer.T
@@ -447,7 +572,45 @@ class Layer(object):
 
     """
 
-    def __init__(self, params):
+    def __init__(self, params:dict) -> None:
+        """
+        Layer of hotwater tank
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            A list of parameters used to set attributes.
+            Contains the following keys::
+
+                params = {
+                    'T' : 'see attribute'
+                    'bottom' : 'see attribute'
+                    'top' : 'see attribute'
+                    'diameter' : 'see attribute'
+                    'bottom_top' : 'must be True for the bottom or top layer of the tank. This information is needed to calculate the outer surface of the layer which in turn is needed to calculate heat losses to the environment.'
+                }
+
+        Attributes
+        ----------
+        self.T : float
+            Initial temperature of layer in °C
+        self.bottom : float
+            Bottom of layer relatively to hotwater tank bottom in mm
+        self.top : float
+            Top of layer relatively to hotwater tank bottom in mm
+        self.diameter : float
+            Diameter of layer in mm
+        self.outer_surface : float
+            The outer surface expressed in m^2
+        self.volume : float
+            The volume of the tank expressed in liters
+        self.massflows : list
+            ???
+        self.heatflows : list
+            ???
+        """
         self.T = params['T']  # °C
         self.bottom = params['bottom']  # mm
         self.top = params['top']  # mm
@@ -460,31 +623,82 @@ class Layer(object):
         self.massflows = []
         self.heatflows = []
 
-    def add_massflow(self, massflow):
+    def add_massflow(self, massflow) -> None:
+        """
+        Appends massflow data to the `self.massflows` attribute
+
+        ...
+
+        Parameters
+        ----------
+        massflow : ???
+            ???
+        """
+        self.__init__()
         if massflow.F != None:
             self.massflows.append(massflow)
 
-    def add_heatflow(self, heatflow):
+    def add_heatflow(self, heatflow) -> None:
+        """
+        Appends heatflow data to the `self.heatflows` attribute
+
+        ...
+
+        Parameters
+        ----------
+        heatflow : ???
+            ???
+        """
         self.heatflows.append(heatflow)
 
-    def empty_massflows(self):
+    def empty_massflows(self) -> None:
+        """
+        Resets `self.massflows` to an empty list
+        """
         self.massflows = []
 
-    def empty_heatflows(self):
+    def empty_heatflows(self) -> None:
+        """
+        Resets `self.heatflows` to an empty list
+        """
         self.heatflows = []
 
     @property
-    def inflow(self):
+    def inflow(self) -> float:
+        """
+        Sums the massflow data to give the inflow
+
+        Returns
+        -------
+        float
+            The sum of `self.massflows` data where the value is greater than 0
+        """
         return sum([massflow.F for massflow in self.massflows
                     if massflow.F > 0])
 
     @property
-    def outflow(self):
+    def outflow(self) -> float:
+        """
+        Sums the massflow data to give the outflow
+
+        Returns
+        -------
+        float
+            The sum of `self.massflows` data where the value is less than 0
+        """
         return sum([massflow.F for massflow in self.massflows
                     if massflow.F < 0])
 
     @property
-    def netflow(self):
+    def netflow(self) -> float:
+        """
+        Sums the massflow data to give the net flow
+
+        Returns
+        -------
+        float
+            The sum of `self.massflows` data
+        """
         return sum([massflow.F for massflow in self.massflows])
 
 
@@ -498,7 +712,25 @@ class Sensor(object):
 
     """
 
-    def __init__(self, params, layers):
+    def __init__(self, params:dict, layers) -> None:
+        """
+        Temperature sensor in the tank.
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            Contains params which specify a sensor, so far it contains 
+            only one entry *pos*, which defines the position of the sensor above hotwater tank bottom
+        layers : ???
+            ???
+
+        Attributes
+        ----------
+        self.pos : ???
+            Defines the position of the sensor above hotwater tank bottom
+        """
         self.pos = params['pos']  # mm
         # determine corresponding layer
         for layer in layers:
@@ -507,7 +739,15 @@ class Sensor(object):
                 # reference to corresponding layer
 
     @property
-    def T(self):  # temperature in °C
+    def T(self) -> float:  # temperature in °C
+        """
+        Gets the temperature of the corresponding layer
+
+        Returns
+        -------
+        self.corresponding_layer.T : float
+            The temperature in °C
+        """
         return self.corresponding_layer.T
 
 
@@ -525,7 +765,38 @@ class Connection(object):
 
     """
 
-    def __init__(self, params, layers):
+    def __init__(self, params:dict, layers) -> None:
+        """
+        Defines the connections through which devices connect to the hotwater tank
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            ???
+        layers : ???
+            ???
+        
+        Attributes
+        ----------
+        self.layers : ???
+            ???
+        self.pos : ???
+            ???
+        self.type : ???
+            ???
+        self._F : float  
+            flow [l/s]
+        self._T : float 
+            Temperature in °C
+        self._T_buffer : list
+            ???
+        self.corresponding_layer : ???
+            ??? reference to corresponding layer
+        self.corresponding_layer_pos : ???
+            ???
+        """
         self.layers = layers  # reference to layers
         self.pos = params['pos']
         if 'type' in params:
@@ -539,7 +810,17 @@ class Connection(object):
                 self.corresponding_layer_pos = layer
         self.update()
 
-    def update(self, adapted_step_size_mode=False):
+    def update(self, adapted_step_size_mode:bool=False) -> None:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        adapted_step_size_mode : bool
+            ???
+        """
         try:
             if self.F <= 0:
                 self.corresponding_layer = self.corresponding_layer_pos
@@ -557,7 +838,10 @@ class Connection(object):
             self.corresponding_layer = self.corresponding_layer_pos
 
     @property
-    def T(self):
+    def T(self) -> float:
+        """
+        Description
+        """
         try:
             if self.F > 0:  # inlet
                 return self._T
@@ -569,17 +853,40 @@ class Connection(object):
             return self.corresponding_layer.T
 
     @T.setter
-    def T(self, value):
+    def T(self, value) -> None:
+        """
+        Sets the `self._T` value.
+        """
         if value != self._T:
             self._T = value
             self.update()  # corresponding layer must be updated
 
     @property
     def F(self):
+        """
+        Gets the self._F value
+
+        ...
+
+        Returns
+        -------
+        self._F : ???
+            ???
+        """
         return self._F
 
     @F.setter
-    def F(self, value):
+    def F(self, value) -> None:
+        """
+        Sets the self._F value
+
+        ...
+
+        Parameters
+        ----------
+        value : ???
+            ???
+        """
         try:
             if self._F <= 0:
                 self._F = value
@@ -599,7 +906,26 @@ class Connection(object):
 class MassFlow(object):
     """Massflow"""
 
-    def __init__(self, F, T):
+    def __init__(self, F, T) -> None:
+        """
+        Description
+
+        ...
+
+        Parameters
+        ----------
+        F : ???
+            ???
+        T : ???
+            ???
+
+        Attributes
+        ----------
+        self.F : ???
+            ???
+        self.T : ???
+            ???
+        """
         self.F = F
         self.T = T
 
@@ -614,7 +940,40 @@ class HeatingRod(object):
 
     """
 
-    def __init__(self, params, layers, init_vals=None):
+    def __init__(self, params, layers, init_vals=None) -> None:
+        """
+        Heating rod integrated into to the hotwater tank.
+
+        ...
+
+        Parameters
+        ----------
+        params : dict
+            ???
+        layers : ???
+            ???
+        init_vals : ???
+            ???
+
+        Attributes
+        ----------
+        self.pos : ???
+            ???
+        self.T_max : ???
+            ???
+        self.P_th_stages : ???
+            Power stages in W
+        self.eta : ???
+            ???
+        self.corresponding_layer : ???
+            ???
+        self.P_th_set : ???
+            Set value for thermal power output in W
+        self.P_el : ???
+            Electric power consumption in W
+        self.P_th : ???
+            Thermal power output in W
+        """
         self.pos = params['pos']
         self.T_max = params['T_max']
         self.P_th_stages = np.array(params['P_th_stages'])  # power stages in W
@@ -634,7 +993,10 @@ class HeatingRod(object):
                 else:
                     raise AttributeError("init_val %s doesn't match any attribute" % attr)
 
-    def update(self):
+    def update(self) -> None:
+        """
+        Description
+        """
         if self.corresponding_layer.T < self.T_max:
             idx = np.argmin(abs(self.P_th_stages - self.P_th_set))
             # find closest power stage
@@ -646,15 +1008,39 @@ class HeatingRod(object):
 
     @property
     def P_th_min(self):
+        """
+        Returns the minimum of the `self.P_th_stages` attribute
+        
+        Returns
+        -------
+        self.P_th_stages : ???
+            ???
+        """
         return self.P_th_stages[0]
 
     @property
     def P_th_max(self):
+        """
+        Returns the maximum of the `self.P_th_stages` attribute
+        
+        Returns
+        -------
+        self.P_th_stages : ???
+            ???
+        """
         return self.P_th_stages[-1]
 
     @property
-    def T(self):
-        return self.corresponding_layer.T
+    def T(self) -> float:
+        """
+        Gets the temperature of the corresponding layer
+
+        Returns
+        -------
+        self.corresponding_layer.T : float
+            The temperature in °C
+        """
+        return self.corresponding_layer.T   
 
 
 

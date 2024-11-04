@@ -274,7 +274,7 @@ class prosumerSim(mosaik_api.Simulator):
                 'time': output_time (for event-based sims, optional)
             }
 
-        See Also
+        See Alsoe
         --------
         Time-based simulators have set an entry for all requested attributes, whereas for event-based and hybrid simulators this is optional (e.g.
         if there's no new event). Event-based and hybrid simulators can optionally set a timing of their non-persistent output attributes via a *time* entry, which is valid
