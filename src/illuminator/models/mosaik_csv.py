@@ -1,13 +1,14 @@
 import arrow
 
-import mosaik_api
+import mosaik_api_v3 as mosaik_api
 
 
 __version__ = '1.2.0'
 
 
-class CSV(mosaik_api.Simulator):
+class CSV(mosaik_api.Simulator): # simulator that reads a CSV file and provides data to entities. 
     def __init__(self) -> None:
+       # this is an a middleware that reads a CSV file and provides data to entities and connects to another model.
         """
         Inherits the Mosaik API Simulator class and is used for python based simulations.
         For more information properly inheriting the Mosaik API Simulator class please read their given documentation.
@@ -37,6 +38,7 @@ class CSV(mosaik_api.Simulator):
         self.cache : ???
             ???
         """
+
         super().__init__({'models': {}})
         self.time_resolution = None
         self.start_date = None
@@ -84,8 +86,10 @@ class CSV(mosaik_api.Simulator):
         self.next_date = self.start_date
 
         self.datafile = open(datafile)
-        self.modelname = next(self.datafile).strip()
+        self.modelname = 'CSV' # next(self.datafile).strip() 
+        # model name in META is set to the first line of the CSV file
 
+        next(self.datafile).strip() # Skip header line
         # Get attribute names and strip optional comments
         attrs = next(self.datafile).strip().split(self.delimiter)[1:]
         for i, attr in enumerate(attrs):

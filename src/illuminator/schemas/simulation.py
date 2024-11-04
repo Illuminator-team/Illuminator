@@ -12,8 +12,6 @@ from schema import Schema, And, Use, Regex, Optional, SchemaError
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
 # Ip versions 4 and 6 are valid
 ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
-ipv6_pattern = r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$'
-valid_ip = f'({ipv4_pattern})|({ipv6_pattern})'
 # monitor and connections sections enforce a format such as 
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
@@ -38,6 +36,17 @@ def validate_file_path(file_path: str) -> str:
     """
     if not os.path.exists(file_path):
         raise SchemaError(f"File path does not exist: {file_path}")
+    return file_path
+
+
+def validate_directory_path(file_path: str) -> str:
+    """
+    Validates that a  directory exists.
+    """
+    directory = os.path.dirname( os.path.abspath(file_path))
+    print(directory)
+    if not os.path.isdir(directory):
+        raise SchemaError(f"Directory does not exist: {directory}")
     return file_path
 
 
@@ -76,16 +85,20 @@ schema = Schema(  # a mapping of mappings
                         "end_time": Regex(valid_start_time, error="Invalid "
                                           "end_time format. Must be in the"
                                           "format: YYYY-MM-DDTHH:MM:SS"),
+                        Optional("time_resolution"): And(int, lambda n: n > 0,
+                                                  error="time resolution must be a "
+                                                  "positive integer"),
+                        Optional("results"): And(str, len, error="results must be a non-empty string"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
                     [{
                         "name": And(str, len),
                         "type": And(str, len),
-                        "inputs": And(dict, len, error="if 'inputs' is used,"
+                        Optional("inputs"): And(dict, len, error="if 'inputs' is used,"
                                       "it must contain at least one key-value "
                                       "pair"),
-                        "outputs": And(dict, len, error="if 'outputs' is used,"
+                        Optional("outputs"): And(dict, len, error="if 'outputs' is used,"
                                        " it must contain at least one "
                                        "key-value pair"),
                         Optional("parameters"): And(dict,
@@ -93,12 +106,9 @@ schema = Schema(  # a mapping of mappings
                                                     error="if 'parameters' is used, it must contain at least one key-value pair"),
                         Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                         Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
-                        Optional("scenario_data"): And(str, 
-                                                    Use(validate_file_path, error=f"'scenario_data' points to a file that doesn't exist"), 
-                                                    error="If 'scenario_data' is used, a valid file path must be provided"), 
                         Optional("connect"): Schema( # a mapping of mappings
                             {
-                                "ip": Regex(valid_ip, error="you must provide an IP address that matches versions IPv4 or IPv6"),
+                                "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),
                                 Optional("port"): And(int),
                     }
                 ),
@@ -110,12 +120,20 @@ schema = Schema(  # a mapping of mappings
                 "to": Regex(valid_model_item_format, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
             }]
         ),
-        "monitor":  And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
-                        error="you must provide at least one item to monitor"),
+        "monitor":  Schema(
+            {
+                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'results' does not exists..."), error="you must provide a non-empty string for 'results'"),
+                "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
+                        error="you must provide at least one item to monitor")
+            }
+        )
     }
 )
 
 
+# TODO: write a validator for model types. It should check that a model exist in the illuminator.models package
+# We could generate a list of names in the models package and check that the model name is in that list.
+# The list should be updates when new models are added to the package
 # TODO: Write a more rubust validator for the monitor section
 # Any input, output, or state declared in the monitor section must be declared in the models section
 # TODO: Write a more rubust validator for connections section

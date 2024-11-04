@@ -1,5 +1,5 @@
 """
-Clonfigurations for the mosaik simulations that use models 
+Configurations for the mosaik simulations that use models 
 from the illuminator package, can be defined as below.
 
 Pre-requisites:

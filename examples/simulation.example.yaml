@@ -2,9 +2,11 @@ scenario:
   name: "ExampleScenario" # in mosaik so called world
   start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
   end_time: '2012-01-02 00:00:10' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+  results: './out.csv' # optional with default, path to the results file for the scenario. This should be optional
 models: # list of models for the energy network
 - name: Battery1 # name for the model (must be unique)
-  type: BatteryModel # name of the model registered in the Illuminator
+  type: Battery # name of the model registered in the Illuminator
   inputs: 
     input1: 0  # input-name: initial value, default value will be used if not defined
   outputs: 
@@ -23,10 +25,10 @@ models: # list of models for the energy network
     - soc_min
   scenario_data: './src/illuminator/schemas/scenario_data.csv' #path to the scenario data file for the model. This should be optional
   connect: # this is optional. If not defined, the model will be assumed to be local
-    ip: 127.0.0.1 # Ip version 4 or 6
+    ip: 127.0.0.1 # Ip version 4
     port: 5000 # optional, if not defined, the default port will be used
 - name: Battery2
-  type: BatteryModel # models can reuse the same type
+  type: Battery # models can reuse the same type
   inputs: 
     input1: 0  # input-name: initial value, default value will be used if not defined
   outputs: 

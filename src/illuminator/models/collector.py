@@ -1,10 +1,11 @@
 import collections
 import pandas as pd
-import mosaik_api
+import mosaik_api_v3 as mosaik_api
 import os
 import sqlite3
 import paho.mqtt.client as mqtt
 from urllib.parse import urlparse
+
 META = {
     'type': 'hybrid',
     'models': {
@@ -226,6 +227,7 @@ class Collector(mosaik_api.Simulator):
         df = df.set_index('date')
 
         if self.results_show['dashboard_show']==True:
+            # TODO: raise warning, not implemented
             for key, value in df.items():
                 wandb.log({key: value[0],
                            "custom_step":time/900})
