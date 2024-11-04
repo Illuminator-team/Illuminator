@@ -46,6 +46,7 @@ dev = [
     "myst-parser",
     "sphinx-copybutton",
     "schema", 
+    "nbsphinx",
 ]
 
 [project.urls]
