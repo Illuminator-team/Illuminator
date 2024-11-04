@@ -21,6 +21,7 @@ jobs:
         run: |
           pip install pip --upgrade
           pip install -r docs/requirements.txt
+      - uses: docker://pandoc/core:3.5
       - name: Sphinx build
         run: |
           sphinx-build docs _build
