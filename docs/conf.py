@@ -27,11 +27,14 @@ release = '1.0.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+nbsphinx_execute = 'never'
+
 extensions = ["myst_parser",
               'sphinx_rtd_theme',
               'sphinx.ext.autodoc',
               'sphinx.ext.napoleon',
               'sphinx_copybutton',
+              "nbsphinx",
               ]
 
 templates_path = ['_templates']
