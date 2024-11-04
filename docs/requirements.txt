@@ -13,3 +13,4 @@ mosaik>=3.3.3
 ruamel.yaml>= 0.18.5
 schema >= 0.7.0
 pandoc >= 2.4.0
+jupyterlab >= 4.3.0
