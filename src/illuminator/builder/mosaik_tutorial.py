@@ -8,11 +8,16 @@ from typing import Any
 # a new model most be a class
 
 ###############################################
+
+# A model is any class that defines n number of attributes (model parameters) 
+# in __init__ and a step() method that update the attributes in some way.
+
 class Model:
 
 
     def __init__(self, init_val=0): # with any mumbers of arguments (considered as model_parameters)
 
+        # We call this model parameters.
         self.val = init_val
         self.delta = 1
 
@@ -21,7 +26,7 @@ class Model:
 
         self.val = self.val + self.delta
 
-        return self.val
+        return self.val  # this is what the models OUTPUTS. 
 
 
 ###############################################
