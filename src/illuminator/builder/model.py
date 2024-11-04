@@ -10,6 +10,12 @@ class SimulatorType(Enum):
     HYBRID = 'hybrid'
 
 
+
+
+
+
+
+
 @dataclass
 class IlluminatorModel():
     """ A dataclass for defining the properties of a model in the Illuminator.
@@ -49,11 +55,27 @@ class IlluminatorModel():
     # simulator_type: SimulatorType = SimulatorType.TIME_BASED
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
+    
 
     def __post_init__(self):
         self.validate_states()
         self.validate_triggers()
         # self.validate_simulator_type()
+    
+    @property
+    def simulator_meta(self) -> dict:
+        """Returns the metadata required by the mosaik API"""
+        
+        meta = {
+            'type': self.simulator_type.value,
+            'models': {
+                'Model': {
+                    'public': True,
+                    'params': list(self.parameters.keys()),
+                    'attrs': list(self.outputs.keys())
+                }
+            }}
+        return meta
 
     def validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
@@ -83,11 +105,14 @@ class IlluminatorModel():
             raise ValueError("Triggers are required in event-based simulators")
 
 
+
 class ModelConstructor(ABC):
     """A common interface for constructing models in the Illuminator"""
 
     def __init__(self, model: IlluminatorModel) -> None:
         self._model = model
+        self.model_entities = {}
+        self._cache = {}
 
     @abstractmethod
     def step(self) -> None:
@@ -96,10 +121,21 @@ class ModelConstructor(ABC):
         """
         pass
 
+    
+    def create(self, num: int) -> List:
+        """Creates an instance of the model"""
+        for i in range(num):
+            eid = f"{self._model.simulator_type.value}_{i}"
+            self.model_entities[eid] = self._model
+        return list(self.model_entities.keys())
+    
     def current_time(self): 
         """Returns the current time of the simulation"""
         pass
         # TODO: implement this method
+
+
+
 
 
 if __name__ == "__main__":
