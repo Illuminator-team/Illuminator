@@ -1,12 +1,8 @@
 import pytest
 import numpy as np
 import pandas as pd
-import sys
-sys.path.append('src/illuminator/models/PV/')
-from pv_model import PV_py_model
-from pv_mosaik import PvAdapter
-# src/illuminator/models/PV/pv_model.py
-# from pv_model import PV_py_model
+from illuminator.models.PV.pv_model import PV_py_model
+from illuminator.models.PV.pv_mosaik import PvAdapter
 
 class TestPVMosaikMethods():
     """

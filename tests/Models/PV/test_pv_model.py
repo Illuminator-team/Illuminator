@@ -1,8 +1,6 @@
 import pytest
 import numpy as np
-import sys
-sys.path.append('src/illuminator/models/PV/')
-from pv_model import PV_py_model
+from illuminator.models.PV.pv_model import PV_py_model
 
 class TestPVModelMethods():
     """
