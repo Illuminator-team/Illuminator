@@ -68,9 +68,7 @@ If you are a part of the Illuminator team and have write access to the Illuminat
 
 ### Develop your contribution
 
-> TODO: update this section after refactoring
-
-1. Create a branch of the latest commit on the `main` branch to work on your feature.
+1. Create a branch of the latest commit on the `dev` branch to work on your feature.
 
     ```bash
     git checkout -b my-feature
@@ -81,7 +79,8 @@ If you are a part of the Illuminator team and have write access to the Illuminat
 3. Set up a development environment on your computer by installing the Illuminator in development mode with the following command: (Consider using a virtual environment for this purpose.)
 
     ```bash
-    # TODO: this part needs to be updated after refactoring
+    # On the root of the repository:
+    pip install -e .[dev]
     ```
     
 4. Set up your code editor to follow [PEP 8](https://peps.python.org/pep-0008/) (remove trailing white space, no tabs, etc.). Check code with [flake8](https://flake8.pycqa.org/en/latest/).

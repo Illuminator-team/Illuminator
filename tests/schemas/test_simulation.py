@@ -2,7 +2,7 @@
 Unit tests for the simulation.py of the schemas module.
 """
 
-from illuminator.schemas.simulation import simulation_schema
+from illuminator.schemas.simulation import schema
 from ruamel.yaml import YAML
 
 SCENARIO_FILE = open('./src/illuminator/schemas/simulation.example.yaml', 'r')
@@ -14,5 +14,5 @@ def test_valid_scenario_schema():
     yaml = YAML(typ='safe')
     data = yaml.load(SCENARIO_FILE)
     
-    simulation_schema.validate(data) 
+    schema.validate(data) 
     
