@@ -4,7 +4,7 @@ By: M. Rom & M. Garcia Alvarez
 """
 
 import argparse
-from illuminator.engine import api
+import illuminator.engine as engine
 
 
 def main():
@@ -15,11 +15,11 @@ def main():
     file_path = args.file_path
 
     # load and validate configuration file
-    config = api.validate_config_data(file_path)
-    config = api.apply_default_values(config)
+    config = engine.validate_config_data(file_path)
+    config = engine.apply_default_values(config)
     
     # Define the Mosaik simulation configuration
-    sim_config = api.generate_mosaik_configuration(config)
+    sim_config = engine.generate_mosaik_configuration(config)
 
     # simulation time
     _start_time = config['scenario']['start_time']
@@ -29,7 +29,7 @@ def main():
     _results_file = config['scenario']['results']
 
     # Initialize the Mosaik worlds
-    world = api.create_world(sim_config, time_resolution=_time_resolution)
+    world = engine.create_world(sim_config, time_resolution=_time_resolution)
     # TODO: collectors are also customisable simulators, define in the same way as models.
     # A way to define custom collectors should be provided by the Illuminator.
     collector = world.start('Collector', 
@@ -43,16 +43,16 @@ def main():
     monitor = collector.Monitor()
 
     # Dictionary to keep track of created model entities
-    model_entities = api.start_simulators(world, config['models'])
+    model_entities = engine.start_simulators(world, config['models'])
 
     # Connect the models based on the connections specified in the configuration
-    world = api.build_connections(world, model_entities, config['connections'])
+    world = engine.build_connections(world, model_entities, config['connections'])
 
     # Connect monitor
-    world = api.connect_monitor(world, model_entities, monitor, config['monitor'])
+    world = engine.connect_monitor(world, model_entities, monitor, config['monitor'])
     
     # Run the simulation until the specified end time
-    mosaik_end_time =  api.compute_mosaik_end_time(_start_time,
+    mosaik_end_time =  engine.compute_mosaik_end_time(_start_time,
                                             _end_time,
                                             _time_resolution
                                         )

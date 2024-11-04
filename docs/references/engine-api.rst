@@ -1,8 +1,10 @@
 Engine's API
 =====================
 
-.. automodule:: illuminator.engine.api 
+.. automodule:: illuminator.engine 
     :members:
+    :undoc-members:
+    :show-inheritance:
 
 
 

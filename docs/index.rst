@@ -38,3 +38,4 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :caption: References:
 
    references/models.rst
+   references/engine-api.rst
