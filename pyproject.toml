@@ -25,7 +25,7 @@ dependencies = [
     "pandapower==2.13.1",
     "pandas==1.5.3",
     "mosaik>=3.3.3",
-    "ruamel>= 0.18.6"
+    "ruamel.yaml>= 0.18.5"
 ]
 keywords = [
     "energy",
@@ -40,7 +40,12 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest"
+    "pytest",
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "myst-parser",
+    "sphinx-copybutton",
+    "schema", 
 ]
 
 [project.urls]

@@ -38,3 +38,11 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :caption: References:
 
    references/models.rst
+   references/engine-api.rst
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
