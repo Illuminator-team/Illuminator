@@ -6,6 +6,7 @@
 Illuminator documentation
 =========================
 
+
 The Illuminator is an easy-to-use Energy System Integration 
 Development kit to demystify energy system operation, illustrate challenges 
 that arise due to the energy transition and test 
@@ -15,13 +16,13 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    quick-start
 
 .. toctree::
    :maxdepth: 2
-   :caption: User's Documentation:
+   :caption: User's Documentation
 
    user/start
    user/user-guide
@@ -29,13 +30,20 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Developer's Documentation:
+   :caption: Tutorials
 
-   developer/start
+   turotials/example.ipynb
 
 .. toctree::
    :maxdepth: 2
-   :caption: References:
+   :caption: Developer's Documentation
+
+   developer/start
+   
+
+.. toctree::
+   :maxdepth: 2
+   :caption: References
 
    references/models.rst
    references/engine-api.rst
