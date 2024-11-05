@@ -1,3 +1,5 @@
+> An archived version of the source code
+
 # Illuminator
 The Illuminator is an easy-to-use Energy System Integration 
 Development kit to demystify energy system operation, illustrate challenges 
