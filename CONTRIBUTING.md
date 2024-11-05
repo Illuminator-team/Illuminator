@@ -63,7 +63,7 @@ If you are a part of the Illuminator team and have write access to the Illuminat
 
 1. Now, `git remote -v` will show two remote repositories named:
 
-    * `upstream`, which refers to the Illumator repository 
+    * `upstream`, which refers to the Illuminator repository 
     * `origin`, which refers to your personal fork
 
 ### Develop your contribution
