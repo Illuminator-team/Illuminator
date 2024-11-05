@@ -87,7 +87,7 @@ The **master** provides a Dashboard to viazulize the results, and saves them to 
    ```
    [TODO: This suggest that all Pi's need a user with the name 'illuminator']
 
-6. Run the `build_runshfile.py` file in the configuration directory on *master* to generate a run.sh. Give the appropiate yaml file for the model as input:
+6. Run the `build_runshfile.py` file in the configuration directory on *master* to generate a run.sh script. Give the appropiate yaml file for the model as input:
    
    ```shell
    python3 build_runshfile.py <path_to_yaml_file>
