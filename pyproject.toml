@@ -6,16 +6,20 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "0.1.0"
+version = "3.0.0-alpha"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "A. Fu"},
+    { name = "Josip Grguric"},
+    { name = "Joan Pijpker"},
+    { name = "Manuel Garcia Alvarez", email = "gilbert.mg22@gmail.com"},
+    { name = "Mano Rom"}
 ]
 maintainers = [
-    { name = "Your Name", email = "you.email@example.com"}
+    { name = "Illuminator Team", email = "illuminator@tudelft.nl"}
     ]
 dependencies = [
     "arrow==1.2.3",
@@ -24,6 +28,7 @@ dependencies = [
     "paho-mqtt==1.6.1",
     "pandapower==2.13.1",
     "pandas==1.5.3",
+    "numpy==1.26.4",
     "mosaik>=3.3.3",
     "ruamel.yaml>= 0.18.5"
 ]
@@ -50,8 +55,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://example.com"
-Documentation = "https://readthedocs.org"
+Documentation = "https://illuminator-team.github.io/Illuminator/"
 Repository = "https://github.com/Illuminator-team/Illuminator.git"
 "Bug Tracker" = "https://github.com/Illuminator-team/Illuminator/issues"
-Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+Changelog = "https://github.com/Illuminator-team/Illuminator/blob/main/CHANGELOG.md"
