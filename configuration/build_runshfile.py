@@ -51,7 +51,7 @@ def process_models(data, output_file):
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python script.py <path_to_yaml_file>")
+        print("Usage: python3 "+sys.argv[0]+" <path_to_yaml_file>")
         sys.exit(1)
 
     yaml_file = sys.argv[1]
