@@ -80,7 +80,7 @@ The **master** provides a Dashboard to viazulize the results, and saves them to 
    ```
    [TODO: This suggest that all Pi's need a user with the name 'illuminator']
 
-6. Run the `buildcilentremoterun.py` file on each *client* and give all users execute permission to all the documents in `runshfile/` in order 
+6. Run the `build_runshfile.py` file in the configuration directory on *master* to generate a run.sh file and give all users execute permission to all the documents in `runshfile/` in order 
 to make sure the leader can access the *client* model.
    
    ```shell
