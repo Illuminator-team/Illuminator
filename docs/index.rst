@@ -16,9 +16,10 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Getting Started
 
    quick-start
+   cluster-setup
 
 .. toctree::
    :maxdepth: 2
@@ -42,7 +43,6 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    developer/testing-explained.md
    developer/writing-tests.md
    
-
 .. toctree::
    :maxdepth: 2
    :caption: References

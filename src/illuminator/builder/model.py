@@ -10,12 +10,6 @@ class SimulatorType(Enum):
     HYBRID = 'hybrid'
 
 
-
-
-
-
-
-
 @dataclass
 class IlluminatorModel():
     """ A dataclass for defining the properties of a model in the Illuminator.
@@ -52,7 +46,7 @@ class IlluminatorModel():
     outputs: Dict = field(default_factory=dict)
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
-    # simulator_type: SimulatorType = SimulatorType.TIME_BASED
+    simulator_type: SimulatorType = SimulatorType.HYBRID
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
     
@@ -105,22 +99,55 @@ class IlluminatorModel():
             raise ValueError("Triggers are required in event-based simulators")
 
 
+from mosaik_api_v3 import Simulator
 
-class ModelConstructor(ABC):
+class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
 
     def __init__(self, model: IlluminatorModel) -> None:
+        super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
-        self._cache = {}
+        self.time = 0  # time is an interger wihout a unit
 
     @abstractmethod
-    def step(self) -> None:
+    def step(self, time:int, inputs:dict=None, max_advance:int=None) -> int:
         """Defines the computations that need to be performed in each
         simulation step
+
+        Parameters
+        ----------
+        time: int
+            The current time of the simulation.
+        inputs: dict
+            The inputs to the model.
+        max_advance: int
+            Time until the simulator can safely advance its internal time without creating a causality error.
+            Optional in most cases.
+
+        Returns
+        -------
+        int
+            The new time of the simulation.
+
         """
         pass
 
+    def init(self, sid, time_resolution, **sim_params):  # can be use to update model parameters set in __init__
+        print(f"running extra init")
+        # This is the standard Mosaik init method signature
+        self.sid = sid
+        self.time_resolution = time_resolution
+
+        # Assuming sim_params is structured as {'sim_params': {model_name: model_data}}
+        sim_params = sim_params.get('sim_params', {})
+        if len(sim_params) != 1:
+            raise ValueError("Expected sim_params to contain exactly one model.")
+
+        # # Extract the model_name and model_data
+        # self.model_name, self.model_data = next(iter(sim_params.items()))
+        # self.model = self.load_model_class(self.model_data['model_path'], self.model_data['model_type'])
+        return self._model.simulator_meta
     
     def create(self, num: int) -> List:
         """Creates an instance of the model"""
@@ -134,8 +161,26 @@ class ModelConstructor(ABC):
         pass
         # TODO: implement this method
 
+    def get_data(self) -> Dict:
+        """Expose model outputs and states to the simulation environment
+        
+        Returns
+        -------
+        Dict
+            A dictionary of model outputs and states.
+        """
+        data = {}
 
+        for eid, attrs in self._model.outputs.items():
+            model_instance = self.model_entities[eid]
+            data[eid] = {}
+            for attr in attrs:
+                if attr in model_instance.outputs:
+                    data[eid][attr] = model_instance.outputs[attr]
+                else:
+                    data[eid][attr] = model_instance.states[attr]
 
+        return data
 
 
 if __name__ == "__main__":

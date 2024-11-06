@@ -198,12 +198,12 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 
                 # allows instantiating an entity by using the value of 'model_type' dynamically
                 model_factory = getattr(simulator, model_type) 
-                # Mulple entities entities for the same model will be created
+                # Mulple entities entities for the same model are created
                 # one at a time. This is by design.
                 # TODO: parameters must be passed as **kwargs in create().
                 # This should be fixed by adapting models to use the Illumnator's interface
 
-                # CONTINUE HERE: make this test pass by providing fixed values for the parameters
+                # TODO:
                 # this is a temporary solution to continue developing the CLI
                 entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
                                             panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,

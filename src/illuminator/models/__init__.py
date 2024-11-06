@@ -5,5 +5,10 @@ from .Battery.battery_model import BatteryModel
 from .collector import Collector
 from .mosaik_csv import CSV
 from .PV.pv_mosaik import PvAdapter
+from .adder import Adder
 
-__all__ = ['BatteryModel', 'Collector', 'CSV', 'PvAdapter']
+__all__ = ['BatteryModel', 
+           'Collector', 
+           'Adder', 
+           'CSV', 
+           'PvAdapter']

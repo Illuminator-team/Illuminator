@@ -17,9 +17,13 @@ def main():
     # load and validate configuration file
     config = engine.validate_config_data(file_path)
     config = engine.apply_default_values(config)
+
+    print("config:  ", config['models'])
     
     # Define the Mosaik simulation configuration
     sim_config = engine.generate_mosaik_configuration(config)
+    
+    print("mosaik conf:  ", sim_config)
 
     # simulation time
     _start_time = config['scenario']['start_time']
