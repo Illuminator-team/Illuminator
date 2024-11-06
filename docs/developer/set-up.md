@@ -1,9 +1,9 @@
 # Set Up Environment
+Follow these steps to set up a development environment.
 
 **Requirements**
 * Python >= 3.11
 * Recent version of PIP
-
 
 To set up a development environment:
 
@@ -29,7 +29,7 @@ pip install -e .e
 
 We use `Pytest` to write and test the source code. To run all unit-tests, run the following command at the root of the repository:
 
-```
+```shell
 pytest tests/
 ```
 
