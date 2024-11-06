@@ -54,6 +54,13 @@ The **master** provides a Dashboard to viazulize the results, and saves them to 
    interface etho
    static ip_address=192.168.0.1/24 # change the IP address as you want
    ```
+
+   Give all users execute permission to all the documents in `runshfile/` in order to make sure the leader can access the *client* model.
+   
+   ```shell
+   chmod -R a+X *dir*
+   ```
+
    Finally, reboot the Raspberry Pi suing `sudo reboot` on the terminal.
 3. [Configure SSH connections so that the *master* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 4. Install the following Python packages.
@@ -80,11 +87,10 @@ The **master** provides a Dashboard to viazulize the results, and saves them to 
    ```
    [TODO: This suggest that all Pi's need a user with the name 'illuminator']
 
-6. Run the `buildcilentremoterun.py` file on each *client* and give all users execute permission to all the documents in `runshfile/` in order 
-to make sure the leader can access the *client* model.
+6. Run the `build_runshfile.py` file in the configuration directory on *master* to generate a run.sh script. Give the appropiate yaml file for the model as input:
    
    ```shell
-   chmod -R a+X *dir*
+   python3 build_runshfile.py <path_to_yaml_file>
    ```
 
 More detialed instructions are given in the [user guide document](docs/user/user-guide.md) and the [model build up document](Models.md).
