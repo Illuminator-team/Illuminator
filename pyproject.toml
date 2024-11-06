@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "3.0.0-alpha"
+version = "3.0.0-alpha.1"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "README.md"
@@ -53,6 +53,9 @@ dev = [
     "sphinx-copybutton",
     "nbsphinx",
 ]
+
+[project.scripts]
+illuminator = "illuminator.cli.main:main"
 
 [project.urls]
 Documentation = "https://illuminator-team.github.io/Illuminator/"
