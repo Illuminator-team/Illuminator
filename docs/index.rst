@@ -16,9 +16,10 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Getting Started
 
    quick-start
+   cluster-setup
 
 .. toctree::
    :maxdepth: 2
@@ -32,7 +33,7 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :maxdepth: 2
    :caption: Tutorials
 
-   turotials/example.ipynb
+   .. turotials/example.ipynb
 
 .. toctree::
    :maxdepth: 2
@@ -40,7 +41,6 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
 
    developer/start
    
-
 .. toctree::
    :maxdepth: 2
    :caption: References
