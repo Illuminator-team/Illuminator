@@ -9,7 +9,7 @@ name = "illuminator"
 version = "3.0.0-alpha"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
-readme = "README.md"
+readme = "readme.md"
 requires-python = ">=3.8"
 authors = [
     { name = "A. Fu"},
