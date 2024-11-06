@@ -33,13 +33,15 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :maxdepth: 2
    :caption: Tutorials
 
-   .. turotials/example.ipynb
+   tutorials/example.ipynb
 
 .. toctree::
    :maxdepth: 2
    :caption: Developer's Documentation
 
-   developer/start
+   developer/developer-docstrings.md
+   developer/testing-explained.md
+   developer/writing-tests.md
    
 .. toctree::
    :maxdepth: 2

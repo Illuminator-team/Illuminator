@@ -1,4 +1,4 @@
-Illumator Models
+Illuminator Models
 =====================
 
 .. autoclass:: illuminator.models.Battery.battery_model::BatteryModel
