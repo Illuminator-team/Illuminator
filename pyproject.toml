@@ -15,8 +15,8 @@ authors = [
     { name = "A. Fu"},
     { name = "Josip Grguric"},
     { name = "Joan Pijpker"},
-    { name = "Manuel Garcia Alvarez", email = "gilbert.mg22@gmail.com"},
-    { name = "Mano Rom"}
+    { name = "Manuel Garcia Alvarez"},
+    { name = "Mano Rom"},
 ]
 maintainers = [
     { name = "Illuminator Team", email = "illuminator@tudelft.nl"}
