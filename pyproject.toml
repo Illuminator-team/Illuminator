@@ -30,7 +30,8 @@ dependencies = [
     "pandas==1.5.3",
     "numpy==1.26.4",
     "mosaik>=3.3.3",
-    "ruamel.yaml>= 0.18.5"
+    "ruamel.yaml>= 0.18.5",
+    "schema>=0.7.7", 
 ]
 keywords = [
     "energy",
@@ -50,7 +51,6 @@ dev = [
     "sphinx-rtd-theme",
     "myst-parser",
     "sphinx-copybutton",
-    "schema", 
     "nbsphinx",
 ]
 
