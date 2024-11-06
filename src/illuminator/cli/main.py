@@ -10,13 +10,14 @@ import illuminator.engine as engine
 
 app = typer.Typer()
 scenario_app = typer.Typer()
-app.add_typer(scenario_app, name="scenario", help="Run a simulation scenario.")
+app.add_typer(scenario_app, name="scenario", help="Run simulation scenarios.")
 cluster_app = typer.Typer()
 app.add_typer(cluster_app, name="cluster", help="Utilities for a RaspberryPi cluster.")
 
 
 @scenario_app.command("run")
 def scenario_run(config: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
+    "Runs a simulation scenario using a YAML file."
 
     file_path = config
 
@@ -70,8 +71,10 @@ def scenario_run(config: Annotated[str, typer.Argument(help="Path to scenario co
     print(f"Running simulation from")
     world.run(until=mosaik_end_time)
 
+
 @cluster_app.command("build")
 def cluster_build(config: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
+    """Builds the run.sh files for a cluster of Raspberry Pi's."""
     print('building sh')
 
 
