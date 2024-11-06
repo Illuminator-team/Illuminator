@@ -3,16 +3,22 @@ A CLI for running simulations in the Illuminator
 By: M. Rom & M. Garcia Alvarez
 """
 
-import argparse
+import typer
+from typing_extensions import Annotated
 import illuminator.engine as engine
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Run the simulation with the specified scenario file.')
-    parser.add_argument('file_path', nargs='?', default='simple_test2.yaml', 
-                        help='Path to the scenario file. [Default: config.yaml]')
-    args = parser.parse_args()
-    file_path = args.file_path
+app = typer.Typer()
+scenario_app = typer.Typer()
+app.add_typer(scenario_app, name="scenario", help="Run a simulation scenario.")
+cluster_app = typer.Typer()
+app.add_typer(cluster_app, name="cluster", help="Utilities for a RaspberryPi cluster.")
+
+
+@scenario_app.command("run")
+def scenario_run(config: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
+
+    file_path = config
 
     # load and validate configuration file
     config = engine.validate_config_data(file_path)
@@ -64,6 +70,10 @@ def main():
     print(f"Running simulation from")
     world.run(until=mosaik_end_time)
 
-if __name__ == '__main__':
+@cluster_app.command("build")
+def cluster_build(config: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
+    print('building sh')
 
-    main()
+
+if __name__ == "__main__":
+    app()
