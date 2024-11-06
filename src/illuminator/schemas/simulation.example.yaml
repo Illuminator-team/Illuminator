@@ -1,0 +1,63 @@
+scenario:
+  name: "ExampleScenario" # in mosaik so called world
+  start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-02 00:00:10' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
+- name: Battery1 # name for the model (must be unique)
+  type: BatteryModel # name of the model registered in the Illuminator
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+    discharge_power_max: 200
+    soc_min: 0.1 
+    soc_max: 0.9 
+    capacity: 1000
+  states: 
+    initial_soc: 0.5
+  triggers:   # list of triggers for the of another model??. It must be an input, output or state of the model
+    - capacity
+    - soc_min
+  connect: # this is optional. If not defined, the model will be assumed to be local
+    ip: 127.0.0.1 # Ip version 4 or 6
+    port: 5000 # optional, if not defined, the default port will be used
+- name: Battery2
+  type: BatteryModel # models can reuse the same type
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+  outputs: 
+    output1: 0 
+    output2: null
+  parameters: 
+    charge_power_max: 100
+  states: 
+    soc: 0.5  # initial value for the state, optional
+- name: PV1
+  type: PVModel
+  inputs: 
+    input1: 0  # input-name: initial value, default value will be used if not defined
+    input2: 0
+  outputs: 
+    output1: 0 
+  parameters: 
+    power_max: 100
+  states: 
+    initial_soc: 0.5
+connections:
+- from: Battery1.output2 # start model, pattern: model_name.output_name/input_name
+  to: PV1.input1 # end model
+- from: Battery2.output
+  to: PV1.input2
+monitor:   #This must use the CollectorModel
+  file: './out.csv' # optional with default, path to the results file for the scenario. This should be optional
+  items: # a list of models, its inputs, output and states to be monitored and logged.
+  - Battery1.input1 # pattern model_name.state_name
+  - Battery2.output1  # no duplicates allowed
+  - PV1.soc # pattern model_name.state_name
+  - PV1.output1
+
+

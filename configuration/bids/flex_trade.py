@@ -1,6 +1,24 @@
 from datetime import datetime
 
-def match_trades(supply_offers, demand_requests):
+def match_trades(supply_offers, demand_requests) -> list:
+    """
+    Unknown description.
+    Not used by any of the 5 test cases
+
+    ...
+
+    Parameters
+    ----------
+    supply_offers : list or dictionary (hard to tell)
+        ???
+    demand_requests : list or dictionary (hard to tell)
+        ???
+
+    Returns
+    -------
+    trades : list
+        Description
+    """
     trades = []
 
     # Sort demand requests in descending order based on price
@@ -45,6 +63,7 @@ def match_trades(supply_offers, demand_requests):
     return trades
 
 
+## Hard coded values defined here.
 # Usage
 supply_offers = [('prosumer_0', ['2012-01-01 00:00:00', 17, 4]),
                  ('prosumer_0', ['2012-01-01 00:30:00', 17, 4]),

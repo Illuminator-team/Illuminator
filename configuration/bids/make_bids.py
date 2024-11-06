@@ -3,7 +3,31 @@ import random
 from datetime import datetime, timedelta
 
 # Function to generate data
-def generate_data(start_date, end_date, bid_range, num_bids_per_day, mc_range):
+def generate_data(start_date, end_date, bid_range, num_bids_per_day, mc_range) -> list:
+    """
+    Unknown description.
+    Not used by any of the 5 test cases
+
+    ...
+
+    Parameters
+    ----------
+    start_date : ???
+        ???
+    end_date : ???
+        ???
+    bid_range : ???
+        ???
+    num_bids_per_day : ???
+        ???
+    mc_range : ???
+        ???
+
+    Returns
+    -------
+    data : list
+        Description
+    """
     current_date = start_date
     data = []
     while current_date <= end_date:
@@ -28,7 +52,22 @@ mb_range = (0.1, 0.4)  # range of possible marginal benefit
 # Generate your data
 supply_bids = generate_data(start_date, end_date, supply_bid_range, supply_num_bids_per_day, mc_range)
 demand_bids = generate_data(start_date, end_date, demand_bid_range, demand_num_bids_per_day, mb_range)
-def write_data_to_file(data, bid_type, file):
+def write_data_to_file(data, bid_type, file) -> None:
+    """
+    Unknown description.
+    Not used by any of the 5 test cases
+
+    ...
+
+    Parameters
+    ----------
+    data : ???
+        ???
+    bid_type : ???
+        ???
+    file : ???
+        ???
+    """
     file.write(f"{bid_type} =")
     file.write("[")
     for i, bid in enumerate(data):
