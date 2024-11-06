@@ -13,19 +13,20 @@ The **server** provides a Dashboard to viazulize the results, and saves them to 
 </div>
 
 
-### Set up
+## Set up
 
 On every raspberrry Pi: 
 
 1. [Install Raspberry pi OS using Raspberry Pi imager.](https://www.raspberrypi.com/software/).
 2. Set an static IP address for each Raspberry Pi. Use the following command on the terminal to open the `dhcpcd.conf` file:
-   ```
-   sudo nano /etc/dhcpcd.confß
+
+   ```shell
+   sudo nano /etc/dhcpcd.conf
    ```
 
    In the `dhcpcd.conf` file, find the information to change the IP address to static as following:
 
-   ```
+   ```shell
    interface etho
    static ip_address=192.168.0.1/24 # change the IP address as you want
    ```
@@ -38,34 +39,32 @@ On every raspberrry Pi:
 
    Finally, reboot the Raspberry Pi suing `sudo reboot` on the terminal.
 3. [Configure SSH connections so that the *master* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
-4. Install the following Python packages.
-   ```
-   pandas
-   tk
-   python-csv
-   datetime
-   python-math
-   numpy
-   scipy
-   arrow
-   mosaik
-   mosaik_api
-   mosaik.util
-   wandb
-   matplotlib
-   itertools
-   ```
-5. Send the Illuminator package [TODO: What is the illuminator package?] to all *clients*. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
+
+4. Install the Illuminator Python package, and the addional dependencies:
 
    ```shell
+   # if connected to the internet
+   pip install illuminator
+
+   # or, if from source code
+   pip install Illuminator/
+   ```
+
+   ```shell
+   # aditional dependencies
+   pip install tk python-csv python-math scipy wandb itertools
+   ```
+5. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
+
+   ```shell
+   # notice that the followng assumes that each client has a 
+   # user named 'illuminator'
    ssh illuminator@ip #ip represent your follower IP address
    ```
-   [TODO: This suggest that all Pi's need a user with the name 'illuminator']
-
-6. Run the `build_runshfile.py` file in the configuration directory on *master* to generate a run.sh script. Give the appropiate yaml file for the model as input:
+6. Run the `build_runshfile.py` file in the configuration directory on *server*, this will generate a  to generate a `run.sh` script. Give the appropiate `config.yaml` file containing the simulation scenario definition:
    
    ```shell
-   python3 build_runshfile.py <path_to_yaml_file>
+   python3 build_runshfile.py <config.yaml>
    ```
 
 

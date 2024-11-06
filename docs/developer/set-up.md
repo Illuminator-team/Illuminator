@@ -5,8 +5,6 @@ Follow these steps to set up a development environment.
 * Python >= 3.11
 * Recent version of PIP
 
-To set up a development environment:
-
 1. Clone the repository:
 
 ```shell
@@ -22,7 +20,7 @@ cd Illuminator/
 3. install the development dependencies in editable mode:
 
 ```shell 
-pip install -e .e
+pip install -e .
 ```
 
 ## Running Unit Tests
