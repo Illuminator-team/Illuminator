@@ -31,9 +31,6 @@ def csv_model():
         }
     }
 
-# CONTINUE FROM HERE
-# ADD example data to the data.csv file
-
 @pytest.fixture
 def yaml_models():
     return  [{'name': 'CSVB',  # this name must match the name in the mosaik configuration
@@ -83,8 +80,6 @@ class TestMosaikEndTime:
         assert computed_steps == 17
 
         
-
-
 class TestStartSimulators:
     """
     Tests for the start_simulators function.
@@ -123,5 +118,3 @@ class TestStartSimulators:
 
         with pytest.raises(ValueError):
             start_simulators(mosaik_world, yaml_models)
-
-
