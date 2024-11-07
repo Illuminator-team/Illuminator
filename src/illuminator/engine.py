@@ -8,7 +8,6 @@ import math
 import importlib.util
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
-from illuminator.schemas.simulation import schema
 from datetime import datetime
 
 
