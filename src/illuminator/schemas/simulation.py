@@ -6,6 +6,7 @@ in the Illuminator.
 import datetime
 import re
 import os
+from ruamel.yaml import YAML
 from schema import Schema, And, Use, Regex, Optional, SchemaError
 
 # valid format for start and end times: YYYY-MM-DD HH:MM:SS"
@@ -48,6 +49,29 @@ def validate_directory_path(file_path: str) -> str:
     if not os.path.isdir(directory):
         raise SchemaError(f"Directory does not exist: {directory}")
     return file_path
+
+
+def validate_config_data(config_file: str) -> dict:
+    """Returns the content of an scenerio file written as YAML after
+    validating its content against the Illuminator's Schema.
+
+    Parameters
+    ----------
+    config_file : str
+        The path to the YAML configuration file.
+
+    Returns
+    -------
+    dict
+        The content of the configuration file as a dictionary.
+    """
+
+    _file = open(config_file, 'r')
+    yaml = YAML(typ='safe')
+    data = yaml.load(_file)
+    
+    return schema.validate(data)
+
 
 
 class ScenarioSchema(Schema):
