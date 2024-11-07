@@ -6,6 +6,7 @@ in the Illuminator.
 import datetime
 import re
 import os
+import json
 from ruamel.yaml import YAML
 from schema import Schema, And, Use, Regex, Optional, SchemaError
 
@@ -51,7 +52,7 @@ def validate_directory_path(file_path: str) -> str:
     return file_path
 
 
-def validate_config_data(config_file: str) -> dict:
+def validate_config_data(config_file: str, json:bool=False) -> dict | str:
     """Returns the content of an scenerio file written as YAML after
     validating its content against the Illuminator's Schema.
 
@@ -59,6 +60,8 @@ def validate_config_data(config_file: str) -> dict:
     ----------
     config_file : str
         The path to the YAML configuration file.
+    json : bool
+        If True, the content of the configuration file is returned as a JSON string.
 
     Returns
     -------
@@ -69,6 +72,9 @@ def validate_config_data(config_file: str) -> dict:
     _file = open(config_file, 'r')
     yaml = YAML(typ='safe')
     data = yaml.load(_file)
+
+    if json:
+        return json.dumps(data, indent=4)
     
     return schema.validate(data)
 
