@@ -8,7 +8,7 @@ import re
 import os
 import json
 from ruamel.yaml import YAML
-from schema import Schema, And, Use, Regex, Optional, SchemaError
+from schema import Schema, And, Use, Regex, Optional, SchemaError, SchemaUnexpectedTypeError
 
 # valid format for start and end times: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
@@ -17,6 +17,44 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 # monitor and connections sections enforce a format such as 
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
+
+
+
+def load_config_file(config_file: str, json:bool=False) -> dict | str:
+    """Returns the content of an scenerio file written as YAML after
+    validating its content against the Illuminator's Schema.
+
+    Parameters
+    ----------
+    config_file : str
+        The path to the YAML configuration file.
+    json : bool
+        If True, the content of the configuration file is returned as a JSON string.
+
+    Returns
+    -------
+    dict
+        The content of the configuration file as a dictionary.
+    """
+
+    try:
+        with open(config_file, 'r') as _file:
+            yaml = YAML(typ='safe')
+            data = yaml.load(_file)
+    except FileNotFoundError:
+        print(f"Error: The file {config_file} was not found.")
+        return None
+    
+    try:
+        valid_data = schema.validate(data)
+    except SchemaUnexpectedTypeError as exc:
+        print(f"Error while parsing YAML file. \n Are you passing a file written in YAML?: {exc}")
+        return None
+  
+    if json:
+        return json.dumps(valid_data, indent=4)
+    
+    return valid_data
 
 
 def validate_model_item_format(items: list) -> list:
@@ -50,40 +88,6 @@ def validate_directory_path(file_path: str) -> str:
     if not os.path.isdir(directory):
         raise SchemaError(f"Directory does not exist: {directory}")
     return file_path
-
-
-def load_config_file(config_file: str, json:bool=False) -> dict | str:
-    """Returns the content of an scenerio file written as YAML after
-    validating its content against the Illuminator's Schema.
-
-    Parameters
-    ----------
-    config_file : str
-        The path to the YAML configuration file.
-    json : bool
-        If True, the content of the configuration file is returned as a JSON string.
-
-    Returns
-    -------
-    dict
-        The content of the configuration file as a dictionary.
-    """
-
-    try:
-        with open(config_file, 'r') as _file:
-            yaml = YAML(typ='safe')
-            data = yaml.load(_file)
-    except FileNotFoundError:
-        print(f"Error: The file {config_file} was not found.")
-        return None
-    # except yaml.YAMLError as exc:
-    #     print(f"Error while parsing YAML: {exc}")
-    #     return None
-  
-    if json:
-        return json.dumps(data, indent=4)
-    
-    return schema.validate(data)
 
 
 class ScenarioSchema(Schema):
