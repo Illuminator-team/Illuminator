@@ -52,7 +52,7 @@ def validate_directory_path(file_path: str) -> str:
     return file_path
 
 
-def validate_config_data(config_file: str, json:bool=False) -> dict | str:
+def load_config_file(config_file: str, json:bool=False) -> dict | str:
     """Returns the content of an scenerio file written as YAML after
     validating its content against the Illuminator's Schema.
 
@@ -69,15 +69,21 @@ def validate_config_data(config_file: str, json:bool=False) -> dict | str:
         The content of the configuration file as a dictionary.
     """
 
-    _file = open(config_file, 'r')
-    yaml = YAML(typ='safe')
-    data = yaml.load(_file)
-
+    try:
+        with open(config_file, 'r') as _file:
+            yaml = YAML(typ='safe')
+            data = yaml.load(_file)
+    except FileNotFoundError:
+        print(f"Error: The file {config_file} was not found.")
+        return None
+    # except yaml.YAMLError as exc:
+    #     print(f"Error while parsing YAML: {exc}")
+    #     return None
+  
     if json:
         return json.dumps(data, indent=4)
     
     return schema.validate(data)
-
 
 
 class ScenarioSchema(Schema):
