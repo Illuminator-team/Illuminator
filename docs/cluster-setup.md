@@ -37,8 +37,8 @@ On every raspberrry Pi:
    chmod -R a+X *dir*
    ```
 
-   Finally, reboot the Raspberry Pi suing `sudo reboot` on the terminal.
-3. [Configure SSH connections so that the *master* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
+   Finally, reboot the Raspberry Pi using `sudo reboot` on the terminal.
+3. [Configure SSH connections so that the *server* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 
 4. Install the Illuminator Python package, and the addional dependencies:
 
@@ -54,14 +54,14 @@ On every raspberrry Pi:
    # aditional dependencies
    pip install tk python-csv python-math scipy wandb itertools
    ```
-5. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
+5. Use the following command on the *server's* terminal to check the connection  between *server* and the *clients*
 
    ```shell
    # notice that the followng assumes that each client has a 
    # user named 'illuminator'
    ssh illuminator@ip #ip represent your follower IP address
    ```
-6. Run the `build_runshfile.py` file in the configuration directory on *server*, this will generate a  to generate a `run.sh` script. Give the appropiate `config.yaml` file containing the simulation scenario definition:
+6. Run the `build_runshfile.py` file in the configuration directory on the *server*, this will generate a `run.sh` script. Give the appropiate `config.yaml` file containing the simulation scenario definition:
    
    ```shell
    python3 build_runshfile.py <config.yaml>
