@@ -9,6 +9,13 @@ class SimulatorType(Enum):
     EVENT_BASED = 'event-based'
     HYBRID = 'hybrid'
 
+# TOOD: IMPORTANT 
+# each model file must provide a way to run it remotely. In the current implementation,
+# that is achieved by including a the folloowing code on the simulator file:
+# def main():
+#     mosaik_api.start_simulation(eboilerSim(), 'eboiler Simulator')
+# if __name__ == "__main__":
+#     main()
 
 @dataclass
 class IlluminatorModel():

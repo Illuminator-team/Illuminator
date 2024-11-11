@@ -2,6 +2,8 @@ import mosaik_api_v3
 import importlib.util
 
 class StateSpaceSimulator(mosaik_api_v3.Simulator):
+
+    #[Manuel] # this can be standardized and must be provided by the model class
     meta = {
         'models': {
             'StateSpaceModel': {  
@@ -35,6 +37,7 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
         self.model = self.load_model_class(self.model_data['model_path'], self.model_data['model_type'])
         return self.model_data['meta']
 
+
     def load_model_class(self, model_path, model_type):
         # Get the module name from the model path, e.g., 'Models/adder_model' -> 'adder_model'
         module_name = model_path.replace('/', '.').rstrip('.py').split('.')[-1]
@@ -49,6 +52,7 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
         
         return model_class
 
+    # [Manuel] # this can be standardized?
     def create(self, num, model, **model_params):
         if num != 1:
             raise ValueError("Can only create one instance of the model.")
@@ -71,6 +75,7 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
 
         return entities
 
+    # [Manuel] most be implemented by the model class
     def step(self, time, inputs, max_advance):
         # Update inputs
         for eid, entity_inputs in inputs.items():
@@ -84,6 +89,8 @@ class StateSpaceSimulator(mosaik_api_v3.Simulator):
 
         return time + self.model_data['step_size']
 
+
+    # [Manuel] this can be standardized
     def get_data(self, outputs):
         data = {}
 

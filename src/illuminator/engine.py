@@ -8,8 +8,6 @@ import math
 import importlib.util
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
-from ruamel.yaml import YAML
-from illuminator.schemas.simulation import schema
 from datetime import datetime
 
 
@@ -32,17 +30,6 @@ def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
 
     world = MosaikWorld(sim_config, time_resolution=time_resolution)
     return world
-
-
-def validate_config_data(config_file: str) -> dict:
-    """Returns the content of an scenerio file writtent in YAML after
-    validating its content against the Illuminator's Schema.
-    """
-
-    _file = open(config_file, 'r')
-    yaml = YAML(typ='safe')
-    data = yaml.load(_file)
-    return schema.validate(data)
 
 
 def get_collector_path() -> str:

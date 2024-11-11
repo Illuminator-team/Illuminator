@@ -1,70 +1,71 @@
-# Cluster Pi Set Up
+# Cluster Pi Setup
 
-
-## Raspberry Pi Setup
-
-The setup for the Illuminator requires one **master** Raspberry Pi and several **clients** Raspberry Pi's.
+The setup for the Illuminator requires one Raspberry Pi acting as a **server** and several **clients** Raspberry Pi's.
 Raspberry Pi's must be connected and configured as a local network, and the
-*master* must be configured to have permissions to access and control the *clients* through Secure Shell Protocol (SSH).
+*server* must be configured to have permissions to access and control the *clients* through the Secure Shell Protocol (SSH).
 
-During simulation, the *master* engage with the *clients* to run the simulations defined in the *simulation configuration*, and
+During simulation, the *server* engage with the *clients* to run the simulations defined in the *simulation configuration*, and
 information is exchanged between Rasberry Pi's using network sockets.
-The **master** provides a Dashboard to viazulize the results, and saves them to a `.csv` files for later analysis. 
+The **server** provides a Dashboard to viazulize the results, and saves them to a `.csv` files for later analysis. 
 
 <div align="center">
-    <img align="center" src="docs/_static/img/Structure.jpg" width="500">
+	<img align="center" src="_static/img/Structure.jpg" width="500">
 </div>
 
 
-### Set up a Raspberry Pi cluster
+## Set up
 
-1. [Install Raspberry pi OS using Raspberry Pi imager.](https://www.raspberrypi.com/software/)
-2. Set an static IP addresse for each Raspberry Pi. Use the following command on the terminal to open the `dhcpcd.conf` file:
-   ```
+On every raspberrry Pi: 
+
+1. [Install Raspberry pi OS using Raspberry Pi imager.](https://www.raspberrypi.com/software/).
+2. Set an static IP address for each Raspberry Pi. Use the following command on the terminal to open the `dhcpcd.conf` file:
+
+   ```shell
    sudo nano /etc/dhcpcd.conf
    ```
 
-   In the `dhcpcd.conf` file, find the information to change the IP address as static as following:
+   In the `dhcpcd.conf` file, find the information to change the IP address to static as following:
 
-   ```
+   ```shell
    interface etho
    static ip_address=192.168.0.1/24 # change the IP address as you want
    ```
-   Finally, reboot the Raspberry Pi suing `sudo reboot` on the terminal.
-3. [Configure SSH connections so that the *master* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
-4. Install the following Python packages.
-   ```
-   pandas
-   tk
-   python-csv
-   datetime
-   python-math
-   numpy
-   scipy
-   arrow
-   mosaik
-   mosaik_api
-   mosaik.util
-   wandb
-   matplotlib
-   itertools
-   ```
-5. Send the Illuminator package [TODO: What is the illuminator package?] to all *clients*. Use the following command on the *master's* terminal to check the connection  between *master* and the *clients*
 
-   ```shell
-   ssh illuminator@ip #ip represent your follower IP address
-   ```
-   [TODO: This suggest that all Pi's need a user with the name 'illuminator']
-
-6. Run the `buildcilentremoterun.py` file on each *client* and give all users execute permission to all the documents in `runshfile/` in order 
-to make sure the leader can access the *client* model.
+   Give all users execute permission to all the documents in `runshfile/` in order to make sure the *server* can access the *client* model.
    
    ```shell
    chmod -R a+X *dir*
    ```
 
-More detialed instructions are given in the [user guide document](docs/user/user-guide.md) and the [model build up document](Models.md).
+   Finally, reboot the Raspberry Pi using `sudo reboot` on the terminal.
+3. [Configure SSH connections so that the *server* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 
+4. Install the Illuminator Python package, and the addional dependencies:
+
+   ```shell
+   # if connected to the internet
+   pip install illuminator
+
+   # or, if from source code
+   pip install Illuminator/
+   ```
+
+   ```shell
+   # aditional dependencies
+   pip install tk python-csv python-math scipy wandb itertools
+   ```
+5. Use the following command on the *server's* terminal to check the connection  between *server* and the *clients*
+
+   ```shell
+   # notice that the followng assumes that each client has a 
+   # user named 'illuminator'
+   ssh illuminator@ip #ip represent your follower IP address
+   ```
+6. Run the `build_runshfile.py` file in the configuration directory on the *server*, this will generate a `run.sh` script. Give the appropiate `config.yaml` file containing the simulation scenario definition:
+   
+   ```shell
+   python3 build_runshfile.py <config.yaml>
+   ```
 
 
 ## Contact and Support
