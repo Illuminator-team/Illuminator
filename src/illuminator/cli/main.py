@@ -29,7 +29,7 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
     file_path = config_file
 
     # load and validate configuration file
-    config = engine.validate_config_data(file_path)
+    config = load_config_file(file_path)
     config = engine.apply_default_values(config)
 
     print("config:  ", config['models'])
@@ -96,4 +96,11 @@ def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scena
 
 
 if __name__ == "__main__":
+
+    # import importlib.util
+
+    # package_spec = importlib.util.find_spec("illuminator.models.Battery")
+    # print(package_spec.origin)
+
+
     app()
