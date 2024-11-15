@@ -3,7 +3,6 @@ Unit tests for main.py of CLI package.
 """
 
 import pytest
-import copy
 import mosaik
 from illuminator.engine import start_simulators, compute_mosaik_end_time
 
@@ -36,7 +35,7 @@ def yaml_models():
     return  [{'name': 'CSVB',  # this name must match the name in the mosaik configuration
               'type': 'CSV', 
               'parameters': 
-                    {'start': '2012-01-01 00:00:00', 'datafile': 'tests/data/data.csv'}}, 
+                    {'start': '2012-01-01 00:00:00', 'datafile': 'tests/data/solar-sample.csv'}}, 
             {'name': 'PV', 
              'type': 'PvAdapter', 
              'inputs': 
