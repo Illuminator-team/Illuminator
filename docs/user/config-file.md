@@ -7,7 +7,7 @@ A *simulation file* has four main sections:
 - `scenario`: defines metadata and global variable for the simulation.
 - `models`: defines which models are included in the simulation.
 - `connections`: defines how the models in the `models` section must be connected for a particular simulation.
-- `monitor`: defines which inputs, outputs, and states of a particular model must be monitored and logged during simulation. These are consider the simulation results and they will be saved to the file in `results`.
+- `monitor`: defines which inputs, outputs, and states of a particular model must be monitored and logged during simulation. 
 
 ## Example 
 
