@@ -1,0 +1,42 @@
+scenario:
+  name: "SimpleTest" # in mosaik so called world
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 01:00:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
+- name: CSVB # name for the model (must be unique)
+  type: CSV # name of the model registered in the Illuminator
+  parameters: # a CSV model must have a start time and a file as parameters
+    start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+    datafile: './tests/data/solar-sample.csv' # path to the file with the data
+- name: PV
+  type: PvAdapter # models can reuse the same type
+  inputs: 
+    G_Gh: null 
+    G_Dh: null
+    G_Bn: null
+    Ta: null
+    hs: null
+    FF: null
+    Az: null
+  outputs:
+    G_Gh: null
+connections:
+- from: CSVB.G_Gh # start model, pattern: model_name.output_name/input_name
+  to: PV.G_Gh # end model
+- from: CSVB.G_Dh
+  to: PV.G_Dh
+- from: CSVB.G_Bn
+  to: PV.G_Bn
+- from: CSVB.Ta
+  to: PV.Ta
+- from: CSVB.hs
+  to: PV.hs
+- from: CSVB.FF
+  to: PV.FF
+- from: CSVB.Az
+  to: PV.Az
+monitor:
+  file: './out.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
+  items:
+  - PV.pv_gen
