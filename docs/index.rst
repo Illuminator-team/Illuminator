@@ -26,6 +26,8 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :caption: User's Documentation
 
    user/models
+   user/config-file.md
+   user/simulations.md
 
 .. toctree::
    :maxdepth: 2

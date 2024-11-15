@@ -9,6 +9,7 @@ import importlib.util
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
+from illuminator.schema.simulation import load_config_file
 
 
 def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
@@ -316,3 +317,64 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
         
         # TODO: write a unit test for this. Cases: 1) all connections were established, 2) exception raised
     return world
+
+
+class Simulation:
+    """A simplified interface to run simulations with Illuminator."""
+
+    def __init__(self, config_file:str) -> None:
+        """Loads and validates the configuration file for the simulation."""
+        self.config_file = load_config_file(config_file)
+
+
+    def run(self):
+        """Runs a simulation scenario"""
+
+        config = apply_default_values(self.config_file)
+        
+        # Define the Mosaik simulation configuration
+        sim_config = generate_mosaik_configuration(config)
+
+        # simulation time
+        _start_time = config['scenario']['start_time']
+        _end_time = config['scenario']['end_time']
+        _time_resolution = config['scenario']['time_resolution']
+        # output file with forecast results
+        _results_file = config['monitor']['file']
+
+        # Initialize the Mosaik worlds
+        world = create_world(sim_config, time_resolution=_time_resolution)
+        # TODO: collectors are also customisable simulators, define in the same way as models.
+        # A way to define custom collectors should be provided by the Illuminator.
+        collector = world.start('Collector', 
+                                time_resolution=_time_resolution, 
+                                start_date=_start_time,  
+                                results_show={'write2csv':True, 'dashboard_show':False, 
+                                            'Finalresults_show':False,'database':False, 'mqtt':False}, 
+                                output_file=_results_file)
+        
+        # initialize monitor
+        monitor = collector.Monitor()
+
+        # Dictionary to keep track of created model entities
+        model_entities = start_simulators(world, config['models'])
+
+        # Connect the models based on the connections specified in the configuration
+        world = build_connections(world, model_entities, config['connections'])
+
+        # Connect monitor
+        world = connect_monitor(world, model_entities, monitor, config['monitor'])
+        
+        # Run the simulation until the specified end time
+        mosaik_end_time =  compute_mosaik_end_time(_start_time,
+                                                _end_time,
+                                                _time_resolution
+                                            )
+
+        world.run(until=mosaik_end_time)
+
+    @property
+    def config(self)-> dict:
+        """Returns the configuration file for the simulation."""
+        return self.config_file
+    
