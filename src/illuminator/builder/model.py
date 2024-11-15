@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
+from mosaik_api_v3 import Simulator
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
@@ -43,7 +44,7 @@ class IlluminatorModel():
     simulator_type: SimulatorType
         The type of simulator that the model belongs to.
     time_step_size: int
-        The time step size for the simulator.
+        The time of each simulation step in seconds. Default 900.
     time: int
         The current time of the simulation.
     """
@@ -54,13 +55,16 @@ class IlluminatorModel():
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
     simulator_type: SimulatorType = SimulatorType.HYBRID
-    time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
+    time_step_size: int = 900   # This is closely related to logic in the step method. 
+    # Currently, all models have the same time step size (15 minutes). 
+    # This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
+    model_type: Optional[str] = "Model"
     
 
     def __post_init__(self):
-        self.validate_states()
-        self.validate_triggers()
+        self._validate_states()
+        self._validate_triggers()
         # self.validate_simulator_type()
     
     @property
@@ -78,7 +82,7 @@ class IlluminatorModel():
             }}
         return meta
 
-    def validate_states(self):
+    def _validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
         for state in self.states:
             if state not in self.parameters and state not in self.inputs and \
@@ -86,14 +90,14 @@ class IlluminatorModel():
                 raise ValueError(f"State: {state} must be either a parameter, "
                                  "an input or an output")
 
-    def validate_triggers(self):
+    def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""
         for trigger in self.triggers:
             if trigger not in self.inputs and trigger not in self.outputs:
                 raise ValueError(f"Trigger: {trigger} must be either an input "
                                  "or an output")
 
-    def validate_simulator_type(self):
+    def _validate_simulator_type(self):
         """Check if triggers are defined for time-based and event-based
         simulations only
         """
@@ -106,7 +110,10 @@ class IlluminatorModel():
             raise ValueError("Triggers are required in event-based simulators")
 
 
-from mosaik_api_v3 import Simulator
+# COTINUE FROM HERE
+# need to find a convenient an easy wayt to define new models
+# Ideas:
+# - add model definition as a method of the ModelConstructor class. will it work?
 
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
@@ -140,7 +147,7 @@ class ModelConstructor(ABC, Simulator):
         """
         pass
 
-    def init(self, sid, time_resolution, **sim_params):  # can be use to update model parameters set in __init__
+    def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
