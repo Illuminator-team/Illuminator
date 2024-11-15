@@ -1,6 +1,7 @@
 import yaml
 import os
 import sys
+from illuminator.schema.simulation import load_config_file
 
 # Constants
 DEFAULT_PORT = 5123
@@ -37,6 +38,7 @@ def process_models(data, output_file):
             else:
                 print(f"Warning: Model '{model_type}' has no IP address specified.")
 
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: python3 "+sys.argv[0]+" <path_to_yaml_file>")
@@ -44,7 +46,7 @@ def main():
 
     yaml_file = sys.argv[1]
     output_file = RUN_FILE
-    data = load_yaml(yaml_file)
+    data = load_config_file(yaml_file)
     
     if data:
         process_models(data, output_file)
