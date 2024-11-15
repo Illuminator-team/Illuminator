@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
+import illuminator.engine as engine
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
@@ -56,7 +57,7 @@ class IlluminatorModel():
     simulator_type: SimulatorType = SimulatorType.HYBRID
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
-    
+    model_type: Optional[str] = "Model"
 
     def __post_init__(self):
         self.validate_states()
@@ -70,7 +71,7 @@ class IlluminatorModel():
         meta = {
             'type': self.simulator_type.value,
             'models': {
-                'Model': {
+                self.model_type : {
                     'public': True,
                     'params': list(self.parameters.keys()),
                     'attrs': list(self.outputs.keys())
@@ -111,7 +112,16 @@ from mosaik_api_v3 import Simulator
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
 
-    def __init__(self, model: IlluminatorModel) -> None:
+    def __init__(self, **kwargs) -> None:
+        #model: IlluminatorModel
+        model_vals = engine.current_model
+        model = IlluminatorModel(
+                parameters=model_vals['parameters'],
+                inputs=model_vals["inputs"],
+                outputs=model_vals["outputs"],
+                states={},
+                model_type=model_vals["type"]
+            )
         super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
@@ -140,12 +150,13 @@ class ModelConstructor(ABC, Simulator):
         """
         pass
 
-    def init(self, sid, time_resolution, **sim_params):  # can be use to update model parameters set in __init__
+    def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
         self.time_resolution = time_resolution
 
+        # This bit of code is unused.
         # Assuming sim_params is structured as {'sim_params': {model_name: model_data}}
         sim_params = sim_params.get('sim_params', {})
         if len(sim_params) != 1:

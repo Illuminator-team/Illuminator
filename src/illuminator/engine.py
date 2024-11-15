@@ -10,6 +10,7 @@ from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
 
+current_model = {}
 
 def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
     """
@@ -156,6 +157,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         for model in models:
             model_name = model['name']
             model_type = model['type']
+            set_current_model(model)
 
 
             if 'parameters' in model:
@@ -177,6 +179,8 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
             else:
                 simulator = world.start(sim_name=model_name,
                                     # **model_parameters
+                                    model_name = model_name,
+                                    sim_params= {model_name: model} # This value gets picked up in the init() function
                                     # Some items must be passed here, and some other at create()
                                     )
         
@@ -270,6 +274,16 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
     return steps
 
+# def get_current_model():
+#     return current_model
+
+def set_current_model(model):
+    global current_model
+    current_model["type"] = model['type']
+    current_model['parameters']=model['parameters']
+    current_model['inputs']=model["inputs"]
+    current_model['outputs']=model["outputs"]
+    
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
                     monitor:MosaikEntity, monitor_config: dict) -> MosaikWorld:
