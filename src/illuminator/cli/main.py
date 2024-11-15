@@ -44,7 +44,7 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
     _end_time = config['scenario']['end_time']
     _time_resolution = config['scenario']['time_resolution']
     # output file with forecast results
-    _results_file = config['scenario']['results']
+    _results_file = config['monitor']['file']
 
     # Initialize the Mosaik worlds
     world = engine.create_world(sim_config, time_resolution=_time_resolution)
