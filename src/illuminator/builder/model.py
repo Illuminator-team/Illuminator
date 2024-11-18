@@ -167,12 +167,15 @@ class ModelConstructor(ABC, Simulator):
         # self.model = self.load_model_class(self.model_data['model_path'], self.model_data['model_type'])
         return self._model.simulator_meta
     
-    def create(self, num: int) -> List:
+    def create(self, num:int, model:str, **model_params) -> List[dict]: # This change is mandatory. It MUST contain num and model as parameters otherwise it receives an incorrect number of parameters
         """Creates an instance of the model"""
-        for i in range(num):
-            eid = f"{self._model.simulator_type.value}_{i}"
-            self.model_entities[eid] = self._model
-        return list(self.model_entities.keys())
+        new_entities = [] # See below why this was created
+        for i in range(num): # this seems ok
+            eid = f"{self._model.simulator_type.value}_{i}" # this seems ok
+            self.model_entities[eid] = self._model # this seems fine
+        # return list(self.model_entities.keys()) # I removed this bit for now. Create is expected to return a list of dictionaries
+            new_entities.append({'eid': eid, 'type': model})  # So basically, like this. Later on we can look into other alternatives if needed.
+        return new_entities
     
     def current_time(self): 
         """Returns the current time of the simulation"""

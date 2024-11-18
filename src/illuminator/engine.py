@@ -196,14 +196,19 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
 
                 # TODO:
                 # this is a temporary solution to continue developing the CLI
-                entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
-                                            panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
-          'Power_output_at_STC': 250,'peak_power':600},
-                                            m_tilt=14, 
-                                            m_az=180, 
-                                            cap=500,
-                                            output_type='power'
-                                            )
+
+                # TODO: If we wish to use different values here, we must define the parameters used here within the appropriate .yaml file.
+                # Right now adder.yaml defines the custom parameters as "param1"
+                
+        #         entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
+        #                                     panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
+        #   'Power_output_at_STC': 250,'peak_power':600},
+        #                                     m_tilt=14, 
+        #                                     m_az=180, 
+        #                                     cap=500,
+        #                                     output_type='power'
+        #                                     )
+            entity = model_factory.create(num=1, param1="Not in use") 
 
             model_entities[model_name] = entity
             print(model_entities)
