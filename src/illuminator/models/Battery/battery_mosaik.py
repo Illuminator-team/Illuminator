@@ -1,12 +1,13 @@
 # only can build one battery model
 import mosaik.scheduler
-import mosaik_api
-try:
-    import Models.Battery.battery_model as batterymodelset
-except ModuleNotFoundError:
-    import battery_model as batterymodelset
-else:
-    import Models.Battery.battery_model as batterymodelset
+import mosaik_api_v3 as mosaik_api
+# try:
+import illuminator.models.Battery.battery_model as batterymodelset
+# except ModuleNotFoundError:
+#     import battery_model as batterymodelset
+# else:
+#     import Models.Battery.battery_model as batterymodelset
+
 import pandas as pd
 
 #todo: convert this battery model simAPI to a controller api. This becomes a mosaik API to start the battery and the electrolyser.
@@ -331,6 +332,10 @@ class BatteryholdSim(mosaik_api.Simulator):  # this is the main class that is ru
 
 def main():
     mosaik_api.start_simulation(BatteryholdSim(), 'Battery-Simulator')
+
+    import mosaik_api_v3
+
+    mosaik_api_v3.start_simulation()
 
 if __name__ == "__main__":
     main()
