@@ -183,7 +183,7 @@ class ModelConstructor(ABC, Simulator):
         pass
         # TODO: implement this method
 
-    def get_data(self, outputs) -> Dict:
+    def get_data(self, outputs) -> Dict: # TODO remove the print statements here
         """Expose model outputs and states to the simulation environment
         
         Returns
