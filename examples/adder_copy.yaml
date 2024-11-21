@@ -1,27 +1,27 @@
 scenario:
   name: "AddingNumbers" # in mosaik so called world
   start_time: '2012-01-02 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-02 00:00:10' # duration in seconds 
+  end_time: '2012-01-03 00:00:10' # duration in seconds
   time_resolution: 900 # time step in seconds. Defaults to 15 minutes (900 s)
   results: './out.csv'
 models: # list of models for the energy network
 - name: Adder1 # name for the model (must be unique)
   type: Adder # most match the class inheriting from IlluminatorConstructor
-  inputs: 
+  inputs:
     in1: 10  # input-name: initial value, default value will be used if not defined
     in2: 20
-  outputs: 
-    out1: 0 
-  parameters: 
+  outputs:
+    out1: 0
+  parameters:
     param1: "adding tens"
 - name: Adder2
   type: Adder # models can reuse the same type
-  inputs: 
+  inputs:
     in1: 100  # input-name: initial value, default value will be used if not defined
     in2: 200
   outputs:
     out1: 0
-  parameters: 
+  parameters:
     param1: "adding hundreds"
 connections:
 - from: Adder1.out1 # start model, pattern: model_name.output_name/input_name

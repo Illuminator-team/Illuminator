@@ -76,6 +76,8 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
                                         )
 
     print(f"Running simulation from")
+    print(f"nodes in Mosaik: {world.entity_graph.nodes}")
+    print(f"edges in Mosaik: {world.entity_graph.edges}")
     world.run(until=mosaik_end_time)
 
 

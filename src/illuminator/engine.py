@@ -284,10 +284,33 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
 def set_current_model(model):
     global current_model
-    current_model["type"] = model['type']
-    current_model['parameters']=model['parameters']
-    current_model['inputs']=model["inputs"]
-    current_model['outputs']=model["outputs"]
+    try:
+        current_model["type"] = model['type']
+    except KeyError as e:
+        print(f"Warning: Missing 'type' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'type'. {e}")
+
+    try:
+        current_model['parameters'] = model['parameters']
+    except KeyError as e:
+        print(f"Warning: Missing 'parameters' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'parameters'. {e}")
+
+    try:
+        current_model['inputs'] = model["inputs"]
+    except KeyError as e:
+        print(f"Warning: Missing 'inputs' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'inputs'. {e}")
+
+    try:
+        current_model['outputs'] = model["outputs"]
+    except KeyError as e:
+        print(f"Warning: Missing 'outputs' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'outputs'. {e}")
     
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
