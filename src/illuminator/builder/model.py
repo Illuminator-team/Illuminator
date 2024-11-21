@@ -74,7 +74,7 @@ class IlluminatorModel():
                 self.model_type : {
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.outputs.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys())
                 }
             }}
         return meta
@@ -141,6 +141,7 @@ class ModelConstructor(ABC, Simulator):
         max_advance: int
             Time until the simulator can safely advance its internal time without creating a causality error.
             Optional in most cases.
+
 
         Returns
         -------
