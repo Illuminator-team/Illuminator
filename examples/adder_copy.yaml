@@ -5,15 +5,6 @@ scenario:
   time_resolution: 900 # time step in seconds. Defaults to 15 minutes (900 s)
   results: './out.csv'
 models: # list of models for the energy network
-- name: Adder1 # name for the model (must be unique)
-  type: Adder # most match the class inheriting from IlluminatorConstructor
-  inputs:
-    in1: 10  # input-name: initial value, default value will be used if not defined
-    in2: 20
-  outputs:
-    out1: 0
-  parameters:
-    param1: "adding tens"
 - name: Adder2
   type: Adder # models can reuse the same type
   inputs:
@@ -23,9 +14,19 @@ models: # list of models for the energy network
     out1: 0
   parameters:
     param1: "adding hundreds"
+- name: Adder1 # name for the model (must be unique)
+  type: Adder # most match the class inheriting from IlluminatorConstructor
+  inputs:
+    in1: 10  # input-name: initial value, default value will be used if not defined
+    in2: 20
+  outputs:
+    out1: 0
+  parameters:
+    param1: "adding tens"
 connections:
 - from: Adder1.out1 # start model, pattern: model_name.output_name/input_name
   to: Adder2.in1 # end model
+  time_shifted: False
 # TODO: Below is what Illuminator looks for, but is not valid. Needs to be fixed
 # - from: Adder1-0.hybrid_0.out1 
 #   to: Adder2-0.hybrid_0.in1 
