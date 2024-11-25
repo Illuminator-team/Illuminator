@@ -216,7 +216,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         return model_entities
 
 
-def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict]) -> MosaikWorld:
+def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict], model_config: list[dict]) -> MosaikWorld:
         """
         Connects the model entities in the Mosaik world based on the connections specified in the YAML configuration file.
         
@@ -239,13 +239,23 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         for connection in connections:
             from_model, from_attr =  connection['from'].split('.')
             to_model, to_attr =  connection['to'].split('.')
-        
+            to_model_config = next((m for m in model_config if m['name'] == to_model))
+            time_shifted = connection['time_shifted']
             # Establish connections in the Mosaik world
             try:
-                world.connect(model_entities[from_model][0], # entities for the same model type
-                              # are handled separately. Therefore, the entities list of a model only contains a single entity
-                               model_entities[to_model][0], 
-                               (from_attr, to_attr))
+                # entities for the same model type are handled separately. Therefore, the entities list of a model only contains a single entity
+                if time_shifted:
+                    world.connect(model_entities[from_model][0], 
+                                model_entities[to_model][0], 
+                                (from_attr, to_attr),
+                                time_shifted=True,
+                                initial_data={from_attr: to_model_config['inputs'][to_attr]})
+                                # set the initial value for the connection to equal the initial value of the model
+                else:
+                    world.connect(model_entities[from_model][0], # entities for the same model type
+                            # are handled separately. Therefore, the entities list of a model only contains a single entity
+                            model_entities[to_model][0], 
+                            (from_attr, to_attr))
             except KeyError as e:
                 print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
                 exit(1)

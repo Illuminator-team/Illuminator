@@ -64,7 +64,7 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
     model_entities = engine.start_simulators(world, config['models'])
 
     # Connect the models based on the connections specified in the configuration
-    world = engine.build_connections(world, model_entities, config['connections'])
+    world = engine.build_connections(world, model_entities, config['connections'], config['models'])
 
     # Connect monitor
     world = engine.connect_monitor(world, model_entities, monitor, config['monitor'])
