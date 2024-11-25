@@ -54,7 +54,7 @@ class IlluminatorModel():
     outputs: Dict = field(default_factory=dict)
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
-    simulator_type: SimulatorType = SimulatorType.HYBRID # TODO change this one to TIME_BASED
+    simulator_type: SimulatorType = SimulatorType.TIME_BASED
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
     model_type: Optional[str] = "Model"
