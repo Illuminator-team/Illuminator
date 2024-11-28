@@ -17,6 +17,7 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 # monitor and connections sections enforce a format such as 
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
+# valid_model_item_format = r'^([\w-]+\.?)+$' # This is kept here as an alternative. I believe this might be useful later on
 
 
 
