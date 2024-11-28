@@ -47,6 +47,8 @@ class IlluminatorModel():
         The time of each simulation step in seconds. Default 900.
     time: int
         The current time of the simulation.
+    model_type: str
+        A name for the class of model that is being defined. Default 'Model'.
     """
 
     parameters: Dict = field(default_factory=dict)    
@@ -59,7 +61,7 @@ class IlluminatorModel():
     # Currently, all models have the same time step size (15 minutes). 
     # This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
-    model_type: Optional[str] = "Model"
+    model_type: Optional[str] = "Model" 
     
 
     def __post_init__(self):
@@ -74,7 +76,7 @@ class IlluminatorModel():
         meta = {
             'type': self.simulator_type.value,
             'models': {
-                'Model': {
+                self.model_type: { # This must be the name of he model 
                     'public': True,
                     'params': list(self.parameters.keys()),
                     'attrs': list(self.outputs.keys())
@@ -111,7 +113,7 @@ class IlluminatorModel():
 
 
 # COTINUE FROM HERE
-# need to find a convenient an easy wayt to define new models
+# need to find a convenient an easy way to define new models
 # Ideas:
 # - add model definition as a method of the ModelConstructor class. will it work?
 
