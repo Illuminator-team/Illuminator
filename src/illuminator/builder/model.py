@@ -30,10 +30,10 @@ class IlluminatorModel():
         Properties of the object being modeled, e.g. material the object is
         made of.
     inputs: dict
-        One or more name:value pairs to be regarded as inputs to the model.
+        One or more name: value pairs to be regarded as inputs to the model.
         Inputs allow users to connect a model to other models.
     outputs: dict
-        One or more name:value pairs to be regarded as outputs of the model.
+        One or more name: value pairs to be regarded as outputs of the model.
         Outputs allow users to connect a model to other models.
     states: dict
         One or more 'parameters, inputs or outputs' and their initial value
