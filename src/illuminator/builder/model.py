@@ -54,7 +54,7 @@ class IlluminatorModel():
     outputs: Dict = field(default_factory=dict)
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
-    simulator_type: SimulatorType = SimulatorType.HYBRID
+    simulator_type: SimulatorType = SimulatorType.TIME_BASED
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
     model_type: Optional[str] = "Model"
@@ -74,7 +74,7 @@ class IlluminatorModel():
                 self.model_type : {
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.outputs.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys())
                 }
             }}
         return meta
@@ -142,6 +142,7 @@ class ModelConstructor(ABC, Simulator):
             Time until the simulator can safely advance its internal time without creating a causality error.
             Optional in most cases.
 
+
         Returns
         -------
         int
@@ -182,7 +183,7 @@ class ModelConstructor(ABC, Simulator):
         pass
         # TODO: implement this method
 
-    def get_data(self) -> Dict:
+    def get_data(self, outputs) -> Dict: # TODO remove the print statements here
         """Expose model outputs and states to the simulation environment
         
         Returns
@@ -191,8 +192,11 @@ class ModelConstructor(ABC, Simulator):
             A dictionary of model outputs and states.
         """
         data = {}
-
-        for eid, attrs in self._model.outputs.items():
+        print(f"Here are your outputs: {outputs}")
+        # for eid, attrs in self._model.outputs.items():
+        for eid, attrs in outputs.items():
+            print(f"eid: {eid}, attrs:{attrs}")
+            print(f"self.model_entities: {self.model_entities}")
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
@@ -200,7 +204,7 @@ class ModelConstructor(ABC, Simulator):
                     data[eid][attr] = model_instance.outputs[attr]
                 else:
                     data[eid][attr] = model_instance.states[attr]
-
+            print(f"data: {data}")
         return data
 
 
