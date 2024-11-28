@@ -76,10 +76,10 @@ monitor:
 | **models:** | a list of models for <br>the simulation | |  |
 |  `name` | a name for the model. Must <br>be unique for each simulation |  |   |
 | `type`  | type of model. This must correspond <br>with the name of the model <br>registered in the Illuminator. | |  |
-| `inputs`  | a set of input-names and initial <br>values for the model. The model <br>type determines which names and <br>values are applicable to each <br>model, and they must be declared accordingly. <br>Inputs are optional | | If the value is set to `null`, the default value will be used. See the respective model type for details.|
-| `outputs` | a set of output-names and initial <br>values for the model. Similar to <br>*inputs* valid names and values <br>for each model are determined by <br>the model *type*. See the respective <br>model type for details. | | If the value is set to `null`, the default value will be used. |
-| `parameters`  | a set of name-value pairs for <br>the model. Parameters declared constants <br>for a model during runtime. | &#9745; | If ommited, the default values will be used. See the respective model type for details. |
-| `states` | a set of name-value pairs considered <br>as states for the model. The values modify <br>the internal initial values of a state. | &#9745; | If ommited, the default values will be used. See the respective model type for details. |
+| `inputs`  | a set of input-names and initial <br>values for the model. The model <br>type determines which names and <br>values are applicable to each model, <br>and they must be declared accordingly. <br>Inputs are optional | | If the value is set to `null`, <br>the default value will be <br>used. See the respective model <br>type for details.|
+| `outputs` | a set of output-names and initial <br>values for the model. Similar to <br>*inputs* valid names and values <br>for each model are determined by <br>the model *type*. See the respective <br>model type for details. | | If the value is set to `null`, <br>the default value will be used. |
+| `parameters`  | a set of name-value pairs for <br>the model. Parameters declared constants <br>for a model during runtime. | &#9745; | If ommited, the default values <br>will be used. See the <br>respective model type for details. |
+| `states` | a set of name-value pairs considered <br>as states for the model. The values modify <br>the internal initial values of a state. | &#9745; | If ommited, the default <br>values will be used. See the <br>respective model type for details. |
 | `triggers` | names of inputs, output or states <br>that are use as triggers for a particular model. <br>Triggers can only be declared by models <br>that implement the *event-based paradigm*. <br>See the respective model type to know if <br>it accepts triggers. |  &#9745; | |
 | `connect` | to declare in which client a model runs <br>when using a Raspberry Pi cluster. | &#9745;  | |
 | `ip` | Ip of the client manchine that will run <br>the model. Only IP version 4 format. |  |   |
@@ -88,6 +88,6 @@ monitor:
 | `from`  | origin of the connection declared as <br>`<model-name>.<output-name>`. Input names <br>use here must also appear as *inputs* in<br>the models section.   |   |  |
 | `to` | destination of the connection declared as <br>`<model-name>.<input-name>`. Output names <br>use here must also appear as *outputs* in <br>the models section. |   | 
 | **monitor:**  | 
-| `file` | path to a CSV file to store results of <br>the simulation. File will be created if <br>necessary. |  &#9745; | a `out.csv` file saved to the current directory |
+| `file` | path to a CSV file to store results of <br>the simulation. File will be created if <br>necessary. |  &#9745; | a `out.csv` file saved to <br>the current directory |
 |`items` | a list of which inputs, outputs or states <br>of models that most be monitored during <br>runtime. Items must be declared as <br>`<model-name>.<name>`, where *name* is an <br>input, output or stated clared in the <br>*models* section. No duplicated values <br>are allowed  |  |   |
 

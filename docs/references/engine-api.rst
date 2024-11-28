@@ -23,7 +23,7 @@ Utility Functions
 
 .. autofunction:: illuminator.engine.create_world
 
-.. autofunction:: illuminator.engine.genarate_mosaik_configuration
+.. autofunction:: illuminator.engine.generate_mosaik_configuration
 
 
 
