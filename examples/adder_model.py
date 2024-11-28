@@ -25,8 +25,6 @@ class AdderModel(ModelConstructor):
 
         return time + self._model.time_step_size
     
-    # todo: adopt get_data() as defined by Mosaik
-
 if __name__ == '__main__':
 
     import mosaik
