@@ -6,7 +6,7 @@ in the Illuminator.
 import datetime
 import re
 import os
-import json
+import json as json_module
 from ruamel.yaml import YAML
 from schema import Schema, And, Use, Regex, Optional, SchemaError, SchemaUnexpectedTypeError
 
@@ -53,7 +53,7 @@ def load_config_file(config_file: str, json:bool=False) -> dict | str:
         return None
   
     if json:
-        return json.dumps(valid_data, indent=4)
+        return json_module.dumps(valid_data, indent=4)
     
     return valid_data
 
@@ -129,7 +129,6 @@ schema = Schema(  # a mapping of mappings
                         Optional("time_resolution"): And(int, lambda n: n > 0,
                                                   error="time resolution must be a "
                                                   "positive integer"),
-                        Optional("results"): And(str, len, error="results must be a non-empty string"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
@@ -164,7 +163,7 @@ schema = Schema(  # a mapping of mappings
         ),
         "monitor":  Schema(
             {
-                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'results' does not exists..."), error="you must provide a non-empty string for 'results'"),
+                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'file' does not exists..."), error="you must provide a non-empty string for 'file'"),
                 "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
                         error="you must provide at least one item to monitor")
             }
