@@ -3,7 +3,6 @@ Unit tests for main.py of CLI package.
 """
 
 import pytest
-import copy
 import mosaik
 from illuminator.engine import start_simulators, compute_mosaik_end_time
 
@@ -31,15 +30,12 @@ def csv_model():
         }
     }
 
-# CONTINUE FROM HERE
-# ADD example data to the data.csv file
-
 @pytest.fixture
 def yaml_models():
     return  [{'name': 'CSVB',  # this name must match the name in the mosaik configuration
               'type': 'CSV', 
               'parameters': 
-                    {'start': '2012-01-01 00:00:00', 'datafile': 'tests/data/data.csv'}}, 
+                    {'start': '2012-01-01 00:00:00', 'datafile': 'tests/data/solar-sample.csv'}}, 
             {'name': 'PV', 
              'type': 'PvAdapter', 
              'inputs': 
@@ -83,8 +79,6 @@ class TestMosaikEndTime:
         assert computed_steps == 17
 
         
-
-
 class TestStartSimulators:
     """
     Tests for the start_simulators function.
@@ -123,5 +117,3 @@ class TestStartSimulators:
 
         with pytest.raises(ValueError):
             start_simulators(mosaik_world, yaml_models)
-
-

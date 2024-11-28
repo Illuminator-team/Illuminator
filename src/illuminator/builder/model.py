@@ -3,12 +3,20 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
+import illuminator.engine as engine
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
     EVENT_BASED = 'event-based'
     HYBRID = 'hybrid'
 
+# TOOD: IMPORTANT 
+# each model file must provide a way to run it remotely. In the current implementation,
+# that is achieved by including a the folloowing code on the simulator file:
+# def main():
+#     mosaik_api.start_simulation(eboilerSim(), 'eboiler Simulator')
+# if __name__ == "__main__":
+#     main()
 
 @dataclass
 class IlluminatorModel():
@@ -49,7 +57,7 @@ class IlluminatorModel():
     simulator_type: SimulatorType = SimulatorType.HYBRID
     time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
-    
+    model_type: Optional[str] = "Model"
 
     def __post_init__(self):
         self.validate_states()
@@ -63,7 +71,7 @@ class IlluminatorModel():
         meta = {
             'type': self.simulator_type.value,
             'models': {
-                'Model': {
+                self.model_type : {
                     'public': True,
                     'params': list(self.parameters.keys()),
                     'attrs': list(self.outputs.keys())
@@ -104,7 +112,16 @@ from mosaik_api_v3 import Simulator
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
 
-    def __init__(self, model: IlluminatorModel) -> None:
+    def __init__(self, **kwargs) -> None:
+        #model: IlluminatorModel
+        model_vals = engine.current_model
+        model = IlluminatorModel(
+                parameters=model_vals['parameters'],
+                inputs=model_vals["inputs"],
+                outputs=model_vals["outputs"],
+                states={},
+                model_type=model_vals["type"]
+            )
         super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
@@ -133,12 +150,13 @@ class ModelConstructor(ABC, Simulator):
         """
         pass
 
-    def init(self, sid, time_resolution, **sim_params):  # can be use to update model parameters set in __init__
+    def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
         self.time_resolution = time_resolution
 
+        # This bit of code is unused.
         # Assuming sim_params is structured as {'sim_params': {model_name: model_data}}
         sim_params = sim_params.get('sim_params', {})
         if len(sim_params) != 1:
@@ -149,12 +167,15 @@ class ModelConstructor(ABC, Simulator):
         # self.model = self.load_model_class(self.model_data['model_path'], self.model_data['model_type'])
         return self._model.simulator_meta
     
-    def create(self, num: int) -> List:
+    def create(self, num:int, model:str, **model_params) -> List[dict]: # This change is mandatory. It MUST contain num and model as parameters otherwise it receives an incorrect number of parameters
         """Creates an instance of the model"""
-        for i in range(num):
-            eid = f"{self._model.simulator_type.value}_{i}"
-            self.model_entities[eid] = self._model
-        return list(self.model_entities.keys())
+        new_entities = [] # See below why this was created
+        for i in range(num): # this seems ok
+            eid = f"{self._model.simulator_type.value}_{i}" # this seems ok
+            self.model_entities[eid] = self._model # this seems fine
+        # return list(self.model_entities.keys()) # I removed this bit for now. Create is expected to return a list of dictionaries
+            new_entities.append({'eid': eid, 'type': model})  # So basically, like this. Later on we can look into other alternatives if needed.
+        return new_entities
     
     def current_time(self): 
         """Returns the current time of the simulation"""

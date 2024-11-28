@@ -5,7 +5,7 @@ scenario:
   time_resolution: 900 # time step in seconds. Defaults to 15 minutes (900 s)
 models: # list of models for the energy network
 - name: Adder1 # name for the model (must be unique)
-  type: AdderModel # most match the class inheriting from IlluminatorConstructor
+  type: Adder # most match the class inheriting from IlluminatorConstructor
   inputs: 
     in1: 10  # input-name: initial value, default value will be used if not defined
     in2: 20
@@ -14,7 +14,7 @@ models: # list of models for the energy network
   parameters: 
     param1: "adding tens"
 - name: Adder2
-  type: AdderModel # models can reuse the same type
+  type: Adder # models can reuse the same type
   inputs: 
     in1: 100  # input-name: initial value, default value will be used if not defined
     in2: 200

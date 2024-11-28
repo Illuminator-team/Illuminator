@@ -6,7 +6,9 @@ in the Illuminator.
 import datetime
 import re
 import os
-from schema import Schema, And, Use, Regex, Optional, SchemaError
+import json as json_module
+from ruamel.yaml import YAML
+from schema import Schema, And, Use, Regex, Optional, SchemaError, SchemaUnexpectedTypeError
 
 # valid format for start and end times: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
@@ -15,6 +17,45 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 # monitor and connections sections enforce a format such as 
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
+# valid_model_item_format = r'^([\w-]+\.?)+$' # This is kept here as an alternative. I believe this might be useful later on
+
+
+
+def load_config_file(config_file: str, json:bool=False) -> dict | str:
+    """Returns the content of an scenerio file written as YAML after
+    validating its content against the Illuminator's Schema.
+
+    Parameters
+    ----------
+    config_file : str
+        The path to the YAML configuration file.
+    json : bool
+        If True, the content of the configuration file is returned as a JSON string.
+
+    Returns
+    -------
+    dict
+        The content of the configuration file as a dictionary.
+    """
+
+    try:
+        with open(config_file, 'r') as _file:
+            yaml = YAML(typ='safe')
+            data = yaml.load(_file)
+    except FileNotFoundError:
+        print(f"Error: The file {config_file} was not found.")
+        return None
+    
+    try:
+        valid_data = schema.validate(data)
+    except SchemaUnexpectedTypeError as exc:
+        print(f"Error while parsing YAML file. \n Are you passing a file written in YAML?: {exc}")
+        return None
+  
+    if json:
+        return json_module.dumps(valid_data, indent=4)
+    
+    return valid_data
 
 
 def validate_model_item_format(items: list) -> list:
@@ -88,7 +129,6 @@ schema = Schema(  # a mapping of mappings
                         Optional("time_resolution"): And(int, lambda n: n > 0,
                                                   error="time resolution must be a "
                                                   "positive integer"),
-                        Optional("results"): And(str, len, error="results must be a non-empty string"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
@@ -122,7 +162,7 @@ schema = Schema(  # a mapping of mappings
         ),
         "monitor":  Schema(
             {
-                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'results' does not exists..."), error="you must provide a non-empty string for 'results'"),
+                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'file' does not exists..."), error="you must provide a non-empty string for 'file'"),
                 "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
                         error="you must provide at least one item to monitor")
             }

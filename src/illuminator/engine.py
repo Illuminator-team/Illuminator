@@ -8,10 +8,10 @@ import math
 import importlib.util
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
-from ruamel.yaml import YAML
-from illuminator.schemas.simulation import schema
 from datetime import datetime
+from illuminator.schema.simulation import load_config_file
 
+current_model = {}
 
 def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
     """
@@ -34,17 +34,6 @@ def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
     return world
 
 
-def validate_config_data(config_file: str) -> dict:
-    """Returns the content of an scenerio file writtent in YAML after
-    validating its content against the Illuminator's Schema.
-    """
-
-    _file = open(config_file, 'r')
-    yaml = YAML(typ='safe')
-    data = yaml.load(_file)
-    return schema.validate(data)
-
-
 def get_collector_path() -> str:
     """Returns the path to the default collector script."""
 
@@ -56,6 +45,7 @@ def get_collector_path() -> str:
     collector_path=specifiction.origin
     return collector_path
     # TODO: write a unit test for this
+
 
 def apply_default_values(config_simulation: dict) -> dict:
     """Applies Illuminator default values to the configuration if they are not
@@ -74,14 +64,14 @@ def apply_default_values(config_simulation: dict) -> dict:
 
     # defaults
     time_resolution = {'time_resolution': 900} # 15 minutes
-    results = {'results': './out.csv'}
+    out_file = {'file': './out.csv'}
     # TODO: set other default values
 
     if 'time_resolution' not in config_simulation['scenario']:
         config_simulation.update(time_resolution)
     # file to store the results
-    if 'results' not in config_simulation['scenario']:
-        config_simulation.update(results)
+    if 'file' not in config_simulation['monitor']:
+        config_simulation.update(out_file)
 
     #TODO: Write a unit test for this
     return config_simulation
@@ -169,6 +159,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         for model in models:
             model_name = model['name']
             model_type = model['type']
+            set_current_model(model)
 
 
             if 'parameters' in model:
@@ -190,6 +181,8 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
             else:
                 simulator = world.start(sim_name=model_name,
                                     # **model_parameters
+                                    model_name = model_name,
+                                    sim_params= {model_name: model} # This value gets picked up in the init() function
                                     # Some items must be passed here, and some other at create()
                                     )
         
@@ -205,14 +198,19 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
 
                 # TODO:
                 # this is a temporary solution to continue developing the CLI
-                entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
-                                            panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
-          'Power_output_at_STC': 250,'peak_power':600},
-                                            m_tilt=14, 
-                                            m_az=180, 
-                                            cap=500,
-                                            output_type='power'
-                                            )
+
+                # TODO: If we wish to use different values here, we must define the parameters used here within the appropriate .yaml file.
+                # Right now adder.yaml defines the custom parameters as "param1"
+                
+        #         entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
+        #                                     panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
+        #   'Power_output_at_STC': 250,'peak_power':600},
+        #                                     m_tilt=14, 
+        #                                     m_az=180, 
+        #                                     cap=500,
+        #                                     output_type='power'
+        #                                     )
+            entity = model_factory.create(num=1, param1="Not in use") 
 
             model_entities[model_name] = entity
             print(model_entities)
@@ -283,6 +281,16 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
     return steps
 
+# def get_current_model():
+#     return current_model
+
+def set_current_model(model):
+    global current_model
+    current_model["type"] = model['type']
+    current_model['parameters']=model['parameters']
+    current_model['inputs']=model["inputs"]
+    current_model['outputs']=model["outputs"]
+    
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
                     monitor:MosaikEntity, monitor_config: dict) -> MosaikWorld:
@@ -328,3 +336,64 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
         
         # TODO: write a unit test for this. Cases: 1) all connections were established, 2) exception raised
     return world
+
+
+class Simulation:
+    """A simplified interface to run simulations with Illuminator."""
+
+    def __init__(self, config_file:str) -> None:
+        """Loads and validates the configuration file for the simulation."""
+        self.config_file = load_config_file(config_file)
+
+
+    def run(self):
+        """Runs a simulation scenario"""
+
+        config = apply_default_values(self.config_file)
+        
+        # Define the Mosaik simulation configuration
+        sim_config = generate_mosaik_configuration(config)
+
+        # simulation time
+        _start_time = config['scenario']['start_time']
+        _end_time = config['scenario']['end_time']
+        _time_resolution = config['scenario']['time_resolution']
+        # output file with forecast results
+        _results_file = config['monitor']['file']
+
+        # Initialize the Mosaik worlds
+        world = create_world(sim_config, time_resolution=_time_resolution)
+        # TODO: collectors are also customisable simulators, define in the same way as models.
+        # A way to define custom collectors should be provided by the Illuminator.
+        collector = world.start('Collector', 
+                                time_resolution=_time_resolution, 
+                                start_date=_start_time,  
+                                results_show={'write2csv':True, 'dashboard_show':False, 
+                                            'Finalresults_show':False,'database':False, 'mqtt':False}, 
+                                output_file=_results_file)
+        
+        # initialize monitor
+        monitor = collector.Monitor()
+
+        # Dictionary to keep track of created model entities
+        model_entities = start_simulators(world, config['models'])
+
+        # Connect the models based on the connections specified in the configuration
+        world = build_connections(world, model_entities, config['connections'])
+
+        # Connect monitor
+        world = connect_monitor(world, model_entities, monitor, config['monitor'])
+        
+        # Run the simulation until the specified end time
+        mosaik_end_time =  compute_mosaik_end_time(_start_time,
+                                                _end_time,
+                                                _time_resolution
+                                            )
+
+        world.run(until=mosaik_end_time)
+
+    @property
+    def config(self)-> dict:
+        """Returns the configuration file for the simulation."""
+        return self.config_file
+    
