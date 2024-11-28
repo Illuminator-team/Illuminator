@@ -218,7 +218,8 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         return model_entities
 
 
-def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict], model_config: list[dict]) -> MosaikWorld:
+def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict], 
+                      models: list[dict]) -> MosaikWorld: # TODO: limit model_config to only models
         """
         Connects the model entities in the Mosaik world based on the connections specified in the YAML configuration file.
         
@@ -230,7 +231,9 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             A dictionary of model entities created for the Mosaik world.
         connections: list
             A list of connections to be established between the model entities.
-
+        models: list
+            The models involved in the connections based on the configuration file.
+            
         Returns
         -------
         mosaik.World
@@ -241,6 +244,7 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         for connection in connections:
             from_model, from_attr =  connection['from'].split('.')
             to_model, to_attr =  connection['to'].split('.')
+            # TODO: check if this will work for the cases in which there are not time_shifted connections
             to_model_config = next((m for m in model_config if m['name'] == to_model))
             time_shifted = connection['time_shifted']
             # Establish connections in the Mosaik world
@@ -412,7 +416,7 @@ class Simulation:
         model_entities = start_simulators(world, config['models'])
 
         # Connect the models based on the connections specified in the configuration
-        world = build_connections(world, model_entities, config['connections'])
+        world = build_connections(world, model_entities, config['connections'], config['models'])
 
         # Connect monitor
         world = connect_monitor(world, model_entities, monitor, config['monitor'])
