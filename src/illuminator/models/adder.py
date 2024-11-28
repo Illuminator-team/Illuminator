@@ -5,7 +5,6 @@ stores the result in an output.
 """
 from illuminator.builder import IlluminatorModel, ModelConstructor
 
-
 # Define the model parameters, inputs, outputs...
 adder = IlluminatorModel(
     parameters={"param1": "addition"},
@@ -25,8 +24,7 @@ class Adder(ModelConstructor):
 
         return time + self._model.time_step_size
 
-    # todo: adopt get_data() as defined by Mosaik
-
+    
 if __name__ == '__main__':
     # Create a model by inheriting from ModelConstructor
     # and implementing the step method
