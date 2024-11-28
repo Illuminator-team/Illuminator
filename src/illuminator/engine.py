@@ -233,7 +233,7 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             A list of connections to be established between the model entities.
         models: list
             The models involved in the connections based on the configuration file.
-            
+
         Returns
         -------
         mosaik.World
@@ -245,7 +245,7 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             from_model, from_attr =  connection['from'].split('.')
             to_model, to_attr =  connection['to'].split('.')
             # TODO: check if this will work for the cases in which there are not time_shifted connections
-            to_model_config = next((m for m in model_config if m['name'] == to_model))
+            to_model_config = next((m for m in models if m['name'] == to_model))
             time_shifted = connection['time_shifted']
             # Establish connections in the Mosaik world
             try:
