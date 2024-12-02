@@ -3,7 +3,8 @@
 # name of the file matches the name of the model
 from .Battery.battery_model import BatteryModel
 from .collector import Collector
-from .mosaik_csv import CSV
+# from .mosaik_csv import CSV
+from .CSV_reader_v3 import CSV
 from .PV.pv_mosaik import PvAdapter
 from .adder import Adder
 
