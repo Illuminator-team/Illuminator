@@ -1,0 +1,58 @@
+scenario:
+  name: "batteryTest" # in mosaik so called world
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 01:00:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
+- name: CSVB # name for the model (must be unique)
+  type: CSV # name of the model registered in the Illuminator
+  parameters: # a CSV model must have a start time and a file as parameters
+    start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+    datafile: './battery_charger.csv' # path to the file with the data
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+    time_resolution: 900
+
+# - name: Adder1 # name for the model (must be unique)
+#   type: Adder # most match the class inheriting from IlluminatorConstructor
+#   inputs:
+#     in1: 10  # input-name: initial value, default value will be used if not defined
+#     in2: 1
+#   outputs:
+#     out1: 0
+#   parameters:
+#     param1: "adding tens"
+
+- name: Battery1
+  type: Battery # models can reuse the same type
+  parameters:
+    max_p: 150  # maximum charging power limit (kW)
+    min_p: -250  # maximum discharging power limit (kW)
+    max_energy: 100  # maximum energy storage capacity of the battery (kWh)
+    charge_efficiency: 50  # efficiency of charging the battery (%)
+    discharge_efficiency: 50  # efficiency of discharging the battery (%)
+    soc_min: 3  # minimum allowable state of charge for the battery (%)
+    soc_max: 80  # maximum allowable state of charge for the battery (%)
+    resolution: 1800  # time resolution for simulation steps (seconds) TODO: SEEMS TO NOT DO ANYTHING
+  inputs:
+    flow2b: 0  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
+  outputs:
+    p_out: 20  # output power from the battery after discharge/charge decision (Kw)
+    p_in: 20  # input power to the battery (kW)
+    soc: 60  # updated state of charge after battery operation (%)
+    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
+    flag: -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+
+connections:
+# - from: CSVB.p # start model, pattern: model_name.output_name/input_name
+#   to: Battery1.p_in
+  # to: Adder1.in1 # end model
+  #time_shifted: True
+- from: CSVB.flow2b
+  to: Battery1.flow2b
+
+monitor:
+  file: './out_battery.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
+  items:
+  - CSVB.flow2b
+  #- Battery1.soc
