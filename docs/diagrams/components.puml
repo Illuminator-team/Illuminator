@@ -2,36 +2,53 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
 scale 1.5
-
+LAYOUT_LANDSCAPE()
 title Component Diagram for the Illuminator
+
+AddElementTag("not implemented", $bgColor="#3c6658")
 
 Person(modelDeveloper, "Model Developer", "A person who wants to develop new models")
 Person(energyAnalyst, "Energy Analyst", "A person who creates simulations of energy systems")
 
-System_Boundary(illuminatorSys, "Illumiantor") {
-    Container_Boundary(builderApp, "Model Builder Application", "Python", "A Python package that generates energy system scenarios") {
+System_Ext(mosaik, "Mosaik Simulation Framework", "A Smart Grid co-simulation framework.  It provides a platform for executing  simualtions of energy systems")
+
+System_Boundary(illuminatorSys, "Illuminator", $descr="A Python package to simulate energy system") {
+
+    Container(dashboard, "Dashboard", "?", "An application for visualizing simulation results and logs in real-time", $tags="not implemented")
+
+    Container_Boundary(builderApp, "Model Builder Application", "Python", $descr="a Python application to develop energy models for the Illuminator") {
         Component(modelBuilder, "Builder", "Python", "A custom interface for creating and registering energy system models")
         Component(modelLibrary, "Model Libarry", "Python", "A collection of energy system models that can be use in a simulation")
 
-        Rel(modelBuilder, modelLibrary, "Registers models to", "Python")
+        Rel(modelBuilder, modelLibrary, "registers models to", "Python")
+        Rel(modelDeveloper, modelBuilder, "defines energy models using", "Python")
 
     }
-    Container_Boundary(simulationEngine, "Simulation Engine Application", "Python", "") {
-        Component(scenarioEngine, "Scenario API", "Python", "API for executing simulation scenarios.  It serves as a wrapper for the Mosaik API")
+    Container_Boundary(simulationEngine, "Simulation Engine Application", "Python", $descr="A Python application to simulate energy systems") {
+        Component(scenarioApi, "Scenario API", "Python", "generates and starts simulation scenarios.  It serves as a wrapper for the Mosaik API")
         Component(clusterPi, "Cluster Pi", "Python, Bash", "tools for setting up a cluster of Raspberry Pi's for running simulations")
-        Component(cli, "CLI", "Python, Typer", "tools for setting up a cluster of Raspberry Pi's for running simulations")
+        Component(cli, "Illuminator CLI", "Python, Typer", "a commnad line application to run simulation scenarios, and support the set up of a cluster of Raspberry Pi's")
 
+        Component(scenarioSchema, "Scenario Schema", "Python, YAML", "provides a formal schema for defining simulation scenarios using YAML files")
+
+        Rel(cli, scenarioApi, "uses", "Python")
+        Rel(cli, clusterPi, "uses", "Python")
+        Rel(scenarioApi, scenarioSchema, "validates scenario simulations using", "Python")
+
+}
     
-}
-    Container(mosaik, "Mosaik Simulation Framework", "Python", "A Smart Grid co-simulation framework.  It provides a platform for executing  simualtions of energy systems")
-    Rel(mosaik, modelLibrary, "simulates energy models from", "Mosaik Python API")
-
-    Container(dashboard, "Dashboard", "?", "An application for visualizing simulation results and logs in real-time")
+    Rel(scenarioApi, mosaik, "starts simulators in", "Mosaik API")
+    Rel(mosaik, dashboard, "provides simulation results and logs to", "Collector Model")
 
 }
 
 
+Rel(mosaik, modelLibrary, "access energy models from", "Python")
 
+Rel(energyAnalyst, scenarioApi, "defines simulation scenarios for", "YAML")
+Rel(energyAnalyst, cli, "runs simulation scenarios using", "Terminal")
+
+Rel(energyAnalyst,dashboard, "visualizes simulation results and logs in", "GUI")
 
 
 SHOW_LEGEND()

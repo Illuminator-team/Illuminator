@@ -3,7 +3,7 @@
 The Illuminator is modular Python applications to simulate energy systems. In this seciton, we provide an overview of its sotware architecture. The diagram below describes the components of the Illuminator. 
 
 <div align="center">
-    <img align="center" src="../_static/img/components.png" width="700">
+    <img align="center" src="../_static/img/components.png" width="800">
 </div>
 
 
@@ -56,7 +56,7 @@ There are three main use cases for the users of the Illuminator:
 2.  Creating a simullation scenario: an *Energy Analyst* wants to define a simulation scenario using a YAML file and execute the simulation.
 3.  Set up a raspberry Pi cluster: a **user** wants to set up the Illuminator in a cluster of Raspberry Pi's to run simulations.
 
-### Exteding the Model Library
+### Extending the Model Library
 
 Energy model should be added to the **Model Library** as follows:
 
@@ -97,7 +97,16 @@ class ExampleModel (ModelConstructor):
 3. To test the new model is implemented correctly, try:
 
 ```python
+# TODO: add example
 ```
+
+### Creating Simulation Scenarios
+
+TODO
+
+### Setting Up Cluster Pi
+
+Refer to [Cluster Pi setup.](../cluster-setup.md)
 
 
 
