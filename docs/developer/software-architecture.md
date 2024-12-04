@@ -1,4 +1,4 @@
-# High-level Software Architecture
+# Software Architecture
 
 The Illuminator is modular Python applications to simulate energy systems. In this seciton, we provide an overview of its sotware architecture. The diagram below describes the components of the Illuminator. 
 
