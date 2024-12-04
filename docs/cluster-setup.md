@@ -8,10 +8,10 @@ During simulation, the *server* engage with the *clients* to run the simulations
 information is exchanged between Rasberry Pi's using network sockets.
 The **server** provides a Dashboard to visualize the results, and saves them to a `.csv` files for later analysis. 
 
+
 <div align="center">
 	<img align="center" src="_static/img/Structure.jpg" width="500">
 </div>
-
 
 ## Hardware Requirements
 - A Raspberry Pi to use as a *server*.
