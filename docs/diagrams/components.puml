@@ -12,13 +12,13 @@ Person(energyAnalyst, "Energy Analyst", "A person who creates simulations of ene
 
 System_Ext(mosaik, "Mosaik Simulation Framework", "A Smart Grid co-simulation framework.  It provides a platform for executing  simualtions of energy systems")
 
-System_Boundary(illuminatorSys, "Illuminator", $descr="A Python package to simulate energy system") {
+System_Ext(dashboard, "Dashboard System",  "An application for visualizing simulation results and logs in real-time")
 
-    Container(dashboard, "Dashboard", "?", "An application for visualizing simulation results and logs in real-time", $tags="not implemented")
+System_Boundary(illuminatorSys, "Illuminator", $descr="A Python package to simulate energy system") {
 
     Container_Boundary(builderApp, "Model Builder Application", "Python", $descr="a Python application to develop energy models for the Illuminator") {
         Component(modelBuilder, "Builder", "Python", "A custom interface for creating and registering energy system models")
-        Component(modelLibrary, "Model Libarry", "Python", "A collection of energy system models that can be use in a simulation")
+        Component(modelLibrary, "Model Library", "Python", "A collection of energy system models that can be use in a simulation")
 
         Rel(modelBuilder, modelLibrary, "registers models to", "Python")
         Rel(modelDeveloper, modelBuilder, "defines energy models using", "Python")
@@ -46,7 +46,7 @@ System_Boundary(illuminatorSys, "Illuminator", $descr="A Python package to simul
 Rel(mosaik, modelLibrary, "access energy models from", "Python")
 
 Rel(energyAnalyst, scenarioApi, "defines simulation scenarios for", "YAML")
-Rel(energyAnalyst, cli, "runs simulation scenarios using", "Terminal")
+Rel(energyAnalyst, cli, "runs simulation scenarios using", "Terminal, YAML")
 
 Rel(energyAnalyst,dashboard, "visualizes simulation results and logs in", "GUI")
 
