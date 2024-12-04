@@ -1,0 +1,38 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+scale 1.5
+
+title Component Diagram for the Illuminator
+
+Person(modelDeveloper, "Model Developer", "A person who wants to develop new models")
+Person(energyAnalyst, "Energy Analyst", "A person who creates simulations of energy systems")
+
+System_Boundary(illuminatorSys, "Illumiantor") {
+    Container_Boundary(builderApp, "Model Builder Application", "Python", "A Python package that generates energy system scenarios") {
+        Component(modelBuilder, "Builder", "Python", "A custom interface for creating and registering energy system models")
+        Component(modelLibrary, "Model Libarry", "Python", "A collection of energy system models that can be use in a simulation")
+
+        Rel(modelBuilder, modelLibrary, "Registers models to", "Python")
+
+    }
+    Container_Boundary(simulationEngine, "Simulation Engine Application", "Python", "") {
+        Component(scenarioEngine, "Scenario API", "Python", "API for executing simulation scenarios.  It serves as a wrapper for the Mosaik API")
+        Component(clusterPi, "Cluster Pi", "Python, Bash", "tools for setting up a cluster of Raspberry Pi's for running simulations")
+        Component(cli, "CLI", "Python, Typer", "tools for setting up a cluster of Raspberry Pi's for running simulations")
+
+    
+}
+    Container(mosaik, "Mosaik Simulation Framework", "Python", "A Smart Grid co-simulation framework.  It provides a platform for executing  simualtions of energy systems")
+    Rel(mosaik, modelLibrary, "simulates energy models from", "Mosaik Python API")
+
+    Container(dashboard, "Dashboard", "?", "An application for visualizing simulation results and logs in real-time")
+
+}
+
+
+
+
+
+SHOW_LEGEND()
+@enduml
