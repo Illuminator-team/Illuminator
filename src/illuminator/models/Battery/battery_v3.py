@@ -3,6 +3,7 @@ import arrow
 
 
 # Define the model parameters, inputs, outputs...
+# TODO: Currently if a value or category isn't defined in the yaml it doesn't default to the ones below, it simply doesn't run.
 battery = IlluminatorModel(
     parameters={'max_p': 150,  # maximum charging power limit (kW)
                 'min_p': 250,  # maximum discharging power limit (kW)
@@ -76,6 +77,7 @@ class Battery(ModelConstructor):
         return time + self._model.time_step_size
 
     def parse_inputs(self, inputs):
+    # TODO: Move this function to model.py to unpack the inputs, for now we will keep it model specific.
         data = {}
         for attrs in inputs.values():
             for attr, sources in attrs.items():
