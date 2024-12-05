@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating/writing tests &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Illuminator Models" href="../references/models.html" />
+    <link rel="prev" title="Testing: basic principles and ideas" href="testing-explained.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating/writing tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#writing-unit-tests">Writing unit tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#important-note-1">IMPORTANT NOTE 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#important-note-2">IMPORTANT NOTE 2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mocking">Mocking</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/engine-api.html">Engine API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Creating/writing tests</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer/writing-tests.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creating-writing-tests">
+<h1>Creating/writing tests<a class="headerlink" href="#creating-writing-tests" title="Link to this heading"></a></h1>
+<p>When it comes to writing tests, the basics are the same between all three types of tests. They all must:</p>
+<ul class="simple">
+<li><p>Have the same ‘test’ naming convention</p></li>
+<li><p>Make some assumptions (assertions) about the code</p></li>
+<li><p>Should ideally test not just the positive (happy code / happy flow), but also the negative outcomes of the code</p></li>
+</ul>
+<p>In this section we will create a unit test for the <code class="docutils literal notranslate"><span class="pre">eboiler</span></code> model.</p>
+<section id="writing-unit-tests">
+<h2>Writing unit tests<a class="headerlink" href="#writing-unit-tests" title="Link to this heading"></a></h2>
+<p>To write a unit test we must first create a python file, import pytest and create a class which will contain all the tests. Let us call the file <code class="docutils literal notranslate"><span class="pre">test_eboiler_model.py</span></code> and the class <code class="docutils literal notranslate"><span class="pre">TestEboilerModel()</span></code>. Based on the name of the file and class, we can see that we are writing tests for the <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> file. In addition, since we are testing the <code class="docutils literal notranslate"><span class="pre">eboiler_python</span></code> class within the <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> file we should import it. So now the file should look something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">illuminator.models.Eboiler.eboiler_model</span> <span class="kn">import</span> <span class="n">eboiler_python</span>
+
+<span class="k">class</span> <span class="nc">TestEboilerModel</span><span class="p">():</span>
+</pre></div>
+</div>
+<section id="important-note-1">
+<h3>IMPORTANT NOTE 1<a class="headerlink" href="#important-note-1" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>The file name <strong>MUST</strong> start with “test_” or end with “_test” in order to be a valid test file. The class must also start with the name “Test”, hence why we have chosen the names above. In addition, whenever we create test methods we must also ensure their names start with “test_”</p>
+</div></blockquote>
+<p>Now let us create our simple test method. We want to test the creation of an <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> object. Within <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> <strong><strong>init</strong>()</strong> method (seen below) we see that it expects a dictionary (<strong>eboiler_set:dict</strong>) and that it returns nothing (meaning we do not need to check what it returns)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eboiler_set</span><span class="p">:</span><span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_load</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;min_load&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_load</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;max_load&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standby_loss</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;standby_loss&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">efficiency</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;efficiency&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> 
+</pre></div>
+</div>
+<p>We can also notice that the dictionary should contain the following key values: [capacity, min_load, max_load, standby_loss, efficiency, resolution]. So we will create some fake data to fill this dictionary with.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mocked_eboiler_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;min_load&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;max_load&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s1">&#39;standby_loss&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="s1">&#39;efficiency&#39;</span><span class="p">:</span> <span class="mf">0.33</span><span class="p">,</span>
+    <span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Once created, we may now make our assumptions about what we expect. We expect that the values set within the <code class="docutils literal notranslate"><span class="pre">eboiler</span></code> object will be equal to the values within our <strong>mocked_eboiler_dict</strong> object. We can test this with python’s built in function: <em>assert</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">capacity</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">min_load</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;min_load&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">max_load</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;max_load&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">standby_loss</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;standby_loss&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">efficiency</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;efficiency&#39;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">resolution</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>With this we have now created a simple test for the <code class="docutils literal notranslate"><span class="pre">eboiler</span></code> object constructor method. The full file should look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">illuminator.models.Eboiler.eboiler_model</span> <span class="kn">import</span> <span class="n">eboiler_python</span>
+
+<span class="k">class</span> <span class="nc">TestEboilerModel</span><span class="p">():</span>
+
+    <span class="c1"># Note that the test must start with &#39;test_&#39;</span>
+    <span class="k">def</span> <span class="nf">test_eboiler_constructor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create the fake (mocked) data</span>
+        <span class="n">mocked_eboiler_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;min_load&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;max_load&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="s1">&#39;standby_loss&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">,</span>
+            <span class="s1">&#39;efficiency&#39;</span><span class="p">:</span> <span class="mf">0.33</span><span class="p">,</span>
+            <span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">}</span> 
+
+        <span class="c1"># Create the eboiler_python object,</span>
+        <span class="c1"># which automatically calls the __init__() function</span>
+        <span class="n">eboiler_object</span> <span class="o">=</span> <span class="n">eboiler_python</span><span class="p">(</span><span class="n">mocked_eboiler_dict</span><span class="p">)</span>
+
+
+        <span class="c1"># What we expect to happen once </span>
+        <span class="c1"># we have called the __init__ method above</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">capacity</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">min_load</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;min_load&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">max_load</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;max_load&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">standby_loss</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;standby_loss&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">efficiency</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;efficiency&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">eboiler_object</span><span class="o">.</span><span class="n">resolution</span> <span class="o">==</span> <span class="n">mocked_eboiler_dict</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="important-note-2">
+<h3>IMPORTANT NOTE 2<a class="headerlink" href="#important-note-2" title="Link to this heading"></a></h3>
+<p>Not every test will be this simple. Some tests will return values which we will also need to check. Other times testing a method will rely on a different method being called. If we do not mock this method then we are no longer writing a unit test. We would instead be stepping into integration testing since by definition, integration testing’s purpose is to see how different methods integrate (interact) with one another.</p>
+</section>
+</section>
+<section id="mocking">
+<h2>Mocking<a class="headerlink" href="#mocking" title="Link to this heading"></a></h2>
+<p>Although the term is sometimes used very loosely to mean “any non-real data and objects”, officially mocking is referring to the creation of mock objects (i.e. functions, methods, attributes, environmental variables). For more information on mocking specifically in python (using pytest’s monkeypatch), please read the <a class="reference external" href="https://docs.pytest.org/en/stable/reference/reference.html">following documentation</a>.</p>
+<p>In order to mock functions/methods, we must first add a new parameter called <code class="docutils literal notranslate"><span class="pre">monkeypatch</span></code> to our test method. This will allow that specific test to mock whatever method we wish.
+A simple example of how to mock functions can be found in the code below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_direct_irr_happy_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">monkeypatch</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        direct_irr multiplies two values together.</span>
+<span class="sd">                Calculated value, with the given parameters, should be 10</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Independent mocked methods and variables</span>
+        <span class="n">pv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_basic_PV_object</span><span class="p">()</span> <span class="c1"># Helper function to create the PV model</span>
+        <span class="n">pv</span><span class="o">.</span><span class="n">dni</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># Attribute which pv.direct_irr() needs to perform calculations</span>
+
+        <span class="c1"># Mocked method (One way of writing is using lambda)</span>
+        <span class="n">monkeypatch</span><span class="o">.</span><span class="n">setattr</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span> <span class="s2">&quot;aoi&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> 
+
+        <span class="c1"># Another way of writing a mock method</span>
+        <span class="c1"># def myfunc(*args):</span>
+        <span class="c1">#     return 1</span>
+        <span class="c1"># monkeypatch.setattr(pv, &quot;aoi&quot;, myfunc)</span>
+
+        <span class="c1"># Expected outcome</span>
+        <span class="n">expected_dirr</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">assert</span> <span class="n">pv</span><span class="o">.</span><span class="n">direct_irr</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected_dirr</span>
+</pre></div>
+</div>
+<p>This was written to test <code class="docutils literal notranslate"><span class="pre">PV</span> <span class="pre">model</span></code>’s <strong>direct_irr()</strong> function. In it there are a few things necessary for the function to start. We can find out what will be needed either through a debugger, reading the code, or even trial and error. For this method we need the Independent variables/objects used when calling the <strong>pv.direct_irr(…)</strong> function, such as the actual PV model object and the mandatory value it needs in the calculation: <strong>pv.dni</strong>. Both of those we have created/set manually.</p>
+<p>Finally, there is another function which the <code class="docutils literal notranslate"><span class="pre">PV</span> <span class="pre">model</span></code> pv calls called <strong>aoi()</strong>. This is a dependency on a method different than the one we are testing. If we would ignore this function and just let our test do its thing, we would be performing an integration test, not a unit test, thus we need to mock it. By using the <strong>monkeypatch.setattr(object, name, value)</strong> function we tell our test that when the <code class="docutils literal notranslate"><span class="pre">PV</span> <span class="pre">model</span></code> object tries to call the <strong>aoi()</strong> function, it will instead just return the value 1.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testing-explained.html" class="btn btn-neutral float-left" title="Testing: basic principles and ideas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../references/models.html" class="btn btn-neutral float-right" title="Illuminator Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

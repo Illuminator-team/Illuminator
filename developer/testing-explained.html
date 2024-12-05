@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing: basic principles and ideas &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Creating/writing tests" href="writing-tests.html" />
+    <link rel="prev" title="Docstrings" href="developer-docstrings.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing: basic principles and ideas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#types-of-tests">Types of tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unit-tests">Unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#an-example">An example:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-tests">Integration tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#end-to-end-tests">End-to-End tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-write-tests-and-future-expectations">How to write tests and future expectations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/engine-api.html">Engine API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Testing: basic principles and ideas</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer/testing-explained.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="testing-basic-principles-and-ideas">
+<h1>Testing: basic principles and ideas<a class="headerlink" href="#testing-basic-principles-and-ideas" title="Link to this heading"></a></h1>
+<p>In order to properly to contribute to the Illuminator project, one must also create, update or delete tests based on what it is they are trying to achieve. For each new contribution, new tests will be necessary. Updating old behaviour also might require updating older unit tests. For this project we have decided to use <code class="docutils literal notranslate"><span class="pre">pytest</span></code> as our testing library.</p>
+<section id="types-of-tests">
+<h2>Types of tests<a class="headerlink" href="#types-of-tests" title="Link to this heading"></a></h2>
+<p>In total there are three types of tests that are considered industry standards: Unit tests, Integration Tests, End-to-End (E2E) tests. Each type of test serves a different purpose and has a different priority. A short overview of these tests can be seen in the image below:</p>
+<div align="center">
+	<img align="center" src="../_static/img/testing_pyramid.jpg" width="300">
+</div>
+<section id="unit-tests">
+<h3>Unit tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h3>
+<p>These types of tests are the most numerous and are simplest to create. Their run time is very fast, they will ideally have no dependencies on outside factors and they can test the smallest bits of code. In an ideal world, these tests should exist for every new method/function that is created. These tests will test the expected behaviour of a method, which not only includes the “positive” behaviour, but also the negative ones as well (i.e. what happens if the method does not get what it needs?)</p>
+<blockquote>
+<div><p>Why do we create unit tests?</p>
+</div></blockquote>
+<p>As mentioned in the summary of unit tests, we create them to test functions and methods which we have written. Although it might excessive to test every line of every method, Unit tests ultimately serve as a sanity check for the developers of old and new code.</p>
+<section id="an-example">
+<h4>An example:<a class="headerlink" href="#an-example" title="Link to this heading"></a></h4>
+<p>We are creating a new model of some type of <code class="docutils literal notranslate"><span class="pre">Battery</span></code> monitoring device. This model expects the <code class="docutils literal notranslate"><span class="pre">Battery</span></code> model to give information about its State-Of-Charge whenever the battery is discharged using the <strong>discharge_battery()</strong> method. If we have written a unit test for the method <strong>discharge_battery()</strong> where we explicitly state that we expect it to return the State-Of-Charge, then we can guarantee our new model will be able to get that information without having to read the code written in the <code class="docutils literal notranslate"><span class="pre">Battery</span></code> model.</p>
+</section>
+</section>
+<section id="integration-tests">
+<h3>Integration tests<a class="headerlink" href="#integration-tests" title="Link to this heading"></a></h3>
+<p>Unlike Unit tests, integration tests are intended to test multiple things at once while heavily limiting our “mocking”. If we think of “unit tests” as testing individual “units”, then the integration test involves multiple units at once. Because of this, we can see that integration tests tend to cover large chunks of code, hence why there is less integration tests compared to unit tests. In order to truly understand integration tests we must first explain the concept of “mocking”.</p>
+<blockquote>
+<div><p>What is mocking?</p>
+</div></blockquote>
+<p>Mocking, put simply, is used to mimic what an outside function or variable is supposed to be, without actually calling it. This is what allows unit tests to be independent of other methods and classes, and what separates it from integration and E2E tests.</p>
+<p>Using the previous <code class="docutils literal notranslate"><span class="pre">Battery</span></code> <strong>discharge_battery()</strong> method as an example, if we want to create a test for our new <code class="docutils literal notranslate"><span class="pre">monitoring</span> <span class="pre">device</span></code> model which uses that method, we must specify in our test that instead of actually calling the <strong>dischare_battery()</strong> method, we will fake (mock) the call by skipping over it and instead return values we set.</p>
+<blockquote>
+<div><p>Why do we create integration tests?</p>
+</div></blockquote>
+<p>Integration tests can be used for multiple reasons. Perhaps a method is far too complex to write as a unit test. Maybe there are specific interactions we wish to see in a “normal” environment instead of a simulated one. In some cases we can even test multiple classes at the same time as bigger integration tests. In the example above with the <code class="docutils literal notranslate"><span class="pre">monitoring</span> <span class="pre">device</span></code> and <code class="docutils literal notranslate"><span class="pre">Battery</span></code> model, we would not mock anything and just let the two classes interact regularly.</p>
+<p>As mentioned before, integration tests should mock very little. They should be written in a way that is close to how the real code would work, hence why mocking is avoided if possible. An example where one might want to use mocking within an integration test is with data. If we wish to test a class which needs data from a large dataset, we can instead tell our integration test to mimic that data by creating some fakes (think of 2 or 3 lines of a CSV file)</p>
+</section>
+<section id="end-to-end-tests">
+<h3>End-to-End tests<a class="headerlink" href="#end-to-end-tests" title="Link to this heading"></a></h3>
+<p>Unlike Unit and Integration tests, these should never mock data. These tests should run the code exactly at it is, with realistic inputs and outputs (which we must check) and ideally use as much of the codebase as it can. These tests should be very few in numbers because they are complex to write, and tend to have a longer runtime. These are essentially automated versions of “manual” testing.</p>
+</section>
+</section>
+<section id="how-to-write-tests-and-future-expectations">
+<h2>How to write tests and future expectations<a class="headerlink" href="#how-to-write-tests-and-future-expectations" title="Link to this heading"></a></h2>
+<p>The explanation on writing tests can be found on <a class="reference internal" href="writing-tests.html"><span class="std std-doc">this page</span></a>.</p>
+<p>At the moment all the test are located within the <code class="docutils literal notranslate"><span class="pre">tests/Models/</span></code> folder. They are not separated into smaller sub-folders due to pytest’s <a class="reference external" href="https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html">good practice</a> recommendations. In the future, this will will make more sense as we expect the number of tests needed to drastically drop due to repetition between models.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="developer-docstrings.html" class="btn btn-neutral float-left" title="Docstrings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="writing-tests.html" class="btn btn-neutral float-right" title="Creating/writing tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

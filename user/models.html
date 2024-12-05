@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Models &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simulation Configuration File" href="config-file.html" />
+    <link rel="prev" title="Cluster Pi Setup" href="../cluster-setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#battery-storage">Battery storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-build-up-methodology">Model build-up methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#electric-boiler">Electric Boiler</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Model Build-Up Methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#electrolyser">Electrolyser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Model Build-Up Methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#fuel-cell">Fuel Cell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Model Build-Up Methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hydrogen-storage">Hydrogen Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Model Build-Up Methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#heat-pump">Heat Pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#heat-storage">Heat Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pv-model">PV Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-input">Data input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Model build up methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#wind-model">Wind Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Data input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Model build-up methodology</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#load-heat-demand-heat-product-hydrogen-product-and-hydrogen-demand">Load, Heat demand, Heat Product, Hydrogen product and Hydrogen demand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#electricity-network-hydrogen-network-and-heat-network">Electricity network, Hydrogen network and Heat network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#distribution-network">Distribution network</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/engine-api.html">Engine API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/models.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="models">
+<h1>Models<a class="headerlink" href="#models" title="Link to this heading"></a></h1>
+<blockquote>
+<div><p>This resembles the API documentation. Would be better to add the explanations as docstring and
+generate the documentation using <strong>autodoc</strong>
+However, we should separtate explanatios from API references.</p>
+</div></blockquote>
+<section id="battery-storage">
+<h2>Battery storage<a class="headerlink" href="#battery-storage" title="Link to this heading"></a></h2>
+<p>The battery storage parameters are all set in the python file named ‘buildmodelset.py’ in the configuration folder.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;max_p&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">rated</span> <span class="n">charging</span> <span class="n">power</span>
+<span class="s1">&#39;min_p&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">rated</span> <span class="n">discharging</span> <span class="n">negative</span> <span class="n">power</span><span class="o">.</span>
+<span class="s1">&#39;max_energy&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">battery</span> <span class="n">capacity</span>
+<span class="s1">&#39;soc_min&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">soc</span> <span class="n">limitation</span>
+<span class="s1">&#39;soc_max&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">soc</span> <span class="n">limitation</span>
+<span class="s1">&#39;flage&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">status</span> <span class="n">of</span> <span class="n">the</span> <span class="n">battery</span><span class="o">.</span> <span class="c1"># flag=1 means fully charged; flag=-1 means fully discharged; flag=0 means ready for charge and discharge</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span>
+</pre></div>
+</div>
+<section id="model-build-up-methodology">
+<h3>Model build-up methodology<a class="headerlink" href="#model-build-up-methodology" title="Link to this heading"></a></h3>
+<p>“output_power(self, flow2b, soc) “ is a controller method to decide whether to charge or discharge the battery.
+(flow2b: The requested power flow. soc: The current state of charge.
+Returns: A dictionary with updated battery parameters.)
+The method for charge and discharge calculation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Energy_discharge</span> <span class="o">=</span> <span class="n">Power_flow</span> <span class="o">*</span> <span class="n">Resoluation</span> \ <span class="n">Efficiency_discharge</span>
+<span class="n">Energy_charge</span> <span class="o">=</span> <span class="n">Power_flow</span> <span class="o">*</span> <span class="n">Resoluation</span> <span class="o">*</span> <span class="n">Efficiency_charge</span>
+</pre></div>
+</div>
+<p>Update the Soc of the battery at each time resolution.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="electric-boiler">
+<h2>Electric Boiler<a class="headerlink" href="#electric-boiler" title="Link to this heading"></a></h2>
+<p>The Electric Boiler parameters are all set in the python file named <code class="docutils literal notranslate"><span class="pre">buildmodelset.py</span></code> in the configuration folder.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">capacity</span> <span class="n">of</span> <span class="n">the</span> <span class="n">boiler</span> <span class="ow">in</span> <span class="n">kilowatts</span> <span class="p">(</span><span class="n">kW</span><span class="p">)</span><span class="o">.</span>
+<span class="s1">&#39;min_load&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">operational</span> <span class="n">load</span> <span class="n">of</span> <span class="n">the</span> <span class="n">boiler</span> <span class="ow">in</span> <span class="n">kilowatts</span> <span class="p">(</span><span class="n">kW</span><span class="p">)</span><span class="o">.</span>
+<span class="s1">&#39;max_load&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">operational</span> <span class="n">load</span> <span class="n">of</span> <span class="n">the</span> <span class="n">boiler</span> <span class="ow">in</span> <span class="n">kilowatts</span> <span class="p">(</span><span class="n">kW</span><span class="p">)</span><span class="o">.</span>
+<span class="s1">&#39;standby_loss&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">heat</span> <span class="n">loss</span> <span class="k">while</span> <span class="n">the</span> <span class="n">boiler</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">standby</span> <span class="n">mode</span> <span class="k">as</span> <span class="n">a</span> <span class="n">fraction</span> <span class="n">of</span> <span class="n">the</span> <span class="n">capacity</span><span class="o">.</span>
+<span class="s1">&#39;efficiency&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">operational</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">the</span> <span class="n">boiler</span> <span class="n">under</span> <span class="n">maximum</span> <span class="n">load</span><span class="o">.</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span><span class="o">.</span>
+
+</pre></div>
+</div>
+<section id="id1">
+<h3>Model Build-Up Methodology<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>The demand method is used to calculate the heat supply and electricity consumption based on the boiler’s demand.</p>
+<p>Parameters:
+eboiler_dem: The heat demand in watts (W).
+Returns: A dictionary containing the heat supplied (q_gen), electricity consumed (e_consumed), and standby loss.</p>
+<p>The operational logic for the electric boiler is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Power_require</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q_Demand</span> <span class="o">+</span> <span class="n">Standby_loss</span><span class="p">)</span> <span class="o">/</span> <span class="n">Efficiency</span>
+<span class="n">Q_supply</span> <span class="o">=</span> <span class="p">(</span><span class="n">Electricity_input</span> <span class="o">-</span> <span class="n">Standby_loss</span><span class="p">)</span> <span class="o">*</span> <span class="n">Efficiency</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># in Watts</span>
+</pre></div>
+</div>
+<p>The heat supplied (Q_supply) and electricity consumed are calculated based on the demand, considering the boiler’s capacity, load limits, and efficiency. The calculations are adjusted to ensure the operation stays within the defined minimum and maximum load limits.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="electrolyser">
+<h2>Electrolyser<a class="headerlink" href="#electrolyser" title="Link to this heading"></a></h2>
+<p>The electrolyser model parameters are all set in the python file named ‘buildmodelset.py’ in the configuration folder.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">the</span> <span class="n">electrolyser</span><span class="o">.</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">the</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span><span class="o">.</span>
+<span class="s1">&#39;term_eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">thermal</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">the</span> <span class="n">electrolyser</span><span class="o">.</span>
+<span class="s1">&#39;rated_power&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">rated</span> <span class="n">power</span> <span class="nb">input</span> <span class="n">of</span> <span class="n">the</span> <span class="n">electrolyser</span><span class="o">.</span>
+<span class="s1">&#39;ramp_rate&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">rate</span> <span class="n">at</span> <span class="n">which</span> <span class="n">the</span> <span class="n">power</span> <span class="nb">input</span> <span class="n">can</span> <span class="n">change</span><span class="o">.</span>
+</pre></div>
+</div>
+<section id="id2">
+<h3>Model Build-Up Methodology<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>The electrolyser method is used to calculate hydrogen production and energy consumption based on the input power flow.</p>
+<p>Parameters:
+flow2e: The power flow to the electrolyser in kW.
+temperature: Optional. The temperature of the operation in degrees Celsius (default is 15°C).
+pressure: Optional. The pressure of the operation in kPa (default is 100 kPa).
+Returns: A dictionary containing the hydrogen generated (h2_gen), power flow (flow2e), thermal energy (q_product), and energy consumed (e_consume).</p>
+<p>The operational logic for the electrolyser is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Desired_power</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">Rated_power</span><span class="p">,</span> <span class="n">Flow2e</span><span class="p">)</span>
+<span class="n">E_consume</span> <span class="o">=</span> <span class="n">ramp_rate_limit</span><span class="p">(</span><span class="n">Desired_power</span><span class="p">)</span>
+<span class="n">Q_product</span> <span class="o">=</span> <span class="n">E_consume</span> <span class="o">*</span> <span class="n">Term_eff</span>
+<span class="n">HHV</span> <span class="o">=</span> <span class="mf">286.6</span> <span class="n">kJ</span><span class="o">/</span><span class="n">mol</span>
+<span class="n">Mole</span> <span class="o">=</span> <span class="p">(</span><span class="n">E_consume</span> <span class="o">*</span> <span class="n">Resolution</span> <span class="o">*</span> <span class="mi">60</span> <span class="n">kJ</span><span class="p">)</span> <span class="o">/</span> <span class="n">HHV</span> <span class="o">*</span> <span class="n">Eff</span>
+<span class="n">H_mass</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.02</span> <span class="n">grams</span><span class="o">/</span><span class="n">mole</span> <span class="o">*</span> <span class="n">Mole</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span> <span class="n">kg</span>
+<span class="n">H_out</span> <span class="o">=</span> <span class="n">H_mass</span> <span class="o">*</span> <span class="mf">11.2</span> <span class="n">m</span><span class="o">^</span><span class="mi">3</span><span class="o">/</span><span class="nb">min</span> <span class="n">at</span> <span class="n">NTP</span> <span class="o">/</span> <span class="n">Resolution</span>
+</pre></div>
+</div>
+<p>The electrolyser model calculates the amount of hydrogen produced and the energy consumed. It accounts for the ramp rate limits and the electrolyser’s efficiency to provide realistic performance metrics.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="fuel-cell">
+<h2>Fuel Cell<a class="headerlink" href="#fuel-cell" title="Link to this heading"></a></h2>
+<p>The  Fuel Cell model parameters are all set in the python file named ‘buildmodelset.py’ in the configuration folder.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">base</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">the</span> <span class="n">fuel</span> <span class="n">cell</span><span class="o">.</span>
+<span class="s1">&#39;term_eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">thermal</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">the</span> <span class="n">fuel</span> <span class="n">cell</span><span class="o">.</span>
+<span class="s1">&#39;max_flow&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">hydrogen</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;min_flow&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">hydrogen</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">the</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span><span class="o">.</span>
+</pre></div>
+</div>
+<section id="id3">
+<h3>Model Build-Up Methodology<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>The output method is used to calculate the power output and thermal energy based on hydrogen consumption.</p>
+<p>Parameters:</p>
+<p>h2_consume: The hydrogen consumption rate in m³/min.
+temperature: Optional. The temperature of the operation in degrees Celsius (default is 25°C).
+pressure: Optional. The pressure of the operation in kPa (default is 100 kPa).
+Returns: A dictionary containing the fuel cell power output (fc_gen), hydrogen fuel rate (h2fuel), hydrogen consumed (h2_consume), and thermal energy (q_product).</p>
+<p>The operational logic for the fuel cell is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>H2fuel = max(Min_flow, min(Max_flow, H2_consume))
+Efficiency = efficiency(H2_consume, Temperature, Pressure)
+Energy_density = 120,000 kJ/m³  # Energy from 1 m³ hydrogen
+Out = (H2_consume * Energy_density * Efficiency) / 60 kW  # Power output
+Q_out = Out * Term_eff  # Thermal energy output
+</pre></div>
+</div>
+<p>The fuel cell model computes the power output and thermal energy based on the hydrogen consumed. It takes into account the efficiency of the fuel cell, which can vary based on the load, temperature, and pressure. The model also ensures that the hydrogen consumption is within the specified minimum and maximum flow rates.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="hydrogen-storage">
+<h2>Hydrogen Storage<a class="headerlink" href="#hydrogen-storage" title="Link to this heading"></a></h2>
+<p>The hydrogen storage model parameters are all set in the python file named ‘buildmodelset.py’ in the configuration folder.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;initial_soc&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">initial</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="n">of</span> <span class="n">the</span> <span class="n">hydrogen</span> <span class="n">storage</span><span class="o">.</span>
+<span class="s1">&#39;h2storage_soc_min&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="n">limitation</span><span class="o">.</span>
+<span class="s1">&#39;h2storage_soc_max&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="n">limitation</span><span class="o">.</span>
+<span class="s1">&#39;eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">hydrogen</span> <span class="n">storage</span><span class="o">.</span>
+<span class="s1">&#39;max_h2&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">hydrogen</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;min_h2&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">hydrogen</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">total</span> <span class="n">capacity</span> <span class="n">of</span> <span class="n">the</span> <span class="n">hydrogen</span> <span class="n">storage</span><span class="o">.</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span><span class="o">.</span>
+</pre></div>
+</div>
+<section id="id4">
+<h3>Model Build-Up Methodology<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">output_h2</span></code> method determines whether to charge or discharge based on the net hydrogen flow.</p>
+<p>Parameters:
+flow2h2s: The flow rate of hydrogen.
+eleh2_in: The rate of hydrogen input from the electrolyser.
+fuelh2_out: The rate of hydrogen output to the fuel cell.
+soc: The current state of charge.
+Returns: A dictionary with parameters indicating the operation and state of the hydrogen storage.
+Overall Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flow2h2s_net</span> <span class="o">=</span> <span class="n">Flow2h2s</span> <span class="o">+</span> <span class="n">Eleh2_in</span> <span class="o">-</span> <span class="n">Fuelh2_out</span>
+<span class="c1"># Decide on charging or discharging based on Flow2h2s_net.</span>
+</pre></div>
+</div>
+<p>This model manages the state of charge of a hydrogen storage system, factoring in the efficiency, capacity, and operational limits of the storage. It also accounts for the dynamics of charging and discharging based on the system’s resolution and the net flow of hydrogen.</p>
+<p>Charging Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H2_flow</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">Max_h2</span><span class="p">,</span> <span class="n">Flow2h2s_net</span><span class="p">)</span>
+<span class="n">If</span> <span class="n">H2_flow</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+    <span class="n">Calculate</span> <span class="n">hydrogen</span> <span class="n">discharge</span> <span class="ow">and</span> <span class="n">capacity</span><span class="o">.</span>
+    <span class="n">Update</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="ow">and</span> <span class="n">flag</span> <span class="n">accordingly</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Discharging Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H2_flow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Min_h2</span><span class="p">,</span> <span class="n">Flow2h2s_net</span><span class="p">)</span>
+<span class="n">If</span> <span class="n">H2_flow</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> 
+    <span class="n">Calculate</span> <span class="n">hydrogen</span> <span class="n">discharge</span> <span class="ow">and</span> <span class="n">capacity</span><span class="o">.</span>
+    <span class="n">Update</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="ow">and</span> <span class="n">flag</span> <span class="n">accordingly</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="heat-pump">
+<h2>Heat Pump<a class="headerlink" href="#heat-pump" title="Link to this heading"></a></h2>
+<p>The Heat Pump model contains three models, which is original developed by <a class="reference external" href="https://gitlab.com/mosaik/components/energy/mosaik-heatpump">Mosaik</a></p>
+<ol class="arabic simple">
+<li><p>A heat pump model, based on the <a class="reference external" href="https://github.com/oemof/tespy">TESPy</a> library.</p></li>
+<li><p>A hot water tank model</p></li>
+<li><p>A controller model</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="heat-storage">
+<h2>Heat Storage<a class="headerlink" href="#heat-storage" title="Link to this heading"></a></h2>
+<p>The heat storage model parameters are all set in the python file named ‘buildmodelset.py’ in the configuration folder.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;soc_init&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">initial</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="n">based</span> <span class="n">on</span> <span class="n">the</span> <span class="n">temperature</span><span class="o">.</span>
+<span class="s1">&#39;max_temperature&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">temperature</span> <span class="n">the</span> <span class="n">storage</span> <span class="n">can</span> <span class="n">reach</span><span class="o">.</span>
+<span class="s1">&#39;min_temperature&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">temperature</span> <span class="n">the</span> <span class="n">storage</span> <span class="n">can</span> <span class="n">reach</span><span class="o">.</span>
+<span class="s1">&#39;insulation&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">insulation</span> <span class="n">quality</span> <span class="n">of</span> <span class="n">the</span> <span class="n">storage</span><span class="o">.</span>
+<span class="s1">&#39;ext_temp&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">external</span> <span class="n">temperature</span><span class="o">.</span>
+<span class="s1">&#39;therm_cond&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">thermal</span> <span class="n">conductivity</span><span class="o">.</span>
+<span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">storage</span> <span class="n">container</span><span class="o">.</span>
+<span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">diameter</span> <span class="n">of</span> <span class="n">the</span> <span class="n">storage</span> <span class="n">container</span><span class="o">.</span>
+<span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">density</span> <span class="n">of</span> <span class="n">the</span> <span class="n">storage</span> <span class="n">medium</span><span class="o">.</span>
+<span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">specific</span> <span class="n">heat</span> <span class="n">capacity</span><span class="o">.</span>
+<span class="s1">&#39;eff&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">efficiency</span> <span class="n">of</span> <span class="n">heat</span> <span class="n">storage</span><span class="o">.</span>
+<span class="s1">&#39;max_q&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">maximum</span> <span class="n">heat</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;min_q&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">heat</span> <span class="n">flow</span> <span class="n">rate</span><span class="o">.</span>
+<span class="s1">&#39;resolution&#39;</span><span class="p">:</span> <span class="n">the</span> <span class="n">time</span><span class="o">-</span><span class="n">step</span> <span class="n">of</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">minutes</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The output_q method determines whether to charge or discharge based on the net heat flow.</p>
+<p>Parameters:</p>
+<p>flow2qs: The net heat flow rate.
+Returns: A dictionary with parameters indicating the operation and state of the heat storage.</p>
+<p>Overall Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Calculate</span> <span class="n">heat</span> <span class="n">loss</span><span class="o">.</span>
+<span class="n">Adjust</span> <span class="n">Flow2qs</span> <span class="n">based</span> <span class="n">on</span> <span class="n">heat</span> <span class="n">loss</span><span class="o">.</span>
+<span class="n">Decide</span> <span class="n">on</span> <span class="n">charging</span> <span class="ow">or</span> <span class="n">discharging</span> <span class="n">based</span> <span class="n">on</span> <span class="n">Flow2qs</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Charging Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_flow</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">Max_q</span><span class="p">,</span> <span class="n">Flow2qs</span><span class="p">)</span>
+<span class="n">Calculate</span> <span class="n">heat</span> <span class="n">charge</span> <span class="ow">and</span> <span class="n">internal</span> <span class="n">temperature</span><span class="o">.</span>
+<span class="n">Update</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="ow">and</span> <span class="n">flag</span> <span class="n">accordingly</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Discharging Logic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Q_flow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Min_q</span><span class="p">,</span> <span class="n">Flow2qs</span><span class="p">)</span>
+<span class="n">Calculate</span> <span class="n">heat</span> <span class="n">discharge</span> <span class="ow">and</span> <span class="n">internal</span> <span class="n">temperature</span><span class="o">.</span>
+<span class="n">Update</span> <span class="n">state</span> <span class="n">of</span> <span class="n">charge</span> <span class="ow">and</span> <span class="n">flag</span> <span class="n">accordingly</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="pv-model">
+<h2>PV Model<a class="headerlink" href="#pv-model" title="Link to this heading"></a></h2>
+<section id="data-input">
+<h3>Data input<a class="headerlink" href="#data-input" title="Link to this heading"></a></h3>
+<p>The PV data is obtained from the Meteonorm software, and solar radiation and positioning values were obtained for the region
+of Rotterdam. With the new updates, it was possible to extract 15-minute interval data from within
+meteonorm. The input data and parameter setting for PV models are through the ‘.csv’ or ‘.txt’ file in the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> folder
+and the file ‘buildmodelset.py’ in the configuration folder. The input data from ‘.csv’ or ‘.txt’ file are as follows,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>`G_Gh&#39;GHI global horizontal irradiance
+`G_Dh&#39;DHI direct horizontal irradiance
+`G_Bn&#39;: DNI direct normal irradiance
+`Ta`: temperature
+`hs`: elevation of the sun
+`FF`: wind speed 
+`Az`: azimuth of the sun
+</pre></div>
+</div>
+<p>The parameters set in the python file are shown as follows,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Module_area&#39;</span><span class="p">:</span> <span class="n">module</span> <span class="n">area</span><span class="o">.</span> <span class="n">available</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">spec</span> <span class="n">sheet</span> <span class="n">of</span> <span class="n">a</span> <span class="n">PV</span> <span class="n">module</span>
+<span class="s1">&#39;NOCT&#39;</span><span class="p">:</span> <span class="n">module</span> <span class="n">temperature</span> <span class="n">under</span> <span class="n">the</span> <span class="n">standard</span> <span class="n">test</span> <span class="n">conditions</span> <span class="p">(</span><span class="n">STC</span><span class="p">)</span> <span class="ow">and</span> <span class="n">stands</span> <span class="k">for</span> <span class="n">Nominal</span> <span class="n">Operating</span> <span class="n">Cell</span> <span class="n">Temperature</span>
+<span class="s1">&#39;Module_Efficiency&#39;</span>
+<span class="s1">&#39;Irradiance_at_NOCT&#39;</span><span class="p">:</span> <span class="n">W</span><span class="o">/</span><span class="n">m2</span> <span class="n">This</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">irradiance</span> <span class="n">that</span> <span class="n">falls</span> <span class="n">on</span> <span class="n">the</span> <span class="n">panel</span> <span class="n">under</span> <span class="n">NOCT</span> <span class="n">conditions</span>
+<span class="s1">&#39;Power_output_at_STC&#39;</span><span class="p">:</span> <span class="n">Watts</span><span class="o">.</span> <span class="n">Available</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">spec</span> <span class="n">sheet</span> <span class="n">of</span> <span class="n">a</span> <span class="n">module</span>
+<span class="s1">&#39;m_tilt&#39;</span><span class="p">:</span> <span class="n">module</span> <span class="n">tilt</span> <span class="n">angle</span>
+<span class="s1">&#39;m_az&#39;</span><span class="p">:</span> <span class="n">azimuth</span> <span class="n">of</span> <span class="n">the</span> <span class="n">module</span>
+<span class="s1">&#39;cap&#39;</span><span class="p">:</span> <span class="n">capacity</span>
+<span class="s1">&#39;output_type&#39;</span><span class="p">:</span> <span class="n">power</span> <span class="ow">or</span> <span class="n">energy</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Model build up methodology<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>Calculating the irradiance on a module at a specific location is essential to calculate the output of
+a PV system, and is governed by multiple factors. Irradiance is the incoming power of
+solar radiation over a unit area and is measured in W/m2. Due to the rotation and revolution of the
+earth, the position of the sun is not constant. Hence, the amount of irradiation received changes
+continuously with the time of day, month, and year. Location on the earth also factors in for the amount of
+irradiance received. Due to the changing elevation and azimuth angle of the sun throughout the day,
+the incoming solar radiations are not normal to the surface. The angle between the normal surface and the solar radiation is called the Angle of Incidence (AOI), and it affects the amount of irradiance of the module surface. The equation
+to calculate the AOI is shown below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cos_aoi</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">m_tilt</span><span class="p">))</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">hs</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">m_az</span> <span class="o">-</span> <span class="n">Az</span><span class="p">)</span> <span class="o">+</span> <span class="n">sin</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">m_tilt</span><span class="p">))</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">hs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For testing the PV modules during manufacturing and calculating the output from a module over a while, some standard test conditions (STC) have been defined, according to which we have AM1.5 spectrum as standard with an irradiance of 1000 W/m2. The attenuation of solar radiation upon entering the earth is because of scattering and absorption by dust particles,
+aerosols in the atmosphere, and air molecules. The presence of water vapor, oxygen, and carbon dioxide are significant
+contributors to the absorption of radiation. Because of this attenuation, the incoming radiation breaks into a diffused component,
+called Diffused Horizontal Irradiance (DHI) and a direct component of light, called Direct Normal Irradiance (DNI).
+There is another component of the radiation that falls on the module surface, and that is the reflected component which is
+because of the reflected radiations from the surface around the module. This is called Global Horizontal irradiance (GHI).
+Meteorological stations measure the DHI and DNI and GHI can be calculated using the following formula where albedo ranges between 0.05 - 0.20 for urban environments,
+0.05 - 0.10 for forests and 0.60 for snow. The following formulas are used to calculate the irradiance using the DHI, DNI, and GHI.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">svf</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">m_tilt</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">g_diff</span> <span class="o">=</span> <span class="n">svf</span> <span class="o">*</span> <span class="n">G_Dn</span> <span class="c1"># svf is Sky View Factor</span>
+<span class="n">g_ref</span> <span class="o">=</span> <span class="n">albedo</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">svf</span><span class="p">)</span> <span class="o">*</span> <span class="n">G_Gh</span> <span class="c1">#albedo is the Albedo value 0.2</span>
+<span class="n">g_dir</span> <span class="o">=</span> <span class="n">G_Bn</span> <span class="o">*</span> <span class="n">cos_aoi</span>
+<span class="n">g_all</span><span class="o">=</span><span class="n">g_diff</span><span class="o">+</span><span class="n">g_ref</span><span class="o">+</span><span class="n">g_dir</span>
+</pre></div>
+</div>
+<p>Changing module temperature hurts the output of the module. Wind speed and the mounting height of the panel from the ground impact the module temperature. Blowing wind decreases the temperature due to convective heat transfer, and mounting above the ground makes enough space for heat to dissipate from the module and for its interaction with the blowing wind.
+The Duffie-Beckman model covers these factors while calculating the module temperature.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">m_temp</span> <span class="o">=</span> <span class="n">Ta</span> <span class="o">+</span> <span class="p">(</span><span class="n">g_all</span><span class="o">/</span> <span class="n">Irradiance_at_NOCT</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">NOCT</span> <span class="o">-</span> <span class="mi">20</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">9.5</span><span class="o">/</span><span class="p">(</span><span class="mf">5.7</span> <span class="o">+</span> <span class="mf">3.8</span><span class="o">*</span><span class="n">FF</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">Module_Efficiency</span> <span class="o">/</span> <span class="mf">0.90</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The module manufacturer provides it to give an estimate of average cell temperature. Instead of individual values of T and a, for silicon-based solar cells, T ∗ a
+is taken as 0.9.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">efficiency</span> <span class="o">=</span> <span class="n">Module_Efficiency</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.0035</span> <span class="o">*</span> <span class="p">(</span><span class="n">m_temp</span> <span class="o">-</span> <span class="mi">25</span><span class="p">)))</span>
+<span class="n">P_AC</span><span class="o">=</span><span class="n">cap</span> <span class="o">*</span> <span class="n">sf</span><span class="o">/</span><span class="n">P_STC</span><span class="o">*</span><span class="n">m_area</span><span class="o">*</span><span class="n">g_all</span><span class="o">*</span><span class="n">efficiency</span><span class="o">*</span><span class="n">inv_eff</span><span class="o">*</span><span class="n">mppt_eff</span><span class="o">*</span><span class="n">losses</span>
+
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="wind-model">
+<h2>Wind Model<a class="headerlink" href="#wind-model" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3>Data input<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>Wind data chosen is from an on-shore site situated in The Netherlands at 100m at 5 minutes intervals.
+The input data and parameter setting for Wind models are through the ‘.csv’ or ‘.txt’ file in the <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> folder
+and the file ‘buildmodelset.py’ in the configuration folder. The input data from ‘.csv’ or ‘.txt’ file is the wind speed ‘u’.
+The parameters set in the python file are shown as follows,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;p_rated&#39;</span><span class="p">:</span> <span class="n">kW</span> <span class="n">power</span> <span class="n">it</span> <span class="n">generates</span> <span class="n">at</span> <span class="n">rated</span> <span class="n">wind</span> <span class="n">speed</span> <span class="ow">and</span> <span class="n">above</span>
+<span class="s1">&#39;u_rated&#39;</span><span class="p">:</span> <span class="n">m</span><span class="o">/</span><span class="n">s</span> <span class="c1">#windspeed it generates most power at</span>
+<span class="s1">&#39;u_cutin&#39;</span><span class="p">:</span>  <span class="n">m</span><span class="o">/</span><span class="n">s</span> <span class="c1">#below this wind speed no power generation</span>
+<span class="s1">&#39;u_cutout&#39;</span><span class="p">:</span>  <span class="n">m</span><span class="o">/</span><span class="n">s</span> <span class="c1">#above this wind speed no power generation. Blades are pitched</span>
+<span class="s1">&#39;cp&#39;</span><span class="p">:</span>  <span class="n">coefficient</span> <span class="n">of</span> <span class="n">performance</span> <span class="n">of</span> <span class="n">a</span> <span class="n">turbine</span><span class="o">.</span> <span class="n">Usually</span> <span class="n">around0</span><span class="mf">.40</span><span class="o">.</span> <span class="n">Never</span> <span class="n">more</span> <span class="n">than</span> <span class="mf">0.59</span>
+<span class="s1">&#39;diameter&#39;</span><span class="p">:</span> <span class="n">Wind</span> <span class="n">turbine</span> <span class="n">rotor</span> <span class="n">diameter</span>
+<span class="s1">&#39;powerout&#39;</span><span class="p">:</span>  <span class="n">output</span> <span class="n">power</span> <span class="n">at</span> <span class="n">wind</span> <span class="n">speed</span> <span class="n">u</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>Model build-up methodology<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>The Power curve of the wind turbine is shown below.</p>
+<div align="center">
+	<img align="center" src="../_static/img/Wind.jpg" width="300">
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="load-heat-demand-heat-product-hydrogen-product-and-hydrogen-demand">
+<h2>Load, Heat demand, Heat Product, Hydrogen product and Hydrogen demand<a class="headerlink" href="#load-heat-demand-heat-product-hydrogen-product-and-hydrogen-demand" title="Link to this heading"></a></h2>
+<p>These models are very simple. Some of them just make a unit transfer from input to output.Some of them just read the data.</p>
+</section>
+<hr class="docutils" />
+<section id="electricity-network-hydrogen-network-and-heat-network">
+<h2>Electricity network, Hydrogen network and Heat network<a class="headerlink" href="#electricity-network-hydrogen-network-and-heat-network" title="Link to this heading"></a></h2>
+<p>These models are very simple like a tube.</p>
+</section>
+<hr class="docutils" />
+<section id="distribution-network">
+<h2>Distribution network<a class="headerlink" href="#distribution-network" title="Link to this heading"></a></h2>
+<p>The distribution network is build based on <a class="reference external" href="https://pandapower.readthedocs.io/en/v2.13.1/">Pandapower</a>
+More details refer to Pandapower</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../cluster-setup.html" class="btn btn-neutral float-left" title="Cluster Pi Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="config-file.html" class="btn btn-neutral float-right" title="Simulation Configuration File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
