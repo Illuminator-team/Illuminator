@@ -52,7 +52,7 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
     # TODO: collectors are also customisable simulators, define in the same way as models.
     # A way to define custom collectors should be provided by the Illuminator.
     collector = world.start('Collector', 
-                            time_resolution=_time_resolution, 
+                            time_resolution=1, #_time_resolution, 
                             start_date=_start_time,  
                             results_show={'write2csv':True, 'dashboard_show':False, 
                                           'Finalresults_show':False,'database':False, 'mqtt':False}, 
