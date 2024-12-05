@@ -8,11 +8,10 @@ csv = IlluminatorModel(
                 'start': None,
                 'date_format': None,
                 'delimiter': ',',
-                'datafile': None,
-                'next_row': None,                
+                'datafile': None,             
                 },
     inputs={},
-    outputs={},
+    outputs={'next_row'},
     states={'next_row'},
     time_step_size=1,
     time=None
@@ -74,10 +73,12 @@ class CSV(ModelConstructor):
     # 
     # run super().init(self, sid, time_resolution=1, **sim_params)
 
+
     def init(self, sid, time_resolution=1, **sim_params):
         print("check")
         meta = super().init(sid, time_resolution, **sim_params)
         return meta
+
 
     def step(self, time, inputs, max_advance=900) -> None:
         """
