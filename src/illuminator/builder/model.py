@@ -58,7 +58,7 @@ class IlluminatorModel():
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
     simulator_type: SimulatorType = SimulatorType.TIME_BASED
-    time_step_size: int = 900   # This is closely related to logic in the step method. 
+    time_step_size: int = 1   # This is closely related to logic in the step method. 
     # Currently, all models have the same time step size (15 minutes). 
     # This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
@@ -125,11 +125,11 @@ class ModelConstructor(ABC, Simulator):
         #model: IlluminatorModel
         model_vals = engine.current_model
         model = IlluminatorModel(
-                parameters=model_vals['parameters'],
-                inputs=model_vals["inputs"],
-                outputs=model_vals["outputs"],
+                parameters=model_vals.get('parameters', {}),
+                inputs=model_vals.get('inputs', {}),
+                outputs=model_vals.get('outputs', {}),
                 states={},
-                model_type=model_vals["type"]
+                model_type=model_vals.get('type', {})
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
