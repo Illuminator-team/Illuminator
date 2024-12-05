@@ -21,6 +21,7 @@ adder = IlluminatorModel(
 class Adder(ModelConstructor):
 
     def step(self, time, inputs, max_advance=900) -> None:
+        print("\n adder:")
         print(f"inputs: {inputs}")
         print(f'internal inputs: {self._model.inputs}')
         for eid, attrs in inputs.items():
@@ -38,7 +39,7 @@ class Adder(ModelConstructor):
                     # print(f"The dictionary value: {value[first_key]}")
 
         self._model.outputs["out1"] = self._model.inputs["in1"] + self._model.inputs["in2"] # TODO do we add values internally or based on the current inputs
-        print("result:", self._model.outputs["out1"])
+        print("result:", self._model.outputs["out1"], '\n')
 
         return time + self._model.time_step_size
 
