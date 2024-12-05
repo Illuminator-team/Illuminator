@@ -173,18 +173,19 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                     raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
                 
                 simulator = world.start(sim_name=model_name,
-                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
+                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
                 entity = model_factory.create(num=1)
                 
             else:
-                simulator = world.start(sim_name=model_name,
-                                    # **model_parameters
-                                    model_name = model_name,
-                                    sim_params= {model_name: model} # This value gets picked up in the init() function
-                                    # Some items must be passed here, and some other at create()
-                                    )
+                # simulator = world.start(sim_name=model_name,
+                #                     # **model_parameters
+                #                     model_name = model_name,
+                #                     sim_params= {model_name: model} # This value gets picked up in the init() function
+                #                     # Some items must be passed here, and some other at create()
+                #                     )
+                simulator = world.start(sim_name=model_name, sim_params= {model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -210,7 +211,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         #                                     cap=500,
         #                                     output_type='power'
         #                                     )
-            entity = model_factory.create(num=1, param1="Not in use") 
+                entity = model_factory.create(num=1, **model_parameters) 
 
             model_entities[model_name] = entity
             print(model_entities)
