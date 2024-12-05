@@ -11,6 +11,7 @@ from pathlib import Path
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
+
 APP_NAME = "illuminator"
 DEFAULT_PORT = 5123
 RUN_PATH = './Desktop/illuminatorclient/configuration/runshfile/'
@@ -29,30 +30,6 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
 
     simulation = Simulation(config_file)
     simulation.run()
-    
-    # initialize monitor
-    monitor = collector.Monitor()
-
-    # Dictionary to keep track of created model entities
-    model_entities = engine.start_simulators(world, config['models'])
-
-    # Connect the models based on the connections specified in the configuration
-    world = engine.build_connections(world, model_entities, config['connections'], config['models'])
-
-    # Connect monitor
-    world = engine.connect_monitor(world, model_entities, monitor, config['monitor'])
-    
-    # Run the simulation until the specified end time
-    mosaik_end_time =  engine.compute_mosaik_end_time(_start_time,
-                                            _end_time,
-                                            _time_resolution
-                                        )
-
-    print(f"Running simulation from")
-    print(f"nodes in Mosaik: {world.entity_graph.nodes}")
-    print(f"edges in Mosaik: {world.entity_graph.edges}")
-    world.run(until=mosaik_end_time)
-
 
 @cluster_app.command("build")
 def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
