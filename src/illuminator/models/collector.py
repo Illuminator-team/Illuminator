@@ -265,7 +265,7 @@ class Collector(mosaik_api.Simulator):
             msg = df.to_json()
             self.mqtt_client.publish(self.mqtt_topic, msg)
 
-        return time + 900
+        return time + self.time_resolution
 
     def finalize(self) -> None:
         """
