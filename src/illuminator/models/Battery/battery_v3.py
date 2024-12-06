@@ -31,6 +31,7 @@ battery = IlluminatorModel(
 # construct the model
 class Battery(ModelConstructor):
     def __init__(self, **kwargs) -> None:
+        # TODO make a generalised way of doing this shit in the ModelConstructor __init__()
         super().__init__(**kwargs)
         self.max_p = self._model.parameters.get('max_p')
         self.min_p = self._model.parameters.get('min_p')
@@ -47,7 +48,7 @@ class Battery(ModelConstructor):
         print("\nBattery")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
-        input_data = self.parse_inputs(inputs)
+        input_data = self.unpack_inputs(inputs)
         print("input_data: ", input_data)
 
         current_time = time * self.time_resolution
@@ -75,15 +76,7 @@ class Battery(ModelConstructor):
         print('\n')
         return time + self._model.time_step_size
 
-    def parse_inputs(self, inputs):
-        data = {}
-        for attrs in inputs.values():
-            for attr, sources in attrs.items():
-                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
-                if len(values) > 1:
-                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
-                data[attr] = values[0]
-        return data
+
     
 
     # this method is called from the output_power method when conditions are met.
