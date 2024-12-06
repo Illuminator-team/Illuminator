@@ -161,6 +161,8 @@ class ModelConstructor(ABC, Simulator):
         pass
 
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
+        # TODO: from engine.py, time_resolution is never passed
+
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
@@ -216,6 +218,16 @@ class ModelConstructor(ABC, Simulator):
             print(f"data: {data}")
         return data
 
+
+    def unpack_inputs(self, inputs):
+        data = {}
+        for attrs in inputs.values():
+            for attr, sources in attrs.items():
+                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
+                if len(values) > 1:
+                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
+                data[attr] = values[0]
+        return data
 
 if __name__ == "__main__":
 
