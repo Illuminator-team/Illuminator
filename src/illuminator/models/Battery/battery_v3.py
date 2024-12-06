@@ -3,6 +3,7 @@ import arrow
 
 
 # Define the model parameters, inputs, outputs...
+# TODO: Currently if a value or category isn't defined in the yaml it doesn't default to the ones below, it simply doesn't run.
 battery = IlluminatorModel(
     parameters={'max_p': 150,  # maximum charging power limit (kW)
                 'min_p': 250,  # maximum discharging power limit (kW)
@@ -76,7 +77,16 @@ class Battery(ModelConstructor):
         print('\n')
         return time + self._model.time_step_size
 
-
+    def parse_inputs(self, inputs):
+    # TODO: Move this function to model.py to unpack the inputs, for now we will keep it model specific.
+        data = {}
+        for attrs in inputs.values():
+            for attr, sources in attrs.items():
+                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
+                if len(values) > 1:
+                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
+                data[attr] = values[0]
+        return data
     
 
     # this method is called from the output_power method when conditions are met.
