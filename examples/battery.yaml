@@ -8,10 +8,27 @@ models: # list of models for the energy network
   type: CSV # name of the model registered in the Illuminator
   parameters: # a CSV model must have a start time and a file as parameters
     start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-    datafile: './battery_charger.csv' # path to the file with the data
+    datafile: './examples/battery_charger.csv' # path to the file with the data
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
     time_resolution: 900
+
+- name: Load1
+  type: Load
+  parameters:
+    houses: 1  # number of houses that determine the total load demand
+    #output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  outputs:
+    load_dem: 0  # total energy or power consumption for all houses (kWh) over the time step
+    consumption: 0  # Current energy or power consumption based on the number of houses and input load (kWh)
+    time: None,  # Current simulation time step in seconds
+    forecast: None  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
+  states:
+    consumption: 0
+    time: None
+    forecast: None
 
 # - name: Adder1 # name for the model (must be unique)
 #   type: Adder # most match the class inheriting from IlluminatorConstructor
@@ -50,9 +67,11 @@ connections:
   #time_shifted: True
 - from: CSVB.flow2b
   to: Battery1.flow2b
+- from: CSVB.load
+  to: Load1.load
 
 monitor:
   file: './out_battery.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
   items:
   - CSVB.flow2b
-  #- Battery1.soc
+  - Battery1.soc

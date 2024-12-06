@@ -8,9 +8,11 @@ from .collector import Collector
 from .CSV_reader_v3 import CSV
 from .PV.pv_mosaik import PvAdapter
 from .adder import Adder
+from .Load.load_v3 import Load
 
 __all__ = ['Battery', 
            'Collector', 
            'Adder', 
            'CSV', 
-           'PvAdapter']
+           'PvAdapter',
+           'Load']
