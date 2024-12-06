@@ -17,7 +17,7 @@ models: # list of models for the energy network
   type: Load
   parameters:
     houses: 1  # number of houses that determine the total load demand
-    #output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
