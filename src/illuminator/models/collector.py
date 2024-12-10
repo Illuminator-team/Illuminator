@@ -230,7 +230,7 @@ class Collector(mosaik_api.Simulator):
             # TODO: raise warning, not implemented
             for key, value in df.items():
                 wandb.log({key: value[0],
-                           "custom_step":time/900})
+                           "custom_step":time/900})  # TODO replace 900 by something better
 
         if self.results_show['write2csv'] == True:
             if time == 0:
