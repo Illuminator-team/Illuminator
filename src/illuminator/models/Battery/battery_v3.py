@@ -54,9 +54,8 @@ class Battery(ModelConstructor):
 
         current_time = time * self.time_resolution
         print('from battery %%%%%%%%', current_time)
-        for eid, _ in self.model_entities.items():  # weird, I know, but I just want the eid of the only entity there will be
-            pass
-        print('eid: ', eid)
+        eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
+
         print('state of charge: ', self._model.outputs['soc'])
 
         self._cache = {}
