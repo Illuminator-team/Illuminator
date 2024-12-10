@@ -31,6 +31,29 @@ battery = IlluminatorModel(
 
 # construct the model
 class Battery(ModelConstructor):
+    parameters={'max_p': 150,  # maximum charging power limit (kW)
+                'min_p': 250,  # maximum discharging power limit (kW)
+                'max_energy': 50,  # maximum energy storage capacity of the battery (kWh)
+                'charge_efficiency': 90,  # efficiency of charging the battery (%)
+                'discharge_efficiency': 90,  # efficiency of discharging the battery (%)
+                'soc_min': 3,  # minimum allowable state of charge for the battery (%)
+                'soc_max': 80,  # maximum allowable state of charge for the battery (%)
+                #'resolution': 1  # time resolution for simulation steps (seconds)
+                }
+    inputs={'flow2b': 0,  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
+            }
+    outputs={'p_out': 20,  # output power from the battery after discharge/charge decision (Kw)
+             'p_in': 20,  # input power to the battery (kW)
+             'soc': 0,  # updated state of charge after battery operation (%)
+             'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
+             'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+             }
+    states={'soc': 0,
+            'flag': 0
+            }
+    time_step_size=1
+    time=None
+
     def __init__(self, **kwargs) -> None:
         # TODO make a generalised way of doing this shit in the ModelConstructor __init__()
         super().__init__(**kwargs)
