@@ -125,11 +125,12 @@ class ModelConstructor(ABC, Simulator):
         #model: IlluminatorModel
         model_vals = engine.current_model
         model = IlluminatorModel(
-                parameters=model_vals.get('parameters', {}),
-                inputs=model_vals.get('inputs', {}),
-                outputs=model_vals.get('outputs', {}),
-                states={},
-                model_type=model_vals.get('type', {})
+                parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
+                inputs=model_vals.get('inputs', self.inputs),
+                outputs=model_vals.get('outputs', self.outputs),
+                states=model_vals.get('states', self.states),
+                model_type=model_vals.get('type', {}),
+                time_step_size=model_vals.get('time_step_size', self.time_step_size)
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
@@ -203,11 +204,11 @@ class ModelConstructor(ABC, Simulator):
             A dictionary of model outputs and states.
         """
         data = {}
-        print(f"Here are your outputs: {outputs}")
+        # print(f"Here are your outputs: {outputs}")
         # for eid, attrs in self._model.outputs.items():
         for eid, attrs in outputs.items():
-            print(f"eid: {eid}, attrs:{attrs}")
-            print(f"self.model_entities: {self.model_entities}")
+            # print(f"eid: {eid}, attrs:{attrs}")
+            # print(f"self.model_entities: {self.model_entities}")
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
@@ -215,7 +216,7 @@ class ModelConstructor(ABC, Simulator):
                     data[eid][attr] = model_instance.outputs[attr]
                 else:
                     data[eid][attr] = model_instance.states[attr]
-            print(f"data: {data}")
+            # print(f"data: {data}")
         return data
 
 
