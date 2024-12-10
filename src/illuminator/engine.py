@@ -328,6 +328,13 @@ def set_current_model(model):
         print(f"Warning: Missing 'outputs' key in model. {e}")
     except Exception as e:
         print(f"Warning: An error occurred while assigning 'outputs'. {e}")
+
+    try:
+        current_model['time_step_size'] = model["time_step_size"]
+    except KeyError as e:
+        print(f"Warning: Missing 'time_step_size' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'time_step_size'. {e}")
     
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
