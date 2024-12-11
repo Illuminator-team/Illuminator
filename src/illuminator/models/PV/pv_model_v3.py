@@ -1,4 +1,5 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
+import numpy as np
 
 # Define the model parameters, inputs, outputs...
 pv = IlluminatorModel(
@@ -61,28 +62,41 @@ class PV(ModelConstructor):
         "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
         "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
         }
-    states={}
+    states={'pv_gen': 0}
     time_step_size=1
     time=None
 
+    # def __init__(self, **kwargs) -> None:
+    #     super().__init__(**kwargs)
+    #     for key, value in self._model.parameters.items():
+    #         setattr(self, key, value)
+
     def step(self, time, inputs, max_advance=900) -> None:
-        for eid, attrs in inputs.items():
+        input_data = self.unpack_inputs(inputs)
+        print("PV here")
+        print("inputs:", input_data)
 
-            v = []  # we create this empty list to hold all the input values we want to give since we have more than 2
-            for attr, vals in attrs.items():
+        # for eid, attrs in inputs.items():
 
-                # inputs is a dictionary, which contains another dictionary.
-                # value of U is a list. we need to combine all the values into a single list. But is we just simply
-                #   append them in v, we have a nested list, hence just 1 list. that creates a problem as it just
-                #   gives all 7 values to only sun_az in the python model and we get an error that other 6 values are missing.
-                u = list(vals.values())
-                v.append(u)  # we append every value of u to v from this command.
+        #     v = []  # we create this empty list to hold all the input values we want to give since we have more than 2
+        #     for attr, vals in attrs.items():
 
-            # the following code helps us to convert the nested list into a simple plain list and we can use that simply
-            v_merged = list(itertools.chain(*v))
+        #         # inputs is a dictionary, which contains another dictionary.
+        #         # value of U is a list. we need to combine all the values into a single list. But is we just simply
+        #         #   append them in v, we have a nested list, hence just 1 list. that creates a problem as it just
+        #         #   gives all 7 values to only sun_az in the python model and we get an error that other 6 values are missing.
+        #         u = list(vals.values())
+        #         v.append(u)  # we append every value of u to v from this command.
 
-            self._cache[eid] = self.connect(v_merged[0], v_merged[1], v_merged[2], v_merged[3],
-                                                          v_merged[4], v_merged[5], v_merged[6]) # PV1
+        #     # the following code helps us to convert the nested list into a simple plain list and we can use that simply
+        #     v_merged = list(itertools.chain(*v))
+
+        eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity    
+        self._cache = {}
+        results = self.connect(input_data['G_Gh'], input_data['G_Dh'], input_data['G_Bn'], input_data['Ta'], input_data['hs'], input_data['FF'], input_data['Az'])
+        self._cache[eid] = results
+        for key, value in results.items():
+            self._model.outputs[key] = value
         return time + self._model.time_step_size
 
 
@@ -125,8 +139,8 @@ class PV(ModelConstructor):
         cos_aoi : float
             ???
         """
-        cos_aoi = np.array(cos(np.radians(90 - self.m_tilt)) * cos(np.radians(self.sun_elevation())) * cos(
-            np.radians(self.m_az - self.sun_azimuth())) + sin(np.radians(90 - self.m_tilt)) * sin(
+        cos_aoi = np.array(np.cos(np.radians(90 - self.m_tilt)) * np.cos(np.radians(self.sun_elevation())) * np.cos(
+            np.radians(self.m_az - self.sun_azimuth())) + np.sin(np.radians(90 - self.m_tilt)) * np.sin(
             self.sun_elevation()))
         if cos_aoi < 0:
             cos_aoi = 0
@@ -143,7 +157,7 @@ class PV(ModelConstructor):
         g_diff : float
             ???
         """
-        self.svf = np.array((1 + cos(np.radians(self.m_tilt))) / 2)
+        self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
         g_diff = self.svf * self.dhi  # global diffused irradiance #W/m2
         return g_diff
 
