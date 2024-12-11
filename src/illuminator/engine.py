@@ -169,11 +169,11 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
 
             if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
                 
-                if 'start' not in model_parameters.keys() or 'datafile' not in model_parameters.keys():
-                    raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
+                if 'start' not in model_parameters.keys() or 'file_path' not in model_parameters.keys():
+                    raise ValueError("The CSV model requires 'start' and 'file_path' parameters. Check your YAML configuration file.")
                 
                 simulator = world.start(sim_name=model_name,
-                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'], sim_params={model_name: model})
+                                         sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
                 entity = model_factory.create(num=1)

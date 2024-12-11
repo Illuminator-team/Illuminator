@@ -31,15 +31,15 @@ class CSV(ModelConstructor):
     time_step_size=1
     time=None
 
-    start_date = None
-    date_format = None
-    delimiter = None
-    datafile = None
-    next_row = None
-    modelname = None
-    attrs = None
-    #self.eids = []
-    cache = None
+    # start_date = None
+    # date_format = None
+    # delimiter = None
+    # datafile = None
+    # next_row = None
+    # modelname = None
+    # attrs = None
+    # #self.eids = []
+    # cache = None
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -47,7 +47,7 @@ class CSV(ModelConstructor):
         self.date_format = self._model.parameters.get('date_format')
         self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format)
         self.next_date = self.start_date
-        self.file_path = self._model.parameters.get('datafile')
+        self.file_path = self._model.parameters.get('file_path')
         
         # Open the CSV file for reading
         self.datafile = open(self.file_path, 'r')

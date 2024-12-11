@@ -8,7 +8,7 @@ models: # list of models for the energy network
   type: CSV # name of the model registered in the Illuminator
   parameters: # a CSV model must have a start time and a file as parameters
     start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-    datafile: './examples/battery_charger.csv' # path to the file with the data
+    file_path: './examples/battery_charger.csv' # path to the file with the data
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
