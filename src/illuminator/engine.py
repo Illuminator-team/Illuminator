@@ -63,15 +63,15 @@ def apply_default_values(config_simulation: dict) -> dict:
     """
 
     # defaults
-    time_resolution = {'time_resolution': 900} # 15 minutes
-    out_file = {'file': './out.csv'}
-    # TODO: set other default values
+    # time_resolution = {'time_resolution': 900} # 15 minutes
+    # out_file = {'file': './out.csv'}
+    # # TODO: set other default values
 
-    if 'time_resolution' not in config_simulation['scenario']:
-        config_simulation.update(time_resolution)
-    # file to store the results
-    if 'file' not in config_simulation['monitor']:
-        config_simulation.update(out_file)
+    # if 'time_resolution' not in config_simulation['scenario']:
+    #     config_simulation.update(time_resolution)
+    # # file to store the results
+    # if 'file' not in config_simulation['monitor']:
+    #     config_simulation.update(out_file)
 
     #TODO: Write a unit test for this
     return config_simulation
@@ -173,18 +173,19 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                     raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
                 
                 simulator = world.start(sim_name=model_name,
-                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
+                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
                 entity = model_factory.create(num=1)
                 
             else:
-                simulator = world.start(sim_name=model_name,
-                                    # **model_parameters
-                                    model_name = model_name,
-                                    sim_params= {model_name: model} # This value gets picked up in the init() function
-                                    # Some items must be passed here, and some other at create()
-                                    )
+                # simulator = world.start(sim_name=model_name,
+                #                     # **model_parameters
+                #                     model_name = model_name,
+                #                     sim_params= {model_name: model} # This value gets picked up in the init() function
+                #                     # Some items must be passed here, and some other at create()
+                #                     )
+                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -210,7 +211,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         #                                     cap=500,
         #                                     output_type='power'
         #                                     )
-            entity = model_factory.create(num=1, param1="Not in use") 
+                entity = model_factory.create(num=1, **model_parameters) 
 
             model_entities[model_name] = entity
             print(model_entities)
@@ -327,6 +328,13 @@ def set_current_model(model):
         print(f"Warning: Missing 'outputs' key in model. {e}")
     except Exception as e:
         print(f"Warning: An error occurred while assigning 'outputs'. {e}")
+
+    try:
+        current_model['time_step_size'] = model["time_step_size"]
+    except KeyError as e:
+        print(f"Warning: Missing 'time_step_size' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'time_step_size'. {e}")
     
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 

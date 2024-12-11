@@ -58,7 +58,7 @@ class IlluminatorModel():
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
     simulator_type: SimulatorType = SimulatorType.TIME_BASED
-    time_step_size: int = 900   # This is closely related to logic in the step method. 
+    time_step_size: int = 1   # This is closely related to logic in the step method. 
     # Currently, all models have the same time step size (15 minutes). 
     # This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
@@ -125,11 +125,12 @@ class ModelConstructor(ABC, Simulator):
         #model: IlluminatorModel
         model_vals = engine.current_model
         model = IlluminatorModel(
-                parameters=model_vals['parameters'],
-                inputs=model_vals["inputs"],
-                outputs=model_vals["outputs"],
-                states={},
-                model_type=model_vals["type"]
+                parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
+                inputs=model_vals.get('inputs', self.inputs),
+                outputs=model_vals.get('outputs', self.outputs),
+                states=model_vals.get('states', self.states),
+                model_type=model_vals.get('type', {}),
+                time_step_size=model_vals.get('time_step_size', self.time_step_size)
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
@@ -161,6 +162,8 @@ class ModelConstructor(ABC, Simulator):
         pass
 
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
+        # TODO: from engine.py, time_resolution is never passed
+
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
@@ -201,11 +204,11 @@ class ModelConstructor(ABC, Simulator):
             A dictionary of model outputs and states.
         """
         data = {}
-        print(f"Here are your outputs: {outputs}")
+        # print(f"Here are your outputs: {outputs}")
         # for eid, attrs in self._model.outputs.items():
         for eid, attrs in outputs.items():
-            print(f"eid: {eid}, attrs:{attrs}")
-            print(f"self.model_entities: {self.model_entities}")
+            # print(f"eid: {eid}, attrs:{attrs}")
+            # print(f"self.model_entities: {self.model_entities}")
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
@@ -213,9 +216,19 @@ class ModelConstructor(ABC, Simulator):
                     data[eid][attr] = model_instance.outputs[attr]
                 else:
                     data[eid][attr] = model_instance.states[attr]
-            print(f"data: {data}")
+            # print(f"data: {data}")
         return data
 
+
+    def unpack_inputs(self, inputs):
+        data = {}
+        for attrs in inputs.values():
+            for attr, sources in attrs.items():
+                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
+                if len(values) > 1:
+                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
+                data[attr] = values[0]
+        return data
 
 if __name__ == "__main__":
 

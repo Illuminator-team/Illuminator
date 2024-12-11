@@ -8,11 +8,10 @@ csv = IlluminatorModel(
                 'start': None,
                 'date_format': None,
                 'delimiter': ',',
-                'datafile': None,
-                'next_row': None,                
+                'datafile': None,             
                 },
     inputs={},
-    outputs={},
+    outputs={'next_row'},
     states={'next_row'},
     time_step_size=1,
     time=None
@@ -21,21 +20,29 @@ csv = IlluminatorModel(
 # construct the model
 class CSV(ModelConstructor):
 
+    parameters={'start': 0,
+                'date_format': '',
+                'delimiter': ',',
+                'datafile': '',             
+                }
+    inputs={}
+    outputs={'next_row': ''}
+    states={}
+    time_step_size=1
+    time=None
+
+    start_date = None
+    date_format = None
+    delimiter = None
+    datafile = None
+    next_row = None
+    modelname = None
+    attrs = None
+    #self.eids = []
+    cache = None
+
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-
-        self.time_resolution = None
-        self.start_date = None
-        self.date_format = None
-        self.delimiter = None
-        self.datafile = None
-        self.next_row = None
-        self.modelname = None
-        self.attrs = None
-        #self.eids = []
-        self.cache = None
-
-        self.time_resolution = float(self._model.parameters.get('time_resolution'))
         self.delimiter = self._model.parameters.get('delimiter')
         self.date_format = self._model.parameters.get('date_format')
         self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format)
@@ -74,10 +81,12 @@ class CSV(ModelConstructor):
     # 
     # run super().init(self, sid, time_resolution=1, **sim_params)
 
+
     def init(self, sid, time_resolution=1, **sim_params):
         print("check")
         meta = super().init(sid, time_resolution, **sim_params)
         return meta
+
 
     def step(self, time, inputs, max_advance=900) -> None:
         """
@@ -106,7 +115,7 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
-        expected_date = self.start_date.shift(seconds=time * self.time_resolution)
+        expected_date = self.start_date.shift(seconds=time * self.time_step_size)
         if date != expected_date:
             raise IndexError(f'Wrong date "{date}", expected "{expected_date}"')
 
@@ -117,7 +126,7 @@ class CSV(ModelConstructor):
 
         self._read_next_row()
         if self.next_row is not None:
-            return time + int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_resolution)
+            return time + int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
         else:
             return max_advance
         

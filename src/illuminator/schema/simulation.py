@@ -150,8 +150,9 @@ schema = Schema(  # a mapping of mappings
                             {
                                 "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),
                                 Optional("port"): And(int),
-                    }
-                ),
+                            }
+                            ),
+                        Optional("time_step_size"): int,
             } ]
         ),
         "connections":  Schema( # a sequence of mappings

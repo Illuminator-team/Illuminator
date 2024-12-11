@@ -3,6 +3,7 @@ import arrow
 
 
 # Define the model parameters, inputs, outputs...
+# TODO: Currently if a value or category isn't defined in the yaml it doesn't default to the ones below, it simply doesn't run.
 battery = IlluminatorModel(
     parameters={'max_p': 150,  # maximum charging power limit (kW)
                 'min_p': 250,  # maximum discharging power limit (kW)
@@ -30,7 +31,31 @@ battery = IlluminatorModel(
 
 # construct the model
 class Battery(ModelConstructor):
+    parameters={'max_p': 150,  # maximum charging power limit (kW)
+                'min_p': 250,  # maximum discharging power limit (kW)
+                'max_energy': 50,  # maximum energy storage capacity of the battery (kWh)
+                'charge_efficiency': 90,  # efficiency of charging the battery (%)
+                'discharge_efficiency': 90,  # efficiency of discharging the battery (%)
+                'soc_min': 3,  # minimum allowable state of charge for the battery (%)
+                'soc_max': 80,  # maximum allowable state of charge for the battery (%)
+                #'resolution': 1  # time resolution for simulation steps (seconds)
+                }
+    inputs={'flow2b': 0,  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
+            }
+    outputs={'p_out': 20,  # output power from the battery after discharge/charge decision (Kw)
+             'p_in': 20,  # input power to the battery (kW)
+             'soc': 0,  # updated state of charge after battery operation (%)
+             'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
+             'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+             }
+    states={'soc': 0,
+            'flag': 0
+            }
+    time_step_size=1
+    time=None
+
     def __init__(self, **kwargs) -> None:
+        # TODO make a generalised way of doing this shit in the ModelConstructor __init__()
         super().__init__(**kwargs)
         self.max_p = self._model.parameters.get('max_p')
         self.min_p = self._model.parameters.get('min_p')
@@ -47,14 +72,13 @@ class Battery(ModelConstructor):
         print("\nBattery")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
-        input_data = self.parse_inputs(inputs)
+        input_data = self.unpack_inputs(inputs)
         print("input_data: ", input_data)
 
         current_time = time * self.time_resolution
         print('from battery %%%%%%%%', current_time)
-        for eid, _ in self.model_entities.items():  # weird, I know, but I just want the eid of the only entity there will be
-            pass
-        print('eid: ', eid)
+        eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
+
         print('state of charge: ', self._model.outputs['soc'])
 
         self._cache = {}
@@ -76,6 +100,7 @@ class Battery(ModelConstructor):
         return time + self._model.time_step_size
 
     def parse_inputs(self, inputs):
+    # TODO: Move this function to model.py to unpack the inputs, for now we will keep it model specific.
         data = {}
         for attrs in inputs.values():
             for attr, sources in attrs.items():
