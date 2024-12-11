@@ -137,6 +137,10 @@ class ModelConstructor(ABC, Simulator):
         self.model_entities = {}
         self.time = 0  # time is an interger wihout a unit
 
+        # we want the parameters to be directly accesible for the simulator
+        for key, value in self._model.parameters.items():
+            setattr(self, key, value)
+
     @abstractmethod
     def step(self, time:int, inputs:dict=None, max_advance:int=None) -> int:
         """Defines the computations that need to be performed in each

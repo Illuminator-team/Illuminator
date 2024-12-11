@@ -54,20 +54,10 @@ class Battery(ModelConstructor):
     time_step_size=1
     time=None
 
-    def __init__(self, **kwargs) -> None:
-        # TODO make a generalised way of doing this shit in the ModelConstructor __init__()
-        super().__init__(**kwargs)
-        self.max_p = self._model.parameters.get('max_p')
-        self.min_p = self._model.parameters.get('min_p')
-        self.max_energy = self._model.parameters.get('max_energy')
-        self.charge_efficiency = self._model.parameters.get('charge_efficiency')/100
-        self.discharge_efficiency = self._model.parameters.get('discharge_efficiency')/100
-        self.soc_min = self._model.parameters.get('soc_min')
-        self.soc_max = self._model.parameters.get('soc_max')
-        #self. = self._model.parameters.get('')
-
 
     def step(self, time, inputs, max_advance=900) -> None:
+        self.charge_efficiency = self._model.parameters.get('charge_efficiency')/100
+        self.discharge_efficiency = self._model.parameters.get('discharge_efficiency')/100
         # charge the battery
         print("\nBattery")
         print("inputs (passed): ", inputs)
