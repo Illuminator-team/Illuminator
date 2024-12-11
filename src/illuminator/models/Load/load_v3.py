@@ -37,14 +37,9 @@ class Load(ModelConstructor):
     time_step_size=1
     time=None
 
-    def __init__(self, **kwargs) -> None:
-        # TODO make a generalised way of doing this shit in the ModelConstructor __init__()
-        super().__init__(**kwargs)
-        self.houses = self._model.parameters.get('houses')
-        self.output_type = self._model.parameters.get('output_type')
-
 
     def step(self, time, inputs) -> None:
+        input_data = self.unpack_inputs(inputs)
         self.time = time
         # current_time = (self.start +
         #                 pd.Timedelta(time * self.time_resolution,
@@ -57,7 +52,6 @@ class Load(ModelConstructor):
         #     for attr, vals in attrs.items():
         #         self._cache[eid] = self.entities.demand(list(vals.values())[0])
         
-        input_data = self.unpack_inputs(inputs)
         eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
 
         self._cache = {}
@@ -84,11 +78,13 @@ class Load(ModelConstructor):
         """
         # incoming load is in kWh at every 15 min interval
         # incoming value of load is in kWh
+        houses = self._model.parameters.get('houses')
+        output_type = self._model.parameters.get('output_type')
 
-        if self.output_type == 'energy':
-            self.consumption = (self.houses * load) # kWh
-        elif self.output_type == 'power':
-            self.consumption = (self.houses * load)/60*self.time_resolution # kWh
+        if output_type == 'energy':
+            self.consumption = (houses * load) # kWh
+        elif output_type == 'power':
+            self.consumption = (houses * load)/60*self.time_step_size # kWh
 
         re_params = {'load_dem': self.consumption}
         return re_params
