@@ -38,7 +38,7 @@ class Load(ModelConstructor):
     time=None
 
 
-    def step(self, time, inputs, max_advance) -> None:
+    def step(self, time, inputs, max_advance=1) -> None:
         # TODO all step definitions should have max_advance!
 
         input_data = self.unpack_inputs(inputs)
