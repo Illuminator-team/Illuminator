@@ -115,7 +115,7 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
-        expected_date = self.start_date.shift(seconds=time * self.time_step_size)
+        expected_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)  # start date  +  number of calls * iterations per call * time per iteration, aka time per call
         if date != expected_date:
             raise IndexError(f'Wrong date "{date}", expected "{expected_date}"')
 
@@ -126,7 +126,7 @@ class CSV(ModelConstructor):
 
         self._read_next_row()
         if self.next_row is not None:
-            return time + int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
+            return time + self.time_step_size  # int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
         else:
             return max_advance
         
