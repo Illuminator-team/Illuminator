@@ -1,0 +1,39 @@
+scenario:
+  name: "batteryTest" # in mosaik so called world
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 01:00:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
+- name: CSVB # name for the model (must be unique)
+  type: CSV # name of the model registered in the Illuminator
+  parameters: # a CSV model must have a start time and a file as parameters
+    start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+    file_path: './examples/wind_test.csv' # path to the file with the data
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: Wind1
+  type: Wind # models can reuse the same type
+  parameters:
+    p_rated: 73548  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    u_rated: 100  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
+    u_cutin: 1  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
+    u_cutout: 1000  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
+    cp: 0.40  # Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.
+    diameter: 30  # Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.
+    output_type: 'power'  # Output type of the wind generation, either 'power' (kW) or 'energy' (kWh).
+  inputs:
+    u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
+  outputs:
+    wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+
+connections:
+- from: CSVB.u
+  to: Wind1.u
+
+monitor:
+  file: './out_Wind.csv'
+  items:
+  - Wind1.wind_gen
+  - Wind1.u

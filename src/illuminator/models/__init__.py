@@ -11,6 +11,7 @@ from .PV.pv_model_v3 import PV
 from .adder import Adder
 from .Load.load_v3 import Load
 from .Controller.controller_v3 import Controller
+from .Wind.wind_v3 import Wind
 
 __all__ = ['Battery', 
            'Collector', 
@@ -19,4 +20,5 @@ __all__ = ['Battery',
            'PvAdapter',
            'Load',
            'PV',
-           'Controller']
+           'Controller',
+           'Wind']
