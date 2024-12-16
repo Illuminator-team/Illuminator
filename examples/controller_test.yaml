@@ -1,0 +1,55 @@
+scenario:
+  name: "batteryTest" # in mosaik so called world
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 01:00:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
+- name: CSVB # name for the model (must be unique)
+  type: CSV # name of the model registered in the Illuminator
+  parameters: # a CSV model must have a start time and a file as parameters
+    start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+    file_path: './examples/controller_test.csv' # path to the file with the data
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: Controller1
+  type: Controller # models can reuse the same type
+  parameters:
+    soc_min: 0  # Minimum state of charge of the battery before discharging stops
+    soc_max: 100  # Maximum state of charge of the battery before charging stops
+    h2_soc_min: 0  # Minimum state of charge of the hydrogen storage before discharging stops
+    h2_soc_max: 100  # Maximum state of charge of the hydrogen storage before charging stops
+    fc_eff: 100  # Efficiency of the fuel cell
+  inputs:
+    wind_gen: 0  # Wind power generation
+    pv_gen: 0  # Solar power generation
+    load_dem: 0  # Electrical load demand
+    soc: 0  # State of charge of the battery
+    h2_soc: 0  # State of charge of the hydrogen storage
+  outputs:
+    flow2b: 0  # Power flow to/from battery (positive for charging, negative for discharging)
+    flow2e: 0  # Power flow to the electrolyzer for hydrogen production
+    dump: 0  # Excess power that cannot be stored or used
+    h2_out: 0  # Hydrogen output from fuel cell to meet demand (positive if used, zero otherwise)
+
+
+connections:
+- from: CSVB.wind_gen
+  to: Controller1.wind_gen
+- from: CSVB.pv_gen
+  to: Controller1.pv_gen
+- from: CSVB.load_dem
+  to: Controller1.load_dem
+- from: CSVB.soc
+  to: Controller1.soc
+- from: CSVB.h2_soc
+  to: Controller1.h2_soc
+
+
+monitor:
+  file: './out_Controller.csv'
+  items:
+  - Controller1.flow2b
+  - Controller1.flow2e
+  - Controller1.dump
+  - Controller1.h2_out

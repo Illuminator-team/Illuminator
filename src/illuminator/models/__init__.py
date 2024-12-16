@@ -10,6 +10,7 @@ from .CSV_reader_v3 import CSV
 from .PV.pv_model_v3 import PV
 from .adder import Adder
 from .Load.load_v3 import Load
+from .Controller.controller_v3 import Controller
 
 __all__ = ['Battery', 
            'Collector', 
@@ -17,4 +18,5 @@ __all__ = ['Battery',
            'CSV', 
            'PvAdapter',
            'Load',
-           'PV']
+           'PV',
+           'Controller']
