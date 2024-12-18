@@ -45,7 +45,7 @@ class Controller(ModelConstructor):
             pv_gen=input_data['pv_gen'],
             load_dem=input_data['load_dem'],
             soc=input_data['soc'],
-            h2_soc=input_data['h2_soc']
+            h2_soc=input_data.get('h2_soc', 0)
             )
 
         
