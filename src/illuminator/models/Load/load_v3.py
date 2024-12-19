@@ -5,7 +5,7 @@ load = IlluminatorModel(
     parameters={'houses': 1,  # number of houses that determine the total load demand
                 'output_type': 'power',  # type of output for consumption calculation ('energy' or 'power')
                 },
-    inputs={'load': 0},  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+    inputs={'load': 0},  # incoming energy or power demand per house kW
     outputs={'load_dem': 0,  # total energy or power consumption for all houses (kWh) over the time step
              'consumption': 0,  # Current energy or power consumption based on the number of houses and input load (kWh)
             'time': None,  # Current simulation time step in seconds
@@ -20,11 +20,13 @@ load = IlluminatorModel(
 )
 
 # construct the model
+
+## TODO MODEL DOES NOT MAKE SENSE (INPUTS AND OUTPUTS ARE NOT CERRECTLY DOCUMENTED AND CALCULATED)
 class Load(ModelConstructor):
     parameters={'houses': 1,  # number of houses that determine the total load demand
                 'output_type': 'power',  # type of output for consumption calculation ('energy' or 'power')
                 }
-    inputs={'load': 0}  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+    inputs={'load': 0}  # incoming energy or power demand per house kW
     outputs={'load_dem': 0,  # total energy or power consumption for all houses (kWh) over the time step
              'consumption': 0,  # Current energy or power consumption based on the number of houses and input load (kWh)
             'time': None,  # Current simulation time step in seconds
@@ -56,8 +58,10 @@ class Load(ModelConstructor):
         
         eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
 
-        self._cache = {}
-        self._cache[eid] = self.demand(load=input_data['load'])
+        # self._cache = {}
+        # self._cache[eid]
+        results = self.demand(load=input_data['load'])
+        self._model.outputs['consumption'] = results['load_dem']
 
         return time + self._model.time_step_size
     
@@ -82,11 +86,12 @@ class Load(ModelConstructor):
         # incoming value of load is in kWh
         houses = self._model.parameters.get('houses')
         output_type = self._model.parameters.get('output_type')
+        deltaTime = self.time_resolution * self.time_step_size / 60 / 60
 
         if output_type == 'energy':
-            self.consumption = (houses * load) # kWh
+            self.consumption = (houses * load) # kW
         elif output_type == 'power':
-            self.consumption = (houses * load)/60*self.time_step_size # kWh
+            self.consumption = (houses * load) * deltaTime # kWh
 
         re_params = {'load_dem': self.consumption}
         return re_params
