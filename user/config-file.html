@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation Configuration File &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simulations" href="simulations.html" />
+    <link rel="prev" title="Models" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation Configuration File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/engine-api.html">Engine API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Simulation Configuration File</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/config-file.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simulation-configuration-file">
+<h1>Simulation Configuration File<a class="headerlink" href="#simulation-configuration-file" title="Link to this heading"></a></h1>
+<p>Simulation scenarios for the <em>Illuminator</em> are define using configuration files written in YAML. The structure of a configuration must be as in the example below.</p>
+<p>A <em>simulation file</em> has four main sections:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scenario</span></code>: defines metadata and global variable for the simulation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">models</span></code>: defines which models are included in the simulation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connections</span></code>: defines how the models in the <code class="docutils literal notranslate"><span class="pre">models</span></code> section must be connected for a particular simulation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">monitor</span></code>: defines which inputs, outputs, and states of a particular model must be monitored and logged during simulation.</p></li>
+</ul>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<p>The following is an example to explain the basic format of a configuration file.
+See the table below a description of each keyword and their default values. Optinal keywords can be ommitted, in those case the defaults will be used.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># An example of a configuration file for a simuation. Won&#39;t run successfully.</span>
+<span class="nt">scenario</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ScenarioTest&quot;</span><span class="w"> </span><span class="c1"># name for the similation</span>
+<span class="w">  </span><span class="nt">start_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 start time </span>
+<span class="w">  </span><span class="nt">end_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">01:00:00&#39;</span><span class="w">  </span>
+<span class="w">  </span><span class="nt">time_resolution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">900</span><span class="w"> </span><span class="c1"># time step in seconds (optional).</span>
+<span class="nt">models</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of models for the energy system</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB</span><span class="w"> </span><span class="c1"># name for the model (must be unique)</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSV</span><span class="w"> </span><span class="c1"># name the model type in the Illuminator</span>
+<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span><span class="w">  </span><span class="c1"># vary per model type</span>
+<span class="w">    </span><span class="nt">start</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">datafile</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./tests/data/solar-sample.csv&#39;</span><span class="w"> </span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PvAdapter</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">inputs</span><span class="p">:</span><span class="w">  </span><span class="c1"># vary per model type (optional)</span>
+<span class="w">    </span><span class="nt">G_Gh</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">G_Dh</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">G_Gh</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">states</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">state1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">    </span><span class="nt">state2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="nt">triggers</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">D_Dh</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">state2</span>
+<span class="w">  </span><span class="nt">connect</span><span class="p">:</span><span class="w"> </span><span class="c1"># necessary for running a simulation in a Raspberry Pi cluster</span>
+<span class="w">    </span><span class="nt">ip</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168.192.0.3</span><span class="w">  </span><span class="c1"># IP of client machine</span>
+<span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w"> </span>
+<span class="nt">connections</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.G_Gh</span><span class="w"> </span><span class="c1"># origin model, format: model_name.output_name</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.G_Gh</span><span class="w"> </span><span class="c1"># destinatioin model, format: model_name.input_name</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.G_Dh</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.G_Dh</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.G_Bn</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.G_Bn</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.Ta</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.Ta</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.hs</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.hs</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.FF</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.FF</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.Az</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.Az</span>
+<span class="nt">monitor</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./out.csv&#39;</span><span class="w"> </span><span class="c1"># file where items are saved during simualation (optional)</span>
+<span class="w">  </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PV.pv_gen</span><span class="w">  </span><span class="c1"># List of inputs, outputs or states to monitor</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Keyword</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>scenario:</strong></p></td>
+<td><p>a set of global values <br>for a simulation.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>A name for the simulation, internally <br>this name will be asssigned to what <br>the Mosaik World created during runtime.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start_time</span></code></p></td>
+<td><p>start time for the simulation.<br>Must be a timestamp in ISO 8601 format</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">end_time</span></code></p></td>
+<td><p>end time for the simulation. <br>Must be a timestamp in ISO 8601 format.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">time_resolution</span></code></p></td>
+<td><p>number of seconds between <br>simulation steps</p></td>
+<td><p>☑</p></td>
+<td><p>900 (15 min)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>models:</strong></p></td>
+<td><p>a list of models for <br>the simulation</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>a name for the model. Must <br>be unique for each simulation</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>type of model. This must correspond <br>with the name of the model <br>registered in the Illuminator.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">inputs</span></code></p></td>
+<td><p>a set of input-names and initial <br>values for the model. The model <br>type determines which names and <br>values are applicable to each model, <br>and they must be declared accordingly. <br>Inputs are optional</p></td>
+<td><p></p></td>
+<td><p>If the value is set to <code class="docutils literal notranslate"><span class="pre">null</span></code>, <br>the default value will be <br>used. See the respective model <br>type for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">outputs</span></code></p></td>
+<td><p>a set of output-names and initial <br>values for the model. Similar to <br><em>inputs</em> valid names and values <br>for each model are determined by <br>the model <em>type</em>. See the respective <br>model type for details.</p></td>
+<td><p></p></td>
+<td><p>If the value is set to <code class="docutils literal notranslate"><span class="pre">null</span></code>, <br>the default value will be used.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">parameters</span></code></p></td>
+<td><p>a set of name-value pairs for <br>the model. Parameters declared constants <br>for a model during runtime.</p></td>
+<td><p>☑</p></td>
+<td><p>If ommited, the default values <br>will be used. See the <br>respective model type for details.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">states</span></code></p></td>
+<td><p>a set of name-value pairs considered <br>as states for the model. The values modify <br>the internal initial values of a state.</p></td>
+<td><p>☑</p></td>
+<td><p>If ommited, the default <br>values will be used. See the <br>respective model type for details.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">triggers</span></code></p></td>
+<td><p>names of inputs, output or states <br>that are use as triggers for a particular model. <br>Triggers can only be declared by models <br>that implement the <em>event-based paradigm</em>. <br>See the respective model type to know if <br>it accepts triggers.</p></td>
+<td><p>☑</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">connect</span></code></p></td>
+<td><p>to declare in which client a model runs <br>when using a Raspberry Pi cluster.</p></td>
+<td><p>☑</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ip</span></code></p></td>
+<td><p>Ip of the client manchine that will run <br>the model. Only IP version 4 format.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">port</span></code></p></td>
+<td><p>TCP port to use to connect to the <br>client machine</p></td>
+<td><p>☑</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>connections:</strong></p></td>
+<td><p>how models connect to each other.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">from</span></code></p></td>
+<td><p>origin of the connection declared as <br><code class="docutils literal notranslate"><span class="pre">&lt;model-name&gt;.&lt;output-name&gt;</span></code>. Input names <br>use here must also appear as <em>inputs</em> in<br>the models section.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">to</span></code></p></td>
+<td><p>destination of the connection declared as <br><code class="docutils literal notranslate"><span class="pre">&lt;model-name&gt;.&lt;input-name&gt;</span></code>. Output names <br>use here must also appear as <em>outputs</em> in <br>the models section.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>monitor:</strong></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">file</span></code></p></td>
+<td><p>path to a CSV file to store results of <br>the simulation. File will be created if <br>necessary.</p></td>
+<td><p>☑</p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">out.csv</span></code> file saved to <br>the current directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">items</span></code></p></td>
+<td><p>a list of which inputs, outputs or states <br>of models that most be monitored during <br>runtime. Items must be declared as <br><code class="docutils literal notranslate"><span class="pre">&lt;model-name&gt;.&lt;name&gt;</span></code>, where <em>name</em> is an <br>input, output or stated clared in the <br><em>models</em> section. No duplicated values <br>are allowed</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulations.html" class="btn btn-neutral float-right" title="Simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
