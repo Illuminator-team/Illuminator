@@ -12,18 +12,49 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 ## Installation
 
 **Requirements** 
-- The toolkit requires a RaspberryPi cluster with at least two nodes. But Illuminator can alos be installed in a PC.
+- Python >= 3.8
 - Miniconda (optional)
+- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
+
+### Using Pip
+
+The simpliest way to install *Illuminator* is from PYPI, using `pip`:
+
+```shell
+pip install illuminator
+```
 
 ### Using Conda
 
-The `environment.yml` provides all dependecies to create a conda environment called **Ecosystem**.
+The `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
+
+```shell
+conda env create -f environment.yml
+
+conda activate illuminator
+```
+
+## PC Setup
+
+To install 
+the Illuminator in one regular PC: 
+
+1. Clone this repository. 
+
+```shell
+git clone https://github.com/Illuminator-team/Illuminator.git
+```
+
+2. Create a conda environement using the YAML file in the root of the repository, as follows:
 
 ```shell
 conda env create -f environment.yml
 
 conda activate Ecosystem
 ```
+
+3. Refer to the [documenation](illuminator-team.github.io/Illuminator) for an explanation on how to set up and run a simulation.
+
 
 ## Raspberry Pi Setup
 
@@ -82,6 +113,7 @@ The **server** provides a Dashboard to viazulize the results, and saves them to 
    matplotlib
    itertools
    ```
+   
 5. Send the Illuminator package to all *clients*. Then, use the following command on the *server's* terminal to check the connection  between *server* and the *clients*
 
    ```shell
@@ -96,26 +128,6 @@ The **server** provides a Dashboard to viazulize the results, and saves them to 
 
 More detialed instructions are given in the [user guide document](docs/user/user-guide.md) and the [model build up document](Models.md).
 
-## PC Setup
-
-To install 
-the Illuminator in one regular PC: 
-
-1. Clone this repository. 
-
-```shell
-git clone https://github.com/Illuminator-team/Illuminator.git
-```
-
-2. Create a conda environement using the YAML file in the root of the repository, as follows:
-
-```shell
-conda env create -f environment.yml
-
-conda activate Ecosystem
-```
-
-3. Refer to the [documenation](illuminator-team.github.io/Illuminator) for an explanation on how to set up and run a simulation.
 
 ## Contributing Guidelines
 
