@@ -20,7 +20,11 @@ The **server** provides a Dashboard to visualize the results, and saves them to 
 
 ## Set up
 
-Conduct the following steps on each Raspberry Pi to deploy the illuminator in the cluster.
+Conduct the following steps on each Raspberry Pi to deploy the illuminator in a cluster. These instructions require to install *Illuminator* from source.
+
+:::{warning}
+The steps were defined before the release of version `3.0.0` and therefore issues might arise when using the latest Illumiator version.
+:::
 
 1. [Install Raspberry pi OS using Raspberry Pi imager.](https://www.raspberrypi.com/software/)
 2. Set an static IP address for the Raspberry Pi. Use the following command on the terminal to open the `dhcpcd.conf` file:
@@ -45,12 +49,9 @@ Conduct the following steps on each Raspberry Pi to deploy the illuminator in th
    Finally, reboot the Raspberry Pi using `sudo reboot` on the terminal.
 3. [Configure SSH connections so that the *server* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
 
-4. Install the Illuminator Python package, and the addional dependencies:
+4. Install the Illuminator Python package from source, and the addional dependencies:
 
    ```shell
-   # if connected to the internet
-   pip install illuminator
-
    # or, if from source code
    pip install Illuminator/
    ```
@@ -64,9 +65,9 @@ Conduct the following steps on each Raspberry Pi to deploy the illuminator in th
    ```shell
    # notice that the followng assumes that each client has a 
    # user named 'illuminator'
-   ssh illuminator@ip #ip represent your follower IP address set in step 2
+   ssh illuminator@<ip> #<ip> represent the client's IP address set in step 2
    ```
-6. Run the `build_runshfile.py` file in the configuration directory on the *server*, this will generate a `run.sh` script. Give the appropiate `config.yaml` file containing the simulation scenario definition:
+6. Run the `build_runshfile.py` file in the configuration directory on the *server*, this will generate a `run.sh` script. Pass the appropiate `config.yaml` file containing the configuration for the simulation scenario:
    
    ```shell
    python3 build_runshfile.py <config.yaml>
@@ -75,39 +76,31 @@ Conduct the following steps on each Raspberry Pi to deploy the illuminator in th
 The  `runs.sh` file contains a list of commands that will start the models required by a simulation defined in the `config.yaml`, such as:
 
 ```shell
-# add example
+# Example
+lxterminal -e ssh illuminator@192.168.0.1 './Desktop/illuminatorclient/configuration/runshfile/runBattery.sh 192.168.0.1 5123 /home/illuminator/Desktop/Final_illuminator'&
+lxterminal -e ssh illuminator@192.168.0.2 './Desktop/illuminatorclient/configuration/runshfile/runBattery.sh 192.168.0.2 5123 /home/illuminator/Desktop/Final_illuminator'&
 ```
 
-TODO: integrate this:
+:::{important}
+**Explanation** 
 
-   The lx terminal command does the following:
+`lxterminal` starts a terminal on a remote machine (a client). So `lxterminal -e ssh illuminator@192.168.0.1`  would use SSH to login to machine `192.168.0.1` with the user `illuminator` which has no password (this should be improved).
+
+Three values are passed to the `ssh` command (the part between single quoates): `'./Desktop/illuminatorclient/configuration/runshfile/runWind.sh 192.168.0.1 5123 /home/illuminator/Desktop/Final_illuminator'&`.
+This starts the script `./Desktop/illuminatorclient/configuration/runshfile/runWind.sh` on the remote machine with the following parameters:
+* IP address:                    `192.168.0.1`
+* Port:                          `5123`
+* Path of mosaik file:           `/home/illuminator/Desktop/Final_illuminator`
+
+The `& `at the end starts the process in the background, so that the `run.sh` script does not wait for the command to finish but executes the next command immediately.
  
-Lxterminal itself starts a terminal on a remote machine.
- 
-So ‘lxterminal -e ssh illuminator@192.168.0.1’  would use SSH to login to machine 192.168.0.1 with the user illuminator which has no password (room for improvement 😉 ).
- 
-The second part:
- 
-'./Desktop/illuminatorclient/configuration/runshfile/runWind.sh 192.168.0.1 5123 /home/illuminator/Desktop/Final_illuminator'&
- 
-Is starting the script ./Desktop/illuminatorclient/configuration/runshfile/runWind.sh on the remote machine with the following parameters:
- 
-IP address                          192.168.0.1
-Port                                       5123
-Path of mosaik                 /home/illuminator/Desktop/Final_illuminator
- 
-The & at the end starts the process in the background, so that the run.sh script does not wait for the command to finish but executes the next command immediately.
- 
-For example runWind.sh looks like this:
- 
+For example, the `runWind.sh` looks like this:
+
+```shell
 #! /bin/bash
 cd $3/Wind
 python wind_mosaik.py $1:$2 –remote
- 
+ ```
 There you see the three parameters in action.
+:::
 
-
-## Contact and Support
-
-For more comprehensive support, please contact us at [illuminator@tudelft.nl](mailto:illuminator@tudelft.nl). Additionally, you can reach out to the main contributors for specific inquiries:
-* [Dr.ir. Milos Cvetkovic](mailto:M.Cvetkovic@tudelft.nl)

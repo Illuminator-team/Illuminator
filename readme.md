@@ -12,18 +12,30 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 ## Installation
 
 **Requirements** 
-- The toolkit requires a RaspberryPi cluster with at least two nodes. But Illuminator can alos be installed in a PC.
+- Python >= 3.8
 - Miniconda (optional)
+- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
+
+### Using Pip
+
+The simpliest way to install *Illuminator* is from PYPI, using `pip`:
+
+```shell
+pip install illuminator
+```
 
 ### Using Conda
 
-The `environment.yml` provides all dependecies to create a conda environment called **Ecosystem**.
+The `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
 
 ```shell
 conda env create -f environment.yml
 
-conda activate Ecosystem
+conda activate illuminator
 ```
+
+> Refer to the [documenation](https://illuminator-team.github.io/Illuminator/quick-start.html#usage) for an explanation on how to set up and run a simulation.
+
 
 ## Raspberry Pi Setup
 
@@ -40,82 +52,9 @@ The **server** provides a Dashboard to viazulize the results, and saves them to 
 </div>
 
 
-### Set up a Raspberry Pi cluster
+### Set up 
 
-1. [Install Raspberry pi OS using Raspberry Pi imager.](https://www.raspberrypi.com/software/)
-2. Set an static IP addresse for each Raspberry Pi. Use the following command on the terminal to open the `dhcpcd.conf` file:
-
-   ```shell
-   sudo nano /etc/dhcpcd.conf
-   ```
-
-   In the `dhcpcd.conf` file, find the information to change the IP address as static as following:
-
-   ```shell
-   interface etho
-   static ip_address=192.168.0.1/24 # change the IP address as you want
-   ```
-
-   Give all users execute permission to all the documents in `runshfile/` in order to make sure the *server* can access the *client* model.
-   
-   ```shell
-   chmod -R a+X *dir*
-   ```
-
-   Finally, reboot the Raspberry Pi suing `sudo reboot` on the terminal.
-
-3. [Configure SSH connections so that the *server* can connect to the *clients* without a password.](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2)
-4. Install the following Python packages.
-   ```
-   pandas
-   tk
-   python-csv
-   datetime
-   python-math
-   numpy
-   scipy
-   arrow
-   mosaik
-   mosaik_api
-   mosaik.util
-   wandb
-   matplotlib
-   itertools
-   ```
-5. Send the Illuminator package to all *clients*. Then, use the following command on the *server's* terminal to check the connection  between *server* and the *clients*
-
-   ```shell
-   ssh illuminator@ip #ip represent your follower IP address
-   ```
-
-6. Run the `build_runshfile.py` file in the configuration directory on  the *server* to generate a `run.sh` script. Give the appropiate yaml file for the model as input:
-   
-   ```shell
-   python3 build_runshfile.py <path_to_yaml_file>
-   ```
-
-More detialed instructions are given in the [user guide document](docs/user/user-guide.md) and the [model build up document](Models.md).
-
-## PC Setup
-
-To install 
-the Illuminator in one regular PC: 
-
-1. Clone this repository. 
-
-```shell
-git clone https://github.com/Illuminator-team/Illuminator.git
-```
-
-2. Create a conda environement using the YAML file in the root of the repository, as follows:
-
-```shell
-conda env create -f environment.yml
-
-conda activate Ecosystem
-```
-
-3. Refer to the [documenation](illuminator-team.github.io/Illuminator) for an explanation on how to set up and run a simulation.
+Consult the [Cluster Pi Setup](docs/cluster-setup.md) document for instructions on how to set up a cluster.
 
 ## Contributing Guidelines
 
@@ -141,7 +80,7 @@ Many people have contributed to the development of *Illuminator*, we list their 
 | Project management | A. Neagu, M. Cvetkovic  |
 | Research |A. Fu, M. Cvetkovic,  N. Balassi, R. Saini, S.K. Trichy Siva Raman |
 | Resources | R. Koornneef |
-| Software | A. Fu, J. Grguric, J. Pijpker, M. Garcia Alvarez,  M. Rom.  |
+| Software | A. Fu, J. Grguric, J. Pijpker, M. Garcia Alvarez,  M. Rom., D. Georgiadi,  J. Groen |
 | Supervision |  A. Neagu, M. Cvetkovic |
 
 ## Acknowledgements

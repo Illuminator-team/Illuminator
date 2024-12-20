@@ -1,17 +1,17 @@
 # Quick Start
 
-The *Illuminator* is written in Python and all its dependencies are also based on Python.
+The *Illuminator* is written in Python and its dependencies are also Python.
 
 ## Installation
 
 **Requirements** 
 - Python >= 3.8
 - Miniconda (optional)
-- A Rasberry Pi cluster (See [cluster set up](cluster-setup.md) for specific instructions)
+- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
 
 ### Using Pip
 
-You can install the *Illuminator* directly from PYPI:
+The simpliest way to install *Illuminator* is from PYPI, using `pip`:
 
 ```shell
 pip install illuminator
@@ -19,7 +19,7 @@ pip install illuminator
 
 ### Using Conda
 
-If you prefer to use conda the `environment.yml` provides all dependecies to create a conda environment called **Ecosystem**.
+If you prefer to use conda the `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
 
 1. Clone the repository or download the [environment.yml](https://github.com/Illuminator-team/Illuminator/blob/main/environment.yml) file.
 
@@ -28,21 +28,20 @@ If you prefer to use conda the `environment.yml` provides all dependecies to cre
 ```shell
 conda env create -f environment.yml
 
-conda activate Ecosystem
+conda activate illuminator
 ```
-
 
 ## From Source
 
-To install the *Illuminator* in from source: 
+To install the *Illuminator* from source: 
 
-1. Clone this repository. 
+1. Clone the repository. 
 
 ```shell
 git clone https://github.com/Illuminator-team/Illuminator.git
 ```
 
-2. Go to the root of the repository and nstall using `pip`:
+2. Go to the root of the repository and install it using `pip`:
 
 ```shell
 cd Illuminator/
@@ -52,7 +51,11 @@ pip install .
 
 ## Usage
 
-In version 3.0.0 and above, simulation scenarios are configure using `YAML` files with the following structure:
+In version 3.0.0 and above, simulation scenarios are configure using `YAML` files. 
+
+### Simulation file
+
+Simulations are declared using a configulation file that must have the structure below. Refer to  [simulation file](./user/config-file.md) for a full explanation. 
 
 ```yaml
 # config.yaml
@@ -86,14 +89,34 @@ monitor:  # a list of models, its inputs, output and states to be monitored and 
 - Adder2.out2 # format: <model_name>.<input>/<output>/<states>
 ```
 
-To run a simulation scenario, you can use the CLI. On the terminal:
+### Running Simulations
 
-```shell
-illuminator <path/to/scenario-config.yaml>
-```
+The illuminator has two interfaces for user, one for the command line (CLI) and one for Python:
 
+
+1. To run a simulation **scenario* using the CLI, use the following:
+
+  ```shell
+  # to run a simulation scenario:
+  illuminator scenario <path/to/scenario-config.yaml>
+
+  # to get help, use:
+  illuminator scenario --help
+  ```
+
+2. If using Python:
+
+  ```python
+
+  from illuminator.engine import Simulation
+
+  sim = Simulation('<path/to/scenario-config.yaml>')
+  sim.run()
+  ```
 
 ## Contact and Support
 
 For more comprehensive support, please contact us at [illuminator@tudelft.nl](mailto:illuminator@tudelft.nl). Additionally, you can reach out to the main contributors for specific inquiries:
 * [Dr.ir. Milos Cvetkovic](mailto:M.Cvetkovic@tudelft.nl)
+* [Despoina Geordiadi](https://github.com/Eutardigrada)
+* [Jort Groen](https://github.com/JortGroen)

@@ -60,7 +60,7 @@ There are three main use cases for the users of the Illuminator:
 
 Energy model should be added to the **Model Library** as follows:
 
-1. Create a Python module with the name of the model. For example, `ExampleModel.py`
+1. Create a Python module with the name of the model. For example, `example_model.py`
 1. In the file, create an IlluminatorModel object for the model. This defines which inputs, output, parameters, states, triggers, etc. a particular model has.  For example:
 
 ```Python
@@ -76,7 +76,7 @@ example_model = IlluminatorModel(
 )
 ```
 
-2.  Create a class that inherits from `ModelConstructor`, and impement the `step()` method. Name the new class with the same name as the Python module it contains it. The new class will become a *model type* in the Illuminator. Instances of this model type will be created by the **Scenario API**
+2.  Create a class that inherits from `ModelConstructor`, and impement the `step()` method. The new class will become a *model type* in the Illuminator. Instances of this model type will be created by the **Scenario API**
 
 For example,
 
@@ -94,10 +94,23 @@ class ExampleModel (ModelConstructor):
         return time + self._model.time_step_size
 ```
 
+3. Update the `illuminator/models/__init__.py` to import the new  model type. For example:
+
+```python
+from .example_model import ExampleModel
+
+__all__ = ['BatteryModel', 
+           'Collector', 
+           'ExampleModel' # add new model
+```
+
 3. To test the new model is implemented correctly, try:
 
 ```python
-# TODO: add example
+# Python file
+frmo illuminator.models import ExampleModel # test model import
+
+# TODO: add inistantiation example
 ```
 
 ### Creating Simulation Scenarios

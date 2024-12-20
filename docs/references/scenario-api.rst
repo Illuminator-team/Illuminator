@@ -1,4 +1,4 @@
-Engine API
+Scenario API
 =====================
 
 The simulation engine provides a wrapper around Mosaik simulation to simplify the process of creating and running simulations. 

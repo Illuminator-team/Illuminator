@@ -30,12 +30,15 @@ release = '1.0.0'
 nbsphinx_execute = 'never'
 
 extensions = ["myst_parser",
-              'sphinx_rtd_theme',
-              'sphinx.ext.autodoc',
-              'sphinx.ext.napoleon',
-              'sphinx_copybutton',
+              "sphinx_rtd_theme",
+              "sphinx.ext.autodoc",
+              "sphinx.ext.napoleon",
+              "sphinx_copybutton",
               "nbsphinx",
               ]
+
+myst_enable_extensions = ["colon_fence",
+                          ]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'user/depricated-user-guide.md', 
