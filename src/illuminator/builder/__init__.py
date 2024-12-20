@@ -1,3 +1,3 @@
-from .model import ModelConstructor, IlluminatorModel
+from .model import IlluminatorModel, IlluminatorSimulator, ModelBinder
 
-__all__ = ['ModelConstructor', 'IlluminatorModel']
+__all__ = ['IlluminatorSimulator', 'IlluminatorModel', 'ModelBinder']
