@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from datetime import datetime
 import illuminator.engine as engine
+from mosaik_api_v3 import Simulator
 
 class SimulatorType(Enum):
     TIME_BASED = 'time-based'
@@ -29,10 +30,10 @@ class IlluminatorModel():
         Properties of the object being modeled, e.g. material the object is
         made of.
     inputs: dict
-        One or more name:value pairs to be regarded as inputs to the model.
+        One or more name: value pairs to be regarded as inputs to the model.
         Inputs allow users to connect a model to other models.
     outputs: dict
-        One or more name:value pairs to be regarded as outputs of the model.
+        One or more name: value pairs to be regarded as outputs of the model.
         Outputs allow users to connect a model to other models.
     states: dict
         One or more 'parameters, inputs or outputs' and their initial value
@@ -44,9 +45,11 @@ class IlluminatorModel():
     simulator_type: SimulatorType
         The type of simulator that the model belongs to.
     time_step_size: int
-        The time step size for the simulator.
+        The time of each simulation step in seconds. Default 900.
     time: int
         The current time of the simulation.
+    model_type: str
+        A name for the class of model that is being defined. Default 'Model'.
     """
 
     parameters: Dict = field(default_factory=dict)    
@@ -54,14 +57,17 @@ class IlluminatorModel():
     outputs: Dict = field(default_factory=dict)
     states: Dict = field(default_factory=dict)
     triggers: Optional[Dict] = field(default_factory=list)
-    simulator_type: SimulatorType = SimulatorType.HYBRID
-    time_step_size: int = 15   # This is closely related to logic in the step method. Currently, all models have the same time step size (15 minutes). This is a global setting for the simulation, not a model-specific setting.
+    simulator_type: SimulatorType = SimulatorType.TIME_BASED
+    time_step_size: int = 1   # This is closely related to logic in the step method. 
+    # Currently, all models have the same time step size (15 minutes). 
+    # This is a global setting for the simulation, not a model-specific setting.
     time: Optional[datetime] = None  # Shouldn't be modified by the user.
-    model_type: Optional[str] = "Model"
+    model_type: Optional[str] = "Model" 
+    
 
     def __post_init__(self):
-        self.validate_states()
-        self.validate_triggers()
+        self._validate_states()
+        self._validate_triggers()
         # self.validate_simulator_type()
     
     @property
@@ -71,15 +77,15 @@ class IlluminatorModel():
         meta = {
             'type': self.simulator_type.value,
             'models': {
-                self.model_type : {
+                self.model_type: { # This must be the name of he model 
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.outputs.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys())
                 }
             }}
         return meta
 
-    def validate_states(self):
+    def _validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
         for state in self.states:
             if state not in self.parameters and state not in self.inputs and \
@@ -87,14 +93,14 @@ class IlluminatorModel():
                 raise ValueError(f"State: {state} must be either a parameter, "
                                  "an input or an output")
 
-    def validate_triggers(self):
+    def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""
         for trigger in self.triggers:
             if trigger not in self.inputs and trigger not in self.outputs:
                 raise ValueError(f"Trigger: {trigger} must be either an input "
                                  "or an output")
 
-    def validate_simulator_type(self):
+    def _validate_simulator_type(self):
         """Check if triggers are defined for time-based and event-based
         simulations only
         """
@@ -107,7 +113,10 @@ class IlluminatorModel():
             raise ValueError("Triggers are required in event-based simulators")
 
 
-from mosaik_api_v3 import Simulator
+# COTINUE FROM HERE
+# need to find a convenient an easy way to define new models
+# Ideas:
+# - add model definition as a method of the ModelConstructor class. will it work?
 
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
@@ -116,16 +125,21 @@ class ModelConstructor(ABC, Simulator):
         #model: IlluminatorModel
         model_vals = engine.current_model
         model = IlluminatorModel(
-                parameters=model_vals['parameters'],
-                inputs=model_vals["inputs"],
-                outputs=model_vals["outputs"],
-                states={},
-                model_type=model_vals["type"]
+                parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
+                inputs=model_vals.get('inputs', self.inputs),
+                outputs=model_vals.get('outputs', self.outputs),
+                states=model_vals.get('states', self.states),
+                model_type=model_vals.get('type', {}),
+                time_step_size=model_vals.get('time_step_size', self.time_step_size)
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
         self.time = 0  # time is an interger wihout a unit
+
+        # we want the parameters to be directly accesible for the simulator
+        for key, value in self._model.parameters.items():
+            setattr(self, key, value)
 
     @abstractmethod
     def step(self, time:int, inputs:dict=None, max_advance:int=None) -> int:
@@ -142,6 +156,7 @@ class ModelConstructor(ABC, Simulator):
             Time until the simulator can safely advance its internal time without creating a causality error.
             Optional in most cases.
 
+
         Returns
         -------
         int
@@ -151,6 +166,8 @@ class ModelConstructor(ABC, Simulator):
         pass
 
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
+        # TODO: from engine.py, time_resolution is never passed
+
         print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
@@ -182,7 +199,7 @@ class ModelConstructor(ABC, Simulator):
         pass
         # TODO: implement this method
 
-    def get_data(self) -> Dict:
+    def get_data(self, outputs) -> Dict: # TODO remove the print statements here
         """Expose model outputs and states to the simulation environment
         
         Returns
@@ -191,8 +208,11 @@ class ModelConstructor(ABC, Simulator):
             A dictionary of model outputs and states.
         """
         data = {}
-
-        for eid, attrs in self._model.outputs.items():
+        # print(f"Here are your outputs: {outputs}")
+        # for eid, attrs in self._model.outputs.items():
+        for eid, attrs in outputs.items():
+            # print(f"eid: {eid}, attrs:{attrs}")
+            # print(f"self.model_entities: {self.model_entities}")
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
@@ -200,9 +220,19 @@ class ModelConstructor(ABC, Simulator):
                     data[eid][attr] = model_instance.outputs[attr]
                 else:
                     data[eid][attr] = model_instance.states[attr]
-
+            # print(f"data: {data}")
         return data
 
+
+    def unpack_inputs(self, inputs):
+        data = {}
+        for attrs in inputs.values():
+            for attr, sources in attrs.items():
+                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
+                if len(values) > 1:
+                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
+                data[attr] = values[0]
+        return data
 
 if __name__ == "__main__":
 

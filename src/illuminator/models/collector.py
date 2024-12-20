@@ -230,7 +230,7 @@ class Collector(mosaik_api.Simulator):
             # TODO: raise warning, not implemented
             for key, value in df.items():
                 wandb.log({key: value[0],
-                           "custom_step":time/900})
+                           "custom_step":time/900})  # TODO replace 900 by something better
 
         if self.results_show['write2csv'] == True:
             if time == 0:
@@ -265,7 +265,7 @@ class Collector(mosaik_api.Simulator):
             msg = df.to_json()
             self.mqtt_client.publish(self.mqtt_topic, msg)
 
-        return time + 900
+        return time + 1 # TODO change +1 to +self.time_resolution do it's not hard coded
 
     def finalize(self) -> None:
         """

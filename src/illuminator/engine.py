@@ -63,15 +63,15 @@ def apply_default_values(config_simulation: dict) -> dict:
     """
 
     # defaults
-    time_resolution = {'time_resolution': 900} # 15 minutes
-    out_file = {'file': './out.csv'}
-    # TODO: set other default values
+    # time_resolution = {'time_resolution': 900} # 15 minutes
+    # out_file = {'file': './out.csv'}
+    # # TODO: set other default values
 
-    if 'time_resolution' not in config_simulation['scenario']:
-        config_simulation.update(time_resolution)
-    # file to store the results
-    if 'file' not in config_simulation['monitor']:
-        config_simulation.update(out_file)
+    # if 'time_resolution' not in config_simulation['scenario']:
+    #     config_simulation.update(time_resolution)
+    # # file to store the results
+    # if 'file' not in config_simulation['monitor']:
+    #     config_simulation.update(out_file)
 
     #TODO: Write a unit test for this
     return config_simulation
@@ -169,22 +169,23 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
 
             if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
                 
-                if 'start' not in model_parameters.keys() or 'datafile' not in model_parameters.keys():
-                    raise ValueError("The CSV model requires 'start' and 'datafile' parameters. Check your YAML configuration file.")
+                if 'start' not in model_parameters.keys() or 'file_path' not in model_parameters.keys():
+                    raise ValueError("The CSV model requires 'start' and 'file_path' parameters. Check your YAML configuration file.")
                 
                 simulator = world.start(sim_name=model_name,
-                                         sim_start=model_parameters['start'], datafile=model_parameters['datafile'])
+                                         sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
                 entity = model_factory.create(num=1)
                 
             else:
-                simulator = world.start(sim_name=model_name,
-                                    # **model_parameters
-                                    model_name = model_name,
-                                    sim_params= {model_name: model} # This value gets picked up in the init() function
-                                    # Some items must be passed here, and some other at create()
-                                    )
+                # simulator = world.start(sim_name=model_name,
+                #                     # **model_parameters
+                #                     model_name = model_name,
+                #                     sim_params= {model_name: model} # This value gets picked up in the init() function
+                #                     # Some items must be passed here, and some other at create()
+                #                     )
+                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -210,7 +211,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         #                                     cap=500,
         #                                     output_type='power'
         #                                     )
-            entity = model_factory.create(num=1, param1="Not in use") 
+                entity = model_factory.create(num=1, **model_parameters) 
 
             model_entities[model_name] = entity
             print(model_entities)
@@ -218,7 +219,8 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         return model_entities
 
 
-def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict]) -> MosaikWorld:
+def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], connections: list[dict], 
+                      models: list[dict]) -> MosaikWorld: # TODO: limit model_config to only models
         """
         Connects the model entities in the Mosaik world based on the connections specified in the YAML configuration file.
         
@@ -230,6 +232,8 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             A dictionary of model entities created for the Mosaik world.
         connections: list
             A list of connections to be established between the model entities.
+        models: list
+            The models involved in the connections based on the configuration file.
 
         Returns
         -------
@@ -241,13 +245,24 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         for connection in connections:
             from_model, from_attr =  connection['from'].split('.')
             to_model, to_attr =  connection['to'].split('.')
-        
+            # TODO: check if this will work for the cases in which there are not time_shifted connections
+            to_model_config = next((m for m in models if m['name'] == to_model))
+            time_shifted = connection['time_shifted']
             # Establish connections in the Mosaik world
             try:
-                world.connect(model_entities[from_model][0], # entities for the same model type
-                              # are handled separately. Therefore, the entities list of a model only contains a single entity
-                               model_entities[to_model][0], 
-                               (from_attr, to_attr))
+                # entities for the same model type are handled separately. Therefore, the entities list of a model only contains a single entity
+                if time_shifted:
+                    world.connect(model_entities[from_model][0], 
+                                model_entities[to_model][0], 
+                                (from_attr, to_attr),
+                                time_shifted=True,
+                                initial_data={from_attr: to_model_config['inputs'][to_attr]})
+                                # set the initial value for the connection to equal the initial value of the model
+                else:
+                    world.connect(model_entities[from_model][0], # entities for the same model type
+                            # are handled separately. Therefore, the entities list of a model only contains a single entity
+                            model_entities[to_model][0], 
+                            (from_attr, to_attr))
             except KeyError as e:
                 print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
                 exit(1)
@@ -286,10 +301,40 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
 def set_current_model(model):
     global current_model
-    current_model["type"] = model['type']
-    current_model['parameters']=model['parameters']
-    current_model['inputs']=model["inputs"]
-    current_model['outputs']=model["outputs"]
+    try:
+        current_model["type"] = model['type']
+    except KeyError as e:
+        print(f"Warning: Missing 'type' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'type'. {e}")
+
+    try:
+        current_model['parameters'] = model['parameters']
+    except KeyError as e:
+        print(f"Warning: Missing 'parameters' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'parameters'. {e}")
+
+    try:
+        current_model['inputs'] = model["inputs"]
+    except KeyError as e:
+        print(f"Warning: Missing 'inputs' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'inputs'. {e}")
+
+    try:
+        current_model['outputs'] = model["outputs"]
+    except KeyError as e:
+        print(f"Warning: Missing 'outputs' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'outputs'. {e}")
+
+    try:
+        current_model['time_step_size'] = model["time_step_size"]
+    except KeyError as e:
+        print(f"Warning: Missing 'time_step_size' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'time_step_size'. {e}")
     
 
 def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity], 
@@ -379,7 +424,7 @@ class Simulation:
         model_entities = start_simulators(world, config['models'])
 
         # Connect the models based on the connections specified in the configuration
-        world = build_connections(world, model_entities, config['connections'])
+        world = build_connections(world, model_entities, config['connections'], config['models'])
 
         # Connect monitor
         world = connect_monitor(world, model_entities, monitor, config['monitor'])

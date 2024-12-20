@@ -150,14 +150,16 @@ schema = Schema(  # a mapping of mappings
                             {
                                 "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),
                                 Optional("port"): And(int),
-                    }
-                ),
+                            }
+                            ),
+                        Optional("time_step_size"): int,
             } ]
         ),
         "connections":  Schema( # a sequence of mappings
             [{
                 "from": Regex(valid_model_item_format, error="Invalid format for 'from'. Must be in the format: <model>.<item>"),
                 "to": Regex(valid_model_item_format, error="Invalid format for 'to'. Must be in the format: <model>.<item>"),
+                Optional("time_shifted", default=False): bool
             }]
         ),
         "monitor":  Schema(

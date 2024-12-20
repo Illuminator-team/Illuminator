@@ -38,7 +38,9 @@ extensions = ["myst_parser",
               ]
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'user/depricated-user-guide.md']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'user/depricated-user-guide.md', 
+                    'tutorials/example.ipynb' # remove to include the example notebook
+                    ]
 
 
 

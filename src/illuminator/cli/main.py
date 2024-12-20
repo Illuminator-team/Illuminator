@@ -11,6 +11,7 @@ from pathlib import Path
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
+
 APP_NAME = "illuminator"
 DEFAULT_PORT = 5123
 RUN_PATH = './Desktop/illuminatorclient/configuration/runshfile/'
@@ -29,7 +30,6 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
 
     simulation = Simulation(config_file)
     simulation.run()
-    
 
 @cluster_app.command("build")
 def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
