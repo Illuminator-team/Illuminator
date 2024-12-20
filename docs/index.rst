@@ -45,6 +45,13 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    
 .. toctree::
    :maxdepth: 2
+   :caption: Current Developer
+
+   developer/dev-cluster-setup.md
+   developer/dashboard.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: References
 
    references/scenario-api.rst
