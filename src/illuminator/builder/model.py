@@ -218,8 +218,12 @@ class ModelConstructor(ABC, Simulator):
             for attr in attrs:
                 if attr in model_instance.outputs:
                     data[eid][attr] = model_instance.outputs[attr]
-                else:
+                elif attr in model_instance.states:
                     data[eid][attr] = model_instance.states[attr]
+                elif attr in model_instance.inputs:
+                    raise RuntimeError(f"'{attr}' is an input of {self.sid}.{eid}, connection reversed?")
+                else:
+                    raise RuntimeError(f"{self.sid}.{eid} does not have '{attr}' as input, output or state")
             # print(f"data: {data}")
         return data
 
