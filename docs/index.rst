@@ -48,7 +48,7 @@ and the simulation engine is based on `Mosaik. <https://mosaik.offis.de/>`_
    :caption: Current Developer
 
    developer/dev-cluster-setup.md
-   developer/dashboard.md
+   developer/dev-dashboard.md
 
 .. toctree::
    :maxdepth: 2
