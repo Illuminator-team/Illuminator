@@ -14,7 +14,7 @@ System_Ext(mosaik, "Mosaik Simulation Framework", "A Smart Grid co-simulation fr
 
 System_Boundary(illuminatorSys, "Illuminator", $descr="A Python package to simulate energy systems") {
 
-    Container(dashboard, "Dashboard", "", "An application for visualizing simulation results and logs in real-time", $tags="not implemented")
+    Container(dashboard, "Dashboard Application", "", "An application for visualizing simulation results and logs in real-time", $tags="not implemented")
 
     Container_Boundary(builderApp, "Model Builder Application", "Python", $descr="a Python application to develop energy models for the Illuminator") {
         Component(modelBuilder, "Builder", "Python", "A custom interface for creating and registering energy system models")
