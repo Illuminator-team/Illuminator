@@ -30,29 +30,33 @@ class Electrolyzer(ModelConstructor):
     def step(self, time, inputs, max_advance=1) -> None:
 
         print("\nElectrolyzer:")
-        print("inputs (passed): ")
-        print("outputs (passed): ")
+        print("inputs (passed): ", inputs)
+        print("inputs (internal): ", self._model.inputs)
         # get input data 
         input_data = self.unpack_inputs(inputs)
-        print("input data: ", input)
+        print("input data: ", input_data)
 
         current_time = time * self.time_resolution
-        print('from coelectrolyzer %%%%%%%%%%%', current_time)
+        print('from electrolyzer %%%%%%%%%%%', current_time)
 
-        # calculate generation provided the desired input power  
-        h_gen = self.generate(
+        # calculate generation provided the desired input power [kg/s] 
+        h_flow = self.generate(
             flow2e=input(input_data['flow2e']),
             eff=self.e_eff,
             hhv=self.hhv,
             mmh2=self.mmh2,
             max_advance = max_advance
-            )           
+            ) 
+        h_gen = h_flow * self.time_resolution          
         self._model.outputs['h_gen'] = h_gen
+        print("outputs:", self.outputs)
+        
         return time + self._model.time_step_size
     
     def ramp_lim(self, flow2e, max_advance):
         # restrict the power input to not increase more than max_p_ramp_rate
         # compared to the last timestep
+        # TODO: check method of using paramters (self. or .get())
         p_change = flow2e - self.p_in_last
         if abs(p_change) > self.max_p_ramp_rate:
             if p_change > 0:
@@ -69,5 +73,5 @@ class Electrolyzer(ModelConstructor):
         # restrict the input power to be maximally max_p_in
         flow2e = min(flow2e, self.max_p_in) 
         power_in = self.ramp_lim(flow2e, max_advance)
-        h_out = power_in * eff / hhv * mmh2 / 1000
+        h_out = (power_in * eff * mmh2) / (hhv * 1000)
         return h_out
