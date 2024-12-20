@@ -94,7 +94,7 @@ class PV(ModelConstructor):
         eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity    
         self._cache = {}
         results = self.connect(input_data['G_Gh'], input_data['G_Dh'], input_data['G_Bn'], input_data['Ta'], input_data['hs'], input_data['FF'], input_data['Az'])
-        self._cache[eid] = results
+        # self._cache[eid] = results
         for key, value in results.items():
             self._model.outputs[key] = value
         return time + self._model.time_step_size
