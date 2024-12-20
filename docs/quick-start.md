@@ -51,7 +51,11 @@ pip install .
 
 ## Usage
 
-In version 3.0.0 and above, simulation scenarios are configure using `YAML` files. A valid file must have the structure below. Refer to  []() for 
+In version 3.0.0 and above, simulation scenarios are configure using `YAML` files. 
+
+### Simulation file
+
+Simulations are declared using a configulation file that must have the structure below. Refer to  [simulation file](./user/config-file.md) for a full explanation. 
 
 ```yaml
 # config.yaml
@@ -85,12 +89,30 @@ monitor:  # a list of models, its inputs, output and states to be monitored and 
 - Adder2.out2 # format: <model_name>.<input>/<output>/<states>
 ```
 
-To run a simulation scenario, you can use the CLI. On the terminal:
+### Running Simulations
 
-```shell
-illuminator <path/to/scenario-config.yaml>
-```
+The illuminator has two interfaces for user, one for the command line (CLI) and one for Python:
 
+
+1. To run a simulation **scenario* using the CLI, use the following:
+
+  ```shell
+  # to run a simulation scenario:
+  illuminator scenario <path/to/scenario-config.yaml>
+
+  # to get help, use:
+  illuminator scenario --help
+  ```
+
+2. If using Python:
+
+  ```python
+
+  from illuminator.engine import Simulation
+
+  sim = Simulation('<path/to/scenario-config.yaml>')
+  sim.run()
+  ```
 
 ## Contact and Support
 
