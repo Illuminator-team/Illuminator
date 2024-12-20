@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engine API &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Illuminator Models" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="models.html">Illuminator Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Engine API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-interface">Python Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.config"><code class="docutils literal notranslate"><span class="pre">Simulation.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.run"><code class="docutils literal notranslate"><span class="pre">Simulation.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.apply_default_values"><code class="docutils literal notranslate"><span class="pre">apply_default_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.build_connections"><code class="docutils literal notranslate"><span class="pre">build_connections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.compute_mosaik_end_time"><code class="docutils literal notranslate"><span class="pre">compute_mosaik_end_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.connect_monitor"><code class="docutils literal notranslate"><span class="pre">connect_monitor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.create_world"><code class="docutils literal notranslate"><span class="pre">create_world()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.engine.generate_mosaik_configuration"><code class="docutils literal notranslate"><span class="pre">generate_mosaik_configuration()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Engine API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/references/engine-api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="engine-api">
+<h1>Engine API<a class="headerlink" href="#engine-api" title="Link to this heading"></a></h1>
+<p>The simulation engine provides a wrapper around Mosaik simulation to simplify the process of creating and running simulations.</p>
+<section id="python-interface">
+<h2>Python Interface<a class="headerlink" href="#python-interface" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.engine.Simulation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.engine.Simulation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A simplified interface to run simulations with Illuminator.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="illuminator.engine.Simulation.config">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#illuminator.engine.Simulation.config" title="Link to this definition"></a></dt>
+<dd><p>Returns the configuration file for the simulation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.engine.Simulation.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.engine.Simulation.run" title="Link to this definition"></a></dt>
+<dd><p>Runs a simulation scenario</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.apply_default_values">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">apply_default_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.engine.apply_default_values" title="Link to this definition"></a></dt>
+<dd><p>Applies Illuminator default values to the configuration if they are not
+specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_simulation</strong> (<em>dict</em>) – valid Illuminator’s simulation configuration</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Illuminator’s simulation configuration with default values applied.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.build_connections">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">build_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mosaik.scenario.World</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_entities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">mosaik.scenario.Entity</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mosaik.scenario.World</span></span></span><a class="headerlink" href="#illuminator.engine.build_connections" title="Link to this definition"></a></dt>
+<dd><p>Connects the model entities in the Mosaik world based on the connections specified in the YAML configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>world</strong> (<em>mosaik.World</em>) – The Mosaik world object.</p></li>
+<li><p><strong>model_entities</strong> (<em>dict</em>) – A dictionary of model entities created for the Mosaik world.</p></li>
+<li><p><strong>connections</strong> (<em>list</em>) – A list of connections to be established between the model entities.</p></li>
+<li><p><strong>models</strong> (<em>list</em>) – The models involved in the connections based on the configuration file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Mosaik world object with the connections established.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mosaik.World</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.compute_mosaik_end_time">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">compute_mosaik_end_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#illuminator.engine.compute_mosaik_end_time" title="Link to this definition"></a></dt>
+<dd><p>Computes the number to time steps for a Mosaik simulation given the start and end timestamps, and
+a time resolution. Values are approximated to the lowest interger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – Start time as ISO 8601 time stamp. Example: ‘2012-01-01 00:00:00’.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – Start time as ISO 8601 time stamp. Example: ‘2012-01-01 00:00:00’.</p></li>
+<li><p><strong>time_resolution</strong> (<em>number</em><em> of </em><em>seconds that correspond to one mosaik time step in this situation. Default is 900 secondd</em><em> (</em><em>15 min</em><em>)</em><em>.</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.connect_monitor">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">connect_monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mosaik.scenario.World</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_entities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">mosaik.scenario.Entity</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">mosaik.scenario.Entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mosaik.scenario.World</span></span></span><a class="headerlink" href="#illuminator.engine.connect_monitor" title="Link to this definition"></a></dt>
+<dd><p>Connects model entities to the monitor in the Mosaik world.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>world</strong> (<em>mosaik.World</em>) – The Mosaik world object.</p></li>
+<li><p><strong>model_entities</strong> (<em>dict</em>) – A dictionary of model entities created for the Mosaik world.</p></li>
+<li><p><strong>monitor</strong> (<em>mosaik.Entity</em>) – The monitor entity in the Mosaik world.</p></li>
+<li><p><strong>monitor_config</strong> (<em>dict</em>) – The configuration for the monitor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Mosaik world object with model entities connected to the monitor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mosaik.World</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.create_world">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">create_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mosaik.scenario.World</span></span></span><a class="headerlink" href="#illuminator.engine.create_world" title="Link to this definition"></a></dt>
+<dd><p>Creates a Mosaik world object based on the simulation configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sim_config</strong> (<em>dict</em>) – The simulation configuration for the Mosaik world.</p></li>
+<li><p><strong>time_resolution</strong> (<em>int</em>) – The time resolution of the simulation in seconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Mosaik world object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mosaik.World</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="illuminator.engine.generate_mosaik_configuration">
+<span class="sig-prename descclassname"><span class="pre">illuminator.engine.</span></span><span class="sig-name descname"><span class="pre">generate_mosaik_configuration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.engine.generate_mosaik_configuration" title="Link to this definition"></a></dt>
+<dd><p>Returns a configuration for the Mosaik simulator based on
+the Illuminators simulation definition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_simulation</strong> (<em>dict</em>) – valid Illuminator’s simulation configuration</p></li>
+<li><p><strong>collector</strong> (<em>str</em>) – command and path to a custom collector. If None
+the default collector is used.
+Example: ‘%(python)s Illuminator_Engine/collector.py %(addr)s’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Mosaik’s world simulator configuration. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;Collector&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;cmd&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(python)s</span><span class="s1"> Illuminator_Engine/collector.py </span><span class="si">%(addr)s</span><span class="s1">&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;Model1&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;illuminator.models:Model1&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;Model2&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;illuminator.models:Model2&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="models.html" class="btn btn-neutral float-left" title="Illuminator Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

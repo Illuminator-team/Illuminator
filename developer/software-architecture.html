@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software Architecture &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Docstrings" href="developer-docstrings.html" />
+    <link rel="prev" title="Set Up Environment" href="set-up.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Software Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#users">Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mosaik-simulation-framework">Mosaik Simulation Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-builder-application">Model Builder Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Model Builder Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-engine-application">Simulation Engine Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard">Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#use-cases">Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extending-the-model-library">Extending the Model Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-simulation-scenarios">Creating Simulation Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-cluster-pi">Setting Up Cluster Pi</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer-docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/engine-api.html">Engine API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Software Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer/software-architecture.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="software-architecture">
+<h1>Software Architecture<a class="headerlink" href="#software-architecture" title="Link to this heading"></a></h1>
+<p>The Illuminator is modular Python applications to simulate energy systems. In this seciton, we provide an overview of its sotware architecture. The diagram below describes the components of the Illuminator.</p>
+<div align="center">
+    <img align="center" src="../_static/img/components.png" width="800">
+</div>
+<section id="users">
+<h2>Users<a class="headerlink" href="#users" title="Link to this heading"></a></h2>
+<p>Users of the Illuminator take one of two roles:</p>
+<ul class="simple">
+<li><p><strong>Moder Developer</strong>: uses the Illuminator to create energy models that can be used in any simulation</p></li>
+<li><p><strong>Energy Analys</strong>: use sthe Illuminator to define and run simulation scenarios.</p></li>
+</ul>
+<!-- ## Containers
+Containers represent applications that are separately runnable/deployable units of software. Below, we refer to containers as 'applicaitons' -->
+</section>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Link to this heading"></a></h2>
+<section id="mosaik-simulation-framework">
+<h3>Mosaik Simulation Framework<a class="headerlink" href="#mosaik-simulation-framework" title="Link to this heading"></a></h3>
+<p>A framework that serves as a core platform for executing energy system simulations. <a class="reference external" href="https://mosaik.readthedocs.io/en/latest/index.html">Mosaik</a> is an external dependency, and as such the Illuminator interacts with it thru its API.</p>
+</section>
+<section id="model-builder-application">
+<h3>Model Builder Application<a class="headerlink" href="#model-builder-application" title="Link to this heading"></a></h3>
+<p>A Python applicaiton that model developers use to define/modify  energy models for the Illuminator. New models are developed using the <strong>Builder</strong> componente, which provides a custom interface for creating and registering energy models to the <strong>Model Library</strong>. The purpose of the <strong>Builder</strong> componet is ease the defintion of energy models using a jargon that <strong>energy system engineers</strong> are more familiar with. For example, by defining new models in term of <em>inputs, outputs, states, etc.</em></p>
+<p>The <strong>Model Library</strong> component stores energy models that can be use in a simulation, so that they can be accessed by the <strong>Mosaik Simulation Framework</strong> during runtime.</p>
+</section>
+<section id="id1">
+<h3>Model Builder Application<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>A Python application that facilated the development and registration of energy models for the <strong>Model Library</strong>, in wich the <strong>Builder</strong> component provides an interface that can be used to define energy models in terms of <em>parameters, inputs, output, states, etc</em>. This applicaiton stores energy models in the <strong>Model Library</strong> and mades them available to the <strong>Mosaik Simulation Framework</strong>.</p>
+<p>Models in the <strong>Model Library</strong> are metadata and business logic containers. No computations are performed by this component.</p>
+</section>
+<section id="simulation-engine-application">
+<h3>Simulation Engine Application<a class="headerlink" href="#simulation-engine-application" title="Link to this heading"></a></h3>
+<p>A Python application to run simulations via the Mosaik API. This application consists of four compoennts. The <strong>Scenario API</strong> provides a wrapper to prepare and start simulations in the <strong>Mosaik Simulation Framework</strong>. Therefore, simulations, computations  and the management of output data are delegated to the <strong>Mosaik Simulation Framework</strong>.
+The Senario API uses the <strong>Scenario Schema</strong> to validate simulation definitions writen as YAML files written by the <strong>Energy Analysis</strong>. The <strong>Scenario Schema</strong> defines the format that YAML files must be written on.</p>
+<p>The <strong>Illuminator CLI</strong> is an appliccation implemented using <a class="reference external" href="https://typer.tiangolo.com/">Typer</a>, which provides a command line interface to run simulation locally, and automate the deployment of the Illuminator in a Raspberry Pi cluster. The <strong>Illuminator CLI</strong> uses the <strong>Scernario API</strong> and the <strong>Cluster PI</strong> components for its functionality.</p>
+<p>Finally, the <strong>Cluster Pi</strong> component consists of a set of tools for setting up the Illuminator to tha Raspberry Py cluster that will run scenario simulatios.</p>
+</section>
+<section id="dashboard">
+<h3>Dashboard<a class="headerlink" href="#dashboard" title="Link to this heading"></a></h3>
+<p>An application used by the <strong>Energy Analyst</strong> to visualise the results and logs of simulatiosn in real-time. This is not implemented in the current version.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<p>There are three main use cases for the users of the Illuminator:</p>
+<ol class="arabic simple">
+<li><p>Extending the model library: a <em>Model developer</em> wants to add a new model to the  <strong>Model Library</strong></p></li>
+<li><p>Creating a simullation scenario: an <em>Energy Analyst</em> wants to define a simulation scenario using a YAML file and execute the simulation.</p></li>
+<li><p>Set up a raspberry Pi cluster: a <strong>user</strong> wants to set up the Illuminator in a cluster of Raspberry Pi’s to run simulations.</p></li>
+</ol>
+<section id="extending-the-model-library">
+<h3>Extending the Model Library<a class="headerlink" href="#extending-the-model-library" title="Link to this heading"></a></h3>
+<p>Energy model should be added to the <strong>Model Library</strong> as follows:</p>
+<ol class="arabic simple">
+<li><p>Create a Python module with the name of the model. For example, <code class="docutils literal notranslate"><span class="pre">ExampleModel.py</span></code></p></li>
+<li><p>In the file, create an IlluminatorModel object for the model. This defines which inputs, output, parameters, states, triggers, etc. a particular model has.  For example:</p></li>
+</ol>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">illuminator.builder</span> <span class="kn">import</span> <span class="n">IlluminatorModel</span>
+<span class="c1"># Defines a model&#39;a paramters, inputs, outputs...</span>
+<span class="n">example_model</span> <span class="o">=</span> <span class="n">IlluminatorModel</span><span class="p">(</span>
+    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;param1&quot;</span><span class="p">:</span> <span class="s2">&quot;addition&quot;</span><span class="p">},</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;in1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;in2&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;out1&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="n">states</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;out1&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="n">time_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a class that inherits from <code class="docutils literal notranslate"><span class="pre">ModelConstructor</span></code>, and impement the <code class="docutils literal notranslate"><span class="pre">step()</span></code> method. Name the new class with the same name as the Python module it contains it. The new class will become a <em>model type</em> in the Illuminator. Instances of this model type will be created by the <strong>Scenario API</strong></p></li>
+</ol>
+<p>For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">illuminator</span> <span class="n">builder</span> <span class="kn">import</span> <span class="nn">ModelConstructor</span>
+
+<span class="k">class</span> <span class="nc">ExampleModel</span> <span class="p">(</span><span class="n">ModelConstructor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes this in every time step&quot;&quot;&quot;</span>
+
+        <span class="c1"># The computation logic goes here:</span>
+
+        <span class="c1"># return the time for the next time step</span>
+        <span class="k">return</span> <span class="n">time</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">time_step_size</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>To test the new model is implemented correctly, try:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># TODO: add example</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-simulation-scenarios">
+<h3>Creating Simulation Scenarios<a class="headerlink" href="#creating-simulation-scenarios" title="Link to this heading"></a></h3>
+<p>TODO</p>
+</section>
+<section id="setting-up-cluster-pi">
+<h3>Setting Up Cluster Pi<a class="headerlink" href="#setting-up-cluster-pi" title="Link to this heading"></a></h3>
+<p>Refer to <a class="reference internal" href="../cluster-setup.html"><span class="std std-doc">Cluster Pi setup.</span></a></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="set-up.html" class="btn btn-neutral float-left" title="Set Up Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="developer-docstrings.html" class="btn btn-neutral float-right" title="Docstrings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
