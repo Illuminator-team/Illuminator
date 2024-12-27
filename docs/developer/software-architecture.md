@@ -101,22 +101,19 @@ __all__ = ['BatteryModel',
            'ExampleModel' # add new model
 ```
 
-3. To test the new model has been added correctly, try:
+3. To test the new model has been added correctly, try to import into a Python module:
 
 ```python
 # Python file
 frmo illuminator.models import ExampleModel # test model import
 
-# TODO: add inistantiation example
+# run the file to check if importing is successful
 ```
-<!-- 
-### Creating Simulation Scenarios
 
-TODO
+### 2. Creating Simulation Scenarios
 
-### Setting Up Cluster Pi
+Refer to [simulation configuration file](../user/config-file.md).
 
-Refer to [Cluster Pi setup.](../cluster-setup.md)
+### 3. Setting Up Cluster Pi
 
- -->
-
+Refer to [Cluster Pi setup](../cluster-setup.md).
