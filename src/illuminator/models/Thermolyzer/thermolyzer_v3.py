@@ -43,7 +43,7 @@ class Thermolyzer(ModelConstructor):
 
         h_flow = self.generate(
             m_bio=input_data['biomass_in'],
-            power_in=input_data['flow2t'],
+            flow2t=input_data['flow2t'],
             max_advance = max_advance
             )
         h_gen = h_flow * self.time_resolution
@@ -70,10 +70,10 @@ class Thermolyzer(ModelConstructor):
         return power_in
         
 
-    def generate(self, m_bio, power_in, max_advance = 1):
+    def generate(self, m_bio, flow2t, max_advance = 1):
         # TODO: add water dependency once the conversion factor is known
         # restrict the input power to be maximally max_p_in
-        power_in = min(power_in, self.max_p_in) 
+        power_in = min(flow2t, self.max_p_in) 
         # restrict input power with ramp limits
         power_in = self.ramp_lim(flow2t, max_advance)
         # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:
