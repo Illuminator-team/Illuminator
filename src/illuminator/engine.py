@@ -13,7 +13,7 @@ from illuminator.schema.simulation import load_config_file
 
 current_model = {}
 
-def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
+def create_world(sim_config: dict, time_resolution: int, start_time: str) -> MosaikWorld:
     """
     Creates a Mosaik world object based on the simulation configuration.
 
@@ -23,6 +23,8 @@ def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
         The simulation configuration for the Mosaik world.
     time_resolution: int
         The time resolution of the simulation in seconds.
+    start_time: str
+        The start time of the simulation as an ISO 8601 time stamp.
 
     Returns
     -------
@@ -31,6 +33,7 @@ def create_world(sim_config: dict, time_resolution: int) -> MosaikWorld:
     """
 
     world = MosaikWorld(sim_config, time_resolution=time_resolution)
+    world._start_time = start_time
     return world
 
 
@@ -169,8 +172,11 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
 
             if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
                 
-                if 'start' not in model_parameters.keys() or 'file_path' not in model_parameters.keys():
-                    raise ValueError("The CSV model requires 'start' and 'file_path' parameters. Check your YAML configuration file.")
+                if 'file_path' not in model_parameters.keys():
+                    raise ValueError("The CSV model requires 'file_path' parameters. Check your YAML configuration file.")
+                
+                if 'start' not in model_parameters.keys():
+                    model_parameters['start'] = world._start_time
                 
                 simulator = world.start(sim_name=model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
@@ -407,7 +413,7 @@ class Simulation:
         _results_file = config['monitor']['file']
 
         # Initialize the Mosaik worlds
-        world = create_world(sim_config, time_resolution=_time_resolution)
+        world = create_world(sim_config, time_resolution=_time_resolution, start_time=_start_time)
         # TODO: collectors are also customisable simulators, define in the same way as models.
         # A way to define custom collectors should be provided by the Illuminator.
         collector = world.start('Collector', 
