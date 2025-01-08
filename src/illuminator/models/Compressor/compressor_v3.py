@@ -1,6 +1,6 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
 
-class Electrolyzer(ModelConstructor):
+class Compressor(ModelConstructor):
     parameters={
             'p_in' : 30,            # input pressure [bar]
             'p_out' : 500,          # output pressure [bar]

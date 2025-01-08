@@ -7,9 +7,9 @@ class H2Storage(ModelConstructor):
                 'h2_soc_max': 100,          # Maximum state of charge of the hydrogen storage before charging stops [%]
                 'h2_charge_eff': 100,       # Charge efficiency of the H2 storage [%]
                 'h2_discharge_eff': 100,    # Discharge efficiency of the H2 storage [%]
-                'max_h2': 10,              # maximal flow (?) [kg/timestep]
+                'max_h2': 10,               # maximal flow (?) [kg/timestep]
                 'min_h2': -10,              # minimal flow (?) [kg/timestep]
-                'h2_capacity_tot':100          # total capacity of the hydrogen stroage [kg]
+                'h2_capacity_tot':100       # total capacity of the hydrogen stroage [kg]
                 }
     
     inputs={'flow2h2storage': 0             # pos or neg flow to H2 storage [kg/timestep]
