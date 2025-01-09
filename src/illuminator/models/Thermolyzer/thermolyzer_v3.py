@@ -18,10 +18,9 @@ class Thermolyzer(ModelConstructor):
     outputs={
             'h_gen' : 0,            # hydrogen generation [kg/timestep]
             'CO2_out' : 0           # CO2 output [kg/timestep]
-
+ 
     },
     states={},
-
 
     # other attributes
     time_step_size=1,
@@ -30,7 +29,7 @@ class Thermolyzer(ModelConstructor):
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
     
     def step(self, time, inputs, max_advance=1) -> None:
-
+        
         print("\nThermolyzer:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
@@ -54,18 +53,33 @@ class Thermolyzer(ModelConstructor):
         
         return time + self._model.time_step_size
     
-    def ramp_lim(self, flow2e, max_advance):
+    def ramp_lim(self, flow2t, max_advance):
+        """
+        Limits the thermolizer input flow
+
+        ...
+
+        Parameters
+        ----------
+        flow2t : float
+            output pressure [kg/timestep]
+
+        Returns
+        -------
+        density : float
+            The new found density after compression [kg/m3]
+        """
         # restrict the power input to not increase more than max_p_ramp_rate
         # compared to the last timestep
         # TODO: check method of using paramters (self. or .get())
-        p_change = flow2e - self.p_in_last
+        p_change = flow2t - self.p_in_last
         if abs(p_change) > self.max_p_ramp_rate:
             if p_change > 0:
                 power_in = self.p_in_last + self.max_p_ramp_rate * max_advance
             else:
                 power_in = self.p_in_last - self.max_p_ramp_rate * max_advance
         else:
-            power_in = flow2e
+            power_in = flow2t
         self.p_in_last = power_in
         return power_in
         

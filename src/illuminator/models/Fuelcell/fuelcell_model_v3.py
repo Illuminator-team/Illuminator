@@ -41,6 +41,21 @@ class Fuelcell(ModelConstructor):
     
 
 def power_out(self, h2_flow2f):
+    """
+    Calculates the output power of the fuelcell
+
+    ...
+
+    Parameters
+    ----------
+    h2_flow2f : float
+        H2 flow into the fuelcell [kg/timestep]
+
+    Returns
+    -------
+    p_out : float
+        The outout power of the fuelcell [kW]
+    """
     # limit hydrogen consumption by the minimum and maximum hydrogen the fuelcell can accept
     h2_flow = max(self.h2_min, min(self.h2_max, h2_flow2f))         # [kg/timestep]
     h2_flow = h2_flow / self.timestep                               # [kg/s]

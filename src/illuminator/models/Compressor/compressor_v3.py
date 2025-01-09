@@ -58,6 +58,21 @@ class Compressor(ModelConstructor):
         return time + self._model.time_step_size
     
     def power_req(self, flow, p_in, p_out, T_amb, max_advance):
+        """
+        Simulates the discharging process based on the soc and the incoming flow. Returns parameters based on the capacbilities of the h2 storage
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2storage : float
+            Desired output flow [kg/timestep]
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         # calculates the power required to compress the hydrogen in the compressor
         w_isentropic = self.gamma / (self.gamma - 1) * self.R * T_amb * (p_out / p_in) ** (self.gamma / (self.gamma - 1)) - 1 # [J/mol]
         w_real = w_isentropic / self.compressor_eff
@@ -66,11 +81,45 @@ class Compressor(ModelConstructor):
         return power_in
 
     def new_density(self, p, T):
+        """
+        Calculates and outputs the new density of h2after compression
+
+        ...
+
+        Parameters
+        ----------
+        p : float
+            Output pressure [bar]
+        T : float
+            Temperature of operation [K]
+
+        Returns
+        -------
+        density : float
+            The new found density after compression [kg/m3]
+        """
         z_val = self.find_z_val(p, T)
         density = (p * self.mmh2)/(z_val * self.R * T)  # kg/m3
         return density
 
     def find_z_val(self, press, temp):
+        """
+        Finds the Z value needed to compute the new density.
+
+        ...
+
+        Parameters
+        ----------
+        press : float
+            Compressor utput pressure [bar]
+        temp : float
+            Temperature of operation [K]
+
+        Returns
+        -------
+        z_val : float
+            The Z value that best matches the given pressure and temperature
+        """
         # table with Z-values. rows represent pressure, columns represent temperature
         z_values = [
             [1.00070, 1.00004, 1.0006, 1.00055, 1.00047, 1.00041, 1.00041],

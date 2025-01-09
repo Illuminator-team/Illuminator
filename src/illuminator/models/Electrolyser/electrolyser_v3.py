@@ -4,7 +4,7 @@ class Electrolyzer(ModelConstructor):
     parameters={
             'e_eff' : 70,       # electrolyzer effficiency [%]
             'max_p_in' : 10,    # maximum input power [kW]
-            'max_p_ramp_rate' : 10   # maximum rampup power [kW/timestep]
+            'max_p_ramp_rate' : 10   # maximum rampup power [kW/s]
             
     },
     inputs={
@@ -44,8 +44,7 @@ class Electrolyzer(ModelConstructor):
             flow2e=input(input_data['flow2e']),
             eff=self.e_eff,
             hhv=self.hhv,
-            mmh2=self.mmh2,
-            max_advance = max_advance
+            mmh2=self.mmh2
             ) 
         h_gen = h_flow * self.time_resolution          
         self._model.outputs['h_gen'] = h_gen
@@ -53,25 +52,62 @@ class Electrolyzer(ModelConstructor):
         
         return time + self._model.time_step_size
     
-    def ramp_lim(self, flow2e, max_advance):
+    def ramp_lim(self, flow2e):
+
+        """
+        Limits the input power by the maximimum ramp up limits.
+
+        ...
+
+        Parameters
+        ----------
+        flow2e : float
+            Input power flow [kW]
+
+        Returns
+        -------
+        power_in : float
+            Input power after implemeting ramping limits [kW]
+        """
         # restrict the power input to not increase more than max_p_ramp_rate
         # compared to the last timestep
         # TODO: check method of using paramters (self. or .get())
         p_change = flow2e - self.p_in_last
         if abs(p_change) > self.max_p_ramp_rate:
             if p_change > 0:
-                power_in = self.p_in_last + self.max_p_ramp_rate * max_advance
+                power_in = self.p_in_last + self.max_p_ramp_rate * self.time_resolution
             else:
-                power_in = self.p_in_last - self.max_p_ramp_rate * max_advance
+                power_in = self.p_in_last - self.max_p_ramp_rate * self.time_resolution
         else:
             power_in = flow2e
         self.p_in_last = power_in
         return power_in
         
 
-    def generate(self, flow2e, eff, hhv, mmh2, max_advance):
+    def generate(self, flow2e, eff, hhv, mmh2):
+        """
+        Calculates the hydrogen produced per timestep taking the maximum electric power into account.
+
+        ...
+
+        Parameters
+        ----------
+        flow2e : float
+            Input power flow [kW]
+        eff : float
+            Electrolyzer efficiency [%]
+        hhv : float
+            Higher heating value of hydrogen [kJ/mol] 
+        mmh2 : float
+            Molar mass of hydrogen [g/mol]
+
+        Returns
+        -------
+        h_out : float
+            Output flow of hyrdgen [kg/timestep]
+        """
         # restrict the input power to be maximally max_p_in
         flow2e = min(flow2e, self.max_p_in) 
-        power_in = self.ramp_lim(flow2e, max_advance)
-        h_out = (power_in * eff * mmh2) / (hhv * 1000)
+        power_in = self.ramp_lim(flow2e)
+        h_out = (power_in * eff / 100 * mmh2) / (hhv * 1000)
         return h_out

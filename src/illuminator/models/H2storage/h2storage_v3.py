@@ -23,8 +23,8 @@ class H2Storage(ModelConstructor):
              'flag': -1         # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
              }
     states={
-            # 'soc': 0,
-            # 'flag': 0
+            'soc': 0,
+            'flag': 0
             } 
     
     # define other attributes
@@ -32,7 +32,7 @@ class H2Storage(ModelConstructor):
     time = None
     
     def step(self, time, inputs, max_advance=1) -> None:
-
+        # TODO implement output
         print("\nH2 storage:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
@@ -49,8 +49,22 @@ class H2Storage(ModelConstructor):
         
         return time + self._model.time_step_size
     
-    def discharge(self, flow2h2storage):
+    def discharge(self, flow2h2storage:float) -> dict: 
+        """
+        Simulates the discharging process based on the soc and the incoming flow. Returns parameters based on the capacbilities of the h2 storage
 
+        ...
+
+        Parameters
+        ----------
+        flow2h2storage : float
+            Desired output flow (negative) [kg/timestep]
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         flow = max(self.min_h2, flow2h2storage) # discharged h2 must be minimally the min_h2
         h22discharge = flow2h2storage * self.time_resolution / self.h2_discharge_eff # the amoount of hydrogen desired to be discharged (neg)
         h2_capacity = (self.soc_min - self.soc) / 100 * self.h2_capacity_tot # amount of h2 that can be discharged (neg)
@@ -78,7 +92,22 @@ class H2Storage(ModelConstructor):
         return re_params
     
     def charge(self, flow2h2storage):
-        
+        """
+        Simulates the charging process based on the soc and the incoming flow. Returns parameters based on the capacbilities of the h2 storage.
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2storage : float
+            Desired output flow (positive) [kg/timestep]
+
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
+                
         flow = min(self.max_h2, flow2h2storage)
         h22charge = flow2h2storage * self.time_resolution * self.h2_charge_eff # the amoount of hydrogen desired to be charged (pos)
         h2_capacity = (self.soc_max - self.soc) / 100 * self.h2_capacity_tot # amount of h2 that can be charged till full (pos)
@@ -106,7 +135,23 @@ class H2Storage(ModelConstructor):
         return re_params
 
 
-    def output_flow(self, flow2h2storage, soc):
+    def output_flow(self, flow2h2storage:float, soc:float) -> dict:
+        """
+        Controller that determines to charge, discharge, or do nothing based on the desired flow. Outputs the actual flow.
+
+        ...
+
+        Parameters
+        ----------
+        flow2h2storage : float
+            Desired output flow [kg/timestep]
+        soc : float
+            current state of charge of the h2 storage [%]
+        Returns
+        -------
+        re_params : dict
+            Collection of parameters and their respective values
+        """
         self.soc = soc
         if flow2h2storage == 0:         # no action
             # Here the state of the storage is updated in case there is no supply/demand
