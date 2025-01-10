@@ -9,7 +9,8 @@ class Controller(ModelConstructor):
                 'h2_soc_max': 100,  # Maximum state of charge of the hydrogen storage before charging stops
                 'fc_eff': 100  # Efficiency of the fuel cell
                 }
-    inputs={'wind_gen': 0,  # Wind power generation
+    inputs={'u60' : 0,
+            'wind_gen': 0,  # Wind power generation
             'pv_gen': 0,  # Solar power generation
             'load_dem': 0,  # Electrical load demand
             'soc': 0,  # State of charge of the battery
@@ -48,12 +49,7 @@ class Controller(ModelConstructor):
             h2_soc=input_data.get('h2_soc', 0)
             )
 
-        
-        self._model.outputs['flow2b'] = results['flow2b']
-        self._model.outputs['flow2e'] = results['flow2e']
-        self._model.outputs['dump'] = results['dump']
-        self._model.outputs['h2_out'] = results['h2_out']
-
+        self.set_outputs(results)
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size

@@ -1,38 +1,6 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
 import numpy as np
 
-# Define the model parameters, inputs, outputs...
-pv = IlluminatorModel(
-    parameters={
-        "m_area": 0,  # Module area of the PV panel in m².
-        "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
-        "m_efficiency_stc": 0,  # Module efficiency under standard test conditions (STC).
-        "G_NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
-        "P_STC": 0,  # Power output of the module under STC (W).
-        "peak_power": 0,  # Peak power output of the module (W).
-        "time_interval": 0  # Time interval for the simulation in hours, derived from the resolution parameter.
-        },
-    inputs={
-        "G_Gh": 0,  # Global Horizontal Irradiance (GHI) in W/m², representing the total solar radiation received on a horizontal surface.
-        "G_Dh": 0,  # Diffuse Horizontal Irradiance (DHI) in W/m², representing the solar radiation received from the sky, excluding the solar disk.
-        "G_Bn": 0,  # Direct Normal Irradiance (DNI) in W/m², representing the solar radiation received directly from the sun on a surface perpendicular to the sun’s rays.
-        "Ta": 0,  # Ambient temperature (°C) of the environment surrounding the PV panels.
-        "hs": 0,  # Solar elevation angle (degrees), indicating the height of the sun in the sky.
-        "FF": 0,  # Wind speed (m/s), which affects the temperature and performance of the PV panels.
-        "Az": 0  # Sun azimuth angle (degrees), indicating the sun's position in the horizontal plane.
-        },
-    outputs={
-        "pv_gen": 0,  # Generated PV power output (kW) or energy (kWh) based on the chosen output type (power or energy).
-        "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
-        },
-    states={
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
-        },
-    time_step_size=1,
-    time=None
-    )
-
 # construct the model
 class PV(ModelConstructor):
     parameters={
@@ -75,6 +43,8 @@ class PV(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         print("PV here")
         print("inputs:", input_data)
+        if input_data['G_Gh'] > 0:
+            pass
 
         # for eid, attrs in inputs.items():
 
@@ -95,8 +65,8 @@ class PV(ModelConstructor):
         self._cache = {}
         results = self.connect(input_data['G_Gh'], input_data['G_Dh'], input_data['G_Bn'], input_data['Ta'], input_data['hs'], input_data['FF'], input_data['Az'])
         # self._cache[eid] = results
-        for key, value in results.items():
-            self._model.outputs[key] = value
+        self.set_outputs({'pv_gen': results['pv_gen']})
+
         return time + self._model.time_step_size
 
 
@@ -254,10 +224,10 @@ class PV(ModelConstructor):
 
         if self.output_type == 'energy':
             p_ac = (total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4  # kWh
+                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4 / 1000 # kWh TODO: implement time interval or smh
         elif self.output_type == 'power':
             p_ac = ((total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses) )  # kW
+                    self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
 
@@ -298,10 +268,3 @@ class PV(ModelConstructor):
         # print('1')
         # print(sun_az, ws, dni, dhi, ghi, sun_el, ambient_temp)
         return self.output()
-
-if __name__ == '__main__':
-    # Create a model by inheriting from ModelConstructor
-    # and implementing the step method
-    pv_model = PV(pv)
-
-    print(pv_model.step(1))

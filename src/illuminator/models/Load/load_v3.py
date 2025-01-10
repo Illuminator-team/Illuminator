@@ -60,9 +60,11 @@ class Load(ModelConstructor):
 
         # self._cache = {}
         # self._cache[eid]
-        results = self.demand(load=input_data['load'])
-        self._model.outputs['load_dem'] = results['load_dem']
-        self._model.outputs['consumption'] = results['load_dem']
+        load_in = input_data.get('load', 0)
+        results = self.demand(load=load_in)
+        self.set_outputs(results)
+        # self._model.outputs['load_dem'] = results['load_dem']
+        # self._model.outputs['consumption'] = results['load_dem']
 
         return time + self._model.time_step_size
     

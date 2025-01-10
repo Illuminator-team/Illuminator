@@ -80,7 +80,7 @@ class IlluminatorModel():
                 self.model_type: { # This must be the name of he model 
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys()) + list(self.states.keys())
                 }
             }}
         return meta
@@ -88,10 +88,8 @@ class IlluminatorModel():
     def _validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
         for state in self.states:
-            if state not in self.parameters and state not in self.inputs and \
-                    state not in self.outputs:
-                raise ValueError(f"State: {state} must be either a parameter, "
-                                 "an input or an output")
+            if state in self.parameters:
+                raise ValueError(f"State: {state} is also defined as a parameter")
 
     def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""
@@ -124,6 +122,8 @@ class ModelConstructor(ABC, Simulator):
     def __init__(self, **kwargs) -> None:
         #model: IlluminatorModel
         model_vals = engine.current_model
+        if model_vals['type'] == 'Wind':
+            pass
         model = IlluminatorModel(
                 parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
                 inputs=model_vals.get('inputs', self.inputs),
@@ -135,9 +135,9 @@ class ModelConstructor(ABC, Simulator):
         super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
-        self.time = 0  # time is an interger wihout a unit
+        self.time = 0  # time is an integer without a unit
 
-        # we want the parameters to be directly accesible for the simulator
+        # we want the parameters to be directly accessible for the simulator
         for key, value in self._model.parameters.items():
             setattr(self, key, value)
 
@@ -226,16 +226,65 @@ class ModelConstructor(ABC, Simulator):
                     raise RuntimeError(f"{self.sid}.{eid} does not have '{attr}' as input, output or state")
             # print(f"data: {data}")
         return data
+    
+    
+    def get_state(self, attr):
+        """Get the state of the model"""
+        if attr in self._model.states:
+            if isinstance(self._model.states[attr], dict):  # in the case it was prepared for a connection previously
+                return self._model.states[attr]['value']
+            
+            # TODO instead of doing this, convert all initial values to the connection format somewhere early on
+            else: # in the case it was set by an initital value
+                return self._model.states[attr]
+            return self._model.states[attr]
+        else:
+            raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as state")
+
+    
+    def set_states(self, states):
+        """Set the states of the model"""
+        for attr, value in states.items():
+            if attr in self._model.states:
+                self._model.states[attr] ={'message_origin': 'state', 'value': value}
+            else:
+                raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as state")
+
+
+    def set_outputs(self, outputs):
+        """Set the outputs of the model"""
+        for attr, value in outputs.items():
+            if attr in self._model.outputs:
+                self._model.outputs[attr] = {'message_origin': 'output', 'value': value}
+            else:
+                raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as output")
 
 
     def unpack_inputs(self, inputs):
         data = {}
         for attrs in inputs.values():
             for attr, sources in attrs.items():
-                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
-                if len(values) > 1:
-                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
-                data[attr] = values[0]
+                messages = list(sources.values())
+                if not all(isinstance(message, dict) and 'message_origin' in message for message in messages):
+                    raise RuntimeError(f"All messages sent over connections must have an attribute 'message_origin'. Connection: from: {sources}, to: {self.sid},  messages {messages}, input {attr}, make sure to use set_states or set_outputs() and set_states()")
+                
+                # check if all connections are with the same type, either output (physical) or state (data)
+                if not all(message['message_origin'] == messages[0]['message_origin'] for message in messages):
+                    raise RuntimeError(f"All values must have the same type: values: {messages}, input {attr}")
+
+                # if the attribute is coming from a connection with an output
+                if messages[0]['message_origin'] == 'output':
+                    data[attr] = sum(message['value'] for message in messages)
+                
+                # if the attribute is coming from a connection with a state
+                elif messages[0]['message_origin'] == 'state':
+                    if len(messages) > 1:
+                        raise RuntimeError(f"Got multiple values from a state connection: values {messages}, input {attr}")
+                    data[attr] = messages[0]['value']
+
+                # if not coming from output nor from state
+                else:
+                    raise RuntimeError(f"Connection coming from {messages[0]['message_origin']} not implemented yet")
         return data
 
 if __name__ == "__main__":

@@ -62,15 +62,15 @@ models:
 - name: PV1
   type: PV # models can reuse the same type
   parameters:
-    m_area: 1.26
-    NOCT: 44
+    m_area: 1.26  # m2
+    NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
-    G_NOCT: 800
-    P_STC: 250
-    peak_power: 600
-    m_tilt: 14
-    m_az: 180
-    cap: 500
+    G_NOCT: 800  # W/m2
+    P_STC: 250  # W
+    peak_power: 600  # W
+    m_tilt: 14  # degrees
+    m_az: 180  # degrees
+    cap: 500  # W
     output_type: 'power'
   inputs: 
     G_Gh: null 
@@ -99,6 +99,8 @@ models:
   outputs:
     wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
     u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+  states:
+    u60: 5
 
 - name: Battery1
   type: Battery # models can reuse the same type
@@ -115,9 +117,10 @@ models:
   outputs:
     p_out: 0  # output power from the battery after discharge/charge decision (Kw)
     p_in: 0  # input power to the battery (kW)
-    soc: 80  # updated state of charge after battery operation (%)
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+  states:
+    soc: 10  # state of charge of the battery (%)
 
 - name: Controller1
   type: Controller # models can reuse the same type
@@ -128,6 +131,7 @@ models:
     h2_soc_max: 0  # Maximum state of charge of the hydrogen storage before charging stops
     fc_eff: 100  # Efficiency of the fuel cell
   inputs:
+    u60: 0
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
@@ -166,6 +170,10 @@ connections:
 
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
+- from: Wind1.u60
+  to: Controller1.u60
+
+
 - from: PV1.pv_gen
   to: Controller1.pv_gen
 - from: Load1.load_dem
@@ -182,11 +190,22 @@ connections:
 monitor:
   file: './out_Tutorial1.csv'
   items:
-    - CSV_pv.G_Gh
+    #- CSV_pv.G_Gh
+    # - Controller1.dump
+    # - PV1.pv_gen
+    # - Wind1.wind_gen
+    # - Load1.load_dem
+
+    - Controller1.flow2b
+    #- Controller1.res_load
     - Controller1.dump
+    - Battery1.p_out
+    - Battery1.soc
     - PV1.pv_gen
     - Wind1.wind_gen
     - Load1.load_dem
+    - Wind1.u60
+
   #- CSVload.load
   #- Load1.load_dem
   #- Load2.load_dem

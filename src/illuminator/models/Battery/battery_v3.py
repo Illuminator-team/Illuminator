@@ -69,19 +69,23 @@ class Battery(ModelConstructor):
         print('from battery %%%%%%%%', current_time)
         eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
 
-        print('state of charge: ', self._model.outputs['soc'])
+        self.soc = self.get_state('soc')
+        print('state of charge: ', self.soc)
 
         self._cache = {}
         # if input_data['flow2b'] != 0:
         #raghav: In this model, the input should come from the controller p_ask
-        self._cache[eid] = self.output_power(input_data['flow2b'], self._model.outputs['soc'])
+        results = self.output_power(input_data['flow2b'])
 
         # self._cache[eid] = self.entities[eid].output_power(energy_ask, self.soc[eid])          # * max_advance if trigger
 
         # print(self._cache[eid])
         # [p_out:,soc:,flag:]
-        self._model.outputs['soc'] = self._cache[eid]['soc']
-        self._model.outputs['flag'] = self._cache[eid]['flag']
+        # self._model.outputs['soc'] = self._cache[eid]['soc']
+        # self._model.outputs['flag'] = self._cache[eid]['flag']
+        self.soc = results.pop('soc')
+        self.set_states({'soc': self.soc}) # set the state of charge and remove it from the results at the same time
+        self.set_outputs(results)
         # check = list(self.soc.values())
         # check2 = check[0]  # this is so that the value that battery sends is dictionary and not a dictionary of a dictionary.
         #    out = yield self.mosaik.set_data({'Battery-0': {'Controller-0.ctrl_0': {'soc': check2}}})  # this code is supposed to hold the soc value and
@@ -89,17 +93,6 @@ class Battery(ModelConstructor):
         print('\n')
         return time + self._model.time_step_size
 
-    def parse_inputs(self, inputs):
-    # TODO: Move this function to model.py to unpack the inputs, for now we will keep it model specific.
-        data = {}
-        for attrs in inputs.values():
-            for attr, sources in attrs.items():
-                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
-                if len(values) > 1:
-                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
-                data[attr] = values[0]
-        return data
-    
 
     # this method is called from the output_power method when conditions are met.
     def discharge_battery(self, flow2b:int) -> dict:  #flow2b is in kw
@@ -204,7 +197,7 @@ class Battery(ModelConstructor):
 # first, this is checked. As per the p_ask and soc, everything happens.
 # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
     # when we want to make a battery model.
-    def output_power(self, flow2b:int, soc:int) -> dict:#charging power: positive; discharging power:negative
+    def output_power(self, flow2b:int) -> dict:#charging power: positive; discharging power:negative
         """
         Gives information depending on the current flow2b and soc value.
         If there is no power demand it gives in current battery state of charge information.
@@ -216,15 +209,12 @@ class Battery(ModelConstructor):
         ----------
         flow2b : int
             ???
-        soc : int
-            The current state of charge (SOC)
 
         Returns
         -------
         re_params : dict
             Collection of parameters and their respective values
         """
-        self.soc = soc  # here we assign the value of soc we provide to the attribute self.soc
         data_ret = {}
         # {'p_out',
         # 'soc',
