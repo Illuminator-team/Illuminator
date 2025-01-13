@@ -120,7 +120,7 @@ models:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
   states:
     soc: 10  # state of charge of the battery (%)
-    flag: 0
+    flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
   type: Controller # models can reuse the same type
