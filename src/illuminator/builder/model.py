@@ -118,6 +118,16 @@ class IlluminatorModel():
 
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
+    parameters: Dict = {}
+    inputs: Dict = {}
+    outputs: Dict = {}
+    states: Dict = {}
+    time_step_size: int = 1
+
+    # TODO: make this work
+    # def multipleModelDecorator(self, function, **kwargs):
+    #     for eid, entity in self.entities.items():
+    #         function(entity, kwargs)
 
     def __init__(self, **kwargs) -> None:
         #model: IlluminatorModel
