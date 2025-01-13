@@ -65,8 +65,10 @@ connections:
   #time_shifted: True
 - from: CSVB.flow2b
   to: Battery1.flow2b
-- from: CSVB.load
-  to: Load1.load
+# - from: CSVB.load
+#   to: Load1.load
+- from: Load1.load
+  to: Battery1.p_in
 
 monitor:
   file: './out_battery.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
