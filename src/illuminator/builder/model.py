@@ -146,10 +146,8 @@ class ModelConstructor(ABC, Simulator):
         self._model = model
         self.model_entities = {}
         self.time = 0  # time is an integer without a unit
-
-        # we want the parameters to be directly accessible for the simulator
-        for key, value in self._model.parameters.items():
-            setattr(self, key, value)
+        self.sid = None
+        self.time_resolution = None
 
     @abstractmethod
     def step(self, time:int, inputs:dict=None, max_advance:int=None) -> int:
@@ -174,6 +172,7 @@ class ModelConstructor(ABC, Simulator):
 
         """
         pass
+
 
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
         # TODO: from engine.py, time_resolution is never passed
@@ -206,16 +205,22 @@ class ModelConstructor(ABC, Simulator):
     
     def current_time(self): 
         """Returns the current time of the simulation"""
-        pass
         # TODO: implement this method
+        return
 
     def get_data(self, outputs) -> Dict: # TODO remove the print statements here
-        """Expose model outputs and states to the simulation environment
-        
+        """
+        Gets data from model outputs based on requested attributes. Used by MOSAIK.
+
+        Parameters
+        ----------
+        outputs : dict
+            Dictionary mapping entity IDs to lists of requested output attributes
+            
         Returns
         -------
-        Dict
-            A dictionary of model outputs and states.
+        data : dict
+            Dictionary containing the requested output values for each entity
         """
         data = {}
         # print(f"Here are your outputs: {outputs}")
@@ -239,7 +244,19 @@ class ModelConstructor(ABC, Simulator):
     
     
     def get_state(self, attr):
-        """Get the state of the model"""
+        """
+        Gets the current value of a state attribute.
+
+        Parameters
+        ----------
+        attr : str
+            Name of the state attribute to retrieve
+            
+        Returns
+        -------
+        value : Any
+            The current value of the requested state attribute
+        """
         if attr in self._model.states:
             if isinstance(self._model.states[attr], dict):  # in the case it was prepared for a connection previously
                 return self._model.states[attr]['value']
@@ -253,7 +270,19 @@ class ModelConstructor(ABC, Simulator):
 
     
     def set_states(self, states):
-        """Set the states of the model"""
+        """
+        Sets state values for the model.
+
+        Parameters
+        ----------
+        states : dict
+            Dictionary containing state names and their values to be set
+            
+        Returns
+        -------
+        None
+            This method does not return anything
+        """
         for attr, value in states.items():
             if attr in self._model.states:
                 self._model.states[attr] ={'message_origin': 'state', 'value': value}
@@ -262,7 +291,19 @@ class ModelConstructor(ABC, Simulator):
 
 
     def set_outputs(self, outputs):
-        """Set the outputs of the model"""
+        """
+        Sets output values for the model.
+
+        Parameters
+        ----------
+        outputs : dict
+            Dictionary containing output names and their values to be set
+            
+        Returns
+        -------
+        None
+            This method does not return anything
+        """
         for attr, value in outputs.items():
             if attr in self._model.outputs:
                 self._model.outputs[attr] = {'message_origin': 'output', 'value': value}
@@ -271,6 +312,19 @@ class ModelConstructor(ABC, Simulator):
 
 
     def unpack_inputs(self, inputs):
+        """
+        Unpacks input values from connected simulators and processes them based on their message origin.
+
+        Parameters
+        ----------
+        inputs : dict
+            Dictionary containing input values from connected simulators with their message origins
+            
+        Returns
+        -------
+        data : dict
+            Dictionary containing processed input values, summed for outputs or single values for states
+        """
         data = {}
         for attrs in inputs.values():
             for attr, sources in attrs.items():
