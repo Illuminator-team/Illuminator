@@ -132,15 +132,21 @@ class ModelConstructor(ABC, Simulator):
     def __init__(self, **kwargs) -> None:
         #model: IlluminatorModel
         model_vals = engine.current_model
-        if model_vals['type'] == 'Wind':
-            pass
+        
+        self.parameters = model_vals.get('parameters', self.parameters)
+        self.inputs = model_vals.get('inputs', self.inputs)
+        self.outputs = model_vals.get('outputs', self.outputs)
+        self.states = model_vals.get('states', self.states)
+        self.time_step_size = model_vals.get('time_step_size', self.time_step_size)
+        self.model_type = model_vals.get('type', 'Model')
+
         model = IlluminatorModel(
-                parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
-                inputs=model_vals.get('inputs', self.inputs),
-                outputs=model_vals.get('outputs', self.outputs),
-                states=model_vals.get('states', self.states),
-                model_type=model_vals.get('type', {}),
-                time_step_size=model_vals.get('time_step_size', self.time_step_size)
+                parameters=self.parameters, # get the yaml values or the default from the model
+                inputs=self.inputs,
+                outputs=self.outputs,
+                states=self.states,
+                model_type=self.model_type,
+                time_step_size=self.time_step_size
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
