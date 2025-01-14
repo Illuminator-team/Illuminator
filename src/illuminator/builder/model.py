@@ -175,7 +175,7 @@ class ModelConstructor(ABC, Simulator):
 
 
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
-        # TODO: from engine.py, time_resolution is never passed
+        # TODO: from engine.py, time_resolution is never passed. hint: check engine self.start call
 
         print(f"running extra init")
         # This is the standard Mosaik init method signature
