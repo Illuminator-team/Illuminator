@@ -6,7 +6,8 @@ class Compressor(ModelConstructor):
             'p' : 300,              # pressure of the hydrogen [bar]
             'p_outer':1,            # pressure outside of the pipe [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
-            'd' : 0.01              # pipe thickness [m]
+            'd' : 0.01,             # pipe thickness [m]
+            'eps' : 1               # pipe roughness [m]
 
     },
     inputs={
@@ -193,9 +194,12 @@ class Compressor(ModelConstructor):
         D = 2 * np.sqrt(self.A / np.pi)     # pipe diameter [m]
         v = 00
         Re = (density * v * D) /  # Reynolds number [-]
-        f = 
-        
+        if Re <= 2300:
+            f = 64 / Re
+        else:
+            f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11)) ** -2      
         pressure_loss = f * (L * density * v^2) / (2 * D)
+        return pressure_loss
 
     def viscosity(self, T):
        """
@@ -212,4 +216,10 @@ class Compressor(ModelConstructor):
         mu : float
             Visosity of hydrogen [10-5 Pa s]
         """
-       
+       temps = [273.15, 293.15, 323.15, 373.15, 473.15, 573.15, 673.15, 773.15, 873.15] 
+       visc = [0.84, 0.88, 0.94, 1.04, 1.21, 1.37, 1.53, 1.69, 1.84]
+
+       closest_temp = min(temps, key=lambda t: abs(t - T))
+       viscosity = visc[visc.index(closest_temp)]
+       return viscosity
+
