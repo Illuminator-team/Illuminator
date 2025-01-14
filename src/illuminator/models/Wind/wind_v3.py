@@ -77,7 +77,7 @@ class Wind(ModelConstructor):
         self.cp = self.parameters['cp']
         self.diameter = self.parameters['diameter']
         self.output_type = self.parameters['output_type']
-        self.resolution_h = self.time_resolution / 60 / 60  # convert scenario resolution to hours
+
 
 
     # define step function
@@ -92,6 +92,7 @@ class Wind(ModelConstructor):
         Returns:
             float: Next simulation time in seconds
         """
+        self.resolution_h = self.time_resolution / 60 / 60  # convert scenario resolution to hours
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
 
         results = self.generation(u=input_data['u'])
