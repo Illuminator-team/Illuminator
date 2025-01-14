@@ -39,7 +39,7 @@ class Compressor(ModelConstructor):
         print("\nCompressor:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
-        # get input data 
+        # get input data push test
         input_data = self.unpack_inputs(inputs)
         print("input data: ", input_data)
 
