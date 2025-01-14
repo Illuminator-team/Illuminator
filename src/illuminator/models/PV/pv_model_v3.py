@@ -35,6 +35,38 @@ class PV(ModelConstructor):
     output()
         Calculates final PV power or energy output.
     """
+    """
+    A class to represent a PV model.
+    This class provides methods to calculate PV power output based on environmental conditions and panel specifications.
+
+    Attributes
+    parameters : dict
+        Dictionary containing PV parameters such as module area, NOCT, efficiencies, peak power, tilt angle, and azimuth.
+    inputs : dict
+        Dictionary containing environmental inputs like irradiance, temperature, solar angles and wind speed.
+    outputs : dict
+        Dictionary containing calculated outputs like PV generation and irradiance values.
+    states : dict
+        Dictionary containing the state variables of the PV model.
+    time_step_size : int
+        Time step size for the simulation.
+    time : int or None
+        Current simulation time.
+
+    Methods
+    __init__(**kwargs)
+        Initializes the PV model with the provided parameters.
+    step(time, inputs, max_advance=900)
+        Simulates one time step of the PV model.
+    connect(G_Gh, G_Dh, G_Bn, Ta, hs, FF, Az)
+        Processes input parameters and calculates PV output.
+    total_irr()
+        Calculates total irradiance on tilted surface.
+    Temp_effect()
+        Calculates temperature-dependent module efficiency.
+    output()
+        Calculates final PV power or energy output.
+    """
     parameters={
         "m_area": 0,  # Module area of the PV panel in m².
         "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
@@ -147,6 +179,8 @@ class PV(ModelConstructor):
         -------
         sun_azimuth : float
             Sun azimuth angle in degrees, indicating the sun's position in the horizontal plane.
+        sun_azimuth : float
+            Sun azimuth angle in degrees, indicating the sun's position in the horizontal plane.
         """
         sun_azimuth = self.sun_az
         return sun_azimuth
@@ -161,7 +195,10 @@ class PV(ModelConstructor):
         -------
         sun_elevation : float
             Solar elevation angle in degrees, indicating the height of the sun in the sky.
+        sun_elevation : float
+            Solar elevation angle in degrees, indicating the height of the sun in the sky.
         """
+        sun_elevation = self.hs
         sun_elevation = self.hs
         return sun_elevation
 
@@ -174,10 +211,18 @@ class PV(ModelConstructor):
         - Sun elevation angle
         - Sun azimuth angle
         - Module azimuth angle
+        Calculates the cosine of the angle of incidence (AOI) between the sun's rays and the PV module surface.
+
+        Takes into account:
+        - Module tilt angle
+        - Sun elevation angle
+        - Sun azimuth angle
+        - Module azimuth angle
 
         Returns
         -------
         cos_aoi : float
+            Cosine of the angle of incidence (AOI) as a fraction
             Cosine of the angle of incidence (AOI) as a fraction
         """
         cos_aoi = np.array(np.cos(np.radians(90 - self.m_tilt)) * np.cos(np.radians(self.sun_elevation())) * np.cos(
@@ -190,7 +235,11 @@ class PV(ModelConstructor):
     def diffused_irr(self) -> float:
         """
         Calculates diffuse irradiance on the tilted PV surface.
+        Calculates diffuse irradiance on the tilted PV surface.
 
+        Takes into account:
+        - Sky view factor (SVF) based on module tilt
+        - Diffuse Horizontal Irradiance (DHI)
         Takes into account:
         - Sky view factor (SVF) based on module tilt
         - Diffuse Horizontal Irradiance (DHI)
@@ -199,7 +248,10 @@ class PV(ModelConstructor):
         -------
         g_diff : float
             Diffuse irradiance on the tilted PV surface in W/m²
+            Diffuse irradiance on the tilted PV surface in W/m²
         """
+        self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
+        g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
         self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
         g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
         return g_diff
@@ -207,7 +259,12 @@ class PV(ModelConstructor):
     def reflected_irr(self) -> float:
         """
         Calculates ground-reflected irradiance on the PV module.
+        Calculates ground-reflected irradiance on the PV module.
 
+        Takes into account:
+        - Albedo (reflectivity) of the ground surface
+        - Sky view factor (SVF) based on module tilt
+        - Global Horizontal Irradiance (GHI)
         Takes into account:
         - Albedo (reflectivity) of the ground surface
         - Sky view factor (SVF) based on module tilt
@@ -217,35 +274,45 @@ class PV(ModelConstructor):
         -------
         g_ref : float
             Ground-reflected irradiance on the PV module in W/m²
+            Ground-reflected irradiance on the PV module in W/m²
         """
         albedo = 0.2
+        g_ref = albedo * (1 - self.svf) * self.G_Gh
         g_ref = albedo * (1 - self.svf) * self.G_Gh
         return g_ref
 
     def direct_irr(self) -> float:
         """
         Calculates direct beam irradiance on tilted surface.
+        Calculates direct beam irradiance on tilted surface.
 
+        Accounts for angle of incidence between sun rays and module surface.
         Accounts for angle of incidence between sun rays and module surface.
 
         Returns
         -------
         g_dir : float
             Direct beam irradiance on tilted surface in W/m²
+            Direct beam irradiance on tilted surface in W/m²
         """
+        g_dir = self.G_Bn * self.aoi()
         g_dir = self.G_Bn * self.aoi()
         return g_dir
 
     def total_irr(self) -> float:
         """
         Calculates total irradiance on the tilted PV surface.
+        Calculates total irradiance on the tilted PV surface.
 
+        Combines direct beam, diffuse, and ground-reflected irradiance components
+        accounting for module tilt and orientation.
         Combines direct beam, diffuse, and ground-reflected irradiance components
         accounting for module tilt and orientation.
 
         Returns
         -------
         self.g_aoi : float
+            Total irradiance on tilted surface in W/m²
             Total irradiance on tilted surface in W/m²
         """
         self.g_aoi = self.diffused_irr() + self.reflected_irr() + self.direct_irr()
@@ -256,7 +323,12 @@ class PV(ModelConstructor):
     def Temp_effect(self) -> float:
         """
         Calculates the temperature-dependent module efficiency.
+        Calculates the temperature-dependent module efficiency.
 
+        Takes into account:
+        - Module temperature based on NOCT conditions
+        - Wind speed effects
+        - Temperature coefficient of efficiency
         Takes into account:
         - Module temperature based on NOCT conditions
         - Wind speed effects
@@ -266,7 +338,10 @@ class PV(ModelConstructor):
         -------
         efficiency : float
             Temperature-adjusted module efficiency as a fraction
+            Temperature-adjusted module efficiency as a fraction
         """
+        m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
+            np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
         m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
             np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
 
@@ -283,10 +358,21 @@ class PV(ModelConstructor):
         - System losses
         - Total module area
         - Solar irradiance
+        Calculates PV power or energy output based on environmental conditions.
+        
+        Takes into account:
+        - Module temperature effects
+        - Inverter and MPPT efficiency
+        - System losses
+        - Total module area
+        - Solar irradiance
 
         Returns
         -------
         dict
+            Dictionary containing:
+            - 'pv_gen': PV generation in kW (power) or kWh (energy)
+            - 'total_irr': Total irradiance on tilted surface in W/m² <- check
             Dictionary containing:
             - 'pv_gen': PV generation in kW (power) or kWh (energy)
             - 'total_irr': Total irradiance on tilted surface in W/m² <- check
@@ -308,6 +394,7 @@ class PV(ModelConstructor):
         total_m_area = num_of_modules * self.m_area
 
         # AC output at every hour from all the panels (a solar farm)
+        p_ac = 0
         p_ac = 0
         if self.output_type == 'energy':
             p_ac = (total_m_area * self.total_irr() *

@@ -50,6 +50,8 @@ class Battery(ModelConstructor):
              }
     states={'soc': 0,  # updated state of charge after battery operation (%)
             'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+    states={'soc': 0,  # updated state of charge after battery operation (%)
+            'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
             }
     time_step_size=1
     time=None
@@ -131,6 +133,7 @@ class Battery(ModelConstructor):
     def discharge_battery(self, flow2b:int) -> dict:  #flow2b is in kw
         """
         Discharge the battery, calculate the state of charge and return parameter information.
+        Discharge the battery, calculate the state of charge and return parameter information.
 
         This method discharges the battery based on the requested power flow, updates the state of 
         charge (SOC), and returns a dictionary containing the battery's operational parameters.
@@ -143,6 +146,12 @@ class Battery(ModelConstructor):
         Returns
         -------
         re_params : dict
+            Collection of parameters and their respective values:
+            - p_out: Output power from the battery after discharge decision (kW)
+            - p_in: Input power to the battery (kW)
+            - soc: Updated state of charge after battery operation (%)
+            - mod: Operation mode: 0=no action, 1=charge, -1=discharge
+            - flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
             Collection of parameters and their respective values:
             - p_out: Output power from the battery after discharge decision (kW)
             - p_in: Input power to the battery (kW)
@@ -202,6 +211,21 @@ class Battery(ModelConstructor):
                 A mode indicator (always 1 in this implementation).
             - 'flag' : int
                 A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
+        Charge the battery, calculate the state of charge and return parameter information.
+        This method charges the battery based on the provided power input, updates the state of charge (SOC),
+        and returns a dictionary containing relevant parameters.
+            Power input to the battery in kW.
+            A dictionary containing the following keys:
+            - 'p_out' : float
+                The power output of the battery in kW.
+            - 'p_in' : int
+                The power input to the battery in kW.
+            - 'soc' : float
+                The state of charge of the battery as a percentage.
+            - 'mod' : int
+                A mode indicator (always 1 in this implementation).
+            - 'flag' : int
+                A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
         """
         hours = self.time_resolution / 60 / 60
         flow = min(self.max_p, flow2b)
@@ -237,9 +261,17 @@ class Battery(ModelConstructor):
     # this method is like a controller which calls a method depending on the condition.
     # first, this is checked. As per the p_ask and soc, everything happens.
     # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
+    # this method is like a controller which calls a method depending on the condition.
+    # first, this is checked. As per the p_ask and soc, everything happens.
+    # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
     # when we want to make a battery model.
     def output_power(self, flow2b:int) -> dict:#charging power: positive; discharging power:negative
         """
+        Determine the battery operation mode and power output based on the requested power flow.
+
+        This method controls the battery's operation by determining whether to charge, discharge,
+        or maintain the current state based on the requested power flow and the battery's 
+        state of charge (SOC).
         Determine the battery operation mode and power output based on the requested power flow.
 
         This method controls the battery's operation by determining whether to charge, discharge,
@@ -250,10 +282,19 @@ class Battery(ModelConstructor):
         ----------
         flow2b : int
             Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
+            Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
 
         Returns
         -------
         re_params : dict
+            Dictionary containing the battery's operational parameters:
+            - p_out: Output power after charge/discharge decision (kW)
+            - p_in: Input power to the battery (kW)  
+            - soc: Updated state of charge (%)
+            - mod: Operation mode (0=no action, 1=charge, -1=discharge)
+            - flag: Battery status (1=fully charged, -1=fully discharged, 0=available)
+        """
+        # conditions start:
             Dictionary containing the battery's operational parameters:
             - p_out: Output power after charge/discharge decision (kW)
             - p_in: Input power to the battery (kW)  
