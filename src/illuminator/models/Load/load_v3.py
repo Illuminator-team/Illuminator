@@ -2,18 +2,18 @@ from illuminator.builder import ModelConstructor
 
 class Load(ModelConstructor):
     """
-        Calculates total load demand based on number of houses and input load.
+    Calculates total load demand based on number of houses and input load.
 
-        Parameters
-        ----------
-        load : float
-            Input load per house in kW or kWh depending on output_type
-            
-        Returns
-        -------
-        re_params : dict
-            Dictionary containing calculated load demand values
-        """
+    Parameters
+    ----------
+    load : float
+        Input load per house in kW or kWh depending on output_type
+        
+    Returns
+    -------
+    re_params : dict
+        Dictionary containing calculated load demand values
+    """
 
     parameters={'houses': 1,  # number of houses that determine the total load demand
                 'output_type': 'power',  # type of output for consumption calculation ('energy' or 'power')
