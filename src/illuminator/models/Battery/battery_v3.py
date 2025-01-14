@@ -1,4 +1,4 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 
 # Define the model parameters, inputs, outputs...
 # TODO: Currently if a value or category isn't defined in the yaml
@@ -50,9 +50,7 @@ class Battery(ModelConstructor):
              }
     states={'soc': 0,  # updated state of charge after battery operation (%)
             'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
-    states={'soc': 0,  # updated state of charge after battery operation (%)
-            'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
-            }
+        }
     time_step_size=1
     time=None
 
@@ -287,14 +285,6 @@ class Battery(ModelConstructor):
         Returns
         -------
         re_params : dict
-            Dictionary containing the battery's operational parameters:
-            - p_out: Output power after charge/discharge decision (kW)
-            - p_in: Input power to the battery (kW)  
-            - soc: Updated state of charge (%)
-            - mod: Operation mode (0=no action, 1=charge, -1=discharge)
-            - flag: Battery status (1=fully charged, -1=fully discharged, 0=available)
-        """
-        # conditions start:
             Dictionary containing the battery's operational parameters:
             - p_out: Output power after charge/discharge decision (kW)
             - p_in: Input power to the battery (kW)  
