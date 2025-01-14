@@ -35,38 +35,7 @@ class PV(ModelConstructor):
     output()
         Calculates final PV power or energy output.
     """
-    """
-    A class to represent a PV model.
-    This class provides methods to calculate PV power output based on environmental conditions and panel specifications.
 
-    Attributes
-    parameters : dict
-        Dictionary containing PV parameters such as module area, NOCT, efficiencies, peak power, tilt angle, and azimuth.
-    inputs : dict
-        Dictionary containing environmental inputs like irradiance, temperature, solar angles and wind speed.
-    outputs : dict
-        Dictionary containing calculated outputs like PV generation and irradiance values.
-    states : dict
-        Dictionary containing the state variables of the PV model.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
-
-    Methods
-    __init__(**kwargs)
-        Initializes the PV model with the provided parameters.
-    step(time, inputs, max_advance=900)
-        Simulates one time step of the PV model.
-    connect(G_Gh, G_Dh, G_Bn, Ta, hs, FF, Az)
-        Processes input parameters and calculates PV output.
-    total_irr()
-        Calculates total irradiance on tilted surface.
-    Temp_effect()
-        Calculates temperature-dependent module efficiency.
-    output()
-        Calculates final PV power or energy output.
-    """
     parameters={
         "m_area": 0,  # Module area of the PV panel in m².
         "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
@@ -97,11 +66,6 @@ class PV(ModelConstructor):
     states={'pv_gen': 0}
     time_step_size=1
     time=None
-
-    # def __init__(self, **kwargs) -> None:
-    #     super().__init__(**kwargs)
-    #     for key, value in self._model.parameters.items():
-    #         setattr(self, key, value)
 
     def __init__(self, **kwargs) -> None:
         """
