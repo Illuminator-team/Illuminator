@@ -3,7 +3,7 @@ import numpy as np
 class Compressor(ModelConstructor):
     parameters={
             'A' : 2,                # cross-sectional area of the pipe [m2]
-            'p' : 300,              # pressure of the hydrogen [bar]
+            'p' : 300,              # input pressure of the hydrogen [bar]
             'p_outer':1,            # pressure outside of the pipe [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
             'd' : 0.01,             # pipe thickness [m]
@@ -49,9 +49,9 @@ class Compressor(ModelConstructor):
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
         density = self.density(self.p, self.T_amb)          # [kg/m3]
         output_flow = self.output_flow(input_data['flow_in'], density)
-        output_pressure = self.output_pressure(density)
+        p_out = self.output_pressure(input_data['flow_in'], density)
         self._model.outputs['flow_out'] = output_flow
-        self._model.outputs['press_out'] = output_pressure
+        self._model.outputs['press_out'] = p_out
         print("outputs:", self.outputs)
         
         return time + self._model.time_step_size
@@ -82,7 +82,7 @@ class Compressor(ModelConstructor):
         output_flow = flow_in - flow_loss_mass * self.time_resolution   # [kg/timestep]
         return output_flow
     
-    def permeabilty_coef(self, p):
+    def permeabilty_coef(self, press):
         """
         Reads the permeability coefficient of hydrogen in HDPE pipes from a table, provided the pressure of the hydrogen.
         ...
@@ -98,7 +98,7 @@ class Compressor(ModelConstructor):
             Permeability coefficient of hydrogen in HDPE pipe [cm3*cm/cm2*s*Pa]
         """
         p = p * 1e5     # convert bar to Pascall [Pa]
-        coefs : [5.77e-8, 4.17e-8, 2.84e-8, 1.99e-8, 1.68e-8]   # list of permeability coefficients [cm3*cm/cm2*s*Pa]
+        coefs = [5.77e-8, 4.17e-8, 2.84e-8, 1.99e-8, 1.68e-8]   # list of permeability coefficients [cm3*cm/cm2*s*Pa]
         pressures = [10e5, 30e5, 50e5, 70e5, 90e5]              # corresponding pressures [Pa]
         closest_pressure = closest_pressure = min(pressures, key=lambda p: abs(p - press))  # Best matching pressure [Pa]
         P = coefs[pressures.index(closest_pressure)]            # Best matching permeability coefficient [cm3*cm/cm2*s*Pa]        
@@ -171,7 +171,7 @@ class Compressor(ModelConstructor):
         z_val = z_values[pressures.index(closest_pressure)][temps.index(closest_temp)]
         return z_val
     
-    def output_pressure(self, density):
+    def output_pressure(self, flow_in, density):
         """
         Calculates the output pressure [bar] given the properties of the pipeline and hydrogen.
 
@@ -184,25 +184,26 @@ class Compressor(ModelConstructor):
 
         Returns
         -------
-        flow_out : float
-            Input flow [kg/timestep]
-        density : float
-            density of the hydrogen [kg/m3]
+        p_out : float
+            Output pressure [bar]
         """
         p = self.p * 1e5                    # pressure in pascals [Pa]
-        mu = self.viscosity(self.T_amb)              # viscosity of hydrogen (temperature dependent) [] 
+        mu = self.viscosity(self.T_amb)     # viscosity of hydrogen (temperature dependent) [] 
         D = 2 * np.sqrt(self.A / np.pi)     # pipe diameter [m]
-        v = 00
-        Re = (density * v * D) /  # Reynolds number [-]
+        v = flow_in / self.__annotations__  # mean velocity of the flow [m/s]
+        Re = (density * v * D) / mu # Reynolds number [-]
+        # Friction factor dependent on laminar or turbulent flow
         if Re <= 2300:
             f = 64 / Re
         else:
             f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11)) ** -2      
-        pressure_loss = f * (L * density * v^2) / (2 * D)
-        return pressure_loss
+        p_loss = f * (self.L * density * v^2) / (2 * D)     # pressure loss [bar]
+        p_loss = p_loss / 1e5       # pressure loss conversion to bar [bar]
+        p_out = p - p_loss          # output pressure [bar]
+        return p_out
 
     def viscosity(self, T):
-       """
+        """
         Reads the viscosity of hydrogen from a table provided the temperature.
         ...
 
@@ -214,12 +215,19 @@ class Compressor(ModelConstructor):
         Returns
         -------
         mu : float
-            Visosity of hydrogen [10-5 Pa s]
+            Visosity of hydrogen [Pa s]
         """
-       temps = [273.15, 293.15, 323.15, 373.15, 473.15, 573.15, 673.15, 773.15, 873.15] 
-       visc = [0.84, 0.88, 0.94, 1.04, 1.21, 1.37, 1.53, 1.69, 1.84]
+        temps = [273.15, 293.15, 323.15, 373.15, 473.15, 573.15, 673.15, 773.15, 873.15] 
+        visc = [0.84e-5, 0.88e-5, 0.94e-5, 1.04e-5, 1.21e-5, 1.37e-5, 1.53e-5, 1.69e-5, 1.84e-5]
 
-       closest_temp = min(temps, key=lambda t: abs(t - T))
-       viscosity = visc[visc.index(closest_temp)]
-       return viscosity
+        # # Sutherland's formula method
+        # T_0 = 293.15             # reference temperature
+        # visc_0 = 0.88e-5        # Reference viscosisty
+        # S = 72                  # Sutherland's coefficient
+        # viscosity = visc_0 * (T / T_0) ** 3/2 * (T_0 + S) / (T + S)
+
+
+        closest_temp = min(temps, key=lambda t: abs(t - T))
+        viscosity = visc[visc.index(closest_temp)]
+        return viscosity
 
