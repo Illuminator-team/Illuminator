@@ -80,7 +80,7 @@ class IlluminatorModel():
                 self.model_type: { # This must be the name of he model 
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys()) + list(self.states.keys())
                 }
             }}
         return meta
@@ -88,10 +88,8 @@ class IlluminatorModel():
     def _validate_states(self):
         """Check if items in 'states' are in parameters, inputs or outputs"""
         for state in self.states:
-            if state not in self.parameters and state not in self.inputs and \
-                    state not in self.outputs:
-                raise ValueError(f"State: {state} must be either a parameter, "
-                                 "an input or an output")
+            if state in self.parameters:
+                raise ValueError(f"State: {state} is also defined as a parameter")
 
     def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""
@@ -120,26 +118,42 @@ class IlluminatorModel():
 
 class ModelConstructor(ABC, Simulator):
     """A common interface for constructing models in the Illuminator"""
+    parameters: Dict = {}
+    inputs: Dict = {}
+    outputs: Dict = {}
+    states: Dict = {}
+    time_step_size: int = 1
+
+    # TODO: make this work
+    # def multipleModelDecorator(self, function, **kwargs):
+    #     for eid, entity in self.entities.items():
+    #         function(entity, kwargs)
 
     def __init__(self, **kwargs) -> None:
         #model: IlluminatorModel
         model_vals = engine.current_model
+        
+        self.parameters = model_vals.get('parameters', self.parameters)
+        self.inputs = model_vals.get('inputs', self.inputs)
+        self.outputs = model_vals.get('outputs', self.outputs)
+        self.states = model_vals.get('states', self.states)
+        self.time_step_size = model_vals.get('time_step_size', self.time_step_size)
+        self.model_type = model_vals.get('type', 'Model')
+
         model = IlluminatorModel(
-                parameters=model_vals.get('parameters', self.parameters), # get the yaml values or the default from the model
-                inputs=model_vals.get('inputs', self.inputs),
-                outputs=model_vals.get('outputs', self.outputs),
-                states=model_vals.get('states', self.states),
-                model_type=model_vals.get('type', {}),
-                time_step_size=model_vals.get('time_step_size', self.time_step_size)
+                parameters=self.parameters, # get the yaml values or the default from the model
+                inputs=self.inputs,
+                outputs=self.outputs,
+                states=self.states,
+                model_type=self.model_type,
+                time_step_size=self.time_step_size
             )
         super().__init__(meta=model.simulator_meta)
         self._model = model
         self.model_entities = {}
-        self.time = 0  # time is an interger wihout a unit
-
-        # we want the parameters to be directly accesible for the simulator
-        for key, value in self._model.parameters.items():
-            setattr(self, key, value)
+        self.time = 0  # time is an integer without a unit
+        self.sid = None
+        self.time_resolution = None
 
     @abstractmethod
     def step(self, time:int, inputs:dict=None, max_advance:int=None) -> int:
@@ -165,8 +179,9 @@ class ModelConstructor(ABC, Simulator):
         """
         pass
 
+
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
-        # TODO: from engine.py, time_resolution is never passed
+        # TODO: from engine.py, time_resolution is never passed. hint: check engine self.start call
 
         print(f"running extra init")
         # This is the standard Mosaik init method signature
@@ -196,16 +211,22 @@ class ModelConstructor(ABC, Simulator):
     
     def current_time(self): 
         """Returns the current time of the simulation"""
-        pass
         # TODO: implement this method
+        return
 
     def get_data(self, outputs) -> Dict: # TODO remove the print statements here
-        """Expose model outputs and states to the simulation environment
-        
+        """
+        Gets data from model outputs based on requested attributes. Used by MOSAIK.
+
+        Parameters
+        ----------
+        outputs : dict
+            Dictionary mapping entity IDs to lists of requested output attributes
+            
         Returns
         -------
-        Dict
-            A dictionary of model outputs and states.
+        data : dict
+            Dictionary containing the requested output values for each entity
         """
         data = {}
         # print(f"Here are your outputs: {outputs}")
@@ -226,16 +247,114 @@ class ModelConstructor(ABC, Simulator):
                     raise RuntimeError(f"{self.sid}.{eid} does not have '{attr}' as input, output or state")
             # print(f"data: {data}")
         return data
+    
+    
+    def get_state(self, attr):
+        """
+        Gets the current value of a state attribute.
+
+        Parameters
+        ----------
+        attr : str
+            Name of the state attribute to retrieve
+            
+        Returns
+        -------
+        value : Any
+            The current value of the requested state attribute
+        """
+        if attr in self._model.states:
+            if isinstance(self._model.states[attr], dict):  # in the case it was prepared for a connection previously
+                return self._model.states[attr]['value']
+            
+            # TODO instead of doing this, convert all initial values to the connection format somewhere early on
+            else: # in the case it was set by an initital value
+                return self._model.states[attr]
+            return self._model.states[attr]
+        else:
+            raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as state")
+
+    
+    def set_states(self, states):
+        """
+        Sets state values for the model.
+
+        Parameters
+        ----------
+        states : dict
+            Dictionary containing state names and their values to be set
+            
+        Returns
+        -------
+        None
+            This method does not return anything
+        """
+        for attr, value in states.items():
+            if attr in self._model.states:
+                self._model.states[attr] ={'message_origin': 'state', 'value': value}
+            else:
+                raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as state")
+
+
+    def set_outputs(self, outputs):
+        """
+        Sets output values for the model.
+
+        Parameters
+        ----------
+        outputs : dict
+            Dictionary containing output names and their values to be set
+            
+        Returns
+        -------
+        None
+            This method does not return anything
+        """
+        for attr, value in outputs.items():
+            if attr in self._model.outputs:
+                self._model.outputs[attr] = {'message_origin': 'output', 'value': value}
+            else:
+                raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as output")
 
 
     def unpack_inputs(self, inputs):
+        """
+        Unpacks input values from connected simulators and processes them based on their message origin.
+
+        Parameters
+        ----------
+        inputs : dict
+            Dictionary containing input values from connected simulators with their message origins
+            
+        Returns
+        -------
+        data : dict
+            Dictionary containing processed input values, summed for outputs or single values for states
+        """
         data = {}
         for attrs in inputs.values():
             for attr, sources in attrs.items():
-                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
-                if len(values) > 1:
-                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
-                data[attr] = values[0]
+                messages = list(sources.values())
+                if not all(isinstance(message, dict) and 'message_origin' in message for message in messages):
+                    raise RuntimeError(f"All messages sent over connections must have an attribute 'message_origin'. Connection: from: {sources}, to: {self.sid},  messages {messages}, input {attr}, make sure to use set_states or set_outputs() and set_states()")
+                
+                # check if all connections are with the same type, either output (physical) or state (data)
+                if not all(message['message_origin'] == messages[0]['message_origin'] for message in messages):
+                    raise RuntimeError(f"All values must have the same type: values: {messages}, input {attr}")
+
+                # if the attribute is coming from a connection with an output
+                if messages[0]['message_origin'] == 'output':
+                    data[attr] = sum(message['value'] for message in messages)
+                
+                # if the attribute is coming from a connection with a state
+                elif messages[0]['message_origin'] == 'state':
+                    if len(messages) > 1:
+                        raise RuntimeError(f"Got multiple values from a state connection: values {messages}, input {attr}")
+                    data[attr] = messages[0]['value']
+
+                # if not coming from output nor from state
+                else:
+                    raise RuntimeError(f"Connection coming from {messages[0]['message_origin']} not implemented yet")
         return data
 
 if __name__ == "__main__":

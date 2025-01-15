@@ -1,40 +1,41 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
 import numpy as np
 
-# Define the model parameters, inputs, outputs...
-pv = IlluminatorModel(
-    parameters={
-        "m_area": 0,  # Module area of the PV panel in m².
-        "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
-        "m_efficiency_stc": 0,  # Module efficiency under standard test conditions (STC).
-        "G_NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
-        "P_STC": 0,  # Power output of the module under STC (W).
-        "peak_power": 0,  # Peak power output of the module (W).
-        "time_interval": 0  # Time interval for the simulation in hours, derived from the resolution parameter.
-        },
-    inputs={
-        "G_Gh": 0,  # Global Horizontal Irradiance (GHI) in W/m², representing the total solar radiation received on a horizontal surface.
-        "G_Dh": 0,  # Diffuse Horizontal Irradiance (DHI) in W/m², representing the solar radiation received from the sky, excluding the solar disk.
-        "G_Bn": 0,  # Direct Normal Irradiance (DNI) in W/m², representing the solar radiation received directly from the sun on a surface perpendicular to the sun’s rays.
-        "Ta": 0,  # Ambient temperature (°C) of the environment surrounding the PV panels.
-        "hs": 0,  # Solar elevation angle (degrees), indicating the height of the sun in the sky.
-        "FF": 0,  # Wind speed (m/s), which affects the temperature and performance of the PV panels.
-        "Az": 0  # Sun azimuth angle (degrees), indicating the sun's position in the horizontal plane.
-        },
-    outputs={
-        "pv_gen": 0,  # Generated PV power output (kW) or energy (kWh) based on the chosen output type (power or energy).
-        "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
-        },
-    states={
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
-        },
-    time_step_size=1,
-    time=None
-    )
-
 # construct the model
 class PV(ModelConstructor):
+    """
+    A class to represent a PV model.
+    This class provides methods to calculate PV power output based on environmental conditions and panel specifications.
+
+    Attributes
+    parameters : dict
+        Dictionary containing PV parameters such as module area, NOCT, efficiencies, peak power, tilt angle, and azimuth.
+    inputs : dict
+        Dictionary containing environmental inputs like irradiance, temperature, solar angles and wind speed.
+    outputs : dict
+        Dictionary containing calculated outputs like PV generation and irradiance values.
+    states : dict
+        Dictionary containing the state variables of the PV model.
+    time_step_size : int
+        Time step size for the simulation.
+    time : int or None
+        Current simulation time.
+
+    Methods
+    __init__(**kwargs)
+        Initializes the PV model with the provided parameters.
+    step(time, inputs, max_advance=900)
+        Simulates one time step of the PV model.
+    connect(G_Gh, G_Dh, G_Bn, Ta, hs, FF, Az)
+        Processes input parameters and calculates PV output.
+    total_irr()
+        Calculates total irradiance on tilted surface.
+    Temp_effect()
+        Calculates temperature-dependent module efficiency.
+    output()
+        Calculates final PV power or energy output.
+    """
+
     parameters={
         "m_area": 0,  # Module area of the PV panel in m².
         "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
@@ -66,37 +67,69 @@ class PV(ModelConstructor):
     time_step_size=1
     time=None
 
-    # def __init__(self, **kwargs) -> None:
-    #     super().__init__(**kwargs)
-    #     for key, value in self._model.parameters.items():
-    #         setattr(self, key, value)
+    def __init__(self, **kwargs) -> None:
+        """
+        Initialize the PV model with the provided parameters.
 
-    def step(self, time, inputs, max_advance=900) -> None:
+        Parameters
+        ----------
+        kwargs : dict
+            Additional keyword arguments to initialize the model.
+        """
+        super().__init__(**kwargs)
+        self.cap = self._model.parameters.get('cap')
+        self.output_type = self._model.parameters.get('output_type')
+        self.NOCT = self._model.parameters.get('NOCT')
+        self.m_efficiency_stc = self._model.parameters.get('m_efficiency_stc')
+        self.G_NOCT = self._model.parameters.get('G_NOCT')
+        self.P_STC = self._model.parameters.get('P_STC')
+        self.m_tilt = self._model.parameters.get('m_tilt')
+        self.m_az = self._model.parameters.get('m_az')
+        self.m_area = self._model.parameters.get('m_area')
+        self.sim_start = self._model.parameters.get('sim_start')
+        self.G_Gh = 0
+        self.G_Dh = 0
+        self.G_Bn = 0
+        self.Ta = 0
+        self.hs = 0
+        self.FF = 0
+        self.Az = 0
+        self.sun_az = 0
+        self.svf = 0
+        self.g_aoi = 0
+
+
+    def step(self, time: int, inputs:dict=None, max_advance:int=900) -> None:
+        """
+        Advances the simulation one time step.
+        Args:
+            time (float): Current simulation time in seconds
+            inputs (dict): Dictionary containing input values from other components:
+                - G_Gh (float): Global horizontal irradiance [W/m²]
+                - G_Dh (float): Diffuse horizontal irradiance [W/m²]
+                - G_Bn (float): Direct normal irradiance [W/m²]
+                - Ta (float): Ambient temperature [°C]
+                - hs (float): Solar height [rad]
+                - FF (float): View factor to sky [-]
+                - Az (float): Solar azimuth [rad]
+            max_advance (int, optional): Maximum time to advance in seconds. Defaults to 900.
+        Returns:
+            float: Next simulation time in seconds
+        """
+        
         input_data = self.unpack_inputs(inputs)
-        print("PV here")
-        print("inputs:", input_data)
+        self.G_Gh = input_data['G_Gh']
+        self.G_Dh = input_data['G_Dh']
+        self.G_Bn = input_data['G_Bn']
+        self.Ta = input_data['Ta']
+        self.hs = input_data['hs']
+        self.FF = input_data['FF']
+        self.Az = input_data['Az']
 
-        # for eid, attrs in inputs.items():
+        results = self.output()
 
-        #     v = []  # we create this empty list to hold all the input values we want to give since we have more than 2
-        #     for attr, vals in attrs.items():
+        self.set_outputs({'pv_gen': results['pv_gen']})
 
-        #         # inputs is a dictionary, which contains another dictionary.
-        #         # value of U is a list. we need to combine all the values into a single list. But is we just simply
-        #         #   append them in v, we have a nested list, hence just 1 list. that creates a problem as it just
-        #         #   gives all 7 values to only sun_az in the python model and we get an error that other 6 values are missing.
-        #         u = list(vals.values())
-        #         v.append(u)  # we append every value of u to v from this command.
-
-        #     # the following code helps us to convert the nested list into a simple plain list and we can use that simply
-        #     v_merged = list(itertools.chain(*v))
-
-        eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity    
-        self._cache = {}
-        results = self.connect(input_data['G_Gh'], input_data['G_Dh'], input_data['G_Bn'], input_data['Ta'], input_data['hs'], input_data['FF'], input_data['Az'])
-        # self._cache[eid] = results
-        for key, value in results.items():
-            self._model.outputs[key] = value
         return time + self._model.time_step_size
 
 
@@ -108,8 +141,10 @@ class PV(ModelConstructor):
 
         Returns
         -------
-        sun_azimuth : ???
-            ???
+        sun_azimuth : float
+            Sun azimuth angle in degrees, indicating the sun's position in the horizontal plane.
+        sun_azimuth : float
+            Sun azimuth angle in degrees, indicating the sun's position in the horizontal plane.
         """
         sun_azimuth = self.sun_az
         return sun_azimuth
@@ -122,22 +157,37 @@ class PV(ModelConstructor):
 
         Returns
         -------
-        sun_elevation : ???
-            ???
+        sun_elevation : float
+            Solar elevation angle in degrees, indicating the height of the sun in the sky.
+        sun_elevation : float
+            Solar elevation angle in degrees, indicating the height of the sun in the sky.
         """
-        sun_elevation = self.sun_el
+        sun_elevation = self.hs
+        sun_elevation = self.hs
         return sun_elevation
 
     def aoi(self):
         """
-        Description
-        
-        ...
+        Calculates the cosine of the angle of incidence (AOI) between the sun's rays and the PV module surface.
+
+        Takes into account:
+        - Module tilt angle
+        - Sun elevation angle
+        - Sun azimuth angle
+        - Module azimuth angle
+        Calculates the cosine of the angle of incidence (AOI) between the sun's rays and the PV module surface.
+
+        Takes into account:
+        - Module tilt angle
+        - Sun elevation angle
+        - Sun azimuth angle
+        - Module azimuth angle
 
         Returns
         -------
         cos_aoi : float
-            ???
+            Cosine of the angle of incidence (AOI) as a fraction
+            Cosine of the angle of incidence (AOI) as a fraction
         """
         cos_aoi = np.array(np.cos(np.radians(90 - self.m_tilt)) * np.cos(np.radians(self.sun_elevation())) * np.cos(
             np.radians(self.m_az - self.sun_azimuth())) + np.sin(np.radians(90 - self.m_tilt)) * np.sin(
@@ -148,58 +198,86 @@ class PV(ModelConstructor):
 
     def diffused_irr(self) -> float:
         """
-        Description
+        Calculates diffuse irradiance on the tilted PV surface.
+        Calculates diffuse irradiance on the tilted PV surface.
 
-        ...
+        Takes into account:
+        - Sky view factor (SVF) based on module tilt
+        - Diffuse Horizontal Irradiance (DHI)
+        Takes into account:
+        - Sky view factor (SVF) based on module tilt
+        - Diffuse Horizontal Irradiance (DHI)
 
         Returns
         -------
         g_diff : float
-            ???
+            Diffuse irradiance on the tilted PV surface in W/m²
+            Diffuse irradiance on the tilted PV surface in W/m²
         """
         self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
-        g_diff = self.svf * self.dhi  # global diffused irradiance #W/m2
+        g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
+        self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
+        g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
         return g_diff
 
     def reflected_irr(self) -> float:
         """
-        Description
+        Calculates ground-reflected irradiance on the PV module.
+        Calculates ground-reflected irradiance on the PV module.
 
-        ...
+        Takes into account:
+        - Albedo (reflectivity) of the ground surface
+        - Sky view factor (SVF) based on module tilt
+        - Global Horizontal Irradiance (GHI)
+        Takes into account:
+        - Albedo (reflectivity) of the ground surface
+        - Sky view factor (SVF) based on module tilt
+        - Global Horizontal Irradiance (GHI)
 
         Returns
         -------
         g_ref : float
-            ???
+            Ground-reflected irradiance on the PV module in W/m²
+            Ground-reflected irradiance on the PV module in W/m²
         """
         albedo = 0.2
-        g_ref = albedo * (1 - self.svf) * self.ghi
+        g_ref = albedo * (1 - self.svf) * self.G_Gh
+        g_ref = albedo * (1 - self.svf) * self.G_Gh
         return g_ref
 
     def direct_irr(self) -> float:
         """
-        Description
+        Calculates direct beam irradiance on tilted surface.
+        Calculates direct beam irradiance on tilted surface.
 
-        ...
+        Accounts for angle of incidence between sun rays and module surface.
+        Accounts for angle of incidence between sun rays and module surface.
 
         Returns
         -------
         g_dir : float
-            ???
+            Direct beam irradiance on tilted surface in W/m²
+            Direct beam irradiance on tilted surface in W/m²
         """
-        g_dir = self.dni * self.aoi()
+        g_dir = self.G_Bn * self.aoi()
+        g_dir = self.G_Bn * self.aoi()
         return g_dir
 
     def total_irr(self) -> float:
         """
-        Description
+        Calculates total irradiance on the tilted PV surface.
+        Calculates total irradiance on the tilted PV surface.
 
-        ...
+        Combines direct beam, diffuse, and ground-reflected irradiance components
+        accounting for module tilt and orientation.
+        Combines direct beam, diffuse, and ground-reflected irradiance components
+        accounting for module tilt and orientation.
 
         Returns
         -------
         self.g_aoi : float
-            ???
+            Total irradiance on tilted surface in W/m²
+            Total irradiance on tilted surface in W/m²
         """
         self.g_aoi = self.diffused_irr() + self.reflected_irr() + self.direct_irr()
         return self.g_aoi
@@ -208,31 +286,60 @@ class PV(ModelConstructor):
     # the effect of temperature and wind speed on the module efficiency.
     def Temp_effect(self) -> float:
         """
-        Description
+        Calculates the temperature-dependent module efficiency.
+        Calculates the temperature-dependent module efficiency.
 
-        ...
+        Takes into account:
+        - Module temperature based on NOCT conditions
+        - Wind speed effects
+        - Temperature coefficient of efficiency
+        Takes into account:
+        - Module temperature based on NOCT conditions
+        - Wind speed effects
+        - Temperature coefficient of efficiency
 
         Returns
         -------
         efficiency : float
-            ???
+            Temperature-adjusted module efficiency as a fraction
+            Temperature-adjusted module efficiency as a fraction
         """
-        m_temp = self.temp + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
-            np.divide(9.5, (5.7 + 3.8 * self.ws))) * (1 - (self.m_efficiency_stc / 0.90))
+        m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
+            np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
+        m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
+            np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
 
         efficiency = self.m_efficiency_stc * (1 + (-0.0035 * (m_temp - 25)))
         return efficiency
 
     def output(self) -> dict:
         """
-        Description
-
-        ...
+        Calculates PV power or energy output based on environmental conditions.
+        
+        Takes into account:
+        - Module temperature effects
+        - Inverter and MPPT efficiency
+        - System losses
+        - Total module area
+        - Solar irradiance
+        Calculates PV power or energy output based on environmental conditions.
+        
+        Takes into account:
+        - Module temperature effects
+        - Inverter and MPPT efficiency
+        - System losses
+        - Total module area
+        - Solar irradiance
 
         Returns
         -------
         dict
-            Collection of parameters and their respective values
+            Dictionary containing:
+            - 'pv_gen': PV generation in kW (power) or kWh (energy)
+            - 'total_irr': Total irradiance on tilted surface in W/m² <- check
+            Dictionary containing:
+            - 'pv_gen': PV generation in kW (power) or kWh (energy)
+            - 'total_irr': Total irradiance on tilted surface in W/m² <- check
         """
         # constants
         # inverter efficiency. We can use sandia model to actually find an inverter that suits our needs
@@ -251,57 +358,13 @@ class PV(ModelConstructor):
         total_m_area = num_of_modules * self.m_area
 
         # AC output at every hour from all the panels (a solar farm)
-
+        p_ac = 0
+        p_ac = 0
         if self.output_type == 'energy':
             p_ac = (total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4  # kWh
+                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4 / 1000 # kWh TODO: implement time interval or smh
         elif self.output_type == 'power':
             p_ac = ((total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses) )  # kW
+                    self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
-
-    def connect(self, G_Gh, G_Dh, G_Bn, Ta, hs, FF, Az) -> dict:
-        """
-        Sets class attributes and runs the `self.output()` function, returning its output.
-
-        Paramter
-        --------
-        G_Gh : ???
-            ???
-        G_Dh : ???
-            ???
-        G_Bn, : ???
-            ???
-        Ta : ???
-            ???
-        hs : ???
-            ???
-        FF : ???
-            ???
-        Az : ???
-            ???
-
-        Returns
-        -------
-        dict 
-            Collection of parameters and their respective values
-        """
-        self.ghi = G_Gh
-        self.dhi = G_Dh
-        self.dni = G_Bn
-        self.temp = Ta
-        self.sun_el = hs
-        self.ws = FF
-        self.sun_az = Az
-        # print( self.sun_az, self.ws, self.dni)
-        # print('1')
-        # print(sun_az, ws, dni, dhi, ghi, sun_el, ambient_temp)
-        return self.output()
-
-if __name__ == '__main__':
-    # Create a model by inheriting from ModelConstructor
-    # and implementing the step method
-    pv_model = PV(pv)
-
-    print(pv_model.step(1))
