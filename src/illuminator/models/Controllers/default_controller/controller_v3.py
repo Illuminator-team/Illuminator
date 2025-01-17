@@ -46,7 +46,7 @@ class Controller(ModelConstructor):
              'dump': 0,  # Excess power that cannot be stored or used
              'h2_out': 0  # Hydrogen output from fuel cell to meet demand (positive if used, zero otherwise)
              }
-    states={}
+    states={'flow': 0}
 
     # define other attributes
     time_step_size = 1
@@ -137,6 +137,7 @@ class Controller(ModelConstructor):
             - h2_out: Hydrogen output from fuel cell (kW)
         """
         flow = wind_gen + pv_gen - load_dem  # kW
+        self.set_states({'flow': flow})
 
         if flow < 0:  # means that the demand is not completely met and we need support from battery and fuel cell
             if soc > self.soc_min:  # checking if soc is above minimum. It can be == to soc_max as well.
