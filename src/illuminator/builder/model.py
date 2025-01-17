@@ -344,7 +344,8 @@ class ModelConstructor(ABC, Simulator):
 
                 # if the attribute is coming from a connection with an output
                 if messages[0]['message_origin'] == 'output':
-                    data[attr] = sum(message['value'] for message in messages)
+                    #data[attr] = sum(message['value'] for message in messages)
+                    data[attr] = [message['value'] for message in messages]
                 
                 # if the attribute is coming from a connection with a state
                 elif messages[0]['message_origin'] == 'state':
