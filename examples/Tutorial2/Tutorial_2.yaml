@@ -1,0 +1,36 @@
+scenario:
+  name: "Tutorial 1" # in mosaik so called world
+  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-06-01 00:15:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+models: 
+- name: Company1
+  type: GenerationCompanyAgent
+  parameters:
+    portfolio: [
+        {'Technology': 'Oil', 'Capacity (MW)': 300, 'Cost (€/MWh)': 104, 'Availability': 1},
+        {'Technology': 'Nuclear', 'Capacity (MW)': 700, 'Cost (€/MWh)': 70, 'Availability': 1},
+        {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 400, 'Cost (€/MWh)': 85, 'Availability': 1},
+        {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 200, 'Cost (€/MWh)': 75, 'Availability': 1}
+        ]
+    company_name: 'Company1'
+    automated_bids: True
+    bids_manual: null
+  outputs:
+    bids: null
+  states:
+    profit: 0
+    
+
+
+connections:
+  []
+# - from: CSVload.load
+#   to: Load1.load
+
+
+monitor:
+  file: './out_Tutorial2.csv'
+  items:
+    - Company1.bids
