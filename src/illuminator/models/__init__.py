@@ -14,11 +14,18 @@ from .Controllers.default_controller.controller_v3 import Controller
 from .Controllers.controller_T1.controller_T1_v3 import Controller_T1
 from .Wind.wind_v3 import Wind
 
-__all__ = ['Battery', 
-           'Collector', 
-           'Adder', 
-           'CSV',
-           'Load',
-           'PV',
-           'Controller',
-           'Wind']
+from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
+from .Agents.operators.operator_v3 import Operator_Market
+
+__all__ = [ 'Battery', 
+            'Collector', 
+            'Adder', 
+            'CSV',
+            'Load',
+            'PV',
+            'Controller',
+            'Controller_T1',
+            'Wind',
+            'GenerationCompanyAgent',
+            'Operator_Market'
+            ]
