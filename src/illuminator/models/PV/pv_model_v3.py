@@ -342,6 +342,7 @@ class PV(ModelConstructor):
             - 'total_irr': Total irradiance on tilted surface in W/m² <- check
         """
         # constants
+        # WARNING: If the constants change here the corresponding tests in test_pv_v3.py should be updated
         # inverter efficiency. We can use sandia model to actually find an inverter that suits our needs
         inv_eff = 0.96
         mppt_eff = 0.99  # again, can calculate it accurately

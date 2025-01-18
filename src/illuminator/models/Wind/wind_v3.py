@@ -93,12 +93,15 @@ class Wind(ModelConstructor):
             float: Next simulation time in seconds
         """
         self.resolution_h = self.time_resolution / 60 / 60  # convert scenario resolution to hours
+        
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
+        self.u = input_data['u']
 
-        results = self.generation(u=input_data['u'])
+        results = self.generation(self.u)  # calculate wind power generation
 
         self.set_outputs(results)
         self.set_states({'u60': self.u60})
+        self.set_states({'u25': self.u25})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
@@ -181,7 +184,7 @@ class Wind(ModelConstructor):
                 # return re_params
         elif self.u25 < self.u_cutin:
             re_params = {'wind_gen': 0, 'u': self.u25}
-        else:
+        else:   
             re_params = self.production(u)
         return re_params
 
