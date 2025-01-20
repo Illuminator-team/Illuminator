@@ -92,7 +92,7 @@ class Operator_Market(ModelConstructor):
         results = self.calculate_balance(bids)
 
         self.set_outputs({'results': results['results'].to_dict()})
-        self.set_states({'market_clearing_price': results['market_clearing_price']})
+        self.set_states({'market_clearing_price': int(results['market_clearing_price'])})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
