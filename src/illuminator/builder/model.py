@@ -348,7 +348,10 @@ class ModelConstructor(ABC, Simulator):
                 
                 # if the attribute is coming from a connection with a state
                 elif messages[0]['message_origin'] == 'state':
-                    data[attr] = [message['value'] for message in messages]
+                    if len(messages) > 1:
+                        data[attr] = [message['value'] for message in messages]
+                    else:
+                        data[attr] = messages[0]['value']
 
                 # if not coming from output nor from state
                 else:
