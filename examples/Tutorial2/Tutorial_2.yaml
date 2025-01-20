@@ -17,9 +17,8 @@ models:
     company_name: 'Company1'
     automated_bids: True
     bids_manual: null
-  outputs:
-    bids: null
   states:
+    bids: null
     profit: 0
 
 - name: Company2
@@ -33,10 +32,9 @@ models:
         ]
     company_name: 'Company2'
     automated_bids: True
-    bids_manual: null
-  outputs:
-    bids: null
+    bids_manual: null    
   states:
+    bids: null
     profit: 0
 
 - name: Company3
@@ -51,9 +49,8 @@ models:
     company_name: 'Company3'
     automated_bids: True
     bids_manual: null
-  outputs:
-    bids: null
   states:
+    bids: null
     profit: 0
     
 - name: Operator1

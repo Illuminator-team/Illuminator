@@ -38,9 +38,10 @@ class GenerationCompanyAgent(ModelConstructor):
                 }
     inputs={
             }
-    outputs={'bids': {},
+    outputs={
              }
-    states={'profit': 0
+    states={'bids': {},
+            'profit': 0
             }
 
     # define other attributes
@@ -88,8 +89,10 @@ class GenerationCompanyAgent(ModelConstructor):
 
         results = self.bid()
 
-        self.set_outputs({'bids': results['bids'].to_dict()})
-        self.set_states({'profit': self.profit})
+        # self.set_outputs({})
+
+        # bids do not represent a physical flow, so they are sent over from states
+        self.set_states({'bids': results['bids'].to_dict(), 'profit': self.profit})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
