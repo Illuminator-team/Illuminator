@@ -91,8 +91,8 @@ class Operator_Market(ModelConstructor):
 
         results = self.calculate_balance(bids)
 
-        self.set_outputs({'results': results})
-        self.set_states({'market_clearing_price': 0})
+        self.set_outputs({'results': results['results'].to_dict()})
+        self.set_states({'market_clearing_price': results['market_clearing_price']})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
@@ -153,7 +153,8 @@ class Operator_Market(ModelConstructor):
         results_df = pd.DataFrame(
             columns=['Company', 'Supplied Capacity (MW)', 'Revenue (€)', 'Total Costs (€)', 'Profit (€)'])
 
-        for company in bids:
+        for bid in bids:
+            company = bid['Company'].iloc[0]
             df_company = all_bids[all_bids['Company'] == company]
             df_company_sorted = df_company.sort_values(by='Bid Price (€/MWh)', ascending=True, ignore_index=True)
             df_company_accepted = accepted_bids[accepted_bids['Company'] == company]

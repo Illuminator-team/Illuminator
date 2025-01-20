@@ -80,5 +80,4 @@ connections:
 monitor:
   file: './out_Tutorial2.csv'
   items:
-    - Company1.bids
-    - Operator1.results
+    - Operator1.market_clearing_price
