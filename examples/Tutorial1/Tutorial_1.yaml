@@ -33,14 +33,14 @@ models:
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
-    load_dem: 0  # total energy or power consumption for all houses (kWh) over the time step
-    consumption: 0  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time: None,  # Current simulation time step in seconds
-    forecast: None  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+    time:  # Current simulation time step in seconds
+    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
   states:
-    consumption: 0
-    time: None
-    forecast: None
+    consumption:
+    time:
+    forecast:
 
 - name: Load2
   type: Load
@@ -50,14 +50,14 @@ models:
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
-    load_dem: 0  # total energy or power consumption for all houses (kWh) over the time step
-    consumption: 0  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time: None,  # Current simulation time step in seconds
-    forecast: None  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+    time:  # Current simulation time step in seconds
+    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
   states:
     consumption: 0
-    time: None
-    forecast: None
+    time:
+    forecast:
 
 - name: PV1
   type: PV # models can reuse the same type
@@ -81,8 +81,8 @@ models:
     FF: null
     Az: null
   outputs:
-    pv_gen: 1
-    g_aoi: null
+    pv_gen:
+    g_aoi:
 
 - name: Wind1
   type: Wind # models can reuse the same type
@@ -97,10 +97,10 @@ models:
   inputs:
     u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
   outputs:
-    wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
-    u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+    wind_gen:  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
   states:
-    u60: 5
+    u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
 
 - name: Battery1
   type: Battery # models can reuse the same type
@@ -115,9 +115,9 @@ models:
   inputs:
     flow2b: 0  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
   outputs:
-    p_out: 0  # output power from the battery after discharge/charge decision (Kw)
-    p_in: 0  # input power to the battery (kW)
-    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
+    p_out:  # output power from the battery after discharge/charge decision (Kw)
+    p_in:  # input power to the battery (kW)
+    mod: # operation mode: 0=no action, 1=charge, -1=discharge
   states:
     soc: 80  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
@@ -135,9 +135,9 @@ models:
     soc: 0  # State of charge of the battery
     load_EV: 0  # Electrical vehicle load demand
   outputs:
-    flow2b: 0  # Power flow to/from battery (positive for charging, negative for discharging)
-    res_load: 0  # Residual load after considering the generation and load demand (kW)
-    dump: 0  # Excess power that cannot be stored or used (kW)
+    flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
+    res_load:  # Residual load after considering the generation and load demand (kW)
+    dump:  # Excess power that cannot be stored or used (kW)
 
 
 connections:
