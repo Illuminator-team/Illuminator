@@ -119,29 +119,25 @@ models:
     p_in: 0  # input power to the battery (kW)
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
   states:
-    soc: 10  # state of charge of the battery (%)
+    soc: 80  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
-  type: Controller # models can reuse the same type
+  type: Controller_T1 # models can reuse the same type
   parameters:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
-    h2_soc_min: 0  # Minimum state of charge of the hydrogen storage before discharging stops
-    h2_soc_max: 0  # Maximum state of charge of the hydrogen storage before charging stops
-    fc_eff: 100  # Efficiency of the fuel cell
+    max_p: 0.8  # Maximum power flow to/from the battery (kW)
   inputs:
-    u60: 0
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
     soc: 0  # State of charge of the battery
-    h2_soc: 0  # State of charge of the hydrogen storage
+    load_EV: 0  # Electrical vehicle load demand
   outputs:
     flow2b: 0  # Power flow to/from battery (positive for charging, negative for discharging)
-    flow2e: 0  # Power flow to the electrolyzer for hydrogen production
-    dump: 0  # Excess power that cannot be stored or used
-    h2_out: 0  # Hydrogen output from fuel cell to meet demand (positive if used, zero otherwise)
+    res_load: 0  # Residual load after considering the generation and load demand (kW)
+    dump: 0  # Excess power that cannot be stored or used (kW)
 
 
 connections:
@@ -170,8 +166,6 @@ connections:
 
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
-- from: Wind1.u60
-  to: Controller1.u60
 
 
 - from: PV1.pv_gen
@@ -197,14 +191,14 @@ monitor:
     # - Load1.load_dem
 
     - Controller1.flow2b
-    #- Controller1.res_load
+    - Controller1.res_load
     - Controller1.dump
     - Battery1.p_out
     - Battery1.soc
     - PV1.pv_gen
     - Wind1.wind_gen
     - Load1.load_dem
-    - Wind1.u60
+  #    - Wind1.u60
 
   #- CSVload.load
   #- Load1.load_dem
