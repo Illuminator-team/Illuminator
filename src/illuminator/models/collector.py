@@ -221,7 +221,7 @@ class Collector(mosaik_api.Simulator):
         for attr, values in data.items():
             for src, value in values.items():
                 self.data[src][attr][time] = value
-                df_dict[f'{src}-{attr}'] = [value]
+                df_dict[f'{src}-{attr}'] = [value['value']]
 
         df = pd.DataFrame.from_dict(df_dict)
         df = df.set_index('date')
