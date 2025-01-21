@@ -1,4 +1,4 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 
 class Thermolyzer(ModelConstructor):
     parameters={
@@ -18,7 +18,7 @@ class Thermolyzer(ModelConstructor):
     outputs={
             'h_gen' : 0,            # hydrogen generation [kg/timestep]
             'CO2_out' : 0           # CO2 output [kg/timestep]
- 
+
     },
     states={},
 

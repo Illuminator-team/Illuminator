@@ -1,4 +1,4 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 import numpy as np
 class Compressor(ModelConstructor):
     parameters={

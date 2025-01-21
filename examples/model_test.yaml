@@ -1,0 +1,45 @@
+scenario:
+  name: "thermolzyer_test"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" # Run for 2 hours
+  time_resolution: 900  # 15min
+models:
+
+- name: CSV_test
+  type: CSV
+  parameters:
+  start: "2012:01:01 00:00:00"
+  file_path: './examples/thermolyzer_test.csv'
+  delimiter: ","
+  date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: thermolyzer_test
+  type: Thermolyzer
+  parameters:
+    eff: 70
+    C_bio: 60
+    C_CO2: 10
+    C_Eelec_h2: 11.5
+    max_ramp_up: 10
+  inputs:
+    biomass_in: 0
+    flow2t: 0
+  outputs:
+    h_gen: 0
+    CO2_out: 0
+
+connections:
+- from: CSV_test.biomass_in
+  to: thermolyzer_test.biomass_in
+- from: CSV_test.flow2t
+  to: thermolyzer_test.flow2t
+
+monitor:
+  file: "./out_thermolyzer.csv"
+  items:
+  - CSV_test.biomass_in
+  - CSV_test.flow2t
+  - thermolyzer_test.h2_gen
+  - thermolyzer_test.CO2_out
+
+
