@@ -8,10 +8,10 @@ models:
 - name: CSV_test
   type: CSV
   parameters:
-  start: "2012:01:01 00:00:00"
-  file_path: './examples/thermolyzer_test.csv'
-  delimiter: ","
-  date_format: "YYYY-MM-DD HH:mm:ss"
+    start: "2012-01-01 00:00:00"
+    file_path: './examples/thermolyzer_test.csv'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
 
 - name: thermolyzer_test
   type: Thermolyzer
