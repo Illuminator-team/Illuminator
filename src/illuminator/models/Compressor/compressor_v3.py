@@ -1,6 +1,46 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 
 class Compressor(ModelConstructor):
+    """
+    A class to represent a Compressor model.
+    This class provides methods to simulate the compression of hydrogen gas.
+
+    Attributes
+    ----------
+    parameters : dict
+        Dictionary containing compressor parameters such as input pressure, output pressure, ambient temperature, and compressor efficiency.
+    inputs : dict
+        Dictionary containing input variables like hydrogen flow to the compressor.
+    outputs : dict
+        Dictionary containing calculated outputs like hydrogen flow from the compressor, power required for compression, and volumetric output flow.
+    states : dict
+        Dictionary containing the state variables of the compressor model.
+    time_step_size : int
+        Time step size for the simulation.
+    time : int or None
+        Current simulation time.
+    hhv : float
+        Higher heating value of hydrogen [kJ/mol].
+    mmh2 : float
+        Molar mass of hydrogen (H2) [gram/mol].
+    R : float
+        Characteristic gas constant [J/mol*K].
+    gamma : float
+        Specific heat ratio [-].
+    e_grav_h2 : float
+        Gravimetric energy density of hydrogen [J/kg].
+
+    Methods
+    -------
+    step(time, inputs, max_advance=900)
+        Simulates one time step of the compressor model.
+    power_req(flow, p_in, p_out, T_amb, max_advance)
+        Calculates the power required to compress the hydrogen.
+    new_density(p, T)
+        Calculates the new density of hydrogen after compression.
+    find_z_val(press, temp)
+        Finds the Z value needed to compute the new density.
+    """
     parameters={
             'p_in' : 30,            # input pressure [bar]
             'p_out' : 500,          # output pressure [bar]
@@ -18,20 +58,52 @@ class Compressor(ModelConstructor):
     },
     states={},
 
-
     # other attributes
     time_step_size=1,
-    time=None
+    time = None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
     R = 8.314                   # characteristic gas constant [J/mol*K]
     gamma = 1.41                # specific heat ratio [-]
     e_grav_h2 = 120e6           # gravimetric energy density of hydrogen [J/kg]
     
+    def __init__(self, **kwargs) -> None:
+        """
+        Initialize the Compressor model with the provided parameters.
 
+        Parameters
+        ----------
+        kwargs : dict
+            Additional keyword arguments to initialize the model.
+        """
+        super().__init__(**kwargs)
+        self.p_in = self._model.parameters.get('p_in')
+        self.p_out = self._model.parameters.get('p_out')
+        self.T_amb = self._model.parameters.get('T_amb')
+        self.compressor_eff = self._model.parameters.get('compressor_eff')
 
-    def step(self, time, inputs, max_advance=1) -> None:
+    def step(self, time:int, inputs:dict=None, max_advance:int=900) -> None:
+        """
+        Simulates one time step of the compressor model.
 
+        This method processes the inputs for one timestep, updates the compressor state based on
+        the hydrogen flow, and sets the model outputs accordingly.
+
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict
+            Dictionary containing input values, specifically:
+            - flow2c: Hydrogen flow to the compressor in kg/timestep
+        max_advance : int, optional
+            Maximum time step size (default 1)
+
+        Returns
+        -------
+        int
+            Next simulation time step
+        """
         print("\nCompressor:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
@@ -46,10 +118,9 @@ class Compressor(ModelConstructor):
         power_req = self.power_req(flow=input_data['flow2c'],
                                    p_in=input_data['p_in'],
                                    p_out=input_data['p_out'],
-                                   T_amb=input_data['T_amb'],
-                                   max_advance=max_advance
+                                   T_amb=input_data['T_amb']                
         )
-        volume_flow_out = input_data['flow2c'] / self.new_density(p_out=input_data['p_out'], T_amb=input_data['T_amb'],)
+        volume_flow_out = input_data['flow2c'] / self.new_density(p=input_data['p_out'], T=input_data['T_amb'])
         self._model.outputs['flow_from_c'] = input_data['flow2c']
         self._model.outputs['power_req'] = power_req
         self._model.outputs['volume_flow_out'] = volume_flow_out
@@ -57,7 +128,7 @@ class Compressor(ModelConstructor):
         
         return time + self._model.time_step_size
     
-    def power_req(self, flow, p_in, p_out, T_amb, max_advance):
+    def power_req(self, flow: float, p_in: float, p_out: float, T_amb: float) -> float:
         """
         Simulates the discharging process based on the soc and the incoming flow. Returns parameters based on the capacbilities of the h2 storage
 
@@ -80,9 +151,9 @@ class Compressor(ModelConstructor):
         power_in = w_real * flow_ps / self.mmh2    # [kW]
         return power_in
 
-    def new_density(self, p, T):
+    def new_density(self, p: float, T: float) -> float:
         """
-        Calculates and outputs the new density of h2after compression
+        Calculates and outputs the new density of h2 after compression
 
         ...
 
@@ -102,7 +173,7 @@ class Compressor(ModelConstructor):
         density = (p * self.mmh2)/(z_val * self.R * T)  # kg/m3
         return density
 
-    def find_z_val(self, press, temp):
+    def find_z_val(self, press: float, temp: float) -> float:
         """
         Finds the Z value needed to compute the new density.
 
@@ -111,7 +182,7 @@ class Compressor(ModelConstructor):
         Parameters
         ----------
         press : float
-            Compressor utput pressure [bar]
+            Compressor output pressure [bar]
         temp : float
             Temperature of operation [K]
 

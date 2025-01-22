@@ -1,8 +1,56 @@
 from illuminator.builder import ModelConstructor
 import numpy as np
-class Compressor(ModelConstructor):
+
+class Pipeline(ModelConstructor):
+    """
+    A class to represent a Pipeline model.
+    This class provides methods to simulate the flow of hydrogen gas through a pipeline.
+
+    Attributes
+    ----------
+    parameters : dict
+        Dictionary containing pipeline parameters such as cross-sectional area, input pressure, ambient temperature, pipe thickness, and pipe roughness.
+    inputs : dict
+        Dictionary containing input variables like hydrogen flow into the pipeline and input pressure.
+    outputs : dict
+        Dictionary containing calculated outputs like hydrogen flow out of the pipeline and output pressure.
+    states : dict
+        Dictionary containing the state variables of the pipeline model.
+    time_step_size : int
+        Time step size for the simulation.
+    time : int or None
+        Current simulation time.
+    hhv : float
+        Higher heating value of hydrogen [kJ/mol].
+    mmh2 : float
+        Molar mass of hydrogen (H2) [gram/mol].
+    R : float
+        Characteristic gas constant [J/mol*K].
+    gamma : float
+        Specific heat ratio [-].
+    e_grav_h2 : float
+        Gravimetric energy density of hydrogen [J/kg].
+
+    Methods
+    -------
+    step(time, inputs, max_advance=1)
+        Simulates one time step of the pipeline model.
+    output_flow(flow_in, density)
+        Calculates the output flow (mass) given the properties of the pipeline and hydrogen.
+    permeabilty_coef(press)
+        Reads the permeability coefficient of hydrogen in HDPE pipes from a table, provided the pressure of the hydrogen.
+    density(p, T)
+        Calculates and outputs the density of hydrogen provided pressure and temperature.
+    find_z_val(press, temp)
+        Finds the Z value needed to compute the density.
+    output_pressure(flow_in, density)
+        Calculates the output pressure given the properties of the pipeline and hydrogen.
+    viscosity(T)
+        Reads the viscosity of hydrogen from a table provided the temperature.
+    """
     parameters={
             'A' : 2,                # cross-sectional area of the pipe [m2]
+            'L' : 100,              # length of the pipe [m]
             'p' : 300,              # input pressure of the hydrogen [bar]
             'p_outer':1,            # pressure outside of the pipe [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
@@ -32,10 +80,47 @@ class Compressor(ModelConstructor):
     gamma = 1.41                # specific heat ratio [-]
     e_grav_h2 = 120e6           # gravimetric energy density of hydrogen [J/kg]
     
+    def __init__(self, **kwargs) -> None:
+        """
+        Initialize the Pipeline model with the provided parameters.
 
+        Parameters
+        ----------
+        kwargs : dict
+            Additional keyword arguments to initialize the model.
+        """
+        super().__init__(**kwargs)
+        self.A = self._model.parameters.get('A')
+        self.L = self._model.parameters.get('L')
+        self.p = self._model.parameters.get('p')
+        self.p_outer = self._model.parameters.get('p_outer')
+        self.T_amb = self._model.parameters.get('T_amb')
+        self.d = self._model.parameters.get('d')
+        self.eps = self._model.parameters.get('eps')
 
-    def step(self, time, inputs, max_advance=1) -> None:
+    def step(self, time: int, inputs: dict, max_advance: int = 900) -> int:
+        """
+        Simulates one time step of the pipeline model.
 
+        This method processes the inputs for one timestep, updates the pipeline state based on
+        the hydrogen flow, and sets the model outputs accordingly.
+
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict
+            Dictionary containing input values, specifically:
+            - flow_in: Hydrogen flow into the pipeline in kg/timestep
+            - pressure_in: Input pressure of the hydrogen in bar
+        max_advance : int, optional
+            Maximum time step size (default 900)
+
+        Returns
+        -------
+        int
+            Next simulation time step
+        """
         print("\nCompressor:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
@@ -56,7 +141,7 @@ class Compressor(ModelConstructor):
         
         return time + self._model.time_step_size
     
-    def output_flow(self, flow_in, density):
+    def output_flow(self, flow_in: float, density: float) -> float:
         """
         Calculates the output flow (mass) given the properties of the pipeline and hydrogen.
 
@@ -82,7 +167,7 @@ class Compressor(ModelConstructor):
         output_flow = flow_in - flow_loss_mass * self.time_resolution   # [kg/timestep]
         return output_flow
     
-    def permeabilty_coef(self, press):
+    def permeabilty_coef(self, press: float) -> float:
         """
         Reads the permeability coefficient of hydrogen in HDPE pipes from a table, provided the pressure of the hydrogen.
         ...
@@ -97,14 +182,14 @@ class Compressor(ModelConstructor):
         P : float
             Permeability coefficient of hydrogen in HDPE pipe [cm3*cm/cm2*s*Pa]
         """
-        p = p * 1e5     # convert bar to Pascall [Pa]
+        press = press * 1e5     # convert bar to Pascall [Pa]
         coefs = [5.77e-8, 4.17e-8, 2.84e-8, 1.99e-8, 1.68e-8]   # list of permeability coefficients [cm3*cm/cm2*s*Pa]
         pressures = [10e5, 30e5, 50e5, 70e5, 90e5]              # corresponding pressures [Pa]
         closest_pressure = closest_pressure = min(pressures, key=lambda p: abs(p - press))  # Best matching pressure [Pa]
         P = coefs[pressures.index(closest_pressure)]            # Best matching permeability coefficient [cm3*cm/cm2*s*Pa]        
         return P
 
-    def density(self, p, T):
+    def density(self, p: float, T: float) -> float:
         """
         Calculates and outputs the density of h2 provided pressure and temperature
 
@@ -126,7 +211,7 @@ class Compressor(ModelConstructor):
         density = (p * self.mmh2)/(z_val * self.R * T)  # kg/m3
         return density
 
-    def find_z_val(self, press, temp):
+    def find_z_val(self, press: float, temp: float) -> float:
         """
         Finds the Z value needed to compute the density.
 
@@ -171,7 +256,7 @@ class Compressor(ModelConstructor):
         z_val = z_values[pressures.index(closest_pressure)][temps.index(closest_temp)]
         return z_val
     
-    def output_pressure(self, flow_in, density):
+    def output_pressure(self, flow_in: float, density: float) -> float:
         """
         Calculates the output pressure [bar] given the properties of the pipeline and hydrogen.
 
@@ -190,7 +275,7 @@ class Compressor(ModelConstructor):
         p = self.p * 1e5                    # pressure in pascals [Pa]
         mu = self.viscosity(self.T_amb)     # viscosity of hydrogen (temperature dependent) [] 
         D = 2 * np.sqrt(self.A / np.pi)     # pipe diameter [m]
-        v = flow_in / self.__annotations__  # mean velocity of the flow [m/s]
+        v = flow_in / self.A  # mean velocity of the flow [m/s]
         Re = (density * v * D) / mu # Reynolds number [-]
         # Friction factor dependent on laminar or turbulent flow
         if Re <= 2300:
@@ -202,7 +287,7 @@ class Compressor(ModelConstructor):
         p_out = p - p_loss          # output pressure [bar]
         return p_out
 
-    def viscosity(self, T):
+    def viscosity(self, T: float) -> float:
         """
         Reads the viscosity of hydrogen from a table provided the temperature.
         ...

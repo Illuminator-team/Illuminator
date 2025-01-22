@@ -1,6 +1,36 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 
 class Fuelcell(ModelConstructor):
+    """
+    A class to represent a Fuelcell model.
+    This class provides methods to simulate the operation of a fuelcell.
+
+    Attributes
+    ----------
+    parameters : dict
+        Dictionary containing fuelcell parameters such as efficiency, maximum hydrogen input flow, and minimum hydrogen input flow.
+    inputs : dict
+        Dictionary containing input variables like hydrogen flow to the fuelcell.
+    outputs : dict
+        Dictionary containing calculated outputs like power output.
+    states : dict
+        Dictionary containing the state variables of the fuelcell model.
+    time_step_size : int
+        Time step size for the simulation.
+    time : int or None
+        Current simulation time.
+    hhv : float
+        Higher heating value of hydrogen [kJ/mol].
+    mmh2 : float
+        Molar mass of hydrogen (H2) [gram/mol].
+
+    Methods
+    -------
+    step(time, inputs, max_advance=900)
+        Simulates one time step of the fuelcell model.
+    power_out(h2_flow2f)
+        Calculates the power output of the fuelcell.
+    """
     parameters={
             'fuelcell_eff': 99,     # fuelcell efficiency [%]
             'h2_max' : 10,          # max hyrogen input flow [kg/timestep]  
@@ -14,15 +44,48 @@ class Fuelcell(ModelConstructor):
     },
     states={},
 
-
     # other attributes
     time_step_size=1,
     time=None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [g/mol]
  
-    def step(self, time, inputs, max_advance=1) -> None:
+    def __init__(self, **kwargs) -> None:
+        """
+        Initialize the Fuelcell model with the provided parameters.
 
+        Parameters
+        ----------
+        kwargs : dict
+            Additional keyword arguments to initialize the model.
+        """
+        super().__init__(**kwargs)
+        self.fuelcell_eff = self._model.parameters.get('fuelcell_eff')
+        self.h2_max = self._model.parameters.get('h2_max')
+        self.h2_min = self._model.parameters.get('h2_min')
+
+    def step(self, time: int, inputs: dict, max_advance: int = 900) -> None:
+        """
+        Simulates one time step of the fuelcell model.
+
+        This method processes the inputs for one timestep, updates the fuelcell state based on
+        the hydrogen flow, and sets the model outputs accordingly.
+
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict
+            Dictionary containing input values, specifically:
+            - h2_flow2f: Hydrogen flow to the fuelcell in kg/timestep
+        max_advance : int, optional
+            Maximum time step size (default 900)
+
+        Returns
+        -------
+        int
+            Next simulation time step
+        """
         print("\nFuelcell:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
@@ -35,31 +98,30 @@ class Fuelcell(ModelConstructor):
 
 
 
-        self._model.outputs['p_out'] = self.power_out(input_data['h2_flow2f'])
+        self._model.outputs['p_out'] = self.power_out(input_data['h2_flow2f'], max_advance)
         print("outputs:", self.outputs)
         return time + self._model.time_step_size
-    
+        
+    def power_out(self, h2_flow2f: float, max_advance: int) -> float:
+        """
+        Calculates the output power of the fuelcell
 
-def power_out(self, h2_flow2f):
-    """
-    Calculates the output power of the fuelcell
+        ...
 
-    ...
+        Parameters
+        ----------
+        h2_flow2f : float
+            H2 flow into the fuelcell [kg/timestep]
 
-    Parameters
-    ----------
-    h2_flow2f : float
-        H2 flow into the fuelcell [kg/timestep]
+        Returns
+        -------
+        p_out : float
+            The outout power of the fuelcell [kW]
+        """
+        # limit hydrogen consumption by the minimum and maximum hydrogen the fuelcell can accept
+        h2_flow = max(self.h2_min, min(self.h2_max, h2_flow2f))         # [kg/timestep]
+        h2_flow = h2_flow / max_advance                                 # [kg/s]
+        p_out = (h2_flow * self.fuelcell_eff * self.hhv) / self.mmh2    # [kW]
+        return p_out
 
-    Returns
-    -------
-    p_out : float
-        The outout power of the fuelcell [kW]
-    """
-    # limit hydrogen consumption by the minimum and maximum hydrogen the fuelcell can accept
-    h2_flow = max(self.h2_min, min(self.h2_max, h2_flow2f))         # [kg/timestep]
-    h2_flow = h2_flow / self.timestep                               # [kg/s]
-    p_out = (h2_flow * self.fuelcell_eff * self.hhv) / self.mmh2    # [kW]
-    return p_out
-
-# TODO: Ramping limits implementation
+    # TODO: Ramping limits implementation
