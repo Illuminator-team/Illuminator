@@ -54,7 +54,7 @@ class H2demand(ModelConstructor):
         self.time_step_size = self._model.parameters.get('time_step_size')
         self.time = self._model.parameters.get('time')
 
-    def step(self, time: int, inputs: dict, max_advance: int = 900) -> int:
+    def step(self, time: int, inputs: dict = None, max_advance: int = 900) -> int:
         """
         Simulates one time step of the H2demand model.
 

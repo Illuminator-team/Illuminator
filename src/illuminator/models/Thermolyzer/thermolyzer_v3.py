@@ -128,32 +128,34 @@ class Thermolyzer(ModelConstructor):
         print("outputs:", self.outputs)
         return time + self._model.time_step_size
     
-    def ramp_lim(self, flow2t, max_advance):
+    def ramp_lim(self, p_in, max_advance):
         """
-        Limits the thermolizer input flow
+        Limits the thermolyzer input power based on ramp rate constraints.
 
         ...
-
+        
         Parameters
         ----------
-        flow2t : float
-            output pressure [kg/timestep]
+        p_in : float
+            Desired power input to the thermolyzer [kW]
+        max_advance : int
+            Maximum time step size in seconds
 
         Returns
         -------
-        density : float
-            The new found density after compression [kg/m3]
+        float
+            Adjusted power input after applying ramp rate constraints [kW]
         """
         # restrict the power input to not increase more than max_p_ramp_rate
         # compared to the last timestep
-        p_change = flow2t - self.p_in_last
+        p_change = p_in - self.p_in_last
         if abs(p_change) > self.max_ramp_up:
             if p_change > 0:
                 power_in = self.p_in_last + self.max_ramp_up * max_advance
             else:
                 power_in = self.p_in_last - self.max_ramp_up * max_advance
         else:
-            power_in = flow2t
+            power_in = p_in
         self.p_in_last = power_in
         return power_in
         
@@ -163,7 +165,7 @@ class Thermolyzer(ModelConstructor):
         # restrict the input power to be maximally max_p_in
         power_in = min(flow2t, self.max_p_in) 
         # restrict input power with ramp limits
-        power_in = self.ramp_lim(flow2t, max_advance)
+        power_in = self.ramp_lim(power_in, max_advance)
         # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:
         # calculate potential generation of h2 for both dependencies
         h_prod_p = power_in / self.C_Eelec_h2 / 3600    # [kg/s] (/3600 comes from kWh to kWs)

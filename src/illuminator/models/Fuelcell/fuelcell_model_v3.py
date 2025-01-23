@@ -34,7 +34,9 @@ class Fuelcell(ModelConstructor):
     parameters={
             'fuelcell_eff': 99,     # fuelcell efficiency [%]
             'h2_max' : 10,          # max hyrogen input flow [kg/timestep]  
-            'h2_min' : 0            # min hydrogen input flow [kg/timestep]
+            'h2_min' : 0,           # min hydrogen input flow [kg/timestep]
+            'max_p_out' : 1,        # maximum power output [kW]
+            'max_ramp_up' : 10      # maximum ramp up in power per timestep [kW/timestep] 
     },
     inputs={
             'h2_flow2f' : 0         # hydrogen flow to the fuelcell [kg/timestep]
@@ -63,8 +65,11 @@ class Fuelcell(ModelConstructor):
         self.fuelcell_eff = self._model.parameters.get('fuelcell_eff')
         self.h2_max = self._model.parameters.get('h2_max')
         self.h2_min = self._model.parameters.get('h2_min')
+        self.max_ramp_up = self._model.parameters.get('max_ramp_up')
+        self.max_p_out = self._model.parameters.get('max_p_out')
+        self.p_in_last = 0  # Indicator of the last power input initialized to be 0 
 
-    def step(self, time: int, inputs: dict, max_advance: int = 900) -> None:
+    def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:
         """
         Simulates one time step of the fuelcell model.
 
@@ -86,20 +91,18 @@ class Fuelcell(ModelConstructor):
         int
             Next simulation time step
         """
+
         print("\nFuelcell:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
         # get input data 
         input_data = self.unpack_inputs(inputs)
         print("input data: ", input_data)
-
         current_time = time * self.time_resolution
         print('from fuelcell %%%%%%%%%%%', current_time)
-
-
-
         self._model.outputs['p_out'] = self.power_out(input_data['h2_flow2f'], max_advance)
         print("outputs:", self.outputs)
+        
         return time + self._model.time_step_size
         
     def power_out(self, h2_flow2f: float, max_advance: int) -> float:
@@ -122,6 +125,37 @@ class Fuelcell(ModelConstructor):
         h2_flow = max(self.h2_min, min(self.h2_max, h2_flow2f))         # [kg/timestep]
         h2_flow = h2_flow / max_advance                                 # [kg/s]
         p_out = (h2_flow * self.fuelcell_eff * self.hhv) / self.mmh2    # [kW]
+        p_out = min(p_out, self.max_p_out)                               # limit power output by the max power output [kW]
+        p_out = self.ramp_lim(p_out, max_advance)                       # considering ramp limits [kW]
         return p_out
 
-    # TODO: Ramping limits implementation
+    def ramp_lim(self, p_out, max_advance):
+        """
+        Limits the power output ramp rate of the fuelcell.
+
+        ...
+
+        Parameters
+        ----------
+        p_out : float
+            Desired power output [kW]
+        max_advance : int
+            Maximum time step size
+
+        Returns
+        -------
+        power_out : float
+            Adjusted power output [kW] after applying ramp rate limits
+        """
+        # restrict the power input to not increase more than max_p_ramp_rate
+        # compared to the last timestep
+        p_change = p_out - self.p_in_last
+        if abs(p_change) > self.max_ramp_up:
+            if p_change > 0:
+                power_out = self.p_in_last + self.max_ramp_up * max_advance
+            else:
+                power_out = self.p_in_last - self.max_ramp_up * max_advance
+        else:
+            power_out = p_out
+        self.p_in_last = power_out
+        return power_out

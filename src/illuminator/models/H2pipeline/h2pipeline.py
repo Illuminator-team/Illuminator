@@ -98,7 +98,7 @@ class Pipeline(ModelConstructor):
         self.d = self._model.parameters.get('d')
         self.eps = self._model.parameters.get('eps')
 
-    def step(self, time: int, inputs: dict, max_advance: int = 900) -> int:
+    def step(self, time: int, inputs: dict = None, max_advance: int = 900) -> int:
         """
         Simulates one time step of the pipeline model.
 

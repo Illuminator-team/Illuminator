@@ -66,7 +66,7 @@ class Compressor(ModelConstructor):
     R = 8.314                   # characteristic gas constant [J/mol*K]
     gamma = 1.41                # specific heat ratio [-]
     e_grav_h2 = 120e6           # gravimetric energy density of hydrogen [J/kg]
-    
+
     def __init__(self, **kwargs) -> None:
         """
         Initialize the Compressor model with the provided parameters.
@@ -107,7 +107,7 @@ class Compressor(ModelConstructor):
         print("\nCompressor:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
-        # get input data 
+        # get input data
         input_data = self.unpack_inputs(inputs)
         print("input data: ", input_data)
 
@@ -125,24 +125,28 @@ class Compressor(ModelConstructor):
         self._model.outputs['power_req'] = power_req
         self._model.outputs['volume_flow_out'] = volume_flow_out
         print("outputs:", self.outputs)
-        
+
         return time + self._model.time_step_size
-    
+
     def power_req(self, flow: float, p_in: float, p_out: float, T_amb: float) -> float:
         """
-        Simulates the discharging process based on the soc and the incoming flow. Returns parameters based on the capacbilities of the h2 storage
-
-        ...
+        Calculates the power required to compress the hydrogen.
 
         Parameters
         ----------
-        flow2h2storage : float
-            Desired output flow [kg/timestep]
+        flow : float
+            Hydrogen flow to the compressor [kg/timestep]
+        p_in : float
+            Input pressure [bar]
+        p_out : float
+            Output pressure [bar]
+        T_amb : float
+            Ambient temperature [K]
 
         Returns
         -------
-        re_params : dict
-            Collection of parameters and their respective values
+        power_in : float
+            Power required for compression [kW]
         """
         # calculates the power required to compress the hydrogen in the compressor
         w_isentropic = self.gamma / (self.gamma - 1) * self.R * T_amb * (p_out / p_in) ** (self.gamma / (self.gamma - 1)) - 1 # [J/mol]
@@ -217,3 +221,4 @@ class Compressor(ModelConstructor):
         closest_pressure = min(pressures, key=lambda p: abs(p - press))
         z_val = z_values[pressures.index(closest_pressure)][temps.index(closest_temp)]
         return z_val
+    
