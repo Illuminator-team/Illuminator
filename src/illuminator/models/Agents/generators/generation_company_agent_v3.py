@@ -31,12 +31,11 @@ class GenerationCompanyAgent(ModelConstructor):
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
-    parameters={'portfolio': {},
-                'company_name': 'no name',
+    parameters={'company_name': 'no name',
                 'automated_bids': True,
                 'bids_manual': None
                 }
-    inputs={
+    inputs={'portfolio': {}
             }
     outputs={
              }
@@ -61,7 +60,7 @@ class GenerationCompanyAgent(ModelConstructor):
             and manual bids if applicable.
         """
         super().__init__(**kwargs)
-        self.portfolio = pd.DataFrame(self.parameters['portfolio'])
+        self.portfolio = pd.DataFrame(self.inputs['portfolio'])
         self.automated_bids = self.parameters['automated_bids']
         self.bids_manual = pd.DataFrame(self.parameters['bids_manual'])
         self.company = self.parameters['company_name']
@@ -85,7 +84,9 @@ class GenerationCompanyAgent(ModelConstructor):
         Returns:
             int: Next simulation time in hours
         """
-        #input_data = self.unpack_inputs(inputs)  # make input data easily accessible
+        input_data = self.unpack_inputs(inputs)  # make input data easily accessible
+        if 'portfolio' in input_data:
+            self.portfolio = process_portfolio(input_data['portfolio'])
 
         results = self.bid()
 
@@ -145,3 +146,42 @@ class GenerationCompanyAgent(ModelConstructor):
     #    self.revenue += profit[self.company]
      #   return
 
+
+def process_portfolio(data: dict) -> dict:
+    """
+    Process the portfolio data read from the CSV file.
+
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the portfolio data read from the CSV file.
+
+    Returns
+    -------
+    dict
+        Dictionary containing the processed portfolio data.
+    """
+    # process the portfolio data
+    portfolio = pd.DataFrame(columns=['Capacity (MW)', 'Cost (€/MWh)', 'Availability'])
+    for key, value in data.items():
+        if key == 'time':
+            continue
+        name, attr = key.split('_')
+        if attr == 'availability':
+            portfolio.at[name, 'Availability'] = int(value)
+        elif attr == 'capacity':
+            portfolio.at[name, 'Capacity (MW)'] = float(value)
+        elif attr == 'cost':
+            portfolio.at[name, 'Cost (€/MWh)'] = float(value)
+        else:
+            raise ValueError(f'Unknown energy technology attribute: {attr}, possible attributes are capacity, cost, availability')
+    
+    # put the technology names as a column
+    portfolio.reset_index(inplace=True)
+    portfolio.rename(columns={'index': 'Technology'}, inplace=True)
+    
+    # Check for NaN values
+    if portfolio.isna().any().any():
+        raise ValueError("Missing values detected in portfolio data. Ensure all technologies have capacity, cost, and availability values.\n", portfolio)
+    
+    return portfolio
