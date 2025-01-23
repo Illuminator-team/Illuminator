@@ -8,15 +8,16 @@ models:
 - name: Company1
   type: GenerationCompanyAgent
   parameters:
-    portfolio: [
-        {'Technology': 'Oil', 'Capacity (MW)': 300, 'Cost (€/MWh)': 104, 'Availability': 1},
-        {'Technology': 'Nuclear', 'Capacity (MW)': 700, 'Cost (€/MWh)': 70, 'Availability': 1},
-        {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 400, 'Cost (€/MWh)': 85, 'Availability': 1},
-        {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 200, 'Cost (€/MWh)': 75, 'Availability': 1}
-        ]
     company_name: 'Company1'
     automated_bids: True
     bids_manual: null
+  inputs:
+    portfolio: [
+      {'Technology': 'Oil', 'Capacity (MW)': 300, 'Cost (€/MWh)': 104, 'Availability': 1},
+      {'Technology': 'Nuclear', 'Capacity (MW)': 700, 'Cost (€/MWh)': 70, 'Availability': 1},
+      {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 400, 'Cost (€/MWh)': 85, 'Availability': 1},
+      {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 200, 'Cost (€/MWh)': 75, 'Availability': 1}
+      ]
   states:
     bids: null
     profit: 0
@@ -24,15 +25,16 @@ models:
 - name: Company2
   type: GenerationCompanyAgent
   parameters:
-    portfolio: [
-        {'Technology': 'Coal', 'Capacity (MW)': 600, 'Cost (€/MWh)': 92, 'Availability': 1},
-        {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 500, 'Cost (€/MWh)': 82, 'Availability': 1},
-        {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 150, 'Cost (€/MWh)': 70, 'Availability': 1},
-        {'Technology': 'Hydro', 'Capacity (MW)': 150, 'Cost (€/MWh)': 75, 'Availability': 1}
-        ]
     company_name: 'Company2'
     automated_bids: True
     bids_manual: null    
+  inputs:
+    portfolio: [
+      {'Technology': 'Coal', 'Capacity (MW)': 600, 'Cost (€/MWh)': 92, 'Availability': 1},
+      {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 500, 'Cost (€/MWh)': 82, 'Availability': 1},
+      {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 150, 'Cost (€/MWh)': 70, 'Availability': 1},
+      {'Technology': 'Hydro', 'Capacity (MW)': 150, 'Cost (€/MWh)': 75, 'Availability': 1}
+      ]
   states:
     bids: null
     profit: 0
@@ -40,15 +42,16 @@ models:
 - name: Company3
   type: GenerationCompanyAgent
   parameters:
-    portfolio: [
-        {'Technology': 'Coal', 'Capacity (MW)': 550, 'Cost (€/MWh)': 90, 'Availability': 1},
-        {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 550, 'Cost (€/MWh)': 80, 'Availability': 1},
-        {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 200, 'Cost (€/MWh)': 76, 'Availability': 1},
-        {'Technology': 'Hydro','Capacity (MW)': 100, 'Cost (€/MWh)': 78, 'Availability': 1}
-        ]
     company_name: 'Company3'
     automated_bids: True
     bids_manual: null
+  inputs:
+    portfolio: [
+      {'Technology': 'Coal', 'Capacity (MW)': 550, 'Cost (€/MWh)': 90, 'Availability': 1},
+      {'Technology': 'Gas (CCGT)', 'Capacity (MW)': 550, 'Cost (€/MWh)': 80, 'Availability': 1},
+      {'Technology': 'Gas (OCGT)', 'Capacity (MW)': 200, 'Cost (€/MWh)': 76, 'Availability': 1},
+      {'Technology': 'Hydro','Capacity (MW)': 100, 'Cost (€/MWh)': 78, 'Availability': 1}
+      ]
   states:
     bids: null
     profit: 0
