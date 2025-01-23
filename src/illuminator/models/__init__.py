@@ -12,6 +12,7 @@ from .adder import Adder
 from .Load.load_v3 import Load
 from .Controller.controller_v3 import Controller
 from .Wind.wind_v3 import Wind
+from .Thermolyzer.thermolyzer_v3 import Thermolyzer
 
 __all__ = ['Battery', 
            'Collector', 
@@ -21,4 +22,5 @@ __all__ = ['Battery',
            'Load',
            'PV',
            'Controller',
-           'Wind']
+           'Wind',
+           'Thermolyzer']

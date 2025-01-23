@@ -13,33 +13,34 @@ models:
     delimiter: ","
     date_format: "YYYY-MM-DD HH:mm:ss"
 
-- name: thermolyzer_test
+- name: thermolyzer1
   type: Thermolyzer
   parameters:
     eff: 70
-    C_bio: 60
-    C_CO2: 10
+    C_bio_h2: 60
+    C_CO_2: 10
     C_Eelec_h2: 11.5
     max_ramp_up: 10
+    max_p_in: 100
   inputs:
-    biomass_in: 0
-    flow2t: 0
+    biomass_in: null
+    flow2t: null
   outputs:
-    h_gen: 0
-    CO2_out: 0
+    h_gen: null
+    CO2_out: null
 
 connections:
 - from: CSV_test.biomass_in
-  to: thermolyzer_test.biomass_in
+  to: thermolyzer1.biomass_in
 - from: CSV_test.flow2t
-  to: thermolyzer_test.flow2t
+  to: thermolyzer1.flow2t
 
 monitor:
   file: "./out_thermolyzer.csv"
   items:
   - CSV_test.biomass_in
   - CSV_test.flow2t
-  - thermolyzer_test.h2_gen
-  - thermolyzer_test.CO2_out
+  - thermolyzer1.h_gen
+  - thermolyzer1.CO2_out
 
 

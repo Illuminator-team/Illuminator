@@ -11,7 +11,7 @@ class Thermolyzer(ModelConstructor):
         Thermolyzer efficiency as a percentage [%]
     C_bio_h2 : float
         Conversion factor from biomass to hydrogen [-]
-    C_CO2 : float
+    CO_2 : float
         Absorption factor carbondioxide per h2 produced [-]
     C_Eelec_h2 : float
         Conversion factor electrical energy to hydrogen mass [kWh/kg]
@@ -27,7 +27,7 @@ class Thermolyzer(ModelConstructor):
     parameters={
             'eff' : 70,             # thermolyzer effficiency [%]  
             'C_bio_h2' : 60,        # conversion factor from biomass to hydrogen [-] 
-            'C_CO2' : 10,           # absorption factor carbondioxide per h2 produced [-] 
+            'C_CO_2' : 10,            # absorption factor carbondioxide per h2 produced [-] 
             'C_Eelec_h2': 11.5,     # conversion factor electrical energy to hydrogen mass [kWh/kg]    
             'max_ramp_up' : 10,     # maximum ramp up in power per timestep [kW/timestep]  
             'max_p_in' : 100        # maximum input power [kW]
@@ -41,7 +41,7 @@ class Thermolyzer(ModelConstructor):
             'h_gen' : 0,            # hydrogen generation [kg/timestep]
             'CO2_out' : 0           # CO2 output [kg/timestep]
             },
-    states={},
+    states={'placeholder' : 0}
 
     # other attributes
     time_step_size=1,
@@ -64,7 +64,7 @@ class Thermolyzer(ModelConstructor):
             Dictionary containing model parameters including:
             - eff: Thermolyzer efficiency as a percentage [%]
             - C_bio_h2: Conversion factor from biomass to hydrogen [-]
-            - C_CO2: Absorption factor carbondioxide per h2 produced [-]
+            - C_CO_2: Absorption factor carbondioxide per h2 produced [-]
             - C_Eelec_h2: Conversion factor electrical energy to hydrogen mass [kWh/kg]
             - max_ramp_up: Maximum ramp up in power per timestep [kW/timestep]
             - max_p_in: Maximum input power [kW]
@@ -76,10 +76,11 @@ class Thermolyzer(ModelConstructor):
         super().__init__(**kwargs)
         self.eff = self._model.parameters.get('eff')
         self.C_bio_h2 = self._model.parameters.get('C_bio_h2')
-        self.C_CO2 = self._model.parameters.get('C_CO2')
+        self.C_CO_2 = self._model.parameters.get('C_CO_2')
         self.C_Eelec_h2 = self._model.parameters.get('C_Eelec_h2')
         self.max_ramp_up = self._model.parameters.get('max_ramp_up')
         self.max_p_in = self._model.parameters.get('max_p_in')
+        print("THIS IS MAX P IN THE INIT:", self.max_p_in)
 
         self.p_in_last = 0  # Indicator of the last power input initialized to be 0 
 
@@ -122,18 +123,18 @@ class Thermolyzer(ModelConstructor):
             max_advance = max_advance
             )
         h_gen = h_flow * self.time_resolution
-        CO2_out = -h_gen * input_data['C_CO2']
+        CO2_out = -h_gen * self.C_CO_2
         self._model.outputs['h_gen'] = h_gen
         self._model.outputs['CO2_out'] = CO2_out
         print("outputs:", self.outputs)
         return time + self._model.time_step_size
     
-    def ramp_lim(self, p_in, max_advance):
+    def ramp_lim(self, p_in: float, max_advance: int) -> float:
         """
         Limits the thermolyzer input power based on ramp rate constraints.
 
         ...
-        
+
         Parameters
         ----------
         p_in : float
@@ -160,10 +161,12 @@ class Thermolyzer(ModelConstructor):
         return power_in
         
 
-    def generate(self, m_bio, flow2t, max_advance = 1):
+    def generate(self, m_bio: float, flow2t: float, max_advance: int = 1) -> float:
         # TODO: add water dependency once the conversion factor is known
         # restrict the input power to be maximally max_p_in
-        power_in = min(flow2t, self.max_p_in) 
+        print("THIS IS flow2t:", flow2t)
+        print("THIS IS max_p_in:", self.max_p_in)
+        power_in = min(flow2t, self.max_p_in)
         # restrict input power with ramp limits
         power_in = self.ramp_lim(power_in, max_advance)
         # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:

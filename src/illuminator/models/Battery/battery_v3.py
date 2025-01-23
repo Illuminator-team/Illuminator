@@ -50,7 +50,7 @@ class Battery(ModelConstructor):
              }
     states={'soc': 0,  # updated state of charge after battery operation (%)
             'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
-        }
+            }
     time_step_size=1
     time=None
 
