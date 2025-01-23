@@ -86,8 +86,11 @@ class Operator_Market(ModelConstructor):
             Next simulation time in hours
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
-        #bids = pd.DataFrame(input_data['bids'])
-        bids = [pd.DataFrame(bid) for bid in input_data['bids']]
+
+        if isinstance(input_data['bids'], dict): # if only one bid is submitted
+            bids = [pd.DataFrame(input_data['bids'])]
+        else:
+            bids = [pd.DataFrame(bid) for bid in input_data['bids']]
 
         results = self.calculate_balance(bids)
 
@@ -275,5 +278,6 @@ class Operator_Market(ModelConstructor):
         # ax.legend(title='Companies')
         plt.tight_layout()
         plt.show()
+        # plt.show(block=False)
 
         return
