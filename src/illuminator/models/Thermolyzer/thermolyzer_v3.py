@@ -25,11 +25,11 @@ class Thermolyzer(ModelConstructor):
     None
     """
     parameters={
-            'eff' : 70,             # thermolyzer effficiency [%]  
-            'C_bio_h2' : 60,        # conversion factor from biomass to hydrogen [-] 
-            'C_CO_2' : 10,            # absorption factor carbondioxide per h2 produced [-] 
+            'eff' : 60,             # thermolyzer effficiency [%]  
+            'C_bio_h2' : 30,        # conversion factor from biomass to hydrogen [kg/kg] 
+            'C_CO_2' : 10,          # absorption factor carbondioxide per h2 produced [kg/kg] 
             'C_Eelec_h2': 11.5,     # conversion factor electrical energy to hydrogen mass [kWh/kg]    
-            'max_ramp_up' : 10,     # maximum ramp up in power per timestep [kW/timestep]  
+            'max_ramp_up' : 60,     # maximum ramp up in power per timestep [kW/timestep]  
             'max_p_in' : 100        # maximum input power [kW]
             },
     inputs={
@@ -41,10 +41,10 @@ class Thermolyzer(ModelConstructor):
             'h_gen' : 0,            # hydrogen generation [kg/timestep]
             'CO2_out' : 0           # CO2 output [kg/timestep]
             },
-    states={'placeholder' : 0}
+    states={}
 
     # other attributes
-    time_step_size=1,
+    time_step_size=1
     time=None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
@@ -80,8 +80,8 @@ class Thermolyzer(ModelConstructor):
         self.C_Eelec_h2 = self._model.parameters.get('C_Eelec_h2')
         self.max_ramp_up = self._model.parameters.get('max_ramp_up')
         self.max_p_in = self._model.parameters.get('max_p_in')
-        print("THIS IS MAX P IN THE INIT:", self.max_p_in)
-
+        print("DEBUG: THIS IS PARAMTERS:", self._model.parameters)
+        
         self.p_in_last = 0  # Indicator of the last power input initialized to be 0 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -122,10 +122,10 @@ class Thermolyzer(ModelConstructor):
             flow2t=input_data['flow2t'],
             max_advance = max_advance
             )
-        h_gen = h_flow * self.time_resolution
+        h_gen = h_flow
         CO2_out = -h_gen * self.C_CO_2
-        self._model.outputs['h_gen'] = h_gen
-        self._model.outputs['CO2_out'] = CO2_out
+        self.set_outputs({'h_gen': h_gen})
+        self.set_outputs({'CO2_out': CO2_out})
         print("outputs:", self.outputs)
         return time + self._model.time_step_size
     
@@ -152,26 +152,31 @@ class Thermolyzer(ModelConstructor):
         p_change = p_in - self.p_in_last
         if abs(p_change) > self.max_ramp_up:
             if p_change > 0:
-                power_in = self.p_in_last + self.max_ramp_up * max_advance
+                print("DEBUG: p_change > 0")
+                power_in = self.p_in_last + self.max_ramp_up
             else:
-                power_in = self.p_in_last - self.max_ramp_up * max_advance
+                print("DEBUG: p_change < 0")
+                power_in = self.p_in_last - self.max_ramp_up
         else:
+            print("DEBUG: p_change = max_ramp_up")
             power_in = p_in
         self.p_in_last = power_in
         return power_in
         
 
-    def generate(self, m_bio: float, flow2t: float, max_advance: int = 1) -> float:
+    def generate(self, m_bio: float, flow2t: float, max_advance: int = 900) -> float:
         # TODO: add water dependency once the conversion factor is known
         # restrict the input power to be maximally max_p_in
-        print("THIS IS flow2t:", flow2t)
-        print("THIS IS max_p_in:", self.max_p_in)
         power_in = min(flow2t, self.max_p_in)
         # restrict input power with ramp limits
         power_in = self.ramp_lim(power_in, max_advance)
+        print("DEBUG:\n power_in after ramp", power_in)
+        power_in = power_in * (self.eff / 100)
+        print("DEBUG:\n power_in after eff", power_in)
         # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:
         # calculate potential generation of h2 for both dependencies
-        h_prod_p = power_in / self.C_Eelec_h2 / 3600    # [kg/s] (/3600 comes from kWh to kWs)
-        h_prod_m = m_bio / self.C_bio_h2                # [kg/s]
+        h_prod_p = power_in / self.C_Eelec_h2 / 3600 * self.time_resolution     # [kg/timestep]
+        h_prod_m = m_bio / self.C_bio_h2                                        # [kg/timestep]
+        print("DEBUG:\n h_prod_p:", h_prod_p, "\n h_prod_m:", h_prod_m)
         h_out = min(h_prod_p, h_prod_m)
         return h_out

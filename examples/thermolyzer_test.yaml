@@ -1,7 +1,7 @@
 scenario:
   name: "thermolzyer_test"
   start_time: "2012-01-01 00:00:00"
-  end_time: "2012-01-01 02:00:00" # Run for 2 hours
+  end_time: "2012-01-01 02:15:00" 
   time_resolution: 900  # 15min
 models:
 
@@ -17,11 +17,11 @@ models:
   type: Thermolyzer
   parameters:
     eff: 70
-    C_bio_h2: 60
+    C_bio_h2: 30
     C_CO_2: 10
     C_Eelec_h2: 11.5
-    max_ramp_up: 10
-    max_p_in: 100
+    max_ramp_up: 50
+    max_p_in: 300
   inputs:
     biomass_in: null
     flow2t: null
