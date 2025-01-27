@@ -52,14 +52,15 @@ class Compressor(ModelConstructor):
 
     },
     outputs={
-            'flow_from_c' : 0,      # hydrogen flow from the compressor [kg/timestep]
-            'power_req' : 0,        # power required for the compression [kW]
-            'volume_flow_out' : 0   # volumetric output flow [m3/timestep]
+            'flow_from_c' : 0       # hydrogen flow from the compressor [kg/timestep]
+
     },
-    states={},
+    states={'power_req' : 0,        # power required for the compression [kW]
+            'volume_flow_out' : 0   # volumetric output flow [m3/timestep]
+            }
 
     # other attributes
-    time_step_size=1,
+    time_step_size=1
     time = None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
@@ -116,14 +117,19 @@ class Compressor(ModelConstructor):
 
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
         power_req = self.power_req(flow=input_data['flow2c'],
-                                   p_in=input_data['p_in'],
-                                   p_out=input_data['p_out'],
-                                   T_amb=input_data['T_amb']                
-        )
-        volume_flow_out = input_data['flow2c'] / self.new_density(p=input_data['p_out'], T=input_data['T_amb'])
-        self._model.outputs['flow_from_c'] = input_data['flow2c']
-        self._model.outputs['power_req'] = power_req
-        self._model.outputs['volume_flow_out'] = volume_flow_out
+                                   p_in=self.p_in,
+                                   p_out=self.p_out,
+                                   T_amb=self.T_amb
+                                    )
+        volume_flow_out = input_data['flow2c'] / self.new_density(p=self.p_out, T=self.T_amb)
+        print(f"DEBUG:\n power_req: Value={power_req}, Type={type(power_req)}")
+        print(f"volume_flow_out: Value={volume_flow_out}, Type={type(volume_flow_out)}")
+        self.set_outputs({'flow_from_c': input_data['flow2c']})
+        self.set_states({'power_req': power_req})
+        self.set_states({'volume_flow_out': volume_flow_out})
+        # self._model.outputs['flow_from_c'] = input_data['flow2c']
+        # self._model.outputs['power_req'] = power_req
+        # self._model.outputs['volume_flow_out'] = volume_flow_out
         print("outputs:", self.outputs)
 
         return time + self._model.time_step_size

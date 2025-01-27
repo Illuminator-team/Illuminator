@@ -165,14 +165,34 @@ class Thermolyzer(ModelConstructor):
         
 
     def generate(self, m_bio: float, flow2t: float, max_advance: int = 900) -> float:
+        """
+        Generate hydrogen based on biomass and power input.
+
+        This method calculates the hydrogen production based on the available biomass and 
+        electrical power input, considering the efficiency and ramp rate constraints.
+
+        Parameters
+        ----------
+        m_bio : float
+            Biomass input in kg/timestep
+        flow2t : float
+            Power input to the thermolyzer in kW
+        max_advance : int, optional
+            Maximum time step size in seconds (default 900)
+
+        Returns
+        -------
+        float
+            Hydrogen production in kg/timestep
+        """
         # TODO: add water dependency once the conversion factor is known
         # restrict the input power to be maximally max_p_in
         power_in = min(flow2t, self.max_p_in)
         # restrict input power with ramp limits
         power_in = self.ramp_lim(power_in, max_advance)
-        print("DEBUG:\n power_in after ramp", power_in)
+        # print("DEBUG:\n power_in after ramp", power_in)
         power_in = power_in * (self.eff / 100)
-        print("DEBUG:\n power_in after eff", power_in)
+        # print("DEBUG:\n power_in after eff", power_in)
         # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:
         # calculate potential generation of h2 for both dependencies
         h_prod_p = power_in / self.C_Eelec_h2 / 3600 * self.time_resolution     # [kg/timestep]

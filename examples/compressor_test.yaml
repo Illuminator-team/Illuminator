@@ -1,0 +1,42 @@
+scenario:
+  name: "conmpressor_test"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSV_test
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: './examples/compressor_test.csv'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: compressor1
+  type: Compressor
+  parameters:
+    p_in: 30
+    p_out: 400
+    T_amb: 293.15
+    compressor_eff: 11.5
+  inputs:
+    flow2c: null
+  outputs:
+    flow_from_c: 0
+    power_req : 0
+    volume_flow_out: 0
+
+connections:
+- from: CSV_test.h_flow
+  to: compressor1.flow2c
+
+monitor:
+  file: "./out_compressor.csv"
+  items:
+  - CSV_test.h_flow
+  - compressor1.flow_from_c
+  - compressor1.volume_flow_out
+  - compressor1.power_req
+
+
