@@ -117,8 +117,8 @@ models:
   outputs:
     p_out: 0  # output power from the battery after discharge/charge decision (Kw)
     p_in: 0  # input power to the battery (kW)
-    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
   states:
+    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
     soc: 10  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
