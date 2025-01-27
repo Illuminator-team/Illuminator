@@ -24,8 +24,9 @@ models:
     flow2c: null
   outputs:
     flow_from_c: 0
-    power_req : 0
+  states:
     volume_flow_out: 0
+    power_req: 0
 
 connections:
 - from: CSV_test.h_flow
