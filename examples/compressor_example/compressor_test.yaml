@@ -9,7 +9,7 @@ models:
   type: CSV
   parameters:
     start: "2012-01-01 00:00:00"
-    file_path: './examples/compressor_test.csv'
+    file_path: './examples/compressor_example/compressor_test.csv'
     delimiter: ","
     date_format: "YYYY-MM-DD HH:mm:ss"
 
@@ -19,7 +19,8 @@ models:
     p_in: 30
     p_out: 400
     T_amb: 293.15
-    compressor_eff: 11.5
+    compressor_eff: 90
+    max_power_in: 10
   inputs:
     flow2c: null
   outputs:
@@ -33,7 +34,7 @@ connections:
   to: compressor1.flow2c
 
 monitor:
-  file: "./out_compressor.csv"
+  file: "./examples/compressor_example/out_compressor.csv"
   items:
   - CSV_test.h_flow
   - compressor1.flow_from_c

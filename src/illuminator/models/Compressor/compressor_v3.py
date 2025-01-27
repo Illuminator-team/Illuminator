@@ -29,13 +29,16 @@ class Compressor(ModelConstructor):
         Specific heat ratio [-].
     e_grav_h2 : float
         Gravimetric energy density of hydrogen [J/kg].
+    max_power_in : float
+        the maximum input power of the compressor [kW]
+        
 
     Methods
     -------
     step(time, inputs, max_advance=900)
         Simulates one time step of the compressor model.
     power_req(flow, p_in, p_out, T_amb, max_advance)
-        Calculates the power required to compress the hydrogen.
+        Calculates the power required to compress the hydrogen and limits the output flow and power based on this required power.
     new_density(p, T)
         Calculates the new density of hydrogen after compression.
     find_z_val(press, temp)
@@ -45,7 +48,8 @@ class Compressor(ModelConstructor):
             'p_in' : 30,            # input pressure [bar]
             'p_out' : 500,          # output pressure [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
-            'compressor_eff': 99    # compressor efficiency [%]
+            'compressor_eff': 99,   # compressor efficiency [%]
+            'max_power_in' : 10     # maximum power input [kW]
     },
     inputs={
             'flow2c' : 0            # hydrogen flow to the compressor [kg/timestep]
@@ -82,6 +86,7 @@ class Compressor(ModelConstructor):
         self.p_out = self._model.parameters.get('p_out')
         self.T_amb = self._model.parameters.get('T_amb')
         self.compressor_eff = self._model.parameters.get('compressor_eff')
+        self.max_power_in = self._model.parameters.get('max_power_in')
 
     def step(self, time:int, inputs:dict=None, max_advance:int=900) -> None:
         """
@@ -116,16 +121,14 @@ class Compressor(ModelConstructor):
         print('from compressor %%%%%%%%%%%', current_time)
 
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
-        power_req = self.power_req(flow=input_data['flow2c'],
+        power_params = self.power_req(flow=input_data['flow2c'],
                                    p_in=self.p_in,
                                    p_out=self.p_out,
                                    T_amb=self.T_amb
                                     )
         volume_flow_out = input_data['flow2c'] / self.new_density(p=self.p_out, T=self.T_amb)
-        print(f"DEBUG:\n power_req: Value={power_req}, Type={type(power_req)}")
-        print(f"volume_flow_out: Value={volume_flow_out}, Type={type(volume_flow_out)}")
-        self.set_outputs({'flow_from_c': input_data['flow2c']})
-        self.set_states({'power_req': power_req})
+        self.set_outputs({'flow_from_c': power_params['output_flow']})
+        self.set_states({'power_req': power_params['power_req']})
         self.set_states({'volume_flow_out': volume_flow_out})
         # self._model.outputs['flow_from_c'] = input_data['flow2c']
         # self._model.outputs['power_req'] = power_req
@@ -134,9 +137,11 @@ class Compressor(ModelConstructor):
 
         return time + self._model.time_step_size
 
-    def power_req(self, flow: float, p_in: float, p_out: float, T_amb: float) -> float:
+    def power_req(self, flow: float, p_in: float, p_out: float, T_amb: float) -> dict:
         """
-        Calculates the power required to compress the hydrogen.
+        Calculates the power required to compress the hydrogen and limits the output flow and power based on this required power.
+
+        ...
 
         Parameters
         ----------
@@ -155,11 +160,18 @@ class Compressor(ModelConstructor):
             Power required for compression [kW]
         """
         # calculates the power required to compress the hydrogen in the compressor
-        w_isentropic = self.gamma / (self.gamma - 1) * self.R * T_amb * (p_out / p_in) ** (self.gamma / (self.gamma - 1)) - 1 # [J/mol]
-        w_real = w_isentropic / self.compressor_eff
+        w_isentropic = (self.gamma / (self.gamma - 1)) * self.R * T_amb * ((p_out / p_in) ** ((self.gamma - 1) / self.gamma) - 1) # [J/mol]
+        w_real = w_isentropic / (self.compressor_eff / 100)
         flow_ps = flow / self.time_resolution   # input hydrogen per second [kg/s]
         power_in = w_real * flow_ps / self.mmh2    # [kW]
-        return power_in
+        output_flow = flow
+        # take max power input into consideration
+        if power_in > self.max_power_in:
+            power_in = self.max_power_in                                    # power is limited by its upper bound
+            output_flow = power_in * self.mmh2 / w_real * self.time_resolution     # The output flow is now limited by the power
+        power_params = {'power_req' : power_in,
+                        'output_flow' : output_flow}
+        return power_params
 
     def new_density(self, p: float, T: float) -> float:
         """

@@ -220,7 +220,6 @@ class Collector(mosaik_api.Simulator):
         data = inputs.get(self.eid, {})
         for attr, values in data.items():
             for src, value in values.items():
-                print(f"Debug: Attribute={attr}, Value={value}, Type={type(value)}")
                 self.data[src][attr][time] = value
                 df_dict[f'{src}-{attr}'] = [value['value']]
 

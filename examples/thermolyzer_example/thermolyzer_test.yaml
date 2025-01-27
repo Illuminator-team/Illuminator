@@ -9,7 +9,7 @@ models:
   type: CSV
   parameters:
     start: "2012-01-01 00:00:00"
-    file_path: './examples/thermolyzer_test.csv'
+    file_path: './examples/thermolyzer_example/thermolyzer_test.csv'
     delimiter: ","
     date_format: "YYYY-MM-DD HH:mm:ss"
 
@@ -36,7 +36,7 @@ connections:
   to: thermolyzer1.flow2t
 
 monitor:
-  file: "./out_thermolyzer.csv"
+  file: "./examples/thermolyzer_example/out_thermolyzer.csv"
   items:
   - CSV_test.biomass_in
   - CSV_test.flow2t
