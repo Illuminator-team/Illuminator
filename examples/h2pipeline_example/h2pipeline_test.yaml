@@ -1,0 +1,46 @@
+scenario:
+  name: "h2pipeline_example"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSVP
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: '.\examples\h2pipeline_example\h2pipeline_test.CSV'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: H2pipeline1
+  type: Pipeline
+  parameters:
+    A: 2
+    L: 100
+    p: 300
+    p_outer: 1
+    T_amb: 293.15
+    d: 0.01
+    eps: 1
+  inputs:
+    flow_in: null
+    pressure_in: null
+  outputs:
+    flow_out: null
+  states:
+    press_out: null
+
+connections:
+- from: CSVP.h2_in
+  to: H2pipeline1.flow_in
+- from: CSVP.input_p
+  to: H2pipeline1.pressure_in
+
+monitor:
+  file: "./examples/h2pipeline_example/out_h2pipeline.csv"
+  items:
+  - CSVP.h2_in
+  - CSVP.input_p
+  - H2pipeline1.flow_out
+  - H2pipeline1.press_out

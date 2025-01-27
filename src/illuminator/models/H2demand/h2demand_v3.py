@@ -13,7 +13,7 @@ class H2demand(ModelConstructor):
     inputs : dict
         Dictionary containing input variables like the demand of hydrogen mass per timestep.
     outputs : dict
-        Dictionary containing calculated outputs like the total consumption for each timestep.
+        -
     states : dict
         Dictionary containing the state variables of the demand model.
     time_step_size : int
@@ -25,15 +25,15 @@ class H2demand(ModelConstructor):
     -------
     step(time, inputs, max_advance=1)
         Simulates one time step of the demand model.
-    demand(demand, units)
+    demand(demand)
         Calculates the total demand given the amount of equally sized units.
     """
     parameters={'units': 1          # number of demand units
                 }
     inputs={'demand': 0}            # demand of hydrogen mass per timestep [kg/timestep]
-    outputs={'tot_dem': 0           # total consumption for each timetep (= demand input for units = 1) [kg/timestep]
-             }
+    outputs={}
     states={
+            'tot_dem': 0           # total consumption for each timetep (= demand input for units = 1) [kg/timestep]
             # 'consumption': 0,
             # 'time': None
             }
@@ -82,15 +82,13 @@ class H2demand(ModelConstructor):
         current_time = time * self.time_resolution
         print('from h2demand %%%%%%%%%%%', current_time)   
 
-        
-        self._model.outputs['p_out'] = self.demand(input_data['demand'], self.units)
+        self.set_states({'tot_dem' : self.h2demand(input_data['demand'])})
         print("outputs:", self.outputs)
-
         return time + self._model.time_step_size
     
 
 
-    def demand(self, demand:float, units:int) -> float:
+    def h2demand(self, demand:float) -> float:
         """
         Calculates the total demand given the amount of equally sized units
 
@@ -101,15 +99,12 @@ class H2demand(ModelConstructor):
         demand : float
             demand of h2 for each timestep [kg/timestep]
 
-        units : int
-            amount of equally sized units od demand
-
         Returns
         -------
         tot_dem : float
             Total demand of h2 [kg/timestep]
         """
-        dem_tot = demand * units    # [kg/timestep]
+        dem_tot = demand * self.units    # [kg/timestep]
 
         return dem_tot
 

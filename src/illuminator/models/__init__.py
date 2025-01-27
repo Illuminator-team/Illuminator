@@ -14,6 +14,9 @@ from .Controller.controller_v3 import Controller
 from .Wind.wind_v3 import Wind
 from .Thermolyzer.thermolyzer_v3 import Thermolyzer
 from .Compressor.compressor_v3 import Compressor
+from .H2demand.h2demand_v3 import H2demand
+from .H2pipeline.h2pipeline import Pipeline
+
 
 __all__ = ['Battery', 
            'Collector', 
@@ -25,4 +28,7 @@ __all__ = ['Battery',
            'Controller',
            'Wind',
            'Thermolyzer',
-           'Compressor']
+           'Compressor',
+           'H2demand',
+           'Pipeline'
+           ]

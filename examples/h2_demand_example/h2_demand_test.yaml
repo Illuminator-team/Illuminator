@@ -1,0 +1,33 @@
+scenario:
+  name: "h2_demand_example"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSVD
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: './examples/h2_demand_example/h2_demand.CSV'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: H2demand1
+  type: H2demand
+  parameters:
+    units: 3
+  inputs:
+    demand: null
+  states:
+    tot_dem: null
+
+connections:
+- from: CSVD.demand
+  to: H2demand1.demand
+
+monitor:
+  file: "./examples/h2_demand_example/out_h2demand.csv"
+  items:
+  - CSVD.demand
+  - H2demand1.tot_dem

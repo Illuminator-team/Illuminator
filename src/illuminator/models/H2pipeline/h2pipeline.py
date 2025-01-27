@@ -51,7 +51,7 @@ class Pipeline(ModelConstructor):
     parameters={
             'A' : 2,                # cross-sectional area of the pipe [m2]
             'L' : 100,              # length of the pipe [m]
-            'p' : 300,              # input pressure of the hydrogen [bar]
+            # 'p' : 300,              # input pressure of the hydrogen [bar]        # NOTE: Moved to inputs
             'p_outer':1,            # pressure outside of the pipe [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
             'd' : 0.01,             # pipe thickness [m]
@@ -64,15 +64,14 @@ class Pipeline(ModelConstructor):
 
     },
     outputs={
-            'flow_out' : 0,         # hydrogen flow out of the pipeline [kg/timestep]
-            'press_out' : 0         # output pressure of the hydrogen [bar]
-
-    },
-    states={},
+            'flow_out' : 0          # hydrogen flow out of the pipeline [kg/timestep]
+            },
+    states={'press_out' : 0         # output pressure of the hydrogen [bar]
+            }
 
 
     # other attributes
-    time_step_size=1,
+    time_step_size=1
     time=None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
@@ -92,7 +91,7 @@ class Pipeline(ModelConstructor):
         super().__init__(**kwargs)
         self.A = self._model.parameters.get('A')
         self.L = self._model.parameters.get('L')
-        self.p = self._model.parameters.get('p')
+        # self.p = self._model.parameters.get('p')
         self.p_outer = self._model.parameters.get('p_outer')
         self.T_amb = self._model.parameters.get('T_amb')
         self.d = self._model.parameters.get('d')
@@ -132,16 +131,16 @@ class Pipeline(ModelConstructor):
         print('from compressor %%%%%%%%%%%', current_time)
 
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
-        density = self.density(self.p, self.T_amb)          # [kg/m3]
-        output_flow = self.output_flow(input_data['flow_in'], density)
-        p_out = self.output_pressure(input_data['flow_in'], density)
-        self._model.outputs['flow_out'] = output_flow
-        self._model.outputs['press_out'] = p_out
-        print("outputs:", self.outputs)
         
+        density = self.density(input_data['pressure_in'], self.T_amb)          # [kg/m3]
+        output_flow = self.output_flow(input_data['flow_in'], density, input_data['pressure_in'])
+        p_out = self.output_pressure(input_data['flow_in'], density, input_data['pressure_in'])
+        self.set_outputs({'flow_out' : output_flow})
+        self.set_states({'press_out' : p_out})
+        print("outputs:", self.outputs)
         return time + self._model.time_step_size
     
-    def output_flow(self, flow_in: float, density: float) -> float:
+    def output_flow(self, flow_in: float, density: float, pressure_in: float) -> float:
         """
         Calculates the output flow (mass) given the properties of the pipeline and hydrogen.
 
@@ -159,11 +158,12 @@ class Pipeline(ModelConstructor):
         flow_out : float
             Input flow [kg/timestep]
         """
-        # calculates the power required to compress the hydrogen in the compressor
-        P = self.permeabilty_coef(self.p) # [cm3*cm/cm2*s*Pa]
-        flow_loss_vol= P * (self.A/10e-4 * abs(self.p - self.p_outer)) / (self.d / 10e-2)    # [cm3/s]
-        
+        P = self.permeabilty_coef(pressure_in) # [cm3*cm/cm2*s*Pa]
+        flow_loss_vol= P * (self.A/10e-4 * abs(pressure_in - self.p_outer)) / (self.d / 10e-2)    # [cm3/s]
+        print(f"DEBUG: this is the volume loss: {flow_loss_vol}")
+        print(f"DEBUG: this is the density: {density}")
         flow_loss_mass = flow_loss_vol / 1e-6 * density     # [kg/s]
+        print(f"DEBUG: this is the mass loss: {flow_loss_mass}")
         output_flow = flow_in - flow_loss_mass * self.time_resolution   # [kg/timestep]
         return output_flow
     
@@ -256,7 +256,7 @@ class Pipeline(ModelConstructor):
         z_val = z_values[pressures.index(closest_pressure)][temps.index(closest_temp)]
         return z_val
     
-    def output_pressure(self, flow_in: float, density: float) -> float:
+    def output_pressure(self, flow_in: float, density: float, pressure_in: float) -> float:
         """
         Calculates the output pressure [bar] given the properties of the pipeline and hydrogen.
 
@@ -272,7 +272,7 @@ class Pipeline(ModelConstructor):
         p_out : float
             Output pressure [bar]
         """
-        p = self.p * 1e5                    # pressure in pascals [Pa]
+        p = pressure_in * 1e5                    # pressure in pascals [Pa]
         mu = self.viscosity(self.T_amb)     # viscosity of hydrogen (temperature dependent) [] 
         D = 2 * np.sqrt(self.A / np.pi)     # pipe diameter [m]
         v = flow_in / self.A  # mean velocity of the flow [m/s]
@@ -282,7 +282,7 @@ class Pipeline(ModelConstructor):
             f = 64 / Re
         else:
             f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11)) ** -2      
-        p_loss = f * (self.L * density * v^2) / (2 * D)     # pressure loss [bar]
+        p_loss = f * (self.L * density * v**2) / (2 * D)     # pressure loss [bar]
         p_loss = p_loss / 1e5       # pressure loss conversion to bar [bar]
         p_out = p - p_loss          # output pressure [bar]
         return p_out
@@ -313,6 +313,6 @@ class Pipeline(ModelConstructor):
 
 
         closest_temp = min(temps, key=lambda t: abs(t - T))
-        viscosity = visc[visc.index(closest_temp)]
+        viscosity = visc[temps.index(closest_temp)]
         return viscosity
 
