@@ -192,7 +192,7 @@ class Compressor(ModelConstructor):
             The new found density after compression [kg/m3]
         """
         z_val = self.find_z_val(p, T)
-        density = (p * self.mmh2)/(z_val * self.R * T)  # kg/m3
+        density = ((p* 1e5) * (self.mmh2 /1e3))/(z_val * self.R * T) #  kg/m3
         return density
 
     def find_z_val(self, press: float, temp: float) -> float:

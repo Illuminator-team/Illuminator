@@ -55,7 +55,7 @@ class Pipeline(ModelConstructor):
             'p_outer':1,            # pressure outside of the pipe [bar]
             'T_amb' : 293.15,       # ambient temperature [K]
             'd' : 0.01,             # pipe thickness [m]
-            'eps' : 1               # pipe roughness [m]
+            'eps' : 1.5e-6          # pipe roughness [m]
 
     },
     inputs={
@@ -96,6 +96,7 @@ class Pipeline(ModelConstructor):
         self.T_amb = self._model.parameters.get('T_amb')
         self.d = self._model.parameters.get('d')
         self.eps = self._model.parameters.get('eps')
+        self.radius = np.sqrt(self.A / np.pi)       # Inner radius of the pipe [m]
 
     def step(self, time: int, inputs: dict = None, max_advance: int = 900) -> int:
         """
@@ -120,7 +121,7 @@ class Pipeline(ModelConstructor):
         int
             Next simulation time step
         """
-        print("\nCompressor:")
+        print("\nPipeline:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
         # get input data push test
@@ -128,13 +129,14 @@ class Pipeline(ModelConstructor):
         print("input data: ", input_data)
 
         current_time = time * self.time_resolution
-        print('from compressor %%%%%%%%%%%', current_time)
+        print('from pipeline %%%%%%%%%%%', current_time)
 
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
         
         density = self.density(input_data['pressure_in'], self.T_amb)          # [kg/m3]
         output_flow = self.output_flow(input_data['flow_in'], density, input_data['pressure_in'])
         p_out = self.output_pressure(input_data['flow_in'], density, input_data['pressure_in'])
+        print(f"DEBUG: this is p_out in step: {p_out}")
         self.set_outputs({'flow_out' : output_flow})
         self.set_states({'press_out' : p_out})
         print("outputs:", self.outputs)
@@ -159,11 +161,9 @@ class Pipeline(ModelConstructor):
             Input flow [kg/timestep]
         """
         P = self.permeabilty_coef(pressure_in) # [cm3*cm/cm2*s*Pa]
-        flow_loss_vol= P * (self.A/10e-4 * abs(pressure_in - self.p_outer)) / (self.d / 10e-2)    # [cm3/s]
-        print(f"DEBUG: this is the volume loss: {flow_loss_vol}")
-        print(f"DEBUG: this is the density: {density}")
-        flow_loss_mass = flow_loss_vol / 1e-6 * density     # [kg/s]
-        print(f"DEBUG: this is the mass loss: {flow_loss_mass}")
+        surf_area = self.L * 2 * np.pi * self.radius    # inner surface area of the pipe [m^2]
+        flow_loss_vol= (P * 1e-4 * surf_area * (abs(pressure_in - self.p_outer) * 1e5)) / (self.d)    # [m^3/s]
+        flow_loss_mass = flow_loss_vol * density     # [kg/s]
         output_flow = flow_in - flow_loss_mass * self.time_resolution   # [kg/timestep]
         return output_flow
     
@@ -183,7 +183,7 @@ class Pipeline(ModelConstructor):
             Permeability coefficient of hydrogen in HDPE pipe [cm3*cm/cm2*s*Pa]
         """
         press = press * 1e5     # convert bar to Pascall [Pa]
-        coefs = [5.77e-8, 4.17e-8, 2.84e-8, 1.99e-8, 1.68e-8]   # list of permeability coefficients [cm3*cm/cm2*s*Pa]
+        coefs = [2.07e-12, 1.8e-12, 1.515e-12, 1.32e-12, 1.1025e-12]   # list of permeability coefficients [cm3*cm/cm2*s*Pa]
         pressures = [10e5, 30e5, 50e5, 70e5, 90e5]              # corresponding pressures [Pa]
         closest_pressure = closest_pressure = min(pressures, key=lambda p: abs(p - press))  # Best matching pressure [Pa]
         P = coefs[pressures.index(closest_pressure)]            # Best matching permeability coefficient [cm3*cm/cm2*s*Pa]        
@@ -208,7 +208,8 @@ class Pipeline(ModelConstructor):
             The new found density after compression [kg/m3]
         """
         z_val = self.find_z_val(p, T)
-        density = (p * self.mmh2)/(z_val * self.R * T)  # kg/m3
+        density = ((p* 1e5) * (self.mmh2 /1e3))/(z_val * self.R * T) #  kg/m3
+        
         return density
 
     def find_z_val(self, press: float, temp: float) -> float:
@@ -239,13 +240,13 @@ class Pipeline(ModelConstructor):
             [1.10404, 1.09795, 1.09189, 1.08070, 1.07200, 1.06523, 1.05936],
             [1.14056, 1.13177, 1.12320, 1.10814, 1.09631, 1.08625, 1.07849],
             [1.17789, 1.16617, 1.15499, 1.13543, 1.12034, 1.10793, 1.08764],
-            [121592, 1.20101, 1.18716, 1.16300, 1.14456, 1.12957, 1.11699],
+            [1.21592, 1.20101, 1.18716, 1.16300, 1.14456, 1.12957, 1.11699],
             [1.25461, 1.23652, 1.21936, 1.19051, 1.16877, 1.15112, 1.13648], 
             [1.29379, 1.27220, 1.25205, 1.21842, 1.19317, 1.17267, 1.15588],
-            [1.33332, 1.30820, 1.28487, 1.24634, 1.19439, 1.17533, 121739],
+            [1.33332, 1.30820, 1.28487, 1.24634, 1.19439, 1.17533, 1,1739],
             [137284, 1.34392, 1.31784, 1.27398, 1.24173, 1.21583, 1.19463],
             [1.45188, 1.41618, 1.38797, 1.33010, 1.29040, 1.2592, 1.23373],
-            [133161, 1.48880, 1.44991, 1.38593, 1.33914, 1.30236, 1.27226]]
+            [1.53161, 1.48880, 1.44991, 1.38593, 1.33914, 1.30236, 1.27226]]
 
         temps = [250, 273.15, 298.15, 350, 400, 450, 500]   # columns 
         pressures = [1, 5, 10, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700]   # rows
@@ -272,19 +273,29 @@ class Pipeline(ModelConstructor):
         p_out : float
             Output pressure [bar]
         """
+        vol_flow_in = flow_in / density     # volume flow in [m3/timestep]  
+        print(f"DEBUG: This is the density in the press function {density}")
+        print(f"DEBUG: this is the vol flow in the press funtion: {vol_flow_in} = {vol_flow_in/self.time_resolution} m3/s")     
         p = pressure_in * 1e5                    # pressure in pascals [Pa]
-        mu = self.viscosity(self.T_amb)     # viscosity of hydrogen (temperature dependent) [] 
+        mu = self.viscosity(self.T_amb)     # viscosity of hydrogen (temperature dependent) [Pa*s]
+        print(f"DEBUG: this is the viscosity in the press funtion: {mu}")
         D = 2 * np.sqrt(self.A / np.pi)     # pipe diameter [m]
-        v = flow_in / self.A  # mean velocity of the flow [m/s]
+        print(f"DEBUG: This is diameter: {D}")
+        v = vol_flow_in / self.A /self.time_resolution  # mean velocity of the flow [m/s]
+        print(f"DEBUG: this is the mean flow in the press funtion: {v} m/s")
         Re = (density * v * D) / mu # Reynolds number [-]
+        print(f"DEBUG: tyhis is Reynolds number: {Re}")
         # Friction factor dependent on laminar or turbulent flow
         if Re <= 2300:
             f = 64 / Re
         else:
-            f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11)) ** -2      
+            print(f"DEBUG: ITS TURBULENT FLOW!")
+            f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11) + (6.9 / Re)) ** -2   
+        print(f"DEBUG: this is friction factor: {f}")   
         p_loss = f * (self.L * density * v**2) / (2 * D)     # pressure loss [bar]
         p_loss = p_loss / 1e5       # pressure loss conversion to bar [bar]
-        p_out = p - p_loss          # output pressure [bar]
+        print(f"DEBUG: This is p_losss in the press function: {p_loss}")
+        p_out = pressure_in - p_loss          # output pressure [bar]
         return p_out
 
     def viscosity(self, T: float) -> float:
