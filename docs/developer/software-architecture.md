@@ -1,6 +1,6 @@
 # Software Architecture
 
-The Illuminator consists modular Python applications to perform simulations of energy systems. This section provides an overview of its sotware architecture. The diagram below describes the components of the Illuminator using the terminology of the [C4 model](https://c4model.com/).
+The Illuminator consists of modular Python applications to perform simulations of energy systems. This section provides an overview of its software architecture. The diagram below describes the components of the Illuminator using the terminology of the [C4 model](https://c4model.com/).
 
 <div align="center">
     <img align="center" src="../_static/img/components.png" width="800">
@@ -8,23 +8,23 @@ The Illuminator consists modular Python applications to perform simulations of e
 
 
 At a highest level, the Illuminator consists of three internal applications: *Model Builder, Simulation Engie, and Dashboard*; which depend on an an external application for executing simualation, the *Mosaik Simulation Framework* 
-Users of the Illuminator interact with the *Model Builder* and the *Simulation Engine* for developig model and define  simulation scenarios. Illuminator's applications interact with the *Mosaik Simulation Framework* to run simulations and collect the results.
+Users of the Illuminator interact with the *Model Builder* and the *Simulation Engine* for developig models and defining simulation scenarios. Illuminator's applications interact with the *Mosaik Simulation Framework* to run simulations and collect the results.
 
 ## Users
 Users of the Illuminator take one of two roles:
 
-* **Model Developer**: uses the Illuminator to develope new energy models that can be used in a simulation.
-* **Energy Analyst**: use the Illuminator to define simulation scenarios and run simulations.
+* **Model Developer**: uses the Illuminator to develops energy models that are registered into the application and can be used in a simulation by other users.
+* **Energy Analyst**: use the Illuminator to define and run simulations.
 
 ## Components
 
 ### Mosaik Simulation Framework
 
-A framework that serves as a core platform for executing energy system simulations. [Mosaik](https://mosaik.readthedocs.io/en/latest/index.html) is an external dependency, and as such the Illuminator interacts with it through its API.
+A framework that serves as the core platform for executing energy system simulations. [Mosaik](https://mosaik.readthedocs.io/en/latest/index.html) is an external dependency, and as such the Illuminator interacts with it through its API.
 
 ### Model Builder Application
 
-A Python application that model developers use to create/modify energy models for the Illuminator. New models are developed using the **Builder** componente, which provides a custom interface for creating and registering energy models to the **Model Library**. The purpose of the **Builder** component is to ease the development of energy models using a jargon that **energy system engineers** are more familiar with. For example, using term such as *inputs, outputs, states, etc.* to define new models.
+A Python application that *model developers* use to create/update energy models for the Illuminator. New models are developed using the **Builder** component, which provides a interface for creating and registering energy models to the **Model Library**. The purpose of the **Builder** component is to ease the development of energy models using a jargon that **energy system engineers** are more familiar with. For example, using term such as *inputs, outputs, states, etc.* to define new models.
 
 The **Model Library** component stores energy models that can be use in a simulation, so that they can be accessed by the **Mosaik Simulation Framework** during runtime.
 Models in the **Model Library** are containers of metadata and business logic. 
@@ -38,7 +38,7 @@ The Senario API uses the **Scenario Schema** to validate simulation scenarios wr
 
 The **Illuminator CLI** is an appliccation implemented using [Typer](https://typer.tiangolo.com/), which provides a command line interface to run simulation locally, and parcially automates the deployment of the Illuminator in a Raspberry Pi cluster. The **Illuminator CLI** uses the **Scernario API** and the **Cluster PI** components to provide functionality. 
 
-Finally, the **Cluster Pi** component consists of a set of tools for setting up the Illuminator to tha Raspberry Pi Cluster, where simulation scenarios will be run. 
+Finally, the **Cluster Pi** component consists of a set of tools for setting up the Illuminator in a Raspberry Pi Cluster, where simulation scenarios can be run in a distributed mannern (e.i., each cluster node performs part of a simulation). 
 
 ### Dashboard
 
@@ -50,8 +50,8 @@ An application used by the **Energy Analyst** to visualise results and logs of s
 There are three comon use cases for the users of the Illuminator:
 
 1.  Extending the model library: a *Model developer* wants to add a new model to the  **Model Library**
-2.  Creating a simullation scenario: an *Energy Analyst* wants to define a simulation scenario using a YAML file and execute the simulation.
-3.  Set up a raspberry Pi cluster: a **user** wants to set up the Illuminator in a cluster of Raspberry Pi's to run simulations.
+2.  Creating a simulation scenario: an *Energy Analyst* wants to define a simulation scenario using a YAML file and execute the simulation.
+3.  Set up a raspberry Pi Cluster: a **user** wants to set up the Illuminator in a cluster of Raspberry Pi's to run simulations.
 
 ### 1. Extending the Model Library
 
@@ -101,7 +101,7 @@ __all__ = ['BatteryModel',
            'ExampleModel' # add new model
 ```
 
-3. To test the new model has been added correctly, try to import into a Python module:
+3. To test the new model has been added correctly, try to import it in a Python script:
 
 ```python
 # Python file
