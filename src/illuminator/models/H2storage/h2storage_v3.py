@@ -48,16 +48,14 @@ class H2Storage(ModelConstructor):
     inputs={'flow2h2storage': 0             # pos or neg flow to H2 storage [kg/timestep]
             
             }
-    
     outputs={'h2_in': 0,        # flow into the H2 storage [kg/timestep]
-             'h2_out': 0,       # flow out of the H2 storage [kg/timestep]
-             'soc': 0,          # state of charge after operation in a timestep [%]
-             'mod': 0,          # operating mode (1=charge, -1=discharge, 0=no action) [-]
-             'flag': -1         # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
+             'h2_out': 0        # flow out of the H2 storage [kg/timestep]
+
              }
     states={
-            'soc': 0,
-            'flag': 0
+             'soc': 0,          # state of charge after operation in a timestep [%]
+             'mod': 0,          # operating mode (1=charge, -1=discharge, 0=no action) [-]
+             'flag': 0          # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
             }
     
     # define other attributes
@@ -84,7 +82,7 @@ class H2Storage(ModelConstructor):
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
 
-    def step(self, time: int, inputs: dict, max_advance: int = 900) -> int:
+    def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:
         """
         Simulates one time step of the hydrogen storage model.
 
@@ -110,17 +108,19 @@ class H2Storage(ModelConstructor):
         print("\nH2 storage:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)
-        # get input data 
+        # get input data
         input_data = self.unpack_inputs(inputs)
         print("input data: ", input_data)
 
         current_time = time * self.time_resolution
         print('from H2 storage %%%%%%%%%%%', current_time)
-
-        print('state of charge h2 storage: ', self._model.outputs['soc'])
+        results = self.output_flow(input_data['flow2h2storage'])
+        print('state of charge h2 storage: ', self._model.states['soc'])
         print('New state of charge: ', self.soc)
+        self.set_outputs({'h2_in': results['h2_in'], 'h2_out': results['h2_out']})
+        self.set_states({'soc': results['soc'], 'mod': results['mod'], 'flag': results['flag']})
         print("outputs:", self.outputs)
-        
+        print("states:", self.states)
         return time + self._model.time_step_size
     
     def discharge(self, flow2h2storage:float) -> dict:
@@ -209,7 +209,7 @@ class H2Storage(ModelConstructor):
         return re_params
 
 
-    def output_flow(self, flow2h2storage:float, soc:float) -> dict:
+    def output_flow(self, flow2h2storage:float) -> dict:
         """
         Controller that determines to charge, discharge, or do nothing based on the desired flow. Outputs the actual flow.
 
@@ -219,19 +219,16 @@ class H2Storage(ModelConstructor):
         ----------
         flow2h2storage : float
             Desired output flow [kg/timestep]
-        soc : float
-            current state of charge of the h2 storage [%]
         Returns
         -------
         re_params : dict
             Collection of parameters and their respective values
         """
-        self.soc = soc
         if flow2h2storage == 0:         # no action
             # Here the state of the storage is updated in case there is no supply/demand
-            if soc >= self.h2_soc_max:     # storage is fully charged
+            if self.soc >= self.h2_soc_max:     # storage is fully charged
                 self.flag = 1
-            elif soc <= self.h2_soc_min:   # storage fully discharged
+            elif self.soc <= self.h2_soc_min:   # storage fully discharged
                 self.flag = -1
             else:
                 self.flag = 0           # storage available to operate

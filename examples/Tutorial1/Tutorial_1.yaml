@@ -200,6 +200,7 @@ monitor:
     #- Controller1.res_load
     - Controller1.dump
     - Battery1.p_out
+    - Battery1.p_in
     - Battery1.soc
     - PV1.pv_gen
     - Wind1.wind_gen

@@ -16,13 +16,14 @@ from .Thermolyzer.thermolyzer_v3 import Thermolyzer
 from .Compressor.compressor_v3 import Compressor
 from .H2demand.h2demand_v3 import H2demand
 from .H2pipeline.h2pipeline import Pipeline
+from .H2storage.h2storage_v3 import H2Storage
 
 
 __all__ = ['Battery', 
            'Collector', 
            'Adder', 
            'CSV', 
-           'PvAdapter',
+           # 'PvAdapter',
            'Load',
            'PV',
            'Controller',
@@ -30,5 +31,6 @@ __all__ = ['Battery',
            'Thermolyzer',
            'Compressor',
            'H2demand',
-           'Pipeline'
+           'Pipeline',
+           'H2Storage'
            ]

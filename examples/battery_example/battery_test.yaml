@@ -1,0 +1,47 @@
+scenario:
+  name: "h2storage_example"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSVB
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: '.\examples\battery_example\battery_test.CSV'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: Battery1
+  type: Battery # models can reuse the same type
+  parameters:
+    max_p: 20  # maximum charging power limit (kW)
+    min_p: -20  # maximum discharging power limit (kW)
+    max_energy: 100  # maximum energy storage capacity of the battery (kWh)
+    charge_efficiency: 98  # efficiency of charging the battery (%)
+    discharge_efficiency: 98  # efficiency of discharging the battery (%)
+    soc_min: 2  # minimum allowable state of charge for the battery (%)
+    soc_max: 98  # maximum allowable state of charge for the battery (%)
+  inputs:
+    flow2b: 0  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
+  outputs:
+    p_out: 0  # output power from the battery after discharge/charge decision (Kw)
+    p_in: 0  # input power to the battery (kW)
+  states:
+    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
+    soc: 2  # state of charge of the battery (%)
+    flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+
+
+connections:
+- from: CSVB.flow2b
+  to: Battery1.flow2b
+
+monitor:
+  file: "./examples/battery_example/out_battery.csv"
+  items:
+  - CSVB.flow2b
+  - Battery1.p_in
+  - Battery1.p_out
+  - Battery1.soc

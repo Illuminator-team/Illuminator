@@ -1,0 +1,47 @@
+scenario:
+  name: "h2storage_example"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 02:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSVS
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: '.\examples\h2_storage_example\h2_storage_test.CSV'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: H2storage1
+  type: H2Storage
+  parameters:
+    h2_soc_min: 2
+    h2_soc_max: 98
+    h2_charge_eff: 99
+    h2_discharge_eff: 99
+    max_h2: 20
+    min_h2: -20
+    h2_capacity_tot: 100
+  inputs:
+    flow2h2storage: null
+  outputs:
+    h2_in: null
+    h2_out: null
+  states:
+    soc: 2         # initialised to 0
+    mod: null
+    flag: null
+
+
+connections:
+- from: CSVS.flow2h2storage
+  to: H2storage1.flow2h2storage
+
+monitor:
+  file: "./examples/h2_storage_example/out_h2_storage.csv"
+  items:
+  - CSVS.flow2h2storage
+  - H2storage1.h2_in
+  - H2storage1.h2_out
+  - H2storage1.soc
