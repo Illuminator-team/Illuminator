@@ -273,7 +273,7 @@ class Pipeline(ModelConstructor):
         p_out : float
             Output pressure [bar]
         """
-        vol_flow_in = flow_in / density     # volume flow in [m3/timestep]  
+        vol_flow_in = flow_in / density     # volume flow in [m3/timestep]
         print(f"DEBUG: This is the density in the press function {density}")
         print(f"DEBUG: this is the vol flow in the press funtion: {vol_flow_in} = {vol_flow_in/self.time_resolution} m3/s")     
         p = pressure_in * 1e5                    # pressure in pascals [Pa]
@@ -290,7 +290,7 @@ class Pipeline(ModelConstructor):
             f = 64 / Re
         else:
             print(f"DEBUG: ITS TURBULENT FLOW!")
-            f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11) + (6.9 / Re)) ** -2   
+            f = (-1.8 * np.log10((self.eps / (3.7 * D)) ** 1.11 + (6.9 / Re))) ** -2   
         print(f"DEBUG: this is friction factor: {f}")   
         p_loss = f * (self.L * density * v**2) / (2 * D)     # pressure loss [bar]
         p_loss = p_loss / 1e5       # pressure loss conversion to bar [bar]
