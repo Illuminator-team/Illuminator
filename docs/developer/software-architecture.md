@@ -1,6 +1,6 @@
 # Software Architecture
 
-The Illuminator is modular Python applications to simulate energy systems. In this seciton, we provide an overview of its sotware architecture. The diagram below describes the components of the Illuminator using the terminology of the [C4 model](https://c4model.com/).
+The Illuminator consists modular Python applications to perform simulations of energy systems. This section provides an overview of its sotware architecture. The diagram below describes the components of the Illuminator using the terminology of the [C4 model](https://c4model.com/).
 
 <div align="center">
     <img align="center" src="../_static/img/components.png" width="800">
