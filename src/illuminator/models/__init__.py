@@ -17,6 +17,7 @@ from .Compressor.compressor_v3 import Compressor
 from .H2demand.h2demand_v3 import H2demand
 from .H2pipeline.h2pipeline import Pipeline
 from .H2storage.h2storage_v3 import H2Storage
+from .H2valve.h2valve_v3 import H2Valve
 
 
 __all__ = ['Battery', 
@@ -32,5 +33,6 @@ __all__ = ['Battery',
            'Compressor',
            'H2demand',
            'Pipeline',
-           'H2Storage'
+           'H2Storage',
+           'H2Valve'
            ]

@@ -1,0 +1,40 @@
+scenario:
+  name: "h2_valve_example"
+  start_time: "2012-01-01 00:00:00"
+  end_time: "2012-01-01 03:00:00" 
+  time_resolution: 900  # 15min
+models:
+
+- name: CSVV
+  type: CSV
+  parameters:
+    start: "2012-01-01 00:00:00"
+    file_path: './examples/h2_valve_example/h2_valve.CSV'
+    delimiter: ","
+    date_format: "YYYY-MM-DD HH:mm:ss"
+
+- name: H2valve1
+  type: H2Valve
+  parameters:
+    valve_eff: 100
+    # max_flow: 100
+  inputs:
+    h2_in: null
+    frac: null
+  outputs:
+    out1: null
+    out2: null
+
+connections:
+- from: CSVV.h2_in
+  to: H2valve1.h2_in
+- from: CSVV.frac
+  to: H2valve1.frac
+
+monitor:
+  file: "./examples/h2_valve_example/out_h2valve.csv"
+  items:
+  - CSVV.h2_in
+  - CSVV.frac
+  - H2valve1.out1
+  - H2valve1.out2
