@@ -29,7 +29,7 @@ models:
     h2_in: null
     h2_out: null
   states:
-    soc: 2         # initialised to 0
+    soc: 20         # initialised to 0
     mod: null
     flag: null
 

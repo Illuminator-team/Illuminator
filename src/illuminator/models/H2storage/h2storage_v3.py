@@ -74,8 +74,8 @@ class H2Storage(ModelConstructor):
         super().__init__(**kwargs)
         self.h2_soc_min = self._model.parameters.get('h2_soc_min')
         self.h2_soc_max = self._model.parameters.get('h2_soc_max')
-        self.h2_charge_eff = self._model.parameters.get('h2_charge_eff')
-        self.h2_discharge_eff = self._model.parameters.get('h2_discharge_eff')
+        self.h2_charge_eff = self._model.parameters.get('h2_charge_eff')/100
+        self.h2_discharge_eff = self._model.parameters.get('h2_discharge_eff')/100
         self.max_h2 = self._model.parameters.get('max_h2')
         self.min_h2 = self._model.parameters.get('min_h2')
         self.h2_capacity_tot = self._model.parameters.get('h2_capacity_tot')
@@ -140,7 +140,7 @@ class H2Storage(ModelConstructor):
             Collection of parameters and their respective values
         """
         flow = max(self.min_h2, flow2h2storage) # discharged h2 must be minimally the min_h2
-        h22discharge = flow2h2storage * self.time_resolution / self.h2_discharge_eff # the amoount of hydrogen desired to be discharged (neg)
+        h22discharge = flow2h2storage / self.h2_discharge_eff # the amount of hydrogen desired to be discharged (neg)
         h2_capacity = (self.h2_soc_min - self.soc) / 100 * self.h2_capacity_tot # amount of h2 that can be discharged (neg)
         if self.soc <= self.h2_soc_min:
             self.flag = -1
@@ -155,7 +155,7 @@ class H2Storage(ModelConstructor):
                 # only the available amount can be discharged
                 self.soc = self.h2_soc_min
                 self.flag = -1 # fully discharged
-                h2_out = h2_capacity / self.h2_discharge_eff / self.time_resolution
+                h2_out = h2_capacity * self.h2_discharge_eff
         self.soc = round(self.soc, 3)
         re_params = {'h2_in': flow,        
              'h2_out': h2_out,       
@@ -183,7 +183,7 @@ class H2Storage(ModelConstructor):
         """
                 
         flow = min(self.max_h2, flow2h2storage)
-        h22charge = flow2h2storage * self.time_resolution * self.h2_charge_eff # the amoount of hydrogen desired to be charged (pos)
+        h22charge = flow * self.h2_charge_eff # the amount of hydrogen desired to be charged (pos)
         h2_capacity = (self.h2_soc_max - self.soc) / 100 * self.h2_capacity_tot # amount of h2 that can be charged till full (pos)
         if self.soc >= self.h2_soc_max:
             self.flag = 1
@@ -192,15 +192,15 @@ class H2Storage(ModelConstructor):
             if h22charge <= h2_capacity:
                 # enough storage capacity left to charge the desired amount of h2
                 self.soc += h22charge / self.h2_capacity_tot * 100
-                h2_out = h22charge
+                h2_out = flow
                 self.flag = 0
             else:
                 # only the available capacity can be filled with h2
                 self.soc = self.h2_soc_max
                 self.flag = 1
-                h2_out = h2_capacity / self.h2_charge_eff / self.time_resolution
+                h2_out = h2_capacity / self.h2_charge_eff
         self.soc = round(self.soc, 3)
-        re_params = {'h2_in': flow,        
+        re_params = {'h2_in': flow,       
              'h2_out': h2_out,       
              'soc': self.soc,          
              'mod': 1,          

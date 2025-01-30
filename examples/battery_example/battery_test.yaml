@@ -1,5 +1,5 @@
 scenario:
-  name: "h2storage_example"
+  name: "battery_example"
   start_time: "2012-01-01 00:00:00"
   end_time: "2012-01-01 02:00:00" 
   time_resolution: 900  # 15min
@@ -30,7 +30,7 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 2  # state of charge of the battery (%)
+    soc: 98  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 
