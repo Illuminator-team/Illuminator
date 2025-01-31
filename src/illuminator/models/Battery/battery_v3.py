@@ -176,7 +176,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-discharge Case
-                    self.powerout = energy_capacity / self.discharge_efficiency / hours
+                    self.powerout = energy_capacity * self.discharge_efficiency / hours  # Can only discharge remaining capacity, but even less because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_min
                     self.flag = -1  # Set flag as 1 to show fully discharged state
@@ -242,7 +242,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-charge Case
-                    self.powerout = energy_capacity / self.charge_efficiency / hours
+                    self.powerout = energy_capacity / self.charge_efficiency / hours  # you can only charge the remaining capacity, but it would cost more because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_max
                     self.flag = 1  # Set flag as 1 to show fully discharged state
