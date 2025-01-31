@@ -1,0 +1,199 @@
+scenario:
+  name: "Hydrogen_system_1" # in mosaik so called world
+  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  #end_time: '2012-01-01 01:00:00' # duration in seconds 
+  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+
+
+models: 
+- name: CSVdemand1
+  type: CSV
+  parameters:
+    file_path: './examples/h2_system_example/h2_demand_1.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSVdemand2
+  type: CSV
+  parameters:
+    file_path: './examples/h2_system_example/h2_demand_2.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: thermolyzer1
+  type: Thermolyzer
+  parameters:
+    eff: 70
+    C_bio_h2: 30
+    C_CO_2: 10
+    C_Eelec_h2: 11.5
+    max_ramp_up: 50
+    max_p_in: 300
+  inputs:
+    biomass_in: null
+    flow2t: null
+  outputs:
+    h_gen: null
+    CO2_out: null
+
+  - name: H2valve1
+  type: H2Valve
+  parameters:
+    valve_eff: 100
+    # max_flow: 100
+  inputs:
+    h2_in: null
+    frac: null
+  outputs:
+    out1: null
+    out2: null
+
+- name: compressor1
+  type: Compressor
+  parameters:
+    p_in: 30
+    p_out: 400
+    T_amb: 293.15
+    compressor_eff: 90
+    max_power_in: 10
+  inputs:
+    flow2c: null
+  outputs:
+    flow_from_c: 0
+  states:
+    volume_flow_out: 0
+    power_req: 0
+
+ - name: H2valve2
+  type: H2Valve
+  parameters:
+    valve_eff: 100
+    # max_flow: 100
+  inputs:
+    h2_in: null
+    frac: null
+  outputs:
+    out1: null
+    out2: null
+
+- name: H2storage1
+  type: H2Storage
+  parameters:
+    h2_soc_min: 2
+    h2_soc_max: 98
+    h2_charge_eff: 99
+    h2_discharge_eff: 99
+    max_h2: 20
+    min_h2: -20
+    h2_capacity_tot: 100
+  inputs:
+    flow2h2storage: null
+  outputs:
+    h2_in: null
+    h2_out: null
+  states:
+    soc: 20         # initialised to 0
+    mod: null
+    flag: null
+
+- name: H2storage2
+  type: H2Storage
+  parameters:
+    h2_soc_min: 2
+    h2_soc_max: 98
+    h2_charge_eff: 99
+    h2_discharge_eff: 99
+    max_h2: 20
+    min_h2: -20
+    h2_capacity_tot: 100
+  inputs:
+    flow2h2storage: null
+  outputs:
+    h2_in: null
+    h2_out: null
+  states:
+    soc: 20         # initialised to 0
+    mod: null
+    flag: null
+
+- name: H2joint1
+  type: H2Joint
+  parameters:
+    joint_eff: 100
+  inputs:
+    h2_in1: null
+    h2_in2: null
+  outputs:
+    out: null
+
+- name: H2joint2
+    type: H2Joint
+  parameters:
+    joint_eff: 100
+  inputs:
+    h2_in1: null
+    h2_in2: null
+  outputs:
+    out: null
+
+- name: H2demand1
+  type: H2demand
+  parameters:
+    units: 1
+  inputs:
+    demand: null
+  states:
+    tot_dem: null
+
+- name: H2demand2
+  type: H2demand
+  parameters:
+    units: 1
+  inputs:
+    demand: null
+  states:
+    tot_dem: null
+
+connections:
+- from: CSVdemand1
+  to: H2demand1.demand
+- from: CSVdemand2
+  to: H2demand2.demand
+- from: CSVdemand1
+  to: H2demand1.demand
+- from: CSVdemand2
+  to: H2demand2.demand
+- from: thermolyzer1
+  to: H2valve1.h2_in
+- from: H2valve1.out1
+  to: H2storage1.flow2h2storage
+-from: H2storage1.h2_out
+  to: H2joint1.h2_in1
+- from: H2valve1.out2
+  to: H2joint1.h2_in_2
+- from: H2valve1.out3
+  to: compressor1.flow2c
+- from: compressor1.flow_from_c
+  to: H2valve2.h2_in
+- from: H2valve2.out1
+  to: joint2.h2_in1
+- from: H2valve2.out2
+  to: H2storage2.flow2h2storage
+- from: H2storage2.h2_out
+  to: H2joint2.h2_in2
+
+monitor:
+  file: './out_Tutorial1.csv'
+  items:
+    - H2demand1.tot_dem
+    - H2demand2.tot_dem
+    - thermolyzer1.h_gen
+    - compressor1.flow_from_c
+    - H2storage1.h2_in
+    - H2storage1.h2_out
+    - H2storage2.h2_in
+    - H2storage2.h2_out
+    - H2joint1.out
+    - H2joint2.out

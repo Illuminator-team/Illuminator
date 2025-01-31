@@ -18,21 +18,23 @@ from .H2demand.h2demand_v3 import H2demand
 from .H2pipeline.h2pipeline import Pipeline
 from .H2storage.h2storage_v3 import H2Storage
 from .H2valve.h2valve_v3 import H2Valve
+from .H2_joint.H2_joint_v3 import H2Joint
 
 
 __all__ = ['Battery', 
-           'Collector', 
-           'Adder', 
-           'CSV', 
-           # 'PvAdapter',
-           'Load',
-           'PV',
-           'Controller',
-           'Wind',
-           'Thermolyzer',
-           'Compressor',
-           'H2demand',
-           'Pipeline',
-           'H2Storage',
-           'H2Valve'
+            'Collector', 
+            'Adder', 
+            'CSV', 
+            # 'PvAdapter',
+            'Load',
+            'PV',
+            'Controller',
+            'Wind',
+            'Thermolyzer',
+            'Compressor',
+            'H2demand',
+            'Pipeline',
+            'H2Storage',
+            'H2Valve',
+            'H2Joint'
            ]

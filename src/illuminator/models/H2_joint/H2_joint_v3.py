@@ -1,15 +1,15 @@
 from illuminator.builder import ModelConstructor
 
 # construct the model
-class H2Valve(ModelConstructor):
+class H2Joint(ModelConstructor):
     """
     A class to represent a Valve model for controlling hydrogen flow in a system.
-    This class provides methods to manage the flow of hydrogen through the valve.
+    This class provides methods to manage the flow of hydrogen through the joint.
 
     Attributes
     ----------
     parameters : dict
-        Dictionary containing valve parameters like efficiency.
+        Dictionary containing joint parameters like efficiency.
     inputs : dict
         Dictionary containing inputs like hydrogen input flow and fraction of flow allowed through output 1.
     outputs : dict
@@ -28,16 +28,15 @@ class H2Valve(ModelConstructor):
     step(time, inputs, max_advance)
         Simulates one time step of the Valve model.
     calc_flow(h2_in, frac)
-        Calculates the flow of hydrogen through the valve based on the input flow and fraction.
+        Calculates the flow of hydrogen through the joint based on the input flow and fraction.
     """
-    parameters={'valve_eff': 100#,   # efficicency of the valve [%]
-                #'max_flow': 0,      # maximum flow rate of the valve [kg/timestep]
+    parameters={'joint_eff': 100#,   # efficicency of the joint [%]
+                #'max_flow': 0,      # maximum flow rate of the joint [kg/timestep]
                 }
-    inputs={'h2_in': 0,              # h2 input
-            'frac' : 0               # fraction of the flow that is allowed to pass through output 1 [%]
+    inputs={'h2_in_1': 0,              # h2 input 1
+            'h2_in_2': 0               # h2 input 2
             }
-    outputs={'out1': 0,             # h2 output 1
-             'out2': 0,             # h2 output 2
+    outputs={'out': 0                  # h2 output
              }
     states={}
 
@@ -52,11 +51,11 @@ class H2Valve(ModelConstructor):
         Parameters
         ----------
         kwargs : dict
-            Additional keyword arguments to initialize the valve model,
-            including valve efficiency.
+            Additional keyword arguments to initialize the joint model,
+            including joint efficiency.
         """
         super().__init__(**kwargs)
-        self.valve_eff = self.parameters['valve_eff']
+        self.joint_eff = self.parameters['joint_eff']
         # self.max_flow = self.parameters['max_flow']
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -75,30 +74,30 @@ class H2Valve(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        results = self.calc_flow(h2_in=input_data['h2_in'], frac=input_data['frac'])
-        self.set_outputs(results)
+        result = self.calc_flow(h2_in_1=input_data['h2_in_1'],
+                                h2_in_2=input_data['h2_in_2']
+                            )
+        self.set_outputs(result['out'])
 
         return time + self.time_step_size
-    
 
-
-    def calc_flow(self, h2_in: float, frac: float) -> dict:
+    def calc_flow(self, h2_in_1: float, h2_in_2: float) -> dict:
         """
-        Calculate the flow through the valve.
+        Calculate the flow through the joint.
 
         Parameters
         ----------
+        h2_in_1 : float
+            Hydrogen input flow from input 1.
+        h2_in_2 : float
+            Hydrogen input flow from input 2.
         frac : float
             Fraction of the flow that is allowed to pass through output 1.
 
         Returns
         -------
         dict
-            Dictionary containing the calculated outputs like hydrogen flow rates through outputs 1 and 2.
+            Dictionary containing the calculated outputs like hydrogen output flow.
         """
-        tot_out = h2_in * self.valve_eff / 100
-        out1 = frac/ 100 * tot_out
-        out2 = (100 - frac)/100 * tot_out
-        result = {'out1': out1, 'out2': out2}
-        return result
-        
+        out = (h2_in_1 + h2_in_2) * self.joint_eff / 100
+        return out
