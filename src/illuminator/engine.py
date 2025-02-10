@@ -262,15 +262,17 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         to_model_config = next((m for m in models if m['name'] == to_model))
         time_shifted = connection['time_shifted']
 
-        # TODO: check that there is no copy name in inputs or outputs
-
         # Establish connections in the Mosaik world
         try:
-            # entities for the same model type are handled separately. Therefore, the entities list of a model only contains a single entity
+            # IMPORTANT: The attribute might not exist in the config, e.g. CSV reader states/outputs are set during their __init__()
+            # for this reason, we cannot check if the attribute exists in the config here. This is anyways handled by Mosaik
+            # if the model is time_shifted, we DO require the attribute to be in the config as we need to access its initial value.
+            # Checking for douplicate attributes is done in the __post_init__()
+
             if time_shifted:
-                if from_attr in from_model_config['outputs']:
+                if from_attr in from_model_config.get('outputs', {}):
                     message_type = 'output'
-                elif from_attr in from_model_config['states']:
+                elif from_attr in from_model_config.get('states', {}):
                     message_type = 'state'
                 else:
                     raise ValueError(f"Attribute {from_attr} not found in outputs or states of model {from_model}")
@@ -290,7 +292,7 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
                         model_entities[to_model][0], 
                         (from_attr, to_attr))
         except KeyError as e:
-            print(f"Error: {e}. Check the 'connections' in the configuration file for errors.")
+            print(f"\nError: {e}. Check the 'connections' in the configuration file for errors.")
             exit(1)
 
     # TODO: write a unit test for this. Cases: 1) all connections were established, 2) exception raised
@@ -457,7 +459,7 @@ class Simulation:
         model_entities = start_simulators(world, config['models'])
 
         # Connect the models based on the connections specified in the configuration
-        world = build_connections(world, model_entities, config['connections'], config['models'])
+        world = build_connections(world, model_entities, connections=config['connections'], models=config['models'])
 
         # Connect monitor
         world = connect_monitor(world, model_entities, monitor, config['monitor'])
