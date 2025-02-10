@@ -66,7 +66,7 @@ class IlluminatorModel():
     
 
     def __post_init__(self):
-        self._validate_states()
+        self._validate_attributes()
         self._validate_triggers()
         # self.validate_simulator_type()
     
@@ -85,11 +85,16 @@ class IlluminatorModel():
             }}
         return meta
 
-    def _validate_states(self):
-        """Check if items in 'states' are in parameters, inputs or outputs"""
-        for state in self.states:
-            if state in self.parameters:
-                raise ValueError(f"State: {state} is also defined as a parameter")
+    def _validate_attributes(self):
+        """Check if items in 'states' are also in 'outputs'"""
+        # Find overlapping keys
+        duplicate_keys = set(self.outputs.keys()) & set(self.states.keys())
+
+        # Raise an error if duplicates exist
+        if duplicate_keys:
+            raise ValueError(f"Duplicate attribute names found in both outputs and states: {', '.join(duplicate_keys)}")
+        
+        
 
     def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""

@@ -12,7 +12,6 @@ adder = IlluminatorModel(
     parameters={"param1": "addition"},
     inputs={"in1": 10, "in2": 20},
     outputs={"out1": 0},
-    states={"out1": 0},
     time_step_size=900,
     time=None
 )

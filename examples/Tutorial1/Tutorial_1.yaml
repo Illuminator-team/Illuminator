@@ -12,6 +12,8 @@ models:
     file_path: './examples/Tutorial1/load_data.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
 - name: CSV_pv
   type: CSV
   parameters:
@@ -35,12 +37,6 @@ models:
   outputs:
     load_dem:  # total energy or power consumption for all houses (kWh) over the time step
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time:  # Current simulation time step in seconds
-    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
-  states:
-    consumption:
-    time:
-    forecast:
 
 - name: Load2
   type: Load
@@ -52,12 +48,6 @@ models:
   outputs:
     load_dem:  # total energy or power consumption for all houses (kWh) over the time step
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time:  # Current simulation time step in seconds
-    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
-  states:
-    consumption: 0
-    time:
-    forecast:
 
 - name: PV1
   type: PV # models can reuse the same type

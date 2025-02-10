@@ -135,11 +135,11 @@ class Controller_T1(ModelConstructor):
         """
         #reset flow2b
         self.flow_b = 0
-        print('Load dem: ' + str(load_dem))
-        print('pv: ' + str(pv_gen))
-        print('wind: ' + str(wind_gen))
+        # print('Load dem: ' + str(load_dem))
+        # print('pv: ' + str(pv_gen))
+        # print('wind: ' + str(wind_gen))
         if load_EV != None:
-            print('load EV: ' + str(load_EV))
+            # print('load EV: ' + str(load_EV))
             self.res_load = load_dem + load_EV - wind_gen - pv_gen  # kW
         else:
             self.res_load = load_dem - wind_gen - pv_gen # kW
@@ -148,25 +148,25 @@ class Controller_T1(ModelConstructor):
             if self.res_load > 0:
                 # demand not satisfied -> discharge battery if possible
                 if soc > self.soc_min:  # checking if soc is above minimum
-                    print('Discharge Battery')
+                    # print('Discharge Battery')
                     max_discharge = (soc-self.soc_min)/100 * self.max_p
-                    print(f'max discharge: {max_discharge}')
-                    print(f'res load: {self.res_load}')
+                    # print(f'max discharge: {max_discharge}')
+                    # print(f'res load: {self.res_load}')
                     self.flow_b = -min(self.res_load, max_discharge)
-                    print ('Flow Bat: '  + str(self.flow_b))
+                    # print ('Flow Bat: '  + str(self.flow_b))
                     #self.soc_b = self.soc_b + self.flow_b soc is not updated in controller
                           
             elif self.res_load < 0:
             
                 if soc < self.soc_max:
-                    print('Charge Battery')
+                    # print('Charge Battery')
                     max_flow2b = ((self.soc_max-soc)/100) * self.max_p  # Energy flow in kW
                     self.flow_b = min((-self.res_load), max_flow2b)
-                    print ('Flow Bat: '  + str(self.flow_b))
-                    print('Excess generation that cannot be stored: ' + str(-self.res_load-self.flow_b))
+                    # print ('Flow Bat: '  + str(self.flow_b))
+                    # print('Excess generation that cannot be stored: ' + str(-self.res_load-self.flow_b))
 
             else:
-                print('No Residual Load, RES production exactly covers demand')
+                # print('No Residual Load, RES production exactly covers demand')
                 self.flow_b = 0
                 self.dump = 0
                 #demand_res = residual_load
@@ -174,8 +174,8 @@ class Controller_T1(ModelConstructor):
             #update residual load with battery discharge/charge
             #self.res_load = self.res_load + self.flow_b
             self.dump = -(self.res_load + self.flow_b)
-        print('residual load: ' + str(self.res_load))
-        print('battery flow: ' + str(self.flow_b))
+        # print('residual load: ' + str(self.res_load))
+        # print('battery flow: ' + str(self.flow_b))
         #if self.bat_active == 1:
         re_params = {'flow2b': self.flow_b,'res_load': self.res_load,'dump': self.dump}
         #else:

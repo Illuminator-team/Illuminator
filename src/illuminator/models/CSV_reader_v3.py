@@ -118,7 +118,7 @@ class CSV(ModelConstructor):
 
 
     def init(self, sid, time_resolution=1, **sim_params):
-        print("check")
+        # print("check")
         meta = super().init(sid, time_resolution, **sim_params)
         return meta
 
@@ -142,7 +142,7 @@ class CSV(ModelConstructor):
             The next simulation time.
         """
         data = self.next_row
-        print("NEW CSV DATA: ", data)
+        # print("NEW CSV DATA: ", data)
         if data is None:
             raise IndexError('End of CSV file reached.')
 
