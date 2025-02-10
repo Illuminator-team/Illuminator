@@ -474,4 +474,92 @@ class Simulation:
     def config(self)-> dict:
         """Returns the configuration file for the simulation."""
         return self.config_file
-    
+
+    def set_model_param(self, model_name: str, parameter: str, value)-> None:
+        """
+        Sets a parameter value for a specific model in the simulation configuration.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to modify
+        parameter : str
+            Name of the parameter to set
+        value : any
+            New value for the parameter
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If model_name or parameter is not found in configuration
+        """
+        for i, model in enumerate(self.config['models']):
+            if model['name'] == model_name:
+                if parameter not in self.config['models'][i]['parameters']:
+                    available_params = ', '.join(model['parameters'].keys())
+                    raise KeyError(f"Parameter '{parameter}' not found in model '{model_name}'. Available parameters: {available_params}")
+                
+                self.config['models'][i]['parameters'][parameter] = value
+                return
+        raise KeyError(f"Model '{model_name}' not found. Available models: {[m['name'] for m in self.config['models']]}")
+
+
+    def set_model_parameters(self, model_name: str, params: dict)-> None:
+        """
+        Sets multiple parameter values for a specific model in the simulation configuration.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to modify
+        params : dict
+            Dictionary of parameter names and their new values to set
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If model_name or any parameter is not found in configuration
+        """
+        for param, value in params.items():
+            self.set_model_param(model_name=model_name, parameter=param, value=value)
+        return
+
+
+    def edit_models(self, configuration: dict)-> None:
+        """
+        Updates multiple parameter values for multiple models in the simulation configuration.
+
+        Parameters
+        ----------
+        configuration : dict
+            Dictionary with model names as keys and parameter dictionaries as values.
+            Example: {'model1': {'param1': val1}, 'model2': {'param2': val2}}
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If any model name or parameter is not found in configuration
+        
+        """
+        for model_name, parameters in configuration.items():
+            # Check if model exists
+            if not any(model['name'] == model_name for model in self.config['models']):
+                raise KeyError(f"Model '{model_name}' not found. Available models: {[m['name'] for m in self.config['models']]}")
+
+            self.set_model_parameters(model_name=model_name, params=parameters)
+        return

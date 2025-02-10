@@ -46,9 +46,9 @@ class Battery(ModelConstructor):
             }
     outputs={'p_out': 20,  # output power from the battery after discharge/charge decision (Kw)
              'p_in': 20,  # input power to the battery (kW)
-             'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
              }
-    states={'soc': 0,  # updated state of charge after battery operation (%)
+    states={'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
+            'soc': 0,  # updated state of charge after battery operation (%)
             'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
         }
     time_step_size=1
@@ -82,6 +82,7 @@ class Battery(ModelConstructor):
         super().__init__(**kwargs)
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
+        self.mod = self._model.states.get('mod')
         self.charge_efficiency = self._model.parameters.get('charge_efficiency')/100
         self.discharge_efficiency = self._model.parameters.get('discharge_efficiency')/100
         self.max_p = self._model.parameters.get('max_p')
@@ -121,7 +122,8 @@ class Battery(ModelConstructor):
 
         self.soc = results.pop('soc')
         self.flag = results.pop('flag')
-        self.set_states({'soc': self.soc, 'flag': self.flag}) # set the state of charge and remove it from the results at the same time
+        self.mod = results.pop('mod')
+        self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time
         self.set_outputs(results)
 
         return time + self._model.time_step_size
@@ -174,7 +176,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-discharge Case
-                    self.powerout = energy_capacity / self.discharge_efficiency / hours
+                    self.powerout = energy_capacity * self.discharge_efficiency / hours  # Can only discharge remaining capacity, but even less because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_min
                     self.flag = -1  # Set flag as 1 to show fully discharged state
@@ -240,7 +242,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-charge Case
-                    self.powerout = energy_capacity / self.charge_efficiency / hours
+                    self.powerout = energy_capacity / self.charge_efficiency / hours  # you can only charge the remaining capacity, but it would cost more because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_max
                     self.flag = 1  # Set flag as 1 to show fully discharged state

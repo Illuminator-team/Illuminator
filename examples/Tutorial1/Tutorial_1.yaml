@@ -33,14 +33,14 @@ models:
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
-    load_dem: 0  # total energy or power consumption for all houses (kWh) over the time step
-    consumption: 0  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time: None,  # Current simulation time step in seconds
-    forecast: None  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+    time:  # Current simulation time step in seconds
+    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
   states:
-    consumption: 0
-    time: None
-    forecast: None
+    consumption:
+    time:
+    forecast:
 
 - name: Load2
   type: Load
@@ -50,14 +50,14 @@ models:
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
-    load_dem: 0  # total energy or power consumption for all houses (kWh) over the time step
-    consumption: 0  # Current energy or power consumption based on the number of houses and input load (kWh)
-    time: None,  # Current simulation time step in seconds
-    forecast: None  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+    time:  # Current simulation time step in seconds
+    forecast:  # Forecasted load demand (if applicable, not defined in the code but mentioned in META)
   states:
     consumption: 0
-    time: None
-    forecast: None
+    time:
+    forecast:
 
 - name: PV1
   type: PV # models can reuse the same type
@@ -81,8 +81,8 @@ models:
     FF: null
     Az: null
   outputs:
-    pv_gen: 1
-    g_aoi: null
+    pv_gen:
+    g_aoi:
 
 - name: Wind1
   type: Wind # models can reuse the same type
@@ -97,10 +97,10 @@ models:
   inputs:
     u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
   outputs:
-    wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
-    u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+    wind_gen:  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
   states:
-    u60: 5
+    u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
 
 - name: Battery1
   type: Battery # models can reuse the same type
@@ -117,31 +117,27 @@ models:
   outputs:
     p_out: 0  # output power from the battery after discharge/charge decision (Kw)
     p_in: 0  # input power to the battery (kW)
-    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
   states:
+    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
     soc: 10  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
-  type: Controller # models can reuse the same type
+  type: Controller_T1 # models can reuse the same type
   parameters:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
-    h2_soc_min: 0  # Minimum state of charge of the hydrogen storage before discharging stops
-    h2_soc_max: 0  # Maximum state of charge of the hydrogen storage before charging stops
-    fc_eff: 100  # Efficiency of the fuel cell
+    max_p: 0.8  # Maximum power flow to/from the battery (kW)
   inputs:
-    u60: 0
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
     soc: 0  # State of charge of the battery
-    h2_soc: 0  # State of charge of the hydrogen storage
+    load_EV: 0  # Electrical vehicle load demand
   outputs:
-    flow2b: 0  # Power flow to/from battery (positive for charging, negative for discharging)
-    flow2e: 0  # Power flow to the electrolyzer for hydrogen production
-    dump: 0  # Excess power that cannot be stored or used
-    h2_out: 0  # Hydrogen output from fuel cell to meet demand (positive if used, zero otherwise)
+    flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
+    res_load:  # Residual load after considering the generation and load demand (kW)
+    dump:  # Excess power that cannot be stored or used (kW)
 
 
 connections:
@@ -170,8 +166,6 @@ connections:
 
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
-- from: Wind1.u60
-  to: Controller1.u60
 
 
 - from: PV1.pv_gen
@@ -197,14 +191,14 @@ monitor:
     # - Load1.load_dem
 
     - Controller1.flow2b
-    #- Controller1.res_load
+    - Controller1.res_load
     - Controller1.dump
     - Battery1.p_out
     - Battery1.soc
     - PV1.pv_gen
     - Wind1.wind_gen
     - Load1.load_dem
-    - Wind1.u60
+  #    - Wind1.u60
 
   #- CSVload.load
   #- Load1.load_dem

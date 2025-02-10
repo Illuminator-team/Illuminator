@@ -75,6 +75,8 @@ class CSV(ModelConstructor):
         self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format)
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
+        self.send_row = self._model.parameters.get('send_row', False)
+        self.cache = {}
         
         # Open the CSV file for reading
         self.datafile = open(self.file_path, 'r', encoding='utf-8')
@@ -82,17 +84,23 @@ class CSV(ModelConstructor):
 
         next(self.datafile).strip() # Skip header line
         # Get attribute names and strip optional comments
-        attrs = next(self.datafile).strip().split(self.delimiter)[1:]  # get rid of the TIME column
-        for i, attr in enumerate(attrs):
-            try:
-                # Try stripping comments
-                attr = attr[:attr.index('#')]
-            except ValueError:
-                pass
-            attr = attr.strip()
-            attrs[i] = attr
-            current_model.setdefault('outputs', {})[attr] = None  # add attribute to output
-        self.attrs = attrs
+        self.columns = next(self.datafile).strip().split(self.delimiter)
+        if self.send_row:
+            self.attrs = ['row']
+            current_model.setdefault('states', {})['row'] = None  # add attribute to states (non-physical message)
+        else:
+            attrs = self.columns[1:]  # get rid of the TIME column
+            for i, attr in enumerate(attrs):
+                try:
+                    # Try stripping comments
+                    attr = attr[:attr.index('#')]
+                except ValueError:
+                    pass
+                attr = attr.strip()
+                attrs[i] = attr
+                current_model.setdefault('states', {})[attr] = None  # add attribute to states (non-physical message)
+            self.attrs = attrs
+
         super().__init__(**kwargs)  # re-initialise the outputs now that new outputs are configured 
 
         self._read_next_row()
@@ -146,10 +154,17 @@ class CSV(ModelConstructor):
 
         # Put data into the cache for get_data() calls
         self.cache = {}
-        for attr, val in zip(self.attrs, data[1:]):
-            self.cache[attr] = float(val)
-        
-        self.set_outputs(self.cache)
+        if self.send_row:
+            row = {}
+            row[self.columns[0]] = date.format(self.date_format)  # make the date a string again to be able to send it as a json
+            for key, val in zip(self.columns[1:], data[1:]):
+                row[key] = val
+            self.cache['row'] = row
+        else:
+            for attr, val in zip(self.attrs, data[1:]):
+                self.cache[attr] = float(val)
+            
+        self.set_states(self.cache)
 
         self._read_next_row()
         if self.next_row is not None:
