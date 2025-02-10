@@ -12,6 +12,8 @@ models:
     file_path: './examples/Tutorial1/load_data.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
 - name: CSV_pv
   type: CSV
   parameters:

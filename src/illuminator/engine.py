@@ -248,7 +248,7 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         The Mosaik world object with the connections established.
     
     """
-
+    from_list = []  # for checking physical splits
     for connection in connections:
         from_model, from_attr =  connection['from'].split('.')
         to_model, to_attr =  connection['to'].split('.')
@@ -261,6 +261,18 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
         from_model_config = next((m for m in models if m['name'] == from_model))
         to_model_config = next((m for m in models if m['name'] == to_model))
         time_shifted = connection['time_shifted']
+            
+        # check if the connection is a physical split
+        if connection['from'] in from_list:
+            if from_attr in from_model_config.get('outputs', {}):
+                raise ValueError(f"Split detected in physical connection for {connection['from']}.")
+            elif from_attr in from_model_config.get('states', {}):
+                pass  # it is okay if a non-physical connection (state) goes to multiple destinations
+            else:
+                raise ValueError(f"Split detected for connection {connection['from']}. "\
+                                "I can't check if this is a non-physical connection (states). "\
+                                "If so, add the attribute to the states of the model configuration. (e.g., in the .yaml file)")
+        from_list.append(connection['from'])
 
         # Establish connections in the Mosaik world
         try:
