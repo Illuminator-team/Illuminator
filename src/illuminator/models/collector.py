@@ -221,9 +221,15 @@ class Collector(mosaik_api.Simulator):
         for attr, values in data.items():
             for src, value in values.items():
                 self.data[src][attr][time] = value
-                df_dict[f'{src}-{attr}'] = [value]
+                df_dict[f'{src}-{attr}'] = [value['value']]
 
         df = pd.DataFrame.from_dict(df_dict)
+        columns = list(df.columns)
+        # columns.remove('Controller1-0.time-based_0-dump')
+        # columns.insert(3, 'Controller1-0.time-based_0-dump')
+        # columns.remove('Controller1-0.time-based_0-flow2b')
+        # columns.insert(1, 'Controller1-0.time-based_0-flow2b')
+        # df = df[columns]
         df = df.set_index('date')
 
         if self.results_show['dashboard_show']==True:

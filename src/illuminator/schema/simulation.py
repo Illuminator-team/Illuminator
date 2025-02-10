@@ -39,7 +39,7 @@ def load_config_file(config_file: str, json:bool=False) -> dict | str:
     """
 
     try:
-        with open(config_file, 'r') as _file:
+        with open(config_file, 'r', encoding='utf-8') as _file:
             yaml = YAML(typ='safe')
             data = yaml.load(_file)
     except FileNotFoundError:

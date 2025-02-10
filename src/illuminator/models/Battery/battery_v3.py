@@ -1,36 +1,38 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
-import arrow
-
+from illuminator.builder import ModelConstructor
 
 # Define the model parameters, inputs, outputs...
-# TODO: Currently if a value or category isn't defined in the yaml it doesn't default to the ones below, it simply doesn't run.
-battery = IlluminatorModel(
-    parameters={'max_p': 150,  # maximum charging power limit (kW)
-                'min_p': 250,  # maximum discharging power limit (kW)
-                'max_energy': 50,  # maximum energy storage capacity of the battery (kWh)
-                'charge_efficiency': 90,  # efficiency of charging the battery (%)
-                'discharge_efficiency': 90,  # efficiency of discharging the battery (%)
-                'soc_min': 3,  # minimum allowable state of charge for the battery (%)
-                'soc_max': 80,  # maximum allowable state of charge for the battery (%)
-                #'resolution': 1  # time resolution for simulation steps (seconds)
-                },
-    inputs={'flow2b': 0,  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
-            },
-    outputs={'p_out': 20,  # output power from the battery after discharge/charge decision (Kw)
-             'p_in': 20,  # input power to the battery (kW)
-             'soc': 0,  # updated state of charge after battery operation (%)
-             'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
-             'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
-             },
-    states={'soc': 0,
-            'flag': 0
-            },
-    time_step_size=1,
-    time=None
-)   
+# TODO: Currently if a value or category isn't defined in the yaml
+# # it doesn't default to the ones below, it simply doesn't run. <- check if this is still the case
 
 # construct the model
 class Battery(ModelConstructor):
+    """
+    Battery model class for simulating battery charging and discharging behavior.
+
+    This class implements a battery model that can simulate charging and discharging cycles,
+    track state of charge, and manage power flows while respecting battery constraints.
+
+    Parameters
+    ----------
+    max_p : float
+        Maximum charging power limit in kW
+    min_p : float  
+        Maximum discharging power limit in kW
+    max_energy : float
+        Maximum energy storage capacity in kWh
+    charge_efficiency : float
+        Battery charging efficiency in %
+    discharge_efficiency : float
+        Battery discharging efficiency in %
+    soc_min : float
+        Minimum allowable state of charge in %
+    soc_max : float
+        Maximum allowable state of charge in %
+
+    Returns
+    -------
+    None
+    """
     parameters={'max_p': 150,  # maximum charging power limit (kW)
                 'min_p': 250,  # maximum discharging power limit (kW)
                 'max_energy': 50,  # maximum energy storage capacity of the battery (kWh)
@@ -44,79 +46,118 @@ class Battery(ModelConstructor):
             }
     outputs={'p_out': 20,  # output power from the battery after discharge/charge decision (Kw)
              'p_in': 20,  # input power to the battery (kW)
-             'soc': 0,  # updated state of charge after battery operation (%)
-             'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
-             'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
              }
-    states={'soc': 0,
-            'flag': 0
-            }
+    states={'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
+            'soc': 0,  # updated state of charge after battery operation (%)
+            'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+        }
     time_step_size=1
     time=None
 
 
-    def step(self, time, inputs, max_advance=900) -> None:
+    def __init__(self, **kwargs):
+        """
+        Initialize the battery model with specified parameters.
+
+        This method initializes a new battery instance with given parameters, setting up
+        initial values for state of charge, efficiency, power limits, and other operational
+        parameters.
+
+        Parameters
+        ----------
+        kwargs : dict
+            Dictionary containing model parameters including:
+            - charge_efficiency: Battery charging efficiency (%)
+            - discharge_efficiency: Battery discharging efficiency (%)
+            - max_p: Maximum charging power limit (kW)
+            - min_p: Maximum discharging power limit (kW)
+            - max_energy: Maximum energy storage capacity (kWh)
+            - soc_min: Minimum allowable state of charge (%)
+            - soc_max: Maximum allowable state of charge (%)
+
+        Returns
+        -------
+        None
+        """
+        super().__init__(**kwargs)
+        self.soc = self._model.states.get('soc')
+        self.flag = self._model.states.get('flag')
+        self.mod = self._model.states.get('mod')
         self.charge_efficiency = self._model.parameters.get('charge_efficiency')/100
         self.discharge_efficiency = self._model.parameters.get('discharge_efficiency')/100
-        # charge the battery
-        print("\nBattery")
-        print("inputs (passed): ", inputs)
-        print("inputs (internal): ", self._model.inputs)
+        self.max_p = self._model.parameters.get('max_p')
+        self.min_p = self._model.parameters.get('min_p')
+        self.max_energy = self._model.parameters.get('max_energy')
+        self.soc_min = self._model.parameters.get('soc_min')
+        self.soc_max = self._model.parameters.get('soc_max')
+        self.powerout = 0
+
+
+
+    def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
+        """
+        Process one simulation step of the battery model.
+
+        This method processes the inputs for one timestep, updates the battery state based on
+        the requested power flow, and sets the model outputs and states accordingly.
+
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict
+            Dictionary containing input values, specifically:
+            - flow2b: Power flow to/from battery (positive=charging, negative=discharging) in kW
+        max_advance : int, optional
+            Maximum time step size in seconds (default 900)
+
+        Returns
+        -------
+        int
+            Next simulation time step
+        """
         input_data = self.unpack_inputs(inputs)
-        print("input_data: ", input_data)
 
-        current_time = time * self.time_resolution
-        print('from battery %%%%%%%%', current_time)
-        eid = list(self.model_entities)[0]  # there is only one entity per simulator, so get the first entity
+        results = self.output_power(input_data['flow2b']) # In this model, the input should come from the controller
 
-        print('state of charge: ', self._model.outputs['soc'])
+        self.soc = results.pop('soc')
+        self.flag = results.pop('flag')
+        self.mod = results.pop('mod')
+        self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time
+        self.set_outputs(results)
 
-        self._cache = {}
-        # if input_data['flow2b'] != 0:
-        #raghav: In this model, the input should come from the controller p_ask
-        self._cache[eid] = self.output_power(input_data['flow2b'], self._model.outputs['soc'])
-
-        # self._cache[eid] = self.entities[eid].output_power(energy_ask, self.soc[eid])          # * max_advance if trigger
-
-        # print(self._cache[eid])
-        # [p_out:,soc:,flag:]
-        self._model.outputs['soc'] = self._cache[eid]['soc']
-        self._model.outputs['flag'] = self._cache[eid]['flag']
-        # check = list(self.soc.values())
-        # check2 = check[0]  # this is so that the value that battery sends is dictionary and not a dictionary of a dictionary.
-        #    out = yield self.mosaik.set_data({'Battery-0': {'Controller-0.ctrl_0': {'soc': check2}}})  # this code is supposed to hold the soc value and
-        print("new state of charge:", self.soc)
-        print('\n')
         return time + self._model.time_step_size
 
-    def parse_inputs(self, inputs):
-    # TODO: Move this function to model.py to unpack the inputs, for now we will keep it model specific.
-        data = {}
-        for attrs in inputs.values():
-            for attr, sources in attrs.items():
-                values = list(sources.values())  # we expect each attribute to just have one sources (only one connection per input)
-                if len(values) > 1:
-                    raise RuntimeError(f"Why are you passing multiple values {value}to a single input? ")
-                data[attr] = values[0]
-        return data
-    
 
     # this method is called from the output_power method when conditions are met.
     def discharge_battery(self, flow2b:int) -> dict:  #flow2b is in kw
         """
-        Discharge the battery, calculate the state of charge and return parameter information
+        Discharge the battery, calculate the state of charge and return parameter information.
+        Discharge the battery, calculate the state of charge and return parameter information.
 
-        ...
+        This method discharges the battery based on the requested power flow, updates the state of 
+        charge (SOC), and returns a dictionary containing the battery's operational parameters.
 
         Parameters
         ----------
         flow2b : int
-            (???) in kW
+            Power flow requested from the battery (negative value) in kW
         
         Returns
         -------
         re_params : dict
-            Collection of parameters and their respective values
+            Collection of parameters and their respective values:
+            - p_out: Output power from the battery after discharge decision (kW)
+            - p_in: Input power to the battery (kW)
+            - soc: Updated state of charge after battery operation (%)
+            - mod: Operation mode: 0=no action, 1=charge, -1=discharge
+            - flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+            Collection of parameters and their respective values:
+            - p_out: Output power from the battery after discharge decision (kW)
+            - p_in: Input power to the battery (kW)
+            - soc: Updated state of charge after battery operation (%)
+            - mod: Operation mode: 0=no action, 1=charge, -1=discharge
+            - flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
         """
         hours = self.time_resolution / 60 / 60
         flow = max(self.min_p, flow2b)
@@ -135,7 +176,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-discharge Case
-                    self.powerout = energy_capacity / self.discharge_efficiency / hours
+                    self.powerout = energy_capacity * self.discharge_efficiency / hours  # Can only discharge remaining capacity, but even less because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_min
                     self.flag = -1  # Set flag as 1 to show fully discharged state
@@ -155,19 +196,36 @@ class Battery(ModelConstructor):
 
     def charge_battery(self, flow2b:int) -> dict:
         """
-        Charge the battery, calculate the state of charge and return parameter information
-
-        ...
-
-        Parameters
-        ----------
-        flow2b : int
-            (???) in kW
-        
-        Returns
-        -------
-        re_params : dict
-            Collection of parameters and their respective values
+        Charge the battery, calculate the state of charge and return parameter information.
+        This method charges the battery based on the provided power input, updates the state of charge (SOC),
+        and returns a dictionary containing relevant parameters.
+            Power input to the battery in kW.
+            A dictionary containing the following keys:
+            - 'p_out' : float
+                The power output of the battery in kW.
+            - 'p_in' : int
+                The power input to the battery in kW.
+            - 'soc' : float
+                The state of charge of the battery as a percentage.
+            - 'mod' : int
+                A mode indicator (always 1 in this implementation).
+            - 'flag' : int
+                A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
+        Charge the battery, calculate the state of charge and return parameter information.
+        This method charges the battery based on the provided power input, updates the state of charge (SOC),
+        and returns a dictionary containing relevant parameters.
+            Power input to the battery in kW.
+            A dictionary containing the following keys:
+            - 'p_out' : float
+                The power output of the battery in kW.
+            - 'p_in' : int
+                The power input to the battery in kW.
+            - 'soc' : float
+                The state of charge of the battery as a percentage.
+            - 'mod' : int
+                A mode indicator (always 1 in this implementation).
+            - 'flag' : int
+                A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
         """
         hours = self.time_resolution / 60 / 60
         flow = min(self.max_p, flow2b)
@@ -184,7 +242,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-charge Case
-                    self.powerout = energy_capacity / self.charge_efficiency / hours
+                    self.powerout = energy_capacity / self.charge_efficiency / hours  # you can only charge the remaining capacity, but it would cost more because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_max
                     self.flag = 1  # Set flag as 1 to show fully discharged state
@@ -200,37 +258,43 @@ class Battery(ModelConstructor):
         return re_params
 
 
-# this method is like a controller which calls a method depending on the condition.
-# first, this is checked. As per the p_ask and soc, everything happens.
-# p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
+    # this method is like a controller which calls a method depending on the condition.
+    # first, this is checked. As per the p_ask and soc, everything happens.
+    # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
+    # this method is like a controller which calls a method depending on the condition.
+    # first, this is checked. As per the p_ask and soc, everything happens.
+    # p_ask and soc are the parameters whos values we have to provide when we want to create an object of this class. i.e,
     # when we want to make a battery model.
-    def output_power(self, flow2b:int, soc:int) -> dict:#charging power: positive; discharging power:negative
+    def output_power(self, flow2b:int) -> dict:#charging power: positive; discharging power:negative
         """
-        Gives information depending on the current flow2b and soc value.
-        If there is no power demand it gives in current battery state of charge information.
-        If there is a negative demand for power then it discharged the battery. Alternatively it charges the battery.
-        
-        ...
+        Determine the battery operation mode and power output based on the requested power flow.
+
+        This method controls the battery's operation by determining whether to charge, discharge,
+        or maintain the current state based on the requested power flow and the battery's 
+        state of charge (SOC).
+        Determine the battery operation mode and power output based on the requested power flow.
+
+        This method controls the battery's operation by determining whether to charge, discharge,
+        or maintain the current state based on the requested power flow and the battery's 
+        state of charge (SOC).
 
         Parameters
         ----------
         flow2b : int
-            ???
-        soc : int
-            The current state of charge (SOC)
+            Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
+            Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
 
         Returns
         -------
         re_params : dict
-            Collection of parameters and their respective values
+            Dictionary containing the battery's operational parameters:
+            - p_out: Output power after charge/discharge decision (kW)
+            - p_in: Input power to the battery (kW)  
+            - soc: Updated state of charge (%)
+            - mod: Operation mode (0=no action, 1=charge, -1=discharge)
+            - flag: Battery status (1=fully charged, -1=fully discharged, 0=available)
         """
-        self.soc = soc  # here we assign the value of soc we provide to the attribute self.soc
-        data_ret = {}
-        # {'p_out',
-        # 'soc',
-        # 'mod',  # 0 = noaction,1 = charge,-1=discharge
-        # 'flag',} # 1 means full charge, -1 means full discharge, 0 means available for control
-    # conditions start:
+        # conditions start:
         if flow2b == 0:  # i.e when there isn't a demand of power at all,
 
             # soc can never exceed the limit so when it is equal to the max, we tell it is completely charged
@@ -270,10 +334,3 @@ class Battery(ModelConstructor):
 
 
         return re_params
-
-if __name__ == '__main__':
-    # Create a model by inheriting from ModelConstructor
-    # and implementing the step method
-    battery_model = Battery(battery)
-
-    print(battery_model.step(1))
