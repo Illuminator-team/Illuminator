@@ -104,7 +104,6 @@ class H2Storage(ModelConstructor):
         int
             Next simulation time step
         """
-        # TODO implement output
         print("\nH2 storage:")
         print("inputs (passed): ", inputs)
         print("inputs (internal): ", self._model.inputs)

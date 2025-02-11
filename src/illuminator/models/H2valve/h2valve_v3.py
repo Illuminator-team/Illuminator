@@ -27,17 +27,20 @@ class H2Valve(ModelConstructor):
         Initializes the Valve model with the provided parameters.
     step(time, inputs, max_advance)
         Simulates one time step of the Valve model.
-    calc_flow(h2_in, frac)
+    calc_flow(h2_in, ratio1, ratio2, ratio3)
         Calculates the flow of hydrogen through the valve based on the input flow and fraction.
     """
     parameters={'valve_eff': 100#,   # efficicency of the valve [%]
                 #'max_flow': 0,      # maximum flow rate of the valve [kg/timestep]
                 }
     inputs={'h2_in': 0,              # h2 input
-            'frac' : 0               # fraction of the flow that is allowed to pass through output 1 [%]
+            'ratio1' : 0,            # fraction of the flow that is allowed to pass through output 1 [%]
+            'ratio2' : 0,            # fraction of the flow that is allowed to pass through output 2 [%]
+            'ratio3' : 0             # fraction of the flow that is allowed to pass through output 3 [%]
             }
     outputs={'out1': 0,             # h2 output 1
              'out2': 0,             # h2 output 2
+             'out3': 0              # h2 output 3
              }
     states={}
 
@@ -75,21 +78,27 @@ class H2Valve(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        results = self.calc_flow(h2_in=input_data['h2_in'], frac=input_data['frac'])
+        results = self.calc_flow(h2_in=input_data['h2_in'], ratio=input_data['ratio'])
         self.set_outputs(results)
 
         return time + self.time_step_size
     
 
 
-    def calc_flow(self, h2_in: float, frac: float) -> dict:
+    def calc_flow(self, h2_in: float, ratio1: float, ratio2: float, ratio3: float) -> dict:
         """
         Calculate the flow through the valve.
 
         Parameters
         ----------
-        frac : float
+        h2_in : float
+            Hydrogen input flow rate.
+        ratio1 : float
             Fraction of the flow that is allowed to pass through output 1.
+        ratio2 : float
+            Fraction of the flow that is allowed to pass through output 2.
+        ratio3 : float
+            Fraction of the flow that is allowed to pass through output 3.
 
         Returns
         -------
@@ -97,8 +106,9 @@ class H2Valve(ModelConstructor):
             Dictionary containing the calculated outputs like hydrogen flow rates through outputs 1 and 2.
         """
         tot_out = h2_in * self.valve_eff / 100
-        out1 = frac/ 100 * tot_out
-        out2 = (100 - frac)/100 * tot_out
-        result = {'out1': out1, 'out2': out2}
+        out1 = ratio1 / 100 * tot_out
+        out2 = ratio2 / 100 * tot_out
+        out3 = ratio3 / 100 * tot_out
+        result = {'out1': out1, 'out2': out2, 'out3': out3}
         return result
         
