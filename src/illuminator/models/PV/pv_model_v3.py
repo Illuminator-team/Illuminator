@@ -45,7 +45,7 @@ class PV(ModelConstructor):
         "peak_power": 0,  # Peak power output of the module (W).
         "m_tilt": 0,
         'm_az': 0,
-        'cap': 0,
+        'cap': 0,  # installed capacity
         'output_type': 'power',
         'sim_start': 0
         }
