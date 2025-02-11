@@ -47,7 +47,7 @@ class ControllerT3Congestion(ModelConstructor):
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops
                 'max_p': 100,  # Maximum power to/from the battery
-                'gridconnect_ctrl': None
+                'gridconnect_ctrl': 15  #kW connection capacity
                 }
     inputs={'wind_gen': 0,  # Wind power generation
             'pv_gen': 0,  # Solar power generation
@@ -55,14 +55,13 @@ class ControllerT3Congestion(ModelConstructor):
             'soc': 0,  # State of charge of the battery
             'load_EV': 0,  
             'load_HP': 0,
-            'flag_warning': None,
-            'limit_grid_connect': None
+            'flag_warning': None
             }
     outputs={'flow2b': 0,  # Power flow to/from battery (positive for charging, negative for discharging)
              'res_load': 0,
              'dump': 0  # Excess power that cannot be stored or used
              }
-    states={}
+    states={'limit_grid_connect': None}
 
     # define other attributes
     time_step_size = 1

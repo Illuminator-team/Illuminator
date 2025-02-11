@@ -15,11 +15,11 @@ class LoadEV(ModelConstructor):
         Dictionary containing calculated load demand values
     """
 
-    parameters={'houses_case': None,  #
-                'houses_data': None,  #
+    parameters={'houses_case': None,  # number of EVs you want to model
+                'houses_data': None,  # number of EVs for which the profile is for
                 }
     inputs={'power': 0,
-             'n': 0,  # # n is number of EVs charging at a certain point in time}
+             'n': 0,  # # n is number of EVs charging at a certain point in time (its in the database but unused for now)
             }
     outputs={'load_EV': 0,  #
              }
