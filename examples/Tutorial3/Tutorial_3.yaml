@@ -1,7 +1,6 @@
 scenario:
-  name: "Tutorial 1" # in mosaik so called world
+  name: "Tutorial 3" # in mosaik so called world
   start_time: '2012-07-06 00:00:00' # ISO 8601 start time of the simulation
-  #end_time: '2012-01-01 01:00:00' # duration in seconds 
   end_time: '2012-07-06 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
@@ -14,6 +13,22 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
   states:
     load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+- name: CSVloadEV
+  type: CSV
+  parameters:
+    file_path: '10_EVs_2012_synthetic.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    power:  # incoming energy or power demand per EV (kWh) for each time step (15 minutes)
+- name: CSVloadHP
+  type: CSV
+  parameters:
+    file_path: 'hp_profiles_10h_kW.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    hp_load:  # incoming energy or power demand per heat pump (kWh) for each time step (15 minutes)
 - name: CSV_pv
   type: CSV
   parameters:
@@ -140,7 +155,7 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 0.8  # Maximum power flow to/from the battery (kW)
-    gridconnect_ctrl: 1
+    gridconnect_ctrl: 15 # kW grid connection capacity
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
@@ -149,18 +164,26 @@ models:
     load_EV: 0  # Electrical vehicle load demand
     load_HP: 0  # Heat pump load demand
     flag_warning:
-    limit_grid_connect:
   outputs:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
     dump:  # Excess power that cannot be stored or used (kW)
+  states:
+    limit_grid_connect:  # "enforced" limit of the grid connection Kw
 
 
 connections:
+# connections from CSV readers to the loads
 - from: CSVload.load
   to: Load1.load
+- from: CSVloadEV.power
+  to: Load_EV1.power
+- from: CSVloadEV.n
+  to: Load_EV1.n
+- from: CSVloadHP.hp_load
+  to: Load_HP1.hp_load
 
-
+# connections from the CSV reader to the PV
 - from: CSV_pv.G_Gh # start model, pattern: model_name.output_name/input_name
   to: PV1.G_Gh # end model
 - from: CSV_pv.G_Dh
@@ -176,6 +199,7 @@ connections:
 - from: CSV_pv.Az
   to: PV1.Az
 
+# connection from the CSV reader to the wind
 - from: CSV_wind.u
   to: Wind1.u
 
@@ -202,24 +226,11 @@ connections:
 - from: Controller1.dump
   to: Grid1.dump
 
-- from: Grid1.flag_critical
-  to: Controller1.limit_grid_connect
-  time_shifted: True
 - from: Grid1.flag_warning
   to: Controller1.flag_warning
   time_shifted: True
 
 monitor:
-  file: './out_Tutorial1.csv'
+  file: './out_Tutorial3.csv'
   items:
-    #- CSV_pv.G_Gh
-    # - Controller1.dump
-    # - PV1.pv_gen
-    # - Wind1.wind_gen
-    # - Load1.load_dem
-
-    - Controller1.flow2b
-    - Controller1.res_load
     - Controller1.dump
-    - Battery1.p_out
-    - Battery1.soc
