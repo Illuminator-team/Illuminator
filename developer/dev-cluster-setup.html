@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cluster Set Up &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dashboard" href="dev-dashboard.html" />
+    <link rel="prev" title="Creating/writing tests" href="writing-tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../references/scenario-api.html">Scenario API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cluster Set Up</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer/dev-cluster-setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cluster-set-up">
+<h1>Cluster Set Up<a class="headerlink" href="#cluster-set-up" title="Link to this heading"></a></h1>
+<p>We are currently working on automating some of the steps to deploy the <strong>Illuminator</strong> on a Raspberry Pi cluster.
+The main idea of this line of development is to simplify the number of steps required to install and enable simulations, after the networking of the cluster is completed. The following are some of the goals we will like to achieve:</p>
+<ol class="arabic simple">
+<li><p><strong>Installation:</strong> it shall be possible to install the ‘Illuminator’ on each <em>client</em> and <em>server</em> with a single command on the terminal. For example: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">illuminator</span></code>. This  will remove the burden of copying the source code to to each client and server imposed by the current implementation. Achieving this will make goal (2) more feasible.</p></li>
+<li><p><strong>Model accessibility:</strong> it shall be possible for the <em>server</em> to run models in any <em>client</em> by using the <code class="docutils literal notranslate"><span class="pre">lxterminal</span></code> command, with a command such as:
+<code class="docutils literal notranslate"><span class="pre">lxterminal</span> <span class="pre">-e</span> <span class="pre">ssh</span> <span class="pre">illuminator&#64;192.168.0.1</span> <span class="pre">'illuminator</span> <span class="pre">cluster</span> <span class="pre">run</span> <span class="pre">&lt;model-name&gt;</span> <span class="pre">--remote'</span></code>. Where the <code class="docutils literal notranslate"><span class="pre">--remote</span></code> flag must tell <em>Mosaik</em> that the simulation will run in a distributed environment (cluster). In the current implementation, one has to specified the path to the Python file containing the model (usually a directoy on the client). However, that is harder to maintain because new versions of the Illuminator rely on the source code and not on Python wheels or TARs. Therefore, the focus here should be on making sure that once the Illuminator is installed to the Python path, then all models are accessible at the OS level and they can be run in <em>remote</em> model.</p></li>
+<li><p><strong>Business logic for cluster scenarios:</strong> shall develop the business logic to use the information in (<code class="docutils literal notranslate"><span class="pre">connect</span></code>) in the <a class="reference internal" href="../user/config-file.html"><span class="std std-doc">scenario configuration file</span></a> to start simulators on the clienst; such that, for example, calling <code class="docutils literal notranslate"><span class="pre">illuminator</span> <span class="pre">cluster</span> <span class="pre">&lt;scenario.yaml&gt;</span></code> reads on which client a model should be started, and start the relevant simulators on that client and runs the simulation.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The ideas above can be use by contributors to participate in the development of <em>Illuminator</em>. Better ideas and solutions always welcome. Please contact the <a class="reference external" href="mailto:illuminator&#37;&#52;&#48;tudelft&#46;nl">Illuminator Development Team</a> if you want to contribute.</p>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="writing-tests.html" class="btn btn-neutral float-left" title="Creating/writing tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dev-dashboard.html" class="btn btn-neutral float-right" title="Dashboard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
