@@ -1,15 +1,15 @@
 scenario:
   name: "Tutorial 1" # in mosaik so called world
-  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  start_time: '2012-07-06 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  end_time: '2012-07-06 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
 - name: CSVload
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/load_data.txt'
+    file_path: 'load_data.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
   states:
@@ -17,22 +17,22 @@ models:
 - name: CSV_pv
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt'
+    file_path: 'pv_data_Rotterdam_NL-15min.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: CSV_wind
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/winddata_NL.txt'
+    file_path: 'winddata_NL.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: Grid1
   type: GridConnection
   parameters:
-    connection_capacity: 150
-    tolerance_limit: 10
-    critical_limit: 20
+    connection_capacity: 15 # size of the neighbourhood
+    tolerance_limit: 0.67 # a load on the connection between 67% and 90% is tolerable but causes a warning
+    critical_limit: 0.9 # a load on the connection over 90% of the connection capacity is critical
   inputs:
     dump: 0
   states:
@@ -42,7 +42,7 @@ models:
 - name: Load1
   type: Load
   parameters:
-    houses: 5  # number of houses that determine the total load demand
+    houses: 10  # number of houses that determine the total load demand
     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
@@ -53,7 +53,7 @@ models:
 - name: Load_EV1
   type: LoadEV
   parameters:
-    houses_case: 5
+    houses_case: 10  # number of houses that determine the total load demand
     houses_data: 1
   inputs:
     power: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
@@ -64,7 +64,7 @@ models:
 - name: Load_HP1
   type: LoadHeatpump
   parameters:
-    houses_case: 5
+    houses_case: 10  # number of houses that determine the total load demand
     houses_data: 1
   inputs:
     hp_load: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
@@ -99,7 +99,7 @@ models:
 - name: Wind1
   type: Wind # models can reuse the same type
   parameters:
-    p_rated: 0.3  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    p_rated: 0.5  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
     u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
     u_cutin: 2.8  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
     u_cutout: 25  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
@@ -117,9 +117,9 @@ models:
 - name: Battery1
   type: Battery # models can reuse the same type
   parameters:
-    max_p: 0.8  # maximum charging power limit (kW)
-    min_p: -0.8  # maximum discharging power limit (kW)
-    max_energy: 0.8  # maximum energy storage capacity of the battery (kWh)
+    max_p: 4  # maximum charging power limit (kW)
+    min_p: -4  # maximum discharging power limit (kW)
+    max_energy: 4  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -131,7 +131,7 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 10  # state of charge of the battery (%)
+    soc: 20  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
@@ -140,7 +140,7 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 0.8  # Maximum power flow to/from the battery (kW)
-    gridConnect_ctrl: 1
+    gridconnect_ctrl: 1
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
