@@ -71,7 +71,7 @@ class LoadEV(ModelConstructor):
         load_in = input_data.get('power', 0)
         n = input_data.get('n', 0)
         results = self.demand(power=load_in, n=n)
-        self.set_outputs(results)
+        self.set_outputs({'load_EV': results['load_EV']})
 
         return time + self._model.time_step_size
 
