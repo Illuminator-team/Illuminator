@@ -146,7 +146,10 @@ class H2Controller(ModelConstructor):
         valve2_ratio1 = 0
         valve2_ratio2 = 0
         valve2_ratio3 = 0
-        
+        rest = 0
+        flow2h2storage1 = 0
+        flow2h2storage2 = 0
+
         if demand1 > 0 and demand2 > 0:  # if there is demand from both units
             tot_demand = demand1 + demand2
 
@@ -159,7 +162,6 @@ class H2Controller(ModelConstructor):
 
             # spread storage help over both storages (spread shortage)
             tot_shortage = max(0, (tot_demand - thermolyzer_out))
-
             short_per_storage = tot_shortage / 2
             
             df1 = demand1 - short_per_storage    # desired flow from valve 1 to the first subsystem
@@ -169,7 +171,7 @@ class H2Controller(ModelConstructor):
             valve1_ratio2 = df1 / thermolyzer_out * 100 if thermolyzer_out > 0 else 0
             valve1_ratio3 = df2 / thermolyzer_out * 100 if thermolyzer_out > 0 else 0
 
-            if short_per_storage > 0:
+            if short_per_storage > 0:   # if there is a shortage
                 if available_storage1 < short_per_storage:
                     if available_storage2 > 2 * short_per_storage - available_storage1:
                         delta_valve = (short_per_storage - available_storage1) / thermolyzer_out * 100
@@ -185,125 +187,158 @@ class H2Controller(ModelConstructor):
                     else:
                         raise ValueError('Not enough hydrogen in both storages to meet the demand')
             
-            if thermolyzer_out > tot_demand:
+            if thermolyzer_out > tot_demand:    # overproduction
                 rest = thermolyzer_out - tot_demand
-                d_valve1_ratio1, d_valve1_ratio3 = self.store_rest(rest)
-                valve1_ratio1 += d_valve1_ratio1
-                valve1_ratio3 += d_valve1_ratio3
-            else:
+                valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3)
+                valve1_ratio2 -= (valve1_ratio1 + valve1_ratio3)
+                valve2_ratio1 = demand2 / ((valve1_ratio3 / 100) * thermolyzer_out) * 100
+                valve2_ratio2 = 100 - valve2_ratio1
+            else: # demand is exactyl the same as the output of the thermolyzer
                 rest = 0
 
         elif demand1 > 0 and demand2 <= 0: # if there is demand from unit 1 only
             valve1_ratio2 = 100
-            valve1_ratio3 = 0
             if thermolyzer_out > demand1:
                 rest = thermolyzer_out - demand1
-                d_valve1_ratio1, d_valve1_ratio3 = self.store_rest(rest)
-                valve1_ratio1 += d_valve1_ratio1
-                valve1_ratio3 += d_valve1_ratio3
+                valve1_ratio1, valve1_ratio3 = self.store_rest(rest)
+                valve1_ratio2 -= (valve1_ratio1 + valve1_ratio3)
+                valve2_ratio2 = 100
             else:
+                if available_storage1 >= thermolyzer_out - demand1:
+                    flow2h2storage1 = -(thermolyzer_out - demand1)
+                else:
+                    ValueError('Not enough hydrogen in storage1 to meet the demand')
                 rest = 0
 
         elif demand1 <= 0 and demand2 > 0:  # if there is demand from unit 2 only
-
+            valve1_ratio3 = 100
             if thermolyzer_out > demand2:
                 rest = thermolyzer_out - demand2
-                d_valve1_ratio1, d_valve1_ratio3 = self.store_rest(rest)
-                valve1_ratio1 += d_valve1_ratio1
-                valve1_ratio3 += d_valve1_ratio3
-                valve1_ratio2 = 100 - valve1_ratio1 - valve1_ratio3
+                valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3)
+                valve1_ratio1 -= (valve1_ratio2 + valve1_ratio3)
+                valve2_ratio2 = 100
             else:
-                valve1_ratio2 = 0
-                valve1_ratio3 = 100
+                if available_storage2 >= thermolyzer_out - demand2:
+                    flow2h2storage2 = -(thermolyzer_out - demand2)
+                else:
+                    ValueError('Not enough hydrogen in storage2 to meet the demand')
                 rest = 0
 
         else: # if there is no demand
             self.store_rest(thermolyzer_out)
+            valve2_ratio2 = 100
+
+        results = {'flow2h2storage1': flow2h2storage1,
+                    'flow2h2storage2': flow2h2storage2,
+                    'valve1_ratio1': valve1_ratio1,
+                    'valve1_ratio2': valve1_ratio2,
+                    'valve1_ratio3': valve1_ratio3,
+                    'valve2_ratio1': valve2_ratio1,
+                    'valve2_ratio2': valve2_ratio2,
+                    'valve2_ratio3': valve2_ratio3
+                    }
+        return results
             
 
-    def store_rest(self, rest):
+    def store_rest(self, rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2):
         delta_storage = abs(available_storage1 - available_storage2)
-            
         if available_storage1 > available_storage2: # if storage1 has more hydrogen than storage2
-            if rest < delta_storage:
+            if rest < delta_storage:                # push all to storage2
                 f2s1 = 0
                 f2s2 = rest
-            else:
+            else:                                   # resolve difference
                 f2s1 = (rest - delta_storage) / 2 
                 f2s2 = (rest + delta_storage) / 2
-        elif available_storage1 < available_storage2: # if storage2 has more hydrogen than storage1
-            if rest < delta_storage:
+        elif available_storage1 < available_storage2:   # if storage2 has more hydrogen than storage1
+            if rest < delta_storage:                    # push all to storage1
                 f2s1 = rest
                 f2s2 = 0
-            else:
+            else:                                       # resolve difference
                 f2s1 = (rest + delta_storage) / 2
                 f2s2 = (rest - delta_storage) / 2
-        else:   # if both storages have the same amount of hydrogen
+        else:   # divide equally
             f2s1 = rest / 2
             f2s2 = rest / 2
 
         d_valve1_ratio1 = f2s1 / thermolyzer_out * 100 # the additional percentage of hydrogen flow to storage1
         d_valve1_ratio3 = f2s2 / thermolyzer_out * 100 # the additional percentage of hydrogen flow to storage2
+
+        # check if the new valve ratio =< 100 and if not adjust distribution
+        if valve1_ratio1 + d_valve1_ratio1 > 100:
+            surplus = valve1_ratio1 + d_valve1_ratio1 - 100
+            valve1_ratio1 = 100
+            if valve1_ratio3 + d_valve1_ratio3 + surplus > 100:
+                valve1_ratio3 = 100
+            else:
+                valve1_ratio3 += (d_valve1_ratio3 + surplus)
+        else:
+            valve1_ratio1 += d_valve1_ratio1
+        
+        if valve1_ratio3 + d_valve1_ratio3 > 100:
+            surplus = valve1_ratio3 + d_valve1_ratio3 - 100
+            valve1_ratio3 = 100
+            if valve1_ratio1 + d_valve1_ratio1 + surplus > 100:
+                valve1_ratio1 = 100
+            else:
+                valve1_ratio1 += (d_valve1_ratio1 + surplus)
+        else:
+            valve1_ratio3 += d_valve1_ratio3
+
         return d_valve1_ratio1, d_valve1_ratio3
-    
-
-
-
-        
-
-
-        
-
-
     
 
         if demand1_remaining > 0:
 
 
 
-        # This is for the upper part of the system (subsystem 1)
+
+
+        # Disregard all below for now   
+
+        
+        # # This is for the upper part of the system (subsystem 1)
         
            
-        if demand1 > 0 or demand2 > 0:  # if there is demand
-            valve1_ratio1 = 0  # valve ratio to storage1 is set to 0%
-            valve2_ratio1 = 0  # valve ratio to storage2 is set to 0%
-            initial_valve1_ratio2 = thermolyzer_out / demand1 * 100
-            initial_valve1_ratio3 = thermolyzer_out / demand2 * 100
-            if initial_valve1_ratio2 + initial_valve1_ratio3 > 100:  # if the sum of the valve ratios is greater than 100
-                valve1_ratio2 = initial_valve1_ratio2 / (initial_valve1_ratio2 + initial_valve1_ratio3) * 100
-                valve1_ratio3 = 100 - valve1_ratio2
-            else:
-                valve1_ratio2 = initial_valve1_ratio2
-                valve1_ratio3 = initial_valve1_ratio3
+        # if demand1 > 0 or demand2 > 0:  # if there is demand
+        #     valve1_ratio1 = 0  # valve ratio to storage1 is set to 0%
+        #     valve2_ratio1 = 0  # valve ratio to storage2 is set to 0%
+        #     initial_valve1_ratio2 = thermolyzer_out / demand1 * 100
+        #     initial_valve1_ratio3 = thermolyzer_out / demand2 * 100
+        #     if initial_valve1_ratio2 + initial_valve1_ratio3 > 100:  # if the sum of the valve ratios is greater than 100
+        #         valve1_ratio2 = initial_valve1_ratio2 / (initial_valve1_ratio2 + initial_valve1_ratio3) * 100
+        #         valve1_ratio3 = 100 - valve1_ratio2
+        #     else:
+        #         valve1_ratio2 = initial_valve1_ratio2
+        #         valve1_ratio3 = initial_valve1_ratio3
 
-            for _ in range(100): # max iterations 
-                storage_list = []
-                df1 = valve1_ratio2 / 100 * thermolyzer_out   # direct flow to joint1
-                df2 = valve1_ratio3 / 100 * thermolyzer_out * compressor_eff   # direct flow to joint2
-                demand1_remaining = demand1 - df1      
-                demand2_remaining = demand2 - df2   
-                if (h2_soc1 < h2_soc_min and demand1_remaining > 0) or demand1_remaining > max_output_storage1:
-                    valve1_ratio2 += 1
-                    valve1_ratio3 = 100 - 1
-                else:
-                    flow2h2storage1 = -demand1_remaining
+        #     for _ in range(100): # max iterations 
+        #         storage_list = []
+        #         df1 = valve1_ratio2 / 100 * thermolyzer_out   # direct flow to joint1
+        #         df2 = valve1_ratio3 / 100 * thermolyzer_out * compressor_eff   # direct flow to joint2
+        #         demand1_remaining = demand1 - df1      
+        #         demand2_remaining = demand2 - df2   
+        #         if (h2_soc1 < h2_soc_min and demand1_remaining > 0) or demand1_remaining > max_output_storage1:
+        #             valve1_ratio2 += 1
+        #             valve1_ratio3 = 100 - 1
+        #         else:
+        #             flow2h2storage1 = -demand1_remaining
 
-                if (h2_soc2 < h2_soc_min and demand2_remaining > 0) or demand2_remaining > max_output_storage2:
-                    valve1_ratio3 += 1
-                    valve1_ratio2 = 100 - 1
-                else:
-                    flow2h2storage2 = -demand2_remaining
+        #         if (h2_soc2 < h2_soc_min and demand2_remaining > 0) or demand2_remaining > max_output_storage2:
+        #             valve1_ratio3 += 1
+        #             valve1_ratio2 = 100 - 1
+        #         else:
+        #             flow2h2storage2 = -demand2_remaining
 
-                sorage_list.
+        #         sorage_list.
 
 
 
-            while demand1_remaining > 0 or demand2_remaining > 0:  # while there is still demand
-                if h2_soc1 > self.h2_soc_min and demand1 <= storage_max_out:
-                    flow2h2storage1 = -demand1_remaining
-                    demand1_remaining = 0
-                else:
-                    flow2h2storage1 = 0     # No h2 possible from storage1
+        #     while demand1_remaining > 0 or demand2_remaining > 0:  # while there is still demand
+        #         if h2_soc1 > self.h2_soc_min and demand1 <= storage_max_out:
+        #             flow2h2storage1 = -demand1_remaining
+        #             demand1_remaining = 0
+        #         else:
+        #             flow2h2storage1 = 0     # No h2 possible from storage1
                     
                 
                     
@@ -311,76 +346,76 @@ class H2Controller(ModelConstructor):
 
 
 
-        if demand1_remaining > 0:                    # if direct flow is not enough to meet the demand   
-            if h2_soc1 > self.h2_soc_min:           
-                flow2h2storage1 = -demand1_remaining # ask the storage to provide the remaining demand
-            else:                                   # if the storage is fully discharged
-                flow2h2storage1 = 0                 # no flow from storage  
-                valve1_ratio1 = 0                   # the valve to storage1 is set to 0              
-                valve1_ratio2 = thermolyzer_out / demand1    # valve ratio adapted to facilitate the direct flow
+        # if demand1_remaining > 0:                    # if direct flow is not enough to meet the demand   
+        #     if h2_soc1 > self.h2_soc_min:           
+        #         flow2h2storage1 = -demand1_remaining # ask the storage to provide the remaining demand
+        #     else:                                   # if the storage is fully discharged
+        #         flow2h2storage1 = 0                 # no flow from storage  
+        #         valve1_ratio1 = 0                   # the valve to storage1 is set to 0              
+        #         valve1_ratio2 = thermolyzer_out / demand1    # valve ratio adapted to facilitate the direct flow
 
-        # This is for the lower part of the system (subsystem 2)
-        valve2_ratio1 = 100                             # valve ratio to demand2 is set to 100%          
-        df2 = valve2_ratio2 / 100 * compressor_out       # direct flow to joint2
-        demand2_remaining = demand2 - df2               # demand remaing after direct flow to joint2 (prioritising direct flow)
-        if demand2_remaining > 0:                       # if direct flow is not enough to meet the demand
-            if h2_soc2 > self.h2_soc_min:                # if the storage is not fully discharged
-                flow2h2storage2 = -demand2_remaining     # ask the storage to provide the remaining demand
-            else:                                       # if the storage is fully discharged
-                flow2h2storage2 = 0                      # no flow from storage
-                valve1_ratio1 = 0                        # the valve to storage1 is set to 0
-                valve1_ratio3 = thermolyzer_out / demand2 * 100  # valve ratio adapted to facilitate the direct flow
-                # TODO the above is not accounting for compresor losses
+        # # This is for the lower part of the system (subsystem 2)
+        # valve2_ratio1 = 100                             # valve ratio to demand2 is set to 100%          
+        # df2 = valve2_ratio2 / 100 * compressor_out       # direct flow to joint2
+        # demand2_remaining = demand2 - df2               # demand remaing after direct flow to joint2 (prioritising direct flow)
+        # if demand2_remaining > 0:                       # if direct flow is not enough to meet the demand
+        #     if h2_soc2 > self.h2_soc_min:                # if the storage is not fully discharged
+        #         flow2h2storage2 = -demand2_remaining     # ask the storage to provide the remaining demand
+        #     else:                                       # if the storage is fully discharged
+        #         flow2h2storage2 = 0                      # no flow from storage
+        #         valve1_ratio1 = 0                        # the valve to storage1 is set to 0
+        #         valve1_ratio3 = thermolyzer_out / demand2 * 100  # valve ratio adapted to facilitate the direct flow
+        #         # TODO the above is not accounting for compresor losses
             
                 
                 
 
 
-        # This is in case of 0 demand
-        if demand1_remaining and demand2_remaining <=0:           # if the direct flow is enough to meet the demand
-            valve1_ratio2 = 0                       # No direct flow to load 1 necessary so =0
-            if h2_soc2 > h2_soc1:                   # recharge storages based on the lowest soc
-                valve1_ratio1 = 100                 # valve ratio to storage1 is set to 100%
-                valve1_ratio3 = 0                   # valve ratio to storage2 is set to 0%   
-            elif h2_soc1 > h2_soc2:
-                valve1_ratio3 = 100                 # valve ratio to subsystem 2 is set to 100%
-                valve2_ratio1 = 0                   # valve ratio to demand2 is set to 0%
-                valve2_ratio2 = 100                 # valve ratio to storage2 is set to 100%
-            else:                                   # if both storages have the same soc treat both equal
-                valve1_ratio1 = 50                  # valve ratio to storage1 is set to 50%
-                valve1_ratio3 = 50                  # valve ratio to subsystem 2 is set to 50%
+        # # This is in case of 0 demand
+        # if demand1_remaining and demand2_remaining <=0:           # if the direct flow is enough to meet the demand
+        #     valve1_ratio2 = 0                       # No direct flow to load 1 necessary so =0
+        #     if h2_soc2 > h2_soc1:                   # recharge storages based on the lowest soc
+        #         valve1_ratio1 = 100                 # valve ratio to storage1 is set to 100%
+        #         valve1_ratio3 = 0                   # valve ratio to storage2 is set to 0%   
+        #     elif h2_soc1 > h2_soc2:
+        #         valve1_ratio3 = 100                 # valve ratio to subsystem 2 is set to 100%
+        #         valve2_ratio1 = 0                   # valve ratio to demand2 is set to 0%
+        #         valve2_ratio2 = 100                 # valve ratio to storage2 is set to 100%
+        #     else:                                   # if both storages have the same soc treat both equal
+        #         valve1_ratio1 = 50                  # valve ratio to storage1 is set to 50%
+        #         valve1_ratio3 = 50                  # valve ratio to subsystem 2 is set to 50%
 
 
         
-        if flow < 0:  # means that the demand is not completely met and we need support from battery and fuel cell
-            if soc > self.soc_min:  # checking if soc is above minimum. It can be == to soc_max as well.
-                self.flow_b = flow
-                self.flow_e = 0
-                self.h_out = 0
+        # if flow < 0:  # means that the demand is not completely met and we need support from battery and fuel cell
+        #     if soc > self.soc_min:  # checking if soc is above minimum. It can be == to soc_max as well.
+        #         self.flow_b = flow
+        #         self.flow_e = 0
+        #         self.h_out = 0
 
-            elif soc <= self.soc_min:
-                self.flow_b = 0
-                q = 39.4
-                self.h_out = (flow / q) / self.fc_eff
+        #     elif soc <= self.soc_min:
+        #         self.flow_b = 0
+        #         q = 39.4
+        #         self.h_out = (flow / q) / self.fc_eff
 
-                print('Battery Discharged')
+        #         print('Battery Discharged')
 
 
-        elif flow > 0:  # means we have over generation and we want to utilize it for charging battery and storing hydrogen
-            if soc < self.soc_max:
-                self.flow_b = flow
-                self.flow_e = 0
-                self.h_out = 0
-            elif soc == self.soc_max:
-                self.flow_b = 0
-                if h2_soc < self.h2_soc_max:
-                    self.flow_e = flow
-                    self.dump = 0
-                    self.h_out = 0
-                elif h2_soc == self.h2_soc_max:
-                    self.flow_e = 0
-                    self.dump = flow
-                    self.h_out = 0
+        # elif flow > 0:  # means we have over generation and we want to utilize it for charging battery and storing hydrogen
+        #     if soc < self.soc_max:
+        #         self.flow_b = flow
+        #         self.flow_e = 0
+        #         self.h_out = 0
+        #     elif soc == self.soc_max:
+        #         self.flow_b = 0
+        #         if h2_soc < self.h2_soc_max:
+        #             self.flow_e = flow
+        #             self.dump = 0
+        #             self.h_out = 0
+        #         elif h2_soc == self.h2_soc_max:
+        #             self.flow_e = 0
+        #             self.dump = flow
+        #             self.h_out = 0
 
-        re_params = {'flow2b': self.flow_b, 'flow2e': self.flow_e, 'dump': self.dump, 'h2_out':self.h_out}
-        return re_params
+        # re_params = {'flow2b': self.flow_b, 'flow2e': self.flow_e, 'dump': self.dump, 'h2_out':self.h_out}
+        # return re_params
