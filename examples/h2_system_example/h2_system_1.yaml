@@ -8,6 +8,27 @@ scenario:
 
 
 models: 
+- name: Controller
+  type: H2Controller
+  parameters:
+    size_storage1: 100
+    size_storage2: 100
+  inputs:
+    demand1: null
+    demand2: null
+    # compressor_out:null
+    h2_soc1: null
+    h2_soc2: null
+  outputs:
+    flow2h2storage1: null
+    flow2h2storage2: null
+    valve1_ratio1: null
+    valve1_ratio2: null
+    valve1_ratio3: null
+    valve2_ratio1: null
+    valve2_ratio2: null
+    valve2_ratio3: null
+    
 - name: CSVdemand1
   type: CSV
   parameters:
@@ -38,7 +59,7 @@ models:
     h_gen: null
     CO2_out: null
 
-  - name: H2valve1
+- name: H2valve1
   type: H2Valve
   parameters:
     valve_eff: 100
@@ -50,23 +71,23 @@ models:
     out1: null
     out2: null
 
-- name: compressor1
-  type: Compressor
-  parameters:
-    p_in: 30
-    p_out: 400
-    T_amb: 293.15
-    compressor_eff: 90
-    max_power_in: 10
-  inputs:
-    flow2c: null
-  outputs:
-    flow_from_c: 0
-  states:
-    volume_flow_out: 0
-    power_req: 0
+# - name: compressor1
+#   type: Compressor
+#   parameters:
+#     p_in: 30
+#     p_out: 400
+#     T_amb: 293.15
+#     compressor_eff: 90
+#     max_power_in: 10
+#   inputs:
+#     flow2c: null
+#   outputs:
+#     flow_from_c: 0
+#   states:
+#     volume_flow_out: 0
+#     power_req: 0
 
- - name: H2valve2
+- name: H2valve2
   type: H2Valve
   parameters:
     valve_eff: 100
@@ -129,7 +150,7 @@ models:
     out: null
 
 - name: H2joint2
-    type: H2Joint
+  type: H2Joint
   parameters:
     joint_eff: 100
   inputs:
@@ -169,13 +190,13 @@ connections:
   to: H2valve1.h2_in
 - from: H2valve1.out1
   to: H2storage1.flow2h2storage
--from: H2storage1.h2_out
+- from: H2storage1.h2_out
   to: H2joint1.h2_in1
 - from: H2valve1.out2
   to: H2joint1.h2_in_2
 - from: H2valve1.out3
-  to: compressor1.flow2c
-- from: compressor1.flow_from_c
+  # to: compressor1.flow2c
+  # - from: compressor1.flow_from_c
   to: H2valve2.h2_in
 - from: H2valve2.out1
   to: joint2.h2_in1
