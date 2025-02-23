@@ -115,7 +115,7 @@ class Thermolyzer(ModelConstructor):
         print("input data: ", input_data)
 
         current_time = time * self.time_resolution
-        print('from electrolyzer %%%%%%%%%%%', current_time)
+        print('from Thermolyzer %%%%%%%%%%%', current_time)
 
         h_flow = self.generate(
             m_bio=input_data['biomass_in'],

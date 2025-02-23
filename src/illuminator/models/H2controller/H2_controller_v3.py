@@ -108,7 +108,7 @@ class H2Controller(ModelConstructor):
                                  h2_soc1=input_data['h2_soc1'],
                                  h2_soc2=input_data['h2_soc2']
                                 )
-
+        # print(f"DEBUG: results in h2_controller.py: {results}")
         self.set_outputs(results)
 
         # return the time of the next step (time untill current information is valid)

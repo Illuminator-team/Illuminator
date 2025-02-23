@@ -19,6 +19,7 @@ from .H2pipeline.h2pipeline import Pipeline
 from .H2storage.h2storage_v3 import H2Storage
 from .H2valve.h2valve_v3 import H2Valve
 from .H2_joint.H2_joint_v3 import H2Joint
+from .H2controller.H2_controller_v3 import H2Controller
 
 
 __all__ = ['Battery', 
@@ -36,5 +37,6 @@ __all__ = ['Battery',
             'Pipeline',
             'H2Storage',
             'H2Valve',
-            'H2Joint'
+            'H2Joint',
+            'H2Controller'
            ]

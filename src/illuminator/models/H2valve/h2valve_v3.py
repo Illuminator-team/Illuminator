@@ -78,7 +78,11 @@ class H2Valve(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        results = self.calc_flow(h2_in=input_data['h2_in'], ratio=input_data['ratio'])
+        results = self.calc_flow(h2_in=input_data['h2_in'], 
+                                 ratio1=input_data['ratio1'],
+                                 ratio2=input_data['ratio2'],
+                                 ratio3=input_data['ratio3']
+                                 )
         self.set_outputs(results)
 
         return time + self.time_step_size

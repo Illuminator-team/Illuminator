@@ -1,8 +1,7 @@
 scenario:
   name: "Hydrogen_system_1" # in mosaik so called world
-  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
-  #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 
@@ -16,19 +15,20 @@ models:
   inputs:
     demand1: null
     demand2: null
+    thermolyzer_out: null
     # compressor_out:null
     h2_soc1: null
     h2_soc2: null
   outputs:
     flow2h2storage1: null
     flow2h2storage2: null
-    valve1_ratio1: null
-    valve1_ratio2: null
-    valve1_ratio3: null
-    valve2_ratio1: null
-    valve2_ratio2: null
-    valve2_ratio3: null
-    
+    valve1_ratio1: 0
+    valve1_ratio2: 0
+    valve1_ratio3: 0
+    valve2_ratio1: 0
+    valve2_ratio2: 0
+    valve2_ratio3: 0
+
 - name: CSVdemand1
   type: CSV
   parameters:
@@ -40,6 +40,13 @@ models:
   type: CSV
   parameters:
     file_path: './examples/h2_system_example/h2_demand_2.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSVthermolyzer
+  type: CSV
+  parameters:
+    file_path: './examples/h2_system_example/thermolyzer.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
@@ -66,10 +73,13 @@ models:
     # max_flow: 100
   inputs:
     h2_in: null
-    frac: null
+    ratio1: null
+    ratio2: null
+    ratio3: null
   outputs:
     out1: null
     out2: null
+    out3: null
 
 # - name: compressor1
 #   type: Compressor
@@ -94,10 +104,13 @@ models:
     # max_flow: 100
   inputs:
     h2_in: null
-    frac: null
+    ratio1: null
+    ratio2: null
+    ratio3: null
   outputs:
     out1: null
     out2: null
+    out3: null
 
 - name: H2storage1
   type: H2Storage
@@ -178,40 +191,83 @@ models:
     tot_dem: null
 
 connections:
-- from: CSVdemand1
+- from: CSVthermolyzer.biomass_in
+  to: thermolyzer1.biomass_in
+- from: CSVthermolyzer.flow2t
+  to: thermolyzer1.flow2t
+- from: CSVdemand1.demand
   to: H2demand1.demand
-- from: CSVdemand2
+- from: CSVdemand2.demand
   to: H2demand2.demand
-- from: CSVdemand1
-  to: H2demand1.demand
-- from: CSVdemand2
-  to: H2demand2.demand
-- from: thermolyzer1
+- from: thermolyzer1.h_gen
   to: H2valve1.h2_in
 - from: H2valve1.out1
   to: H2storage1.flow2h2storage
 - from: H2storage1.h2_out
   to: H2joint1.h2_in1
 - from: H2valve1.out2
-  to: H2joint1.h2_in_2
+  to: H2joint1.h2_in2
 - from: H2valve1.out3
   # to: compressor1.flow2c
   # - from: compressor1.flow_from_c
   to: H2valve2.h2_in
 - from: H2valve2.out1
-  to: joint2.h2_in1
+  to: H2joint2.h2_in1
 - from: H2valve2.out2
   to: H2storage2.flow2h2storage
 - from: H2storage2.h2_out
   to: H2joint2.h2_in2
+- from: H2demand1.tot_dem
+  to: Controller.demand1
+- from: H2demand2.tot_dem
+  to: Controller.demand2
+- from: thermolyzer1.h_gen
+  to: Controller.thermolyzer_out
+- from: H2storage1.soc
+  to: Controller.h2_soc1
+- from: H2storage2.soc
+  to: Controller.h2_soc2
+
+- from: Controller.flow2h2storage1
+  to: H2storage1.flow2h2storage
+  time_shifted: True
+
+- from: Controller.flow2h2storage2
+  to: H2storage2.flow2h2storage
+  time_shifted: True
+
+- from: Controller.valve1_ratio1
+  to: H2valve1.ratio1
+  time_shifted: True
+
+- from: Controller.valve1_ratio2
+  to: H2valve1.ratio2
+  time_shifted: True
+
+- from: Controller.valve1_ratio3
+  to: H2valve2.ratio3
+  time_shifted: True
+
+- from: Controller.valve2_ratio1
+  to: H2valve2.ratio1
+  time_shifted: True
+
+- from: Controller.valve2_ratio2
+  to: H2valve2.ratio2
+  time_shifted: True
+
+- from: Controller.valve2_ratio3
+  to: H2valve2.ratio3
+  time_shifted: True
+
 
 monitor:
-  file: './out_Tutorial1.csv'
+  file: './examples/h2_system_example/h2_system_example.csv'
   items:
     - H2demand1.tot_dem
     - H2demand2.tot_dem
     - thermolyzer1.h_gen
-    - compressor1.flow_from_c
+    # - compressor1.flow_from_c
     - H2storage1.h2_in
     - H2storage1.h2_out
     - H2storage2.h2_in
