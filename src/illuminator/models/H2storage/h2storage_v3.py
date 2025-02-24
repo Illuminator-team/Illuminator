@@ -42,7 +42,7 @@ class H2Storage(ModelConstructor):
                 'h2_discharge_eff': 100,    # Discharge efficiency of the H2 storage [%]
                 'max_h2': 10,               # maximal flow (?) [kg/timestep]
                 'min_h2': -10,              # minimal flow (?) [kg/timestep]
-                'h2_capacity_tot':100       # total capacity of the hydrogen stroage [kg]
+                'h2_capacity_tot':100       # total capacity of the hydrogen strorage [kg]
                 }
     
     inputs={'flow2h2storage': 0             # pos or neg flow to H2 storage [kg/timestep]
@@ -104,22 +104,22 @@ class H2Storage(ModelConstructor):
         int
             Next simulation time step
         """
-        print("\nH2 storage:")
-        print("inputs (passed): ", inputs)
-        print("inputs (internal): ", self._model.inputs)
+        # print("\nH2 storage:")
+        # print("inputs (passed): ", inputs)
+        # print("inputs (internal): ", self._model.inputs)
         # get input data
         input_data = self.unpack_inputs(inputs)
-        print("input data: ", input_data)
+        # print("input data: ", input_data)
 
         current_time = time * self.time_resolution
         print('from H2 storage %%%%%%%%%%%', current_time)
         results = self.output_flow(input_data['flow2h2storage'])
-        print('state of charge h2 storage: ', self._model.states['soc'])
-        print('New state of charge: ', self.soc)
+        # print('state of charge h2 storage: ', self._model.states['soc'])
+        # print('New state of charge: ', self.soc)
         self.set_outputs({'h2_in': results['h2_in'], 'h2_out': results['h2_out']})
         self.set_states({'soc': results['soc'], 'mod': results['mod'], 'flag': results['flag']})
-        print("outputs:", self.outputs)
-        print("states:", self.states)
+        # print("outputs:", self.outputs)
+        # print("states:", self.states)
         return time + self._model.time_step_size
     
     def discharge(self, flow2h2storage:float) -> dict:

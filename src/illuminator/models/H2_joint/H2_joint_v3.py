@@ -73,7 +73,7 @@ class H2Joint(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)
         self.time = time
-        print(f"DEBUG: input data in joint: {input_data}")
+        # print(f"DEBUG: input data in joint: {input_data}")
         result = self.calc_flow(h2_in_1=input_data['h2_in_1'],
                                 h2_in_2=input_data['h2_in_2']
                             )

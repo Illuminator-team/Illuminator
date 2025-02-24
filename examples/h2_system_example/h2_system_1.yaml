@@ -1,7 +1,7 @@
 scenario:
   name: "Hydrogen_system_1" # in mosaik so called world
   start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-01 23:45:00' # duration in seconds 
+  end_time: '2012-01-01 02:00:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 
@@ -44,28 +44,35 @@ models:
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
-- name: CSVthermolyzer
+- name: CSVthermolyzer_replacement
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/thermolyzer.csv'
+    file_path: './examples/h2_system_example/thermolyzer_replacement.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
-- name: thermolyzer1
-  type: Thermolyzer
-  parameters:
-    eff: 70
-    C_bio_h2: 30
-    C_CO_2: 10
-    C_Eelec_h2: 11.5
-    max_ramp_up: 50
-    max_p_in: 300
-  inputs:
-    biomass_in: null
-    flow2t: null
-  outputs:
-    h_gen: null
-    CO2_out: null
+# - name: CSVthermolyzer
+#   type: CSV
+#   parameters:
+#     file_path: './examples/h2_system_example/thermolyzer.csv'
+#     delimiter: ','
+#     date_format: 'YYYY-MM-DD HH:mm:ss'
+
+# - name: thermolyzer1
+#   type: Thermolyzer
+#   parameters:
+#     eff: 70
+#     C_bio_h2: 30
+#     C_CO_2: 10
+#     C_Eelec_h2: 11.5
+#     max_ramp_up: 50
+#     max_p_in: 300
+#   inputs:
+#     biomass_in: null
+#     flow2t: null
+#   outputs:
+#     h_gen: null
+#     CO2_out: null
 
 - name: H2valve1
   type: H2Valve
@@ -120,8 +127,8 @@ models:
     h2_soc_max: 98
     h2_charge_eff: 99
     h2_discharge_eff: 99
-    max_h2: 20
-    min_h2: -20
+    max_h2: 50
+    min_h2: -50
     h2_capacity_tot: 100
   inputs:
     flow2h2storage: 0
@@ -129,7 +136,7 @@ models:
     h2_in: null
     h2_out: null
   states:
-    soc: 20         # initialised to 0
+    soc: 70         # initialised to 0
     mod: null
     flag: null
 
@@ -140,8 +147,8 @@ models:
     h2_soc_max: 98
     h2_charge_eff: 99
     h2_discharge_eff: 99
-    max_h2: 20
-    min_h2: -20
+    max_h2: 50
+    min_h2: -50
     h2_capacity_tot: 100
   inputs:
     flow2h2storage: 0
@@ -149,7 +156,7 @@ models:
     h2_in: null
     h2_out: null
   states:
-    soc: 20         # initialised to 0
+    soc: 70         # initialised to 0
     mod: null
     flag: null
 
@@ -192,16 +199,19 @@ models:
     tot_dem: null
 
 connections:
-- from: CSVthermolyzer.biomass_in
-  to: thermolyzer1.biomass_in
-- from: CSVthermolyzer.flow2t
-  to: thermolyzer1.flow2t
+# - from: CSVthermolyzer.biomass_in
+#   to: thermolyzer1.biomass_in
+# - from: CSVthermolyzer.flow2t
+#   to: thermolyzer1.flow2t
 - from: CSVdemand1.demand
   to: H2demand1.demand
 - from: CSVdemand2.demand
   to: H2demand2.demand
-- from: thermolyzer1.h_gen
+
+- from: CSVthermolyzer_replacement.h2_gen
+# - from: thermolyzer1.h_gen
   to: H2valve1.h2_in
+
 - from: H2valve1.out1
   to: H2storage1.flow2h2storage
 - from: H2storage1.h2_out
@@ -222,8 +232,11 @@ connections:
   to: Controller.demand1
 - from: H2demand2.tot_dem
   to: Controller.demand2
-- from: thermolyzer1.h_gen
+
+- from: CSVthermolyzer_replacement.h2_gen
+# - from: thermolyzer1.h_gen
   to: Controller.thermolyzer_out
+
 - from: H2storage1.soc
   to: Controller.h2_soc1
 - from: H2storage2.soc
@@ -265,13 +278,25 @@ connections:
 monitor:
   file: './examples/h2_system_example/h2_system_example.csv'
   items:
+
+    # - thermolyzer1.h_gen
+    #- CSVthermolyzer_replacement.h2_gen
     - H2demand1.tot_dem
     - H2demand2.tot_dem
-    - thermolyzer1.h_gen
+
+    - Controller.valve1_ratio1
+    - Controller.valve1_ratio2
+    - Controller.valve1_ratio3
+
+    - Controller.flow2h2storage1
+    - Controller.flow2h2storage2
+    
+    - H2storage1.soc
+    - H2storage2.soc
     # - compressor1.flow_from_c
-    - H2storage1.h2_in
-    - H2storage1.h2_out
-    - H2storage2.h2_in
-    - H2storage2.h2_out
-    - H2joint1.out
-    - H2joint2.out
+    # - H2storage1.h2_in
+    # - H2storage1.h2_out 
+    # - H2storage2.h2_in
+    # - H2storage2.h2_out
+    # - H2joint1.out
+    # - H2joint2.out

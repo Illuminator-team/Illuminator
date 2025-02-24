@@ -107,7 +107,7 @@ class H2Controller(ModelConstructor):
                                  h2_soc1=input_data['h2_soc1'],
                                  h2_soc2=input_data['h2_soc2']
                                 )
-        print(f"DEBUG: results in h2_controller.py: {results}")
+        # print(f"DEBUG: results in h2_controller.py: {results}")
         outputs = {}
         outputs['flow2h2storage1'] = results.pop('flow2h2storage1')
         outputs['flow2h2storage2'] = results.pop('flow2h2storage2')
@@ -157,8 +157,8 @@ class H2Controller(ModelConstructor):
         rest = 0
         flow2h2storage1 = 0
         flow2h2storage2 = 0
-        available_storage1 = self.size_storage1 * h2_soc1
-        available_storage2 = self.size_storage2 * h2_soc2
+        available_storage1 = self.size_storage1 * h2_soc1 / 100
+        available_storage2 = self.size_storage2 * h2_soc2 / 100
         if demand1 > 0 and demand2 > 0:  # if there is demand from both units
             tot_demand = demand1 + demand2
 
@@ -183,21 +183,26 @@ class H2Controller(ModelConstructor):
                 valve1_ratio3 = df2 / thermolyzer_out * 100
             short1 = max(0, demand1 - valve1_ratio2 / 100 * thermolyzer_out)
             short2 = max(0, demand2 - valve1_ratio3 / 100 * thermolyzer_out)
+            print(f"DEBUG: \n -THIS IS SHORT1:{short1} \n -THIS IS SHORT2: {short2} \n -THIS IS available_storage1: {available_storage1} \n --THIS IS available_storage2: {available_storage2}")
+            
             
             if short1 > available_storage1:
+                print(f"\n DEBUG: the following is true: short1 > available_storage1 \n")
                 if available_storage2 > tot_shortage - available_storage1:
                     delta_valve = min((short1 - available_storage1) / thermolyzer_out * 100, 100 - valve1_ratio2, 100 - valve1_ratio3)
                     valve1_ratio2 += delta_valve
                     valve1_ratio3 -= delta_valve
-            flow2h2storage1 = max(demand1 - thermolyzer_out * valve1_ratio2, 0)
+            flow2h2storage1 = -max(demand1 - thermolyzer_out * valve1_ratio2/100, 0)
+            
 
             if short2 > available_storage2:
+                print(f"\n DEBUG: the following is true: short2 > available_storage2 \n")
                 if available_storage1 > tot_shortage - available_storage2:
                     delta_valve = min((short2 - available_storage2 / thermolyzer_out, 100 - valve1_ratio2, 100 - valve1_ratio3))
                     valve1_ratio2 -= delta_valve
                     valve1_ratio3 += delta_valve
-            flow2h2storage2 = max(demand2 - thermolyzer_out * valve1_ratio3, 0)
-
+            flow2h2storage2 = -max(demand2 - thermolyzer_out * valve1_ratio3/100, 0)
+            print(f"DEBUG: \n-THIS IS flow2h2storage1: {flow2h2storage1}\n-THIS IS flow2h2storage2:{flow2h2storage2}")
 
             # if short_per_storage > 0:   # if there is a shortage
             #     if available_storage1 < short_per_storage:
