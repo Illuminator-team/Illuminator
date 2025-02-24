@@ -22,6 +22,7 @@ models:
   outputs:
     flow2h2storage1: null
     flow2h2storage2: null
+  states:
     valve1_ratio1: 0
     valve1_ratio2: 0
     valve1_ratio3: 0
@@ -73,9 +74,9 @@ models:
     # max_flow: 100
   inputs:
     h2_in: null
-    ratio1: null
-    ratio2: null
-    ratio3: null
+    ratio1: 0
+    ratio2: 0
+    ratio3: 0
   outputs:
     out1: null
     out2: null
@@ -104,9 +105,9 @@ models:
     # max_flow: 100
   inputs:
     h2_in: null
-    ratio1: null
-    ratio2: null
-    ratio3: null
+    ratio1: 0
+    ratio2: 0
+    ratio3: 0
   outputs:
     out1: null
     out2: null
@@ -123,7 +124,7 @@ models:
     min_h2: -20
     h2_capacity_tot: 100
   inputs:
-    flow2h2storage: null
+    flow2h2storage: 0
   outputs:
     h2_in: null
     h2_out: null
@@ -143,7 +144,7 @@ models:
     min_h2: -20
     h2_capacity_tot: 100
   inputs:
-    flow2h2storage: null
+    flow2h2storage: 0
   outputs:
     h2_in: null
     h2_out: null
@@ -157,8 +158,8 @@ models:
   parameters:
     joint_eff: 100
   inputs:
-    h2_in1: null
-    h2_in2: null
+    h2_in_1: null
+    h2_in_2: null
   outputs:
     out: null
 
@@ -167,8 +168,8 @@ models:
   parameters:
     joint_eff: 100
   inputs:
-    h2_in1: null
-    h2_in2: null
+    h2_in_1: null
+    h2_in_2: null
   outputs:
     out: null
 
@@ -204,19 +205,19 @@ connections:
 - from: H2valve1.out1
   to: H2storage1.flow2h2storage
 - from: H2storage1.h2_out
-  to: H2joint1.h2_in1
+  to: H2joint1.h2_in_1
 - from: H2valve1.out2
-  to: H2joint1.h2_in2
+  to: H2joint1.h2_in_2
 - from: H2valve1.out3
   # to: compressor1.flow2c
   # - from: compressor1.flow_from_c
   to: H2valve2.h2_in
 - from: H2valve2.out1
-  to: H2joint2.h2_in1
+  to: H2joint2.h2_in_1
 - from: H2valve2.out2
   to: H2storage2.flow2h2storage
 - from: H2storage2.h2_out
-  to: H2joint2.h2_in2
+  to: H2joint2.h2_in_2
 - from: H2demand1.tot_dem
   to: Controller.demand1
 - from: H2demand2.tot_dem
@@ -245,7 +246,7 @@ connections:
   time_shifted: True
 
 - from: Controller.valve1_ratio3
-  to: H2valve2.ratio3
+  to: H2valve1.ratio3
   time_shifted: True
 
 - from: Controller.valve2_ratio1

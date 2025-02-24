@@ -73,11 +73,11 @@ class H2Joint(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)
         self.time = time
-
+        print(f"DEBUG: input data in joint: {input_data}")
         result = self.calc_flow(h2_in_1=input_data['h2_in_1'],
                                 h2_in_2=input_data['h2_in_2']
                             )
-        self.set_outputs(result['out'])
+        self.set_outputs(result)
 
         return time + self.time_step_size
 
@@ -100,4 +100,5 @@ class H2Joint(ModelConstructor):
             Dictionary containing the calculated outputs like hydrogen output flow.
         """
         out = (h2_in_1 + h2_in_2) * self.joint_eff / 100
-        return out
+        result = {'out': out}
+        return result

@@ -41,15 +41,15 @@ class H2Controller(ModelConstructor):
             'h2_soc2': 0,  # Hydrogen storage 2 state of charge [%]
             }
     outputs={'flow2h2storage1': 0,  # hydrogen flow to hydrogen storage 1 (neg or pos) [kg/timestep]
-            'flow2h2storage2': 0,  # hydrogen flow to hydrogen storage 2 (neg or pos) [kg/timestep]
-            'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
+             'flow2h2storage2': 0  # hydrogen flow to hydrogen storage 2 (neg or pos) [kg/timestep]
+            }
+    states={'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
             'valve1_ratio2': 0,  # fraction of hydrogen flow to valve 1 output 2 [%]
             'valve1_ratio3': 0,  # fraction of hydrogen flow to valve 1 output 3 [%]
             'valve2_ratio1': 0,  # fraction of hydrogen flow to valve 2 output 1 [%]
             'valve2_ratio2': 0,  # fraction of hydrogen flow to valve 2 output 2 [%]
-            'valve2_ratio3': 0,  # fraction of hydrogen flow to valve 2 output 3 [%]
-             }
-    states={}
+            'valve2_ratio3': 0   # fraction of hydrogen flow to valve 2 output 3 [%]
+            }
 
     # define other attributes
     time_step_size = 1
@@ -97,7 +97,6 @@ class H2Controller(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
-        input_data = self.unpack_inputs(inputs)
         current_time = time * self.time_resolution
         print('from controller %%%%%%%%%%%', current_time)
 
@@ -108,8 +107,12 @@ class H2Controller(ModelConstructor):
                                  h2_soc1=input_data['h2_soc1'],
                                  h2_soc2=input_data['h2_soc2']
                                 )
-        # print(f"DEBUG: results in h2_controller.py: {results}")
-        self.set_outputs(results)
+        print(f"DEBUG: results in h2_controller.py: {results}")
+        outputs = {}
+        outputs['flow2h2storage1'] = results.pop('flow2h2storage1')
+        outputs['flow2h2storage2'] = results.pop('flow2h2storage2')
+        self.set_outputs(outputs)
+        self.set_states(results)
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
@@ -249,7 +252,7 @@ class H2Controller(ModelConstructor):
                 
 
         else: # if there is no demand
-            self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
+            valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
             valve2_ratio2 = 100
 
         
