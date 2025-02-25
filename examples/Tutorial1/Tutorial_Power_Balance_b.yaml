@@ -1,5 +1,5 @@
 scenario:
-  name: "Tutorial 1 Part a" # in mosaik so called world
+  name: "Tutorial 1 Part b" # in mosaik so called world
   start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
   end_time: '2012-06-01 23:45:00' # duration in seconds 
@@ -108,12 +108,12 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 0.8  # Maximum power flow to/from the battery (kW)
+    battery_active: True # Indicates whether battery is active or not
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
     soc: 0  # State of charge of the battery
-    load_EV: 0  # Electrical vehicle load demand
   outputs:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)

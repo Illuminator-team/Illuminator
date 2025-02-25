@@ -9,7 +9,7 @@ models:
 - name: CSVload
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/load_data.txt'
+    file_path: './examples/Tutorial1/Tutorial1/load_data.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
   states:
@@ -84,15 +84,15 @@ models:
 - name: Controller1
   type: Controller_T1 # models can reuse the same type
   parameters:
-    soc_min: Null  # Minimum state of charge of the battery before discharging stops
-    soc_max: Null  # Maximum state of charge of the battery before charging stops
-    max_p: Null  # Maximum power flow to/from the battery (kW)
+    soc_min: None  # Minimum state of charge of the battery before discharging stops
+    soc_max: None  # Maximum state of charge of the battery before charging stops
+    max_p: None  # Maximum power flow to/from the battery (kW)
+    battery_active: False # Indicates whether battery is active or not
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
-    soc: null  # State of charge of the battery
-    load_EV: 0  # Electrical vehicle load demand
+    soc: Null  # State of charge of the battery
   outputs:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
@@ -130,7 +130,7 @@ connections:
   to: Controller1.load_dem
 
 monitor:
-  file: './out_Tutorial_Power_Balance_RES.csv'
+  file: './out_Tutorial_Power_Balance_a.csv'
   items:
     #- CSV_pv.G_Gh
     # - Controller1.dump
@@ -138,7 +138,7 @@ monitor:
     # - Wind1.wind_gen
     # - Load1.load_dem
 
-    - Controller1.flow2b
+    #- Controller1.flow2b
     - Controller1.res_load
     - Controller1.dump
     - PV1.pv_gen

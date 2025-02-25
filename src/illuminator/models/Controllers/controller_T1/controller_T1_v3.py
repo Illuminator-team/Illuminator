@@ -19,7 +19,6 @@ class Controller_T1(ModelConstructor):
         - pv_gen: Solar power generation (kW)
         - load_dem: Electrical load demand (kW)
         - soc: State of charge of the battery (%)
-        - load_EV: Electric vehicle load demand (kW)
     outputs : dict
         Dictionary containing calculated outputs:
         - flow2b: Power flow to/from battery (kW)
@@ -37,18 +36,18 @@ class Controller_T1(ModelConstructor):
         Initializes the Controller model with the provided parameters.
     step(time, inputs, max_advance)
         Simulates one time step of the Controller model.
-    control(wind_gen, pv_gen, load_dem, soc, load_EV)
+    control(wind_gen, pv_gen, load_dem, soc)
         Manages power flows based on generation, demand and storage states.
     """
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops
-                'max_p': 100  # Maximum power to/from the battery
+                'max_p': 100,  # Maximum power to/from the battery
+                'battery_active': True
                 }
     inputs={'wind_gen': 0,  # Wind power generation
             'pv_gen': 0,  # Solar power generation
             'load_dem': 0,  # Electrical load demand
-            'soc': 0,  # State of charge of the battery
-            'load_EV': 0  
+            'soc': 0  # State of charge of the battery
             }
     outputs={'flow2b': 0,  # Power flow to/from battery (positive for charging, negative for discharging)
              'res_load': 0,
@@ -76,10 +75,12 @@ class Controller_T1(ModelConstructor):
         self.soc_min = self.parameters['soc_min']  # Minumum state of charge of the battery before discharging stops (%)
         self.soc_max = self.parameters['soc_max']  # Maximum state of charge of the battery before charging stops (%)
         self.max_p = self.parameters['max_p']  # Maximum power to/from the battery [kW]
+        self.battery_active = self.parameters['battery_active']
         self.flow_b = 0  # Internal state representing the power flow to/from battery
         self.dump = 0  # Internal state representing excess power
         self.res_load = 0  # Internal state representing the residual load
-        self.bat_active = 1  # Internal state representing the battery status
+
+
 
 
     # define step function
@@ -94,7 +95,6 @@ class Controller_T1(ModelConstructor):
             - pv_gen (float): Solar power generation [kW]
             - load_dem (float): Load demand [kW]
             - soc (float): Battery state of charge [%]
-            - load_EV (float): Electric vehicle load demand [kW]
             max_advance (int, optional): Maximum time to advance in seconds. Defaults to 900.
 
         Returns:
@@ -103,11 +103,19 @@ class Controller_T1(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
 
-        results = self.control(
+        if self.battery_active:
+            results = self.control(
             wind_gen=input_data['wind_gen'],
             pv_gen=input_data['pv_gen'],
             load_dem=input_data['load_dem'],
             soc=input_data['soc']
+            )
+
+        else:
+            results = self.control(
+                wind_gen=input_data['wind_gen'],
+                pv_gen=input_data['pv_gen'],
+                load_dem=input_data['load_dem']
             )
 
         self.set_outputs(results)
@@ -116,7 +124,7 @@ class Controller_T1(ModelConstructor):
         return time + self._model.time_step_size
 
 
-    def control(self, wind_gen, pv_gen, load_dem, soc = None, load_EV = None):
+    def control(self, wind_gen, pv_gen, load_dem, soc = None):
         """
         Controls power flows based on generation, demand and storage states.
 
@@ -125,7 +133,6 @@ class Controller_T1(ModelConstructor):
             pv_gen (float): Solar power generation [kW]
             load_dem (float): Load demand [kW]
             soc (float): Battery state of charge [%]
-            load_EV (float, optional): Electric vehicle load demand [kW]
 
         Returns:
             dict: Dictionary containing:
@@ -138,13 +145,10 @@ class Controller_T1(ModelConstructor):
         # print('Load dem: ' + str(load_dem))
         # print('pv: ' + str(pv_gen))
         # print('wind: ' + str(wind_gen))
-        if load_EV != None:
-            # print('load EV: ' + str(load_EV))
-            self.res_load = load_dem + load_EV - wind_gen - pv_gen  # kW
-        else:
-            self.res_load = load_dem - wind_gen - pv_gen # kW
 
-        if self.bat_active == 1:
+        self.res_load = load_dem - wind_gen - pv_gen # kW
+
+        if self.battery_active == True:
             if self.res_load > 0:
                 # demand not satisfied -> discharge battery if possible
                 if soc > self.soc_min:  # checking if soc is above minimum
@@ -174,10 +178,8 @@ class Controller_T1(ModelConstructor):
             #update residual load with battery discharge/charge
             #self.res_load = self.res_load + self.flow_b
             self.dump = -(self.res_load + self.flow_b)
-        # print('residual load: ' + str(self.res_load))
-        # print('battery flow: ' + str(self.flow_b))
-        #if self.bat_active == 1:
-        re_params = {'flow2b': self.flow_b,'res_load': self.res_load,'dump': self.dump}
-        #else:
-            #re_params = {'res_load': self.res_load,'dump': self.dump}
+
+            re_params = {'flow2b': self.flow_b,'res_load': self.res_load,'dump': self.dump}
+        else:
+            re_params = {'res_load': self.res_load,'dump': self.dump}
         return re_params
