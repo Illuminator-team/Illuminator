@@ -488,6 +488,35 @@ class Simulation:
     def config(self)-> dict:
         """Returns the configuration file for the simulation."""
         return self.config_file
+    
+    def set_scenario_param(self, parameter: str, value)-> None:
+        """
+        Sets a parameter value in the scenario section of the simulation configuration.
+
+        Parameters
+        ----------
+        parameter : str
+            Name of the parameter to set
+        value : any
+            New value for the parameter
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If parameter is not found in scenario configuration
+        """
+
+        if parameter not in self.config['scenario']:
+            available_params = ', '.join(self.config['scenario'].keys())
+            raise KeyError(f"Parameter {parameter} not found in scenario. Available parameters: {available_params}")
+        
+        self.config['scenario'][parameter] = value
+        return
 
     def set_model_param(self, model_name: str, parameter: str, value)-> None:
         """
