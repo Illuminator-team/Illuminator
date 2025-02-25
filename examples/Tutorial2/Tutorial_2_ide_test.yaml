@@ -1,0 +1,80 @@
+scenario:
+  name: "Tutorial 2" # in mosaik so called world
+  start_time: '2024-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2024-01-05 00:00:00' # duration in seconds 
+  time_resolution: 86400 # time step in seconds (optional). 1 day step
+
+models:
+- name: CSV_company1
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial2/Company_Solar1.csv'
+    delimiter: ';'
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+    send_row: True  # sends the entire row as a dictionary
+
+# - name: CSV_company2
+#   type: CSV
+#   parameters:
+#     file_path: './examples/Tutorial2/company2.xlsx'
+#     delimiter: ','
+#     date_format: 'YYYY-MM-DD HH:mm:ss'
+# - name: CSV_company3
+#   type: CSV
+#   parameters:
+#     file_path: './examples/Tutorial2/company3.xlsx'
+#     delimiter: ','
+#     date_format: 'YYYY-MM-DD HH:mm:ss'
+  
+- name: Company1
+  type: GenerationCompanyAgent
+  parameters:
+    company_name: 'Company1'
+    automated_bids: True
+    bids_manual: null
+  inputs:
+    portfolio: []
+  states:
+    bids: null
+    profit: 0
+
+- name: Company2
+  type: GenerationCompanyAgent
+  parameters:
+    company_name: 'Company2'
+    automated_bids: True
+    bids_manual: null    
+  inputs:
+    portfolio: [
+      {'Technology': 'Solar', 'Capacity (MW)': 200, 'Cost (€/MWh)': 92, 'Availability': 1},
+      ]
+  states:
+    bids: null
+    profit: 0
+    
+- name: Operator1
+  type: Operator_Market
+  parameters:
+    demand: 300
+  inputs:
+    bids: {}
+  outputs:
+    results: {}
+  states:
+    market_clearing_price:
+
+
+
+connections:
+  - from: CSV_company1.row
+    to: Company1.portfolio
+  - from: Company1.bids
+    to: Operator1.bids
+  - from: Company2.bids
+    to: Operator1.bids
+
+monitor:
+  file: './out_Tutorial2.csv'
+  items:
+    - Operator1.market_clearing_price
+    - Operator1.
