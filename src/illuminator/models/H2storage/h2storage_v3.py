@@ -182,6 +182,7 @@ class H2Storage(ModelConstructor):
         """
                 
         flow = min(self.max_h2, flow2h2storage)
+        print(f"DEBUG: This amount of hydrogen arrives at the storage before eff: {flow}")
         h22charge = flow * self.h2_charge_eff # the amount of hydrogen desired to be charged (pos)
         h2_capacity = (self.h2_soc_max - self.soc) / 100 * self.h2_capacity_tot # amount of h2 that can be charged till full (pos)
         if self.soc >= self.h2_soc_max:

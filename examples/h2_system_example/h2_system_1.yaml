@@ -127,8 +127,8 @@ models:
     h2_soc_max: 98
     h2_charge_eff: 99
     h2_discharge_eff: 99
-    max_h2: 50
-    min_h2: -50
+    max_h2: 100
+    min_h2: -100
     h2_capacity_tot: 100
   inputs:
     flow2h2storage: 0
@@ -147,8 +147,8 @@ models:
     h2_soc_max: 98
     h2_charge_eff: 99
     h2_discharge_eff: 99
-    max_h2: 50
-    min_h2: -50
+    max_h2: 100
+    min_h2: -100
     h2_capacity_tot: 100
   inputs:
     flow2h2storage: 0
@@ -284,11 +284,13 @@ monitor:
     - H2demand1.tot_dem
     - H2demand2.tot_dem
 
-    - Controller.valve1_ratio1
-    - Controller.valve1_ratio2
-    - Controller.valve1_ratio3
+    # - Controller.valve1_ratio1
+    # - Controller.valve1_ratio2
+    # - Controller.valve1_ratio3
 
-    - Controller.flow2h2storage1
+    - Controller.valve2_ratio1
+    - Controller.valve2_ratio2
+    # - Controller.flow2h2storage1
     - Controller.flow2h2storage2
     
     - H2storage1.soc
