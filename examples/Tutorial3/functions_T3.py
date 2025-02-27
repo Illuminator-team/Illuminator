@@ -37,7 +37,7 @@ def plot_results_connection(results_file, connection_cap, critical_limit, tolera
 
     result_pd_df = pd.read_csv(results_file, index_col=0)
     result_pd_df.index = pd.to_datetime(result_pd_df.index)
-    load_on_connection = -result_pd_df['Controller-0.ctrl_0-dump']
+    load_on_connection = -result_pd_df['Controller1-0.time-based_0-dump']
 
     connection_cap = connection_cap
     critical_limit = critical_limit
@@ -58,13 +58,13 @@ def plot_results_connection(results_file, connection_cap, critical_limit, tolera
                      y2=(tolerance_limit * connection_cap),
                      color='#DAF2D0', alpha=1, label='Good')
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-    plt.title(f'{day}:Power on Connection')
+    plt.title(f':Power on Connection')
     plt.xlabel('Time of Day')
     plt.ylabel('Load on Connection (kW)')
     plt.xlim(min(load_on_connection.index), max(load_on_connection.index))
     plt.ylim(-connection_cap, connection_cap)
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.savefig("../Notebooks/T3_Results/grid_connection_winterday_elecassets_loadshift.pdf", format='pdf')
+    #plt.savefig("../Notebooks/T3_Results/grid_connection_winterday_elecassets_loadshift.pdf", format='pdf')
     plt.show()
     return

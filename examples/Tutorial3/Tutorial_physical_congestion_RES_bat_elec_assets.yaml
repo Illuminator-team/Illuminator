@@ -69,7 +69,7 @@ models:
   type: LoadEV
   parameters:
     houses_case: 10  # number of houses that determine the total load demand
-    houses_data: 1
+    houses_data: 10 # number of houses the data is based on
   inputs:
     power: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
     n: 1
@@ -80,7 +80,7 @@ models:
   type: LoadHeatpump
   parameters:
     houses_case: 10  # number of houses that determine the total load demand
-    houses_data: 1
+    houses_data: 10 # number of houses the data is based on
   inputs:
     hp_load: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
   outputs:
@@ -97,7 +97,7 @@ models:
     peak_power: 600  # W
     m_tilt: 14  # degrees
     m_az: 180  # degrees
-    cap: 500  # W
+    cap: 20000  # W
     output_type: 'power'
   inputs: 
     G_Gh: null 
@@ -114,7 +114,7 @@ models:
 - name: Wind1
   type: Wind # models can reuse the same type
   parameters:
-    p_rated: 0.5  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    p_rated: 10  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
     u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
     u_cutin: 2.8  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
     u_cutout: 25  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
@@ -132,9 +132,9 @@ models:
 - name: Battery1
   type: Battery # models can reuse the same type
   parameters:
-    max_p: 4  # maximum charging power limit (kW)
-    min_p: -4  # maximum discharging power limit (kW)
-    max_energy: 4  # maximum energy storage capacity of the battery (kWh)
+    max_p: 40  # maximum charging power limit (kW)
+    min_p: -40  # maximum discharging power limit (kW)
+    max_energy: 40  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -146,7 +146,7 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 20  # state of charge of the battery (%)
+    soc: 10  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
@@ -231,6 +231,6 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './out_Tutorial3.csv'
+  file: './out_Tutorial_bat_elec_assets.csv'
   items:
     - Controller1.dump
