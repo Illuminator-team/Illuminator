@@ -158,7 +158,7 @@ models:
     gridconnect_ctrl: 15 # kW grid connection capacity
     battery_active: True
     elec_assets: True
-    load_shift_active: False # indicates whether the controller should actively shift the load based on flag warning
+    load_shift_active: True # indicates whether the controller should actively shift the load based on flag warning
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
@@ -234,6 +234,6 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './out_Tutorial_bat_elec_assets.csv'
+  file: './out_Tutorial_bat_elec_assets_load_shift.csv'
   items:
     - Controller1.dump
