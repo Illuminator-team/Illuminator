@@ -41,7 +41,8 @@ class H2Controller(ModelConstructor):
             'h2_soc2': 0,  # Hydrogen storage 2 state of charge [%]
             }
     outputs={'flow2h2storage1': 0,  # hydrogen flow to hydrogen storage 1 (neg or pos) [kg/timestep]
-             'flow2h2storage2': 0  # hydrogen flow to hydrogen storage 2 (neg or pos) [kg/timestep]
+             'flow2h2storage2': 0,  # hydrogen flow to hydrogen storage 2 (neg or pos) [kg/timestep]
+             'dump': 0              # keeps track of shortage/overpoduction in the system [kg/timestep]
             }
     states={'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
             'valve1_ratio2': 0,  # fraction of hydrogen flow to valve 1 output 2 [%]
@@ -69,6 +70,7 @@ class H2Controller(ModelConstructor):
         super().__init__(**kwargs)
         self.size_storage1 = self.parameters['size_storage1']
         self.size_storage2 = self.parameters['size_storage2']
+        self.dump = 0
 
     # define step function
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -97,8 +99,8 @@ class H2Controller(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
-        current_time = time * self.time_resolution
-        print('from controller %%%%%%%%%%%', current_time)
+        self.current_time = time * self.time_resolution
+        print('from controller %%%%%%%%%%%', self.current_time)
 
         results = self.control(demand1=input_data['demand1'],
                                  demand2=input_data['demand2'],
@@ -111,6 +113,7 @@ class H2Controller(ModelConstructor):
         outputs = {}
         outputs['flow2h2storage1'] = results.pop('flow2h2storage1')
         outputs['flow2h2storage2'] = results.pop('flow2h2storage2')
+        outputs['dump'] = results.pop('dump')
         self.set_outputs(outputs)
         self.set_states(results)
 
@@ -147,13 +150,14 @@ class H2Controller(ModelConstructor):
         """
 
         # initialise all valves to zero
-        # dump = 0
         valve1_ratio1 = 0
         valve1_ratio2 = 0
         valve1_ratio3 = 0
         valve2_ratio1 = 0
         valve2_ratio2 = 0
         valve2_ratio3 = 0
+
+        self.dump = 0
         rest = 0
         flow2h2storage1 = 0
         flow2h2storage2 = 0
@@ -183,11 +187,10 @@ class H2Controller(ModelConstructor):
                 valve1_ratio3 = df2 / thermolyzer_out * 100
             short1 = max(0, demand1 - valve1_ratio2 / 100 * thermolyzer_out)
             short2 = max(0, demand2 - valve1_ratio3 / 100 * thermolyzer_out)
-            print(f"DEBUG: \n -THIS IS SHORT1:{short1} \n -THIS IS SHORT2: {short2} \n -THIS IS available_storage1: {available_storage1} \n --THIS IS available_storage2: {available_storage2}")
             
             
             if short1 > available_storage1:
-                print(f"\n DEBUG: the following is true: short1 > available_storage1 \n")
+                # print(f"\n DEBUG: the following is true: short1 > available_storage1 \n")
                 if available_storage2 > short2:
                     if available_storage2 > tot_shortage - available_storage1:
                         delta_valve = min((short1 - available_storage1) / thermolyzer_out * 100, 100 - valve1_ratio2, 100 - valve1_ratio3)
@@ -195,10 +198,9 @@ class H2Controller(ModelConstructor):
                         delta_valve = (available_storage2 - short2) / thermolyzer_out *100
                     valve1_ratio2 += delta_valve
                     valve1_ratio3 -= delta_valve
-
-
+            
             if short2 > available_storage2:
-                print(f"\n DEBUG: the following is true: short2 > available_storage2 \n")
+                # print(f"\n DEBUG: the following is true: short2 > available_storage2 \n")
                 if available_storage1 > short1:
                     if available_storage1 > tot_shortage - available_storage2:
                         delta_valve = min((short2 - available_storage2 / thermolyzer_out, 100 - valve1_ratio2, 100 - valve1_ratio3))
@@ -206,9 +208,16 @@ class H2Controller(ModelConstructor):
                         delta_valve = (available_storage1 - short1) / thermolyzer_out * 100
                     valve1_ratio2 -= delta_valve
                     valve1_ratio3 += delta_valve
-            flow2h2storage1 = -max(demand1 - thermolyzer_out * valve1_ratio2/100, 0)
-            flow2h2storage2 = -max(demand2 - thermolyzer_out * valve1_ratio3/100, 0)
-            print(f"DEBUG: \n-THIS IS flow2h2storage1: {flow2h2storage1}\n-THIS IS flow2h2storage2:{flow2h2storage2}")
+            if available_storage1 >= demand1 - thermolyzer_out * valve1_ratio2/100:
+                flow2h2storage1 = -max(demand1 - thermolyzer_out * valve1_ratio2/100, 0)
+            else:
+                flow2h2storage1 = -available_storage1
+            if available_storage2 >= demand2 - thermolyzer_out * valve1_ratio3/100:
+                flow2h2storage2 = -max(demand2 - thermolyzer_out * valve1_ratio3/100, 0)
+            else:
+                flow2h2storage2 = -available_storage2
+
+            # print(f"DEBUG: \n-THIS IS flow2h2storage1: {flow2h2storage1}\n-THIS IS flow2h2storage2:{flow2h2storage2}")
 
             # if short_per_storage > 0:   # if there is a shortage
             #     if available_storage1 < short_per_storage:
@@ -232,13 +241,16 @@ class H2Controller(ModelConstructor):
                 # valve1_ratio2 -= (valve1_ratio1 + valve1_ratio3)
                 valve2_ratio1 = demand2 / ((valve1_ratio3 / 100) * thermolyzer_out) * 100
                 valve2_ratio2 = 100 - valve2_ratio1
+            else:
+                valve2_ratio1 = 100
 
         elif demand1 > 0 and demand2 <= 0: # if there is demand from unit 1 only
             valve1_ratio2 = 100
+            valve2_ratio1 = 100
             if thermolyzer_out > demand1:
                 rest = thermolyzer_out - demand1
                 valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
-                print(f"DEBUG: these are ratio1 and 3 in demand1: {valve1_ratio1}, {valve1_ratio3}")
+                # print(f"DEBUG: these are ratio1 and 3 in demand1: {valve1_ratio1}, {valve1_ratio3}")
                 valve1_ratio2 -= (valve1_ratio1 + valve1_ratio3)
                 valve2_ratio2 = 100
             else:
@@ -252,10 +264,10 @@ class H2Controller(ModelConstructor):
         elif demand1 <= 0 and demand2 > 0:  # if there is demand from unit 2 only
             if thermolyzer_out > demand2:
                 valve1_ratio3 = demand2 / thermolyzer_out * 100
-                print(f"DEBUG: This is ratio 3 b4 rest calc: {valve1_ratio3}")
+                # print(f"DEBUG: This is ratio 3 b4 rest calc: {valve1_ratio3}")
                 rest = thermolyzer_out - demand2
                 valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
-                print(f"DEBUG: these are ratio1, 2, and 3 in demand2: {valve1_ratio1}, {valve1_ratio2}, {valve1_ratio3}")
+                # print(f"DEBUG: these are ratio1, 2, and 3 in demand2: {valve1_ratio1}, {valve1_ratio2}, {valve1_ratio3}")
                 # valve1_ratio3 -= (valve1_ratio2 + valve1_ratio3)
                 valve2_ratio1 = demand2 / ((valve1_ratio3 / 100) * thermolyzer_out) * 100
                 valve2_ratio2 = 100 - valve2_ratio1
@@ -274,9 +286,32 @@ class H2Controller(ModelConstructor):
             valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
             valve2_ratio2 = 100
 
+        # print(f"DEBUG: \n -THIS IS flow2h2storage1:{flow2h2storage1} \n -THIS IS flow2h2storage2: {flow2h2storage2} \n -THIS IS available_storage1: {available_storage1} \n --THIS IS available_storage2: {available_storage2}")
+
         
+        if flow2h2storage1 < 0:
+            # shortage in storage1
+            self.dump += min((valve1_ratio2 / 100 * thermolyzer_out - flow2h2storage1) - demand1, 0)
+            print(f"DEBUG: AT TIME {self.current_time} in flow2h2storage1 <= 0:\n dump = {self.dump}")
+        
+        if available_storage1 + valve1_ratio1/100 * thermolyzer_out > self.size_storage1:
+            print(f"DEBUG: availablestorage1:{available_storage1}\n v1r1:{valve1_ratio1},\nsize{self.size_storage1}, \n dump_before:{self.dump}")
+            self.dump += available_storage1 + valve1_ratio1/100 * thermolyzer_out - self.size_storage1
+            print(f"DEBUG: AT TIME {self.current_time} in overflow1:\n dump = {self.dump}")
+     
+        if flow2h2storage2 < 0:
+            # shortage in storage2
+            print(f"-v1r3={valve1_ratio3}\n-v2r1={valve2_ratio1}\n-thermolyzer_out={thermolyzer_out}\n-flow2h2storage2={flow2h2storage2}\n-demand2={demand2}")
+            self.dump += min((valve1_ratio3/100 * valve2_ratio1/100 * thermolyzer_out - flow2h2storage2) - demand2, 0)
+            print(f"DEBUG: AT TIME {self.current_time} in flow2h2storage2 <= 0:\n dump = {self.dump}")
+
+        if available_storage2 + valve1_ratio3/100 * valve2_ratio2/100 * thermolyzer_out > self.size_storage2:
+            self.dump += (available_storage2 + valve1_ratio3/100 * valve2_ratio2/100 * thermolyzer_out - self.size_storage2)
+            print(f"DEBUG: AT TIME {self.current_time} in overflow2:\n dump = {self.dump}")
+
         results = {'flow2h2storage1': flow2h2storage1,
                     'flow2h2storage2': flow2h2storage2,
+                    'dump': self.dump,
                     'valve1_ratio1': valve1_ratio1,
                     'valve1_ratio2': valve1_ratio2,
                     'valve1_ratio3': valve1_ratio3,
@@ -313,6 +348,10 @@ class H2Controller(ModelConstructor):
         valve1_ratio1 += d_valve1_ratio1
         valve1_ratio3 += d_valve1_ratio3
 
+        # if available_storage1 + f2s1 > self.size_storage1:
+        #     self.dump += available_storage1 + f2s1 - self.size_storage1
+        # if available_storage2 + f2s2 > self.size_storage2:
+        #     self.dump += available_storage2 + f2s2 - self.size_storage2
         return valve1_ratio1, valve1_ratio3
 
     # def control(self, demand1: float, demand2: float, thermolyzer_out: float, compressor_out: float, h2_soc1: float, h2_soc2: float) -> dict:

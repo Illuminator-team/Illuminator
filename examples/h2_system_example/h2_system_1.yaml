@@ -22,6 +22,7 @@ models:
   outputs:
     flow2h2storage1: null
     flow2h2storage2: null
+    dump: null
   states:
     valve1_ratio1: 0
     valve1_ratio2: 0
@@ -284,14 +285,15 @@ monitor:
     - H2demand1.tot_dem
     - H2demand2.tot_dem
 
-    # - Controller.valve1_ratio1
-    # - Controller.valve1_ratio2
-    # - Controller.valve1_ratio3
+    - Controller.valve1_ratio1
+    - Controller.valve1_ratio2
+    - Controller.valve1_ratio3
 
-    - Controller.valve2_ratio1
-    - Controller.valve2_ratio2
-    # - Controller.flow2h2storage1
+    # - Controller.valve2_ratio1
+    # - Controller.valve2_ratio2
+    - Controller.flow2h2storage1
     - Controller.flow2h2storage2
+    - Controller.dump
     
     - H2storage1.soc
     - H2storage2.soc

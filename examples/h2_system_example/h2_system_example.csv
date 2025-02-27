@@ -1,9 +1,9 @@
-date,H2demand1-0.time-based_0-tot_dem,H2demand2-0.time-based_0-tot_dem,Controller-0.time-based_0-valve2_ratio1,Controller-0.time-based_0-valve2_ratio2,Controller-0.time-based_0-flow2h2storage2,H2storage1-0.time-based_0-soc,H2storage2-0.time-based_0-soc
-01/01/2012 00:00,50,50,0,0,0,70,70
-01/01/2012 00:15,50,20,57.14285714,42.85714286,0,70,70
-01/01/2012 00:30,0,50,66.66666667,33.33333333,0,84.85,84.85
-01/01/2012 00:45,0,100,100,0,0,98,98
-01/01/2012 01:00,0,130,100,0,-30,98,98
-01/01/2012 01:15,0,130,100,0,-30,98,67.697
-01/01/2012 01:30,0,140,100,0,-37.394,98,37.394
-01/01/2012 01:45,0,0,0,100,0,98,2
+date,H2demand1-0.time-based_0-tot_dem,H2demand2-0.time-based_0-tot_dem,Controller-0.time-based_0-valve1_ratio1,Controller-0.time-based_0-valve1_ratio2,Controller-0.time-based_0-valve1_ratio3,Controller-0.time-based_0-flow2h2storage1,Controller-0.time-based_0-flow2h2storage2,Controller-0.time-based_0-dump,H2storage1-0.time-based_0-soc,H2storage2-0.time-based_0-soc,,,date,H2demand1-0.time-based_0-tot_dem,H2demand2-0.time-based_0-tot_dem,Controller-0.time-based_0-valve1_ratio1,Controller-0.time-based_0-valve1_ratio2,Controller-0.time-based_0-valve1_ratio3,Controller-0.time-based_0-flow2h2storage1,Controller-0.time-based_0-flow2h2storage2,Controller-0.time-based_0-dump,H2storage1-0.time-based_0-soc,H2storage2-0.time-based_0-soc
+01/01/2012 00:00,50,50,0,50,50,0,0,0,70,70,,,01/01/2012 00:00,50,50,0,50,50,0,0,0,70,70
+01/01/2012 00:15,50,20,15,50,35,0,0,0,70,70,,,01/01/2012 00:15,50,20,15,50,35,0,0,0,70,70
+01/01/2012 00:30,20,0,40,20,40,0,0,49.69999999999999,84.85,84.85,,,01/01/2012 00:30,20,0,40,20,40,0,0,49.7,84.85,84.85
+01/01/2012 00:45,20,0,40,20,40,0,0,76,98,98,,,01/01/2012 00:45,20,0,40,20,40,0,0,76,98,98
+01/01/2012 01:00,150,150,0,50,50,-98,-98,-4,98,98,,,01/01/2012 01:00,150,150,0,50,50,-100,-100,0,98,98
+01/01/2012 01:15,150,150,0,50,50,-2,-2,-196,2,2,,,01/01/2012 01:15,150,150,0,50,50,-100,-100,0,2,2
+01/01/2012 01:30,140,0,0,100,0,-2,0,-38,2,2,,,01/01/2012 01:30,140,0,0,100,0,-2,0,-38,2,2
+01/01/2012 01:45,0,0,50,0,50,0,0,0,2,2,,,01/01/2012 01:45,0,0,50,0,50,0,0,0,2,2
