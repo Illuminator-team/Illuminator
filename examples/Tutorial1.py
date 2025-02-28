@@ -10,6 +10,8 @@ simulation.set_model_param(model_name='CSV_wind', parameter='file_path', value='
 # set capacity of PV1 to 2400 W
 simulation.set_model_param(model_name='PV1', parameter='cap', value=2400)
 
+simulation.set_model_state(model_name='Battery1', state='soc', value=50)
+
 # set multiple parameters at once
 new_params = {'max_p': 0.9, 'min_p': -0.9}
 simulation.set_model_parameters(model_name='Battery1', params=new_params)
