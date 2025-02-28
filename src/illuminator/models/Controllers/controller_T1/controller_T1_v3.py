@@ -66,10 +66,7 @@ class Controller_T1(ModelConstructor):
 
         Parameters
         ----------
-        kwargs : dict
-            Additional keyword arguments to initialize the controller model,
-            including state of charge limits for battery storage (soc_min, soc_max),
-            and maximum power limit for battery charging/discharging (max_p).
+        kwargs
         """
         super().__init__(**kwargs)
         self.soc_min = self.parameters['soc_min']  # Minumum state of charge of the battery before discharging stops (%)
