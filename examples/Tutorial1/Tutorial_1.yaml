@@ -118,6 +118,7 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 0.8  # Maximum power flow to/from the battery (kW)
+    battery_active: True  # flag indicating if the battery is active or not
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
