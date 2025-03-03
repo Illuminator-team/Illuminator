@@ -25,13 +25,14 @@ class H2Controller(ModelConstructor):
     __init__(**kwargs)
         Initializes the Controller model with the provided parameters.
     step(time, inputs, max_advance)
-        Simulates one time step of the Controller model.
-    control(wind_gen, pv_gen, load_dem, soc, h2_soc)
-        Manages power flows based on generation, demand and storage states.
+        Simulates one time step of the H2Controller model.
+    control(demand1, demandt, thermolyzer_out, h2_soc1, h2_soc2)
+        Manages hydrogen flows based on generation, demand and storage.
+    store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
+        Stores the excess hydrogen.
     """
     parameters={'size_storage1': 0,
-                'size_storage2': 0,
-                
+                'size_storage2': 0,    
                 }
     inputs={'demand1': 0,  # Demand for hydrogen from unit 1 [kg/timestep]
             'demand2': 0,  # Demand for hydrogen from unit 2 [kg/timestep]
@@ -123,32 +124,39 @@ class H2Controller(ModelConstructor):
 
     def control(self, demand1: float, demand2: float, thermolyzer_out: float, h2_soc1: float, h2_soc2: float) -> dict:
         """
-        Checks the state of power flow based on wind and solar energy generation compared to demand,
-        and manages power distribution between battery and hydrogen storage systems.
+        This function executes the control operation. It prioritises direct supply from the 
+        thermolzyer and adapts the valve ratios accordingly. In case the storages must be used, 
+        they are discharges in such a way that they are equally exploited, again, adapting the 
+        valves accordingly. When there is a surplus of hydrogen the two storages are charged to 
+        have the same soc.
 
         Parameters
         ----------
-        wind_gen : float
-            Wind power generation in kilowatts (kW)
-        pv_gen : float 
-            Solar (photovoltaic) power generation in kilowatts (kW)
-        load_dem : float
-            Electrical load demand in kilowatts (kW)
-        soc : int
-            Battery state of charge as a percentage (0-100%)
-        h2_soc : int
-            Hydrogen storage state of charge as a percentage (0-100%)
-        
+        demand1 : float
+            Demand at low pressure [kg/timestep]
+        demand2 : float
+            Demand at high pressure [kg/timestep]
+        thermolyzer_out : float
+            Production of the thermolyzer [kg/timestep]
+        h2_soc1 : float
+            State of charge of low pressure storage [%]
+        h2_soc2 : float
+            State of charge of high pressure storage [%]
+
         Returns
         -------
-        re_params : dict
-            Dictionary containing power flow parameters:
-            - flow2b: Power flow to/from battery (kW)
-            - flow2e: Power flow to electrolyzer (kW)
-            - dump: Excess power dumped (kW)
-            - h2_out: Hydrogen output from fuel cell (kW)
+        results : dict
+            Dictionary containing parameters:
+            - flow2h2storage1: flow required as discharge from the low pressure storage [kg/timestep]
+            - flow2h2storage2: flow required as discharge from the high pressure storage [kg/timestep]
+            - dump: over- or underproduced hydrogen in the system [kg/timestep]
+            - valve1_ratio1: ratio of incoming hydrogen to thermolyzer storage1 [%]
+            - valve1_ratio2: ratio of incoming hydrogen to thermolyzer demand1 [%]
+            - valve1_ratio3: ratio of incoming hydrogen from thermolyzer to the compressor [%]
+            - valve2_ratio1: ratio of incoming hydrogen from compressor to demand2 [%]
+            - valve2_ratio2: ratio of incoming hydrogen from compressor to storage2 [%]
+            - valve2_ratio3: unused outlet of the second valve (set to 0) [%] 
         """
-
         # initialise all valves to zero
         valve1_ratio1 = 0
         valve1_ratio2 = 0
@@ -176,7 +184,7 @@ class H2Controller(ModelConstructor):
             # spread storage help over both storages (spread shortage)
             tot_shortage = max(0, (tot_demand - thermolyzer_out))
             short_per_storage = tot_shortage / 2
-            
+
             # theoretical optimal flows after the storages have been used equally (can be negative)
             df1 = np.clip(demand1 - short_per_storage, 0, thermolyzer_out)      # desired flow from valve 1 to the first subsystem
             df2 = np.clip(demand2 - short_per_storage, 0, thermolyzer_out)      # desired flow from valve 1 to the second subsystem
@@ -187,8 +195,7 @@ class H2Controller(ModelConstructor):
                 valve1_ratio3 = df2 / thermolyzer_out * 100
             short1 = max(0, demand1 - valve1_ratio2 / 100 * thermolyzer_out)
             short2 = max(0, demand2 - valve1_ratio3 / 100 * thermolyzer_out)
-            
-            
+
             if short1 > available_storage1:
                 # print(f"\n DEBUG: the following is true: short1 > available_storage1 \n")
                 if available_storage2 > short2:
@@ -198,7 +205,7 @@ class H2Controller(ModelConstructor):
                         delta_valve = (available_storage2 - short2) / thermolyzer_out *100
                     valve1_ratio2 += delta_valve
                     valve1_ratio3 -= delta_valve
-            
+
             if short2 > available_storage2:
                 # print(f"\n DEBUG: the following is true: short2 > available_storage2 \n")
                 if available_storage1 > short1:
@@ -234,7 +241,7 @@ class H2Controller(ModelConstructor):
             #             valve1_ratio3 += delta_valve
             #         else:
             #             raise ValueError('Not enough hydrogen in both storages to meet the demand')
-            
+
             if thermolyzer_out > tot_demand:    # overproduction
                 rest = thermolyzer_out - tot_demand
                 valve1_ratio1, valve1_ratio3 = self.store_rest(rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out)
@@ -259,7 +266,6 @@ class H2Controller(ModelConstructor):
                 else:
                     flow2h2storage1 = -available_storage1
                     # raise ValueError('Not enough hydrogen in storage1 to meet the demand')
-                
 
         elif demand1 <= 0 and demand2 > 0:  # if there is demand from unit 2 only
             if thermolyzer_out > demand2:
@@ -275,11 +281,10 @@ class H2Controller(ModelConstructor):
                 valve1_ratio3 = 100
                 valve2_ratio1 = 100
                 if available_storage2 >= -(thermolyzer_out - demand2):
-                    flow2h2storage2 = (thermolyzer_out - demand2)
+                    flow2h2storage2 = thermolyzer_out - demand2
                 else:
                     flow2h2storage2 = -available_storage2
                     # raise ValueError('Not enough hydrogen in storage2 to meet the demand')
-                
 
         else: # if there is no demand
             rest = thermolyzer_out
@@ -288,17 +293,16 @@ class H2Controller(ModelConstructor):
 
         # print(f"DEBUG: \n -THIS IS flow2h2storage1:{flow2h2storage1} \n -THIS IS flow2h2storage2: {flow2h2storage2} \n -THIS IS available_storage1: {available_storage1} \n --THIS IS available_storage2: {available_storage2}")
 
-        
         if flow2h2storage1 < 0:
             # shortage in storage1
             self.dump += min((valve1_ratio2 / 100 * thermolyzer_out - flow2h2storage1) - demand1, 0)
             print(f"DEBUG: AT TIME {self.current_time} in flow2h2storage1 <= 0:\n dump = {self.dump}")
-        
+
         if available_storage1 + valve1_ratio1/100 * thermolyzer_out > self.size_storage1:
             print(f"DEBUG: availablestorage1:{available_storage1}\n v1r1:{valve1_ratio1},\nsize{self.size_storage1}, \n dump_before:{self.dump}")
             self.dump += available_storage1 + valve1_ratio1/100 * thermolyzer_out - self.size_storage1
             print(f"DEBUG: AT TIME {self.current_time} in overflow1:\n dump = {self.dump}")
-     
+
         if flow2h2storage2 < 0:
             # shortage in storage2
             print(f"-v1r3={valve1_ratio3}\n-v2r1={valve2_ratio1}\n-thermolyzer_out={thermolyzer_out}\n-flow2h2storage2={flow2h2storage2}\n-demand2={demand2}")
@@ -320,9 +324,34 @@ class H2Controller(ModelConstructor):
                     'valve2_ratio3': valve2_ratio3
                     }
         return results
-            
-    
-    def store_rest(self, rest, valve1_ratio1, valve1_ratio3, available_storage1, available_storage2, thermolyzer_out):
+
+    def store_rest(self, rest: float, valve1_ratio1: float, valve1_ratio3: float, available_storage1: float, available_storage2: float, thermolyzer_out: float):
+        """
+        This function handles the excess production in the system and stores it in the two storages.
+        The logic equalizes the state of charge of both storages and adapts the valveratios accordingly.
+
+        Parameters
+        ----------
+        rest : float
+            The excess hydrogen that needs to be stored [kg/timestep]
+        valve1_ratio1 : float
+            Ratio of incoming hydrogen to thermolyzer storage1 [%]            
+        valve1_ratio3 : float
+            Ratio of incoming hydrogen from thermolyzer to the compressor [%]                        
+        available_storage1 : float
+            The amount of of hydrogen present in the low pressure storage [kg]
+        available_storage2 : float
+            The amount of of hydrogen present in the high pressure storage [kg]
+        thermolyzer_out : float
+            Production of the thermolyzer [kg/timestep]
+
+        Returns
+        -------
+        valve1_ratio1: float
+            ratio of incoming hydrogen to thermolyzer storage1 [%]
+        valve1_ratio3: float
+            ratio of incoming hydrogen from thermolyzer to the compressor [%]
+        """
         delta_storage = abs(available_storage1 - available_storage2)
         if available_storage1 > available_storage2: # if storage1 has more hydrogen than storage2
             if rest < delta_storage:                # push all to storage2
@@ -344,7 +373,7 @@ class H2Controller(ModelConstructor):
 
         d_valve1_ratio1 = f2s1 / thermolyzer_out * 100 # the additional percentage of hydrogen flow to storage1
         d_valve1_ratio3 = f2s2 / thermolyzer_out * 100 # the additional percentage of hydrogen flow to storage2
-        
+
         valve1_ratio1 += d_valve1_ratio1
         valve1_ratio3 += d_valve1_ratio3
 
