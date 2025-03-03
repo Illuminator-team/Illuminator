@@ -1,5 +1,5 @@
-import yaml
 import os
+from ruamel.yaml import YAML
 import sys
 from illuminator.schema.simulation import load_config_file
 
