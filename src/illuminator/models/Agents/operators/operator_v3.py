@@ -1,48 +1,53 @@
+from os import path
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy import linspace
 # import seaborn as sns
 from illuminator.builder import ModelConstructor
+from os import makedirs
 
 # construct the model
 class Operator_Market(ModelConstructor):
     """
-    A class to represent a Market Operator Agent.
-    This class provides methods to clear the market based on submitted bids and calculate market results.
+    A class to represent a Market Operator Agent that clears electricity markets.
+    This class manages bid processing, price formation, and market clearing calculations.
 
     Attributes
+    ----------
     parameters : dict
-        Dictionary containing market parameters such as demand.
+        Dictionary containing market parameters such as demand and results directory.
     inputs : dict
-        Dictionary containing submitted bids from generators.
+        Dictionary containing submitted bids from electricity generators.
     outputs : dict
-        Dictionary containing market clearing results.
+        Dictionary containing market clearing prices and results per company.
     states : dict
         Dictionary containing state variables like market clearing price.
     time_step_size : int
-        Time step size for the simulation.
+        Time step size for the simulation in hours.
     time : int or None
-        Current simulation time.
+        Current simulation time in hours.
 
     Methods
+    -------
     __init__(**kwargs)
         Initializes the Market Operator with the provided parameters.
     step(time, inputs, max_advance)
-        Simulates one time step of the Market Operator.
+        Advances simulation by processing bids and calculating market results.
     calculate_balance(bids)
-        Calculates market clearing price and results based on submitted bids.
+        Determines market clearing price and financial results from submitted bids.
     create_merit_order_curve(all_bids_sorted, demand, market_clearing_price)
-        Creates visualization of the merit order curve.
+        Visualizes merit order curve showing price formation.
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
-    parameters={'demand': {} # to add later 'overbid_penalty'
+    parameters={'demand': {}, # to add later 'overbid_penalty'
+                'results_dir': 'operator_results'
                 }
     inputs={'bids': {} # to add later 'overbid'
             }
-    outputs={'results': {}
+    outputs={
              }
-    states={'market_clearing_price': 0
+    states={'market_clearing_price': 0,
             }
 
     # define other attributes
@@ -62,6 +67,7 @@ class Operator_Market(ModelConstructor):
         """
         super().__init__(**kwargs)
         self.demand = self.parameters['demand']
+        self.results_dir = self.parameters['results_dir']
 
 
 
@@ -69,21 +75,22 @@ class Operator_Market(ModelConstructor):
     # define step function
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
         """
-        Advances the simulation one time step, processes bids, and calculates market clearing results.
+        Advances the simulation one time step, processes bids, calculates market clearing 
+        results and stores state information.
 
         Parameters
         ----------
         time : int
             Current simulation time in hours
         inputs : dict
-            Dictionary containing submitted bids from generators
+            Dictionary containing submitted bids from generators with bid prices and capacities
         max_advance : int, optional
             Maximum time to advance in hours. Defaults to 1.
 
         Returns
         -------
         int
-            Next simulation time in hours
+            Next simulation time step in hours, calculated as current time plus time_step_size
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
 
@@ -93,9 +100,20 @@ class Operator_Market(ModelConstructor):
             bids = [pd.DataFrame(bid) for bid in input_data['bids']]
 
         results = self.calculate_balance(bids)
+        all_bids_sorted = results['all_bids_sorted']
+        market_clearing_price = results['market_clearing_price']
 
-        self.set_outputs({'results': results['results'].to_dict()})
-        self.set_states({'market_clearing_price': int(results['market_clearing_price'])})
+        # save the all_bids_sorted dataframe to a csv file
+        # Create results directory if it doesn't exist
+        if not path.exists(self.results_dir):
+            makedirs(self.results_dir)
+        all_bids_sorted.to_csv(path.join(self.results_dir, f'all_bids_sorted_{time}.csv'), index=False)
+
+        #create merit order curve
+        #self.create_merit_order_curve(all_bids_sorted, self.demand, market_clearing_price)
+
+        self.set_states({'market_clearing_price': float(market_clearing_price)})  # json serialize needs to be a normal datatype, not a numpy data type
+        #self.set_states(market_clearing_price=market_clearing_price)
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
@@ -194,11 +212,10 @@ class Operator_Market(ModelConstructor):
         # Show Market Clearing Results
         print(f"Market Clearing Price: {market_clearing_price} €/MWh")
 
-        print(results_df)
+        # print(results_df)
 
-        #create merit order curve
-        self.create_merit_order_curve(all_bids_sorted, self.demand, market_clearing_price)
-        return {'market_clearing_price' : market_clearing_price, 'results' : results_df}
+        
+        return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted}
 
 
     def create_merit_order_curve(self, all_bids_sorted, demand, market_clearing_price):
