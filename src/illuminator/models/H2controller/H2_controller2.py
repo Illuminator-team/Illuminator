@@ -37,12 +37,9 @@ class H2Controller(ModelConstructor):
     inputs={'demand1': 0,  # Demand for hydrogen from unit 1 [kg/timestep]
             'demand2': 0,  # Demand for hydrogen from unit 2 [kg/timestep]
             'thermolyzer_out': 0,  # Hydrogen output from the thermolyzer [kg/timestep]
-            # 'compressor_out': 0,  # Hydrogen output from the compressor [kg/timestep]
-            'h2_soc1': 0,  # Hydrogen storage 1 state of charge [%]
-            'h2_soc2': 0,  # Hydrogen storage 2 state of charge [%]
+            'h2_soc': 0,  # Hydrogen buffer 1 state of charge [%]
             }
     outputs={'flow2h2storage1': 0,  # hydrogen flow to hydrogen storage 1 (neg or pos) [kg/timestep]
-             'flow2h2storage2': 0,  # hydrogen flow to hydrogen storage 2 (neg or pos) [kg/timestep]
              'dump': 0              # keeps track of shortage/overpoduction in the system [kg/timestep]
             }
     states={'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
@@ -98,13 +95,10 @@ class H2Controller(ModelConstructor):
         self.time = time
         self.current_time = time * self.time_resolution
         print('from controller %%%%%%%%%%%', self.current_time)
-
-        results = self.control(demand1=input_data['demand1'],
-                                 demand2=input_data['demand2'],
+        results = self.control(input_data['demand1'],
+                                input_data['demand2'],
                                  thermolyzer_out=input_data['thermolyzer_out'],
-                                 # compressor_out=input_data['compressor_out'],
-                                 h2_soc1=input_data['h2_soc1'],
-                                 h2_soc2=input_data['h2_soc2']
+                                 h2_soc=input_data['h2_soc']
                                 )
         # print(f"DEBUG: results in h2_controller.py: {results}")
         outputs = {}
@@ -148,9 +142,6 @@ class H2Controller(ModelConstructor):
             - valve1_ratio1: ratio of incoming hydrogen to thermolyzer storage1 [%]
             - valve1_ratio2: ratio of incoming hydrogen to thermolyzer demand1 [%]
             - valve1_ratio3: ratio of incoming hydrogen from thermolyzer to the compressor [%]
-            - valve2_ratio1: ratio of incoming hydrogen from compressor to demand2 [%]
-            - valve2_ratio2: ratio of incoming hydrogen from compressor to storage2 [%]
-            - valve2_ratio3: unused outlet of the second valve (set to 0) [%] 
         """
         # initialise all valves to zero
         valve1_ratio1 = 0
@@ -161,14 +152,12 @@ class H2Controller(ModelConstructor):
         valve1_ratio1 = demand1 / tot_demand
         valve1_ratio2 = demand2 / tot_demand
         
-        results = {'flow2h2storage1': flow2h2storage1,
-                    'flow2h2storage2': flow2h2storage2,
-                    'dump': self.dump,
+        desired_out = tot_demand
+        
+
+        results = { 'dump': self.dump,
                     'valve1_ratio1': valve1_ratio1,
                     'valve1_ratio2': valve1_ratio2,
-                    'valve1_ratio3': valve1_ratio3,
-                    'valve2_ratio1': valve2_ratio1,
-                    'valve2_ratio2': valve2_ratio2,
-                    'valve2_ratio3': valve2_ratio3
+                    'valve1_ratio3': valve1_ratio3
                     }
         return results
