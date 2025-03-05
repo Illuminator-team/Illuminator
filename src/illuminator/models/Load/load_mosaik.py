@@ -1,4 +1,4 @@
-import mosaik_api
+import mosaik_api_v3 as mosaik_api
 #import Load.load_model as load_model
 try:
     import Models.Load.load_model as load_model
