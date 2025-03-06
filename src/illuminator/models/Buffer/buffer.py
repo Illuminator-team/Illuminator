@@ -3,19 +3,19 @@ import numpy as np
 
 class H2Buffer(ModelConstructor):
     """
-    A class to represent an H2 Storage model.
-    This class provides methods to simulate the charging and discharging of hydrogen storage.
+    A class to represent an H2 Buffer model.
+    This class provides methods to simulate the hydrogen flow through the buffer.
 
     Attributes
     ----------
     parameters : dict
-        Dictionary containing storage parameters such as minimum and maximum state of charge, charge and discharge efficiency, and total capacity.
+        Dictionary containing buffer parameters such as minimum and maximum state of charge, charge and discharge efficiency, and total capacity.
     inputs : dict
-        Dictionary containing input variables like flow to the hydrogen storage.
+        Dictionary containing input variables like flow to the hydrogen buffer.
     outputs : dict
-        Dictionary containing calculated outputs like flow into and out of the storage, state of charge, operating mode, and storage status flag.
+        Dictionary containing calculated outputs like flow into and out of the buffer, state of charge, operating mode, and buffer status flag.
     states : dict
-        Dictionary containing the state variables of the storage model.
+        Dictionary containing the state variables of the buffer model.
     time_step_size : int
         Time step size for the simulation.
     time : int or None
@@ -24,35 +24,28 @@ class H2Buffer(ModelConstructor):
     Methods
     -------
     step(time, inputs, max_advance=1)
-        Simulates one time step of the hydrogen storage model.
-    discharge(flow2h2storage)
-        Simulates the discharging process based on the state of charge and the incoming flow.
-    charge(flow2h2storage)
-        Simulates the charging process based on the state of charge and the incoming flow.
-    output_flow(flow2h2storage, soc)
-        Controller that determines to charge, discharge, or do nothing based on the desired flow.
+        Simulates one time step of the hydrogen buffer model.
+    operation(h2_in, desired_out)
+        Physically limits the in and outflow of hydrogen based on the design parameters
+    cap_calc()
+        Calculates the amount of hydrogen that can be charged ad discharged from the buffers models (external pov)
     """
-
-   
-    
-
-# TODO Chack what the 'max_h2' and 'min_h2' parameters mean
-    parameters={'h2_soc_min': 0,            # Minimum state of charge of the hydrogen storage before discharging stops [%]
-                'h2_soc_max': 100,          # Maximum state of charge of the hydrogen storage before charging stops [%]
-                'h2_charge_eff': 100,       # Charge efficiency of the H2 storage [%]
-                'h2_discharge_eff': 100,    # Discharge efficiency of the H2 storage [%]
+    parameters={'h2_soc_min': 0,            # Minimum state of charge of the hydrogen buffer before discharging stops [%]
+                'h2_soc_max': 100,          # Maximum state of charge of the hydrogen buffer before charging stops [%]
+                'h2_charge_eff': 100,       # Charge efficiency of the H2 buffer [%]
+                'h2_discharge_eff': 100,    # Discharge efficiency of the H2 buffer [%]
                 'max_h2': 10,               # maximal flow (?) [kg/timestep]
-                'min_h2': -10,              # minimal flow (?) [kg/timestep]
-                'h2_capacity_tot':100       # total capacity of the hydrogen strorage [kg]
+                'min_h2': 10,               # minimal flow (?) [kg/timestep]
+                'h2_capacity_tot': 100      # total capacity of the hydrogen buffer [kg]
                 }
-    inputs={'h2_in': 0,            # input to H2 storage [kg/timestep]
+    inputs={'h2_in': 0,            # input to H2 buffer [kg/timestep]
             'desired_out': 0   # demanded hydrogen output flow [kg/timestep]
             }
-    outputs={'h2_out': 0,       # flow out of the H2 storage [kg/timestep]
+    outputs={'h2_out': 0,       # flow out of the H2 buffer [kg/timestep]
              'actual_h2_in': 0  # The input that is processed in the buffer [kg/timestep]
              }
     states={ 'soc': 0,          # state of charge after operation in a timestep [%]
-             'flag': 0,         # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
+             'flag': 0,         # flag inidicating buffer status (1=fully charged, -1=full discharged, 0=available for control) [-]
              'available_h2': 0, # amount of hydrogen that is available for the output [kg/timestep]
              'free_capacity':0 # amount of hyrogen that can be inputted before being full [kg/timestep]
             }
@@ -63,7 +56,7 @@ class H2Buffer(ModelConstructor):
     
     def __init__(self, **kwargs) -> None:
         """
-        Initialize the H2 Storage model with the provided parameters.
+        Initialize the H2 buffer model with the provided parameters.
 
         Parameters
         ----------
@@ -112,7 +105,7 @@ class H2Buffer(ModelConstructor):
 
 
         current_time = time * self.time_resolution
-        print('from H2 storage %%%%%%%%%%%', current_time)
+        print('from H2 buffer %%%%%%%%%%%', current_time)
         results = self.operation(input_data['h2_in'], input['desired_out'])
 
         self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in']})

@@ -7,30 +7,6 @@ scenario:
 
 
 models: 
-- name: Controller
-  type: H2Controller
-  parameters:
-    size_storage1: 100
-    size_storage2: 100
-  inputs:
-    demand1: null
-    demand2: null
-    thermolyzer_out: null
-    # compressor_out:null
-    h2_soc1: null
-    h2_soc2: null
-  outputs:
-    flow2h2storage1: null
-    flow2h2storage2: null
-    dump: null
-  states:
-    valve1_ratio1: 0
-    valve1_ratio2: 0
-    valve1_ratio3: 0
-    valve2_ratio1: 0
-    valve2_ratio2: 0
-    valve2_ratio3: 0
-
 - name: CSVdemand1
   type: CSV
   parameters:
@@ -52,6 +28,45 @@ models:
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
+- name: H2_controller
+  type: H2Controller2
+  inputs:
+    demand1: null
+    demand2: null
+    thermolyzer_out: null
+    buffer_available_h2: null
+    buffer_free_capacity: null
+  outputs:
+    dump: 0
+    buffer_in: 0
+    desired_out: 0
+  states:
+    valve1_ratio1: 0 
+    valve1_ratio2: 0
+    valve1_ratio3: 0
+
+- name: H2Buffer1
+  type: H2Buffer
+  parameters: 
+    h2_soc_min: 0
+    h2_soc_max: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    max_h2: 10
+    min_h2: 10
+    h2_capacity_tot: 100
+  inputs:
+    h2_in: null
+    desired_out: null
+  outputs:
+    h2_out: 0
+    actual_h2_in: 0
+  states:
+    soc: 80
+    flag: 0
+    available_h2: 0
+    free_capacity: 0 
+
 - name: compressor1
   type: Compressor
   parameters:
@@ -68,45 +83,27 @@ models:
     volume_flow_out: 0
     power_req: 0
 
-- name: H2storage1
-  type: H2Storage
-  parameters:
-    h2_soc_min: 2
-    h2_soc_max: 98
-    h2_charge_eff: 99
-    h2_discharge_eff: 99
-    max_h2: 100
-    min_h2: -100
+- name: H2Buffer2
+  type: H2Buffer
+  parameters: 
+    h2_soc_min: 0
+    h2_soc_max: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    max_h2: 10
+    min_h2: 10
     h2_capacity_tot: 100
   inputs:
-    flow2h2storage: 0
-  outputs:
     h2_in: null
-    h2_out: null
-  states:
-    soc: 70         # initialised to 0
-    mod: null
-    flag: null
-
-- name: H2storage2
-  type: H2Storage
-  parameters:
-    h2_soc_min: 2
-    h2_soc_max: 98
-    h2_charge_eff: 99
-    h2_discharge_eff: 99
-    max_h2: 100
-    min_h2: -100
-    h2_capacity_tot: 100
-  inputs:
-    flow2h2storage: 0
+    desired_out: null
   outputs:
-    h2_in: null
-    h2_out: null
+    h2_out: 0
+    actual_h2_in: 0
   states:
-    soc: 70         
-    mod: null
-    flag: null
+    soc: 80
+    flag: 0
+    available_h2: 0
+    free_capacity: 0  
 
 - name: H2valve1
   type: H2Valve
@@ -143,33 +140,44 @@ models:
 
 connections:
 
-- from: CSVthermolyzer_replacement.h2_gen
-# - from: thermolyzer1.h_gen
-  to: H2storage1.flow2h2storage
-
-- from: H2storage1.h2_out
-  to: compressor1.flow2c
-
-- from: compressor1.flow_from_c
-  to: H2storage2.flow2h2storage
-
-- from: H2storage2.h2_out
-  to: H2valve1.h2_in
-
 - from: CSVdemand1.demand
   to: H2demand1.demand
 - from: CSVdemand2.demand
   to: H2demand2.demand
-
 - from: H2demand1.tot_dem
-  to: Controller.demand1
+  to: H2_controller.demand1
 - from: H2demand2.tot_dem
-  to: Controller.demand2
+  to: H2_controller.demand2
 
-- from: Controller.valve1_ratio1
+- from: CSVthermolyzer_replacement.h2_gen
+# - from: thermolyzer1.h_gen
+  to: H2_controller.thermolyzer_out
+
+- from: H2Buffer1.available_h2
+  to: H2_controller.buffer_available_h2
+- from: H2Buffer1.free_capacity
+  to: H2_controller.buffer_free_capacity
+- from: H2_controller.buffer_in
+  to: H2Buffer1.h2_in
+  time_shifted: True
+- from: H2_controller.desired_out
+  to: H2Buffer1.desired_out
+  time_shifted: True
+
+- from: H2Buffer1.h2_out
+  to: compressor1.flow2c
+
+- from: compressor1.flow_from_c
+  to: H2Buffer2.h2_in
+
+
+- from: H2Buffer2.h2_out
+  to: H2valve1.h2_in
+
+- from: H2_controller.valve1_ratio1
   to: H2valve1.ratio1
   time_shifted: True
-- from: Controller.valve1_ratio2
+- from: H2_controller.valve1_ratio2
   to: H2valve1.ratio2
   time_shifted: True
 
@@ -182,23 +190,17 @@ monitor:
     - H2demand1.tot_dem
     - H2demand2.tot_dem
     
-    - Controller.valve1_ratio1
-    - Controller.valve1_ratio2
+    - H2_controller.valve1_ratio1
+    - H2_controller.valve1_ratio2
 
     - H2valve1.out1
     - H2valve1.out2
-
-
-
-
     # - Controller.valve2_ratio1
     # - Controller.valve2_ratio2
-    - Controller.flow2h2storage1
-    - Controller.flow2h2storage2
-    - Controller.dump
+    - H2_controller.dump
     
-    - H2storage1.soc
-    - H2storage2.soc
+    - H2Buffer1.soc
+    - H2Buffer1.soc
     # - compressor1.flow_from_c
     # - H2storage1.h2_in
     # - H2storage1.h2_out 
