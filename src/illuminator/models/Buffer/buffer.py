@@ -52,8 +52,9 @@ class H2Buffer(ModelConstructor):
              'actual_h2_in': 0  # The input that is processed in the buffer [kg/timestep]
              }
     states={ 'soc': 0,          # state of charge after operation in a timestep [%]
-             'flag': 0          # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
-             
+             'flag': 0,         # flag inidicating storage status (1=fully charged, -1=full discharged, 0=available for control) [-]
+             'available_h2': 0, # amount of hydrogen that is available for the output [kg/timestep]
+             'free_capacity':0 # amount of hyrogen that can be inputted before being full [kg/timestep]
             }
     
     # define other attributes
@@ -79,6 +80,9 @@ class H2Buffer(ModelConstructor):
         self.h2_capacity_tot = self._model.parameters.get('h2_capacity_tot')
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
+        self.h2_charge_cap = self._model.states.get('available_h2')
+        self.h2_discharge_cap = self._model.states.get('free_capacity')
+        self.cap_calc()
 
     def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:
         """
@@ -112,7 +116,7 @@ class H2Buffer(ModelConstructor):
         results = self.operation(input_data['h2_in'], input['desired_out'])
 
         self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in']})
-        self.set_states({'soc': self.soc, 'flag': self.flag})
+        self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': self.h2_discharge_cap, 'free_capacity': self.h2_charge_cap})
 
         return time + self._model.time_step_size
     
@@ -133,16 +137,13 @@ class H2Buffer(ModelConstructor):
             Collection of parameters and their respective values
         """
         # current_capacity = self.soc * self.h2_capacity_tot
-        h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_discharge_eff/100) 
-        h2_charge_cap = h2_charge_soc/100 * self.h2_capacity_tot
-        h2_discharge_soc = (self.soc - self.h2_soc_max) * (self.h2_discharge_eff/100)
-        h2_discharge_cap = h2_discharge_soc/100 * self.h2_capacity_tot
+
         h2_in = min(h2_in, self.max_h2) # limit the input by the maximum output
         desired_out = min(desired_out, self.max_h2) # limit the output by the maximum output
         net_h2 = h2_in - desired_out
         if net_h2 > 0:
-            if net_h2 > h2_charge_cap:
-                h2_in = h2_charge_cap
+            if net_h2 > self.h2_charge_cap:
+                h2_in = self.h2_charge_cap
                 self.soc = self.h2_soc_max
                 self.flag = 1
             else:
@@ -150,18 +151,39 @@ class H2Buffer(ModelConstructor):
                 self.soc = self.soc + h2_in * (self.h2_charge_eff/100)
                 self.flag = 0
         elif net_h2 < 0:
-            if abs(net_h2) > h2_discharge_cap:
-                h2_out = h2_discharge_cap
+            if abs(net_h2) > self.h2_discharge_cap:
+                h2_out = self.h2_discharge_cap
                 self.soc = self.min_h2
                 self.flag = -1
             else:
                 h2_out = net_h2
                 self.soc = self.soc - h2_out / (self.h2_discharge_eff/100)
-                self.flag = 0 
-        
+                self.flag = 0
+        self.cap_calc()
         results = {'h2_out': h2_out,
                    'actual_h2_in': h2_in}
         return results
+    
+    def cap_calc(self):
+        """
+        Function to determine the amount of h2 that can still be stored or discharged.
+        ...
+
+        Parameters
+        ----------
+        h2_in : float
+            Input to the buffer [kg/timestep]
+        desired_out : float
+            Desired output flow [kg/timestep]
+        Returns
+        -------
+        result : dict
+            Collection of parameters and their respective values
+        """
+        h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_discharge_eff/100) 
+        self.h2_charge_cap = h2_charge_soc/100 * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
+        h2_discharge_soc = (self.soc - self.h2_soc_max) * (self.h2_discharge_eff/100)
+        self.h2_discharge_cap = h2_discharge_soc/100 * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
     
 
         

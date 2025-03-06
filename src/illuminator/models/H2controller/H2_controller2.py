@@ -38,13 +38,16 @@ class H2Controller(ModelConstructor):
             'demand2': 0,  # Demand for hydrogen from unit 2 [kg/timestep]
             'thermolyzer_out': 0,  # Hydrogen output from the thermolyzer [kg/timestep]
             'h2_soc': 0,  # Hydrogen buffer 1 state of charge [%]
+            'buffer_available_h2': 0, # available h2 for discharge in buffer [kg]
+            'buffer_free_capacity': 0 # h2 that can be stored in buffer before being full [kg]
             }
     outputs={'flow2h2storage1': 0,  # hydrogen flow to hydrogen storage 1 (neg or pos) [kg/timestep]
              'dump': 0              # keeps track of shortage/overpoduction in the system [kg/timestep]
             }
     states={'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
             'valve1_ratio2': 0,  # fraction of hydrogen flow to valve 1 output 2 [%]
-            'valve1_ratio3': 0  # fraction of hydrogen flow to valve 1 output 3 [%]
+            'valve1_ratio3': 0   # fraction of hydrogen flow to valve 1 output 3 [%]
+
             }
 
     # define other attributes
@@ -98,7 +101,9 @@ class H2Controller(ModelConstructor):
         results = self.control(input_data['demand1'],
                                 input_data['demand2'],
                                  thermolyzer_out=input_data['thermolyzer_out'],
-                                 h2_soc=input_data['h2_soc']
+                                 h2_soc=input_data['h2_soc'],
+                                buffer_available_h2=['buffer_available_h2' ],
+                                buffer_free_capacity=['buffer_free_capacity']
                                 )
         # print(f"DEBUG: results in h2_controller.py: {results}")
         outputs = {}
@@ -111,7 +116,7 @@ class H2Controller(ModelConstructor):
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size        
 
-    def control(self, demand1: float, demand2: float, thermolyzer_out: float, h2_soc1: float, h2_soc2: float) -> dict:
+    def control(self, demand1: float, demand2: float, thermolyzer_out: float, h2_soc: float, buffer_available_h2, buffer_free_capacity: float) -> dict:
         """
         This function executes the control operation. It prioritises direct supply from the 
         thermolzyer and adapts the valve ratios accordingly. In case the storages must be used, 
@@ -147,12 +152,22 @@ class H2Controller(ModelConstructor):
         valve1_ratio1 = 0
         valve1_ratio2 = 0
         valve1_ratio3 = 0
-        
+        dump = 0
         tot_demand = demand1 + demand2
         valve1_ratio1 = demand1 / tot_demand
         valve1_ratio2 = demand2 / tot_demand
         
         desired_out = tot_demand
+        buffer_in = thermolyzer_out
+        net_flow = buffer_in - desired_out  # pos for charging, neg for discharging
+
+        if net_flow > buffer_free_capacity:
+            dump = thermolyzer_out - buffer_free_capacity
+            buffer_in -= dump   # what is not dumped goes into the buffer
+
+        elif net_flow < -buffer_available_h2:
+            desired_out =     
+                
         
 
         results = { 'dump': self.dump,
