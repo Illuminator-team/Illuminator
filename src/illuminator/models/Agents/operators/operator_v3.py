@@ -212,7 +212,7 @@ class Operator_Market(ModelConstructor):
         # Show Market Clearing Results
         print(f"Market Clearing Price: {market_clearing_price} €/MWh")
 
-        # print(results_df)
+        print(results_df)
 
         
         return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted}
