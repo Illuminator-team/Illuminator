@@ -30,12 +30,14 @@ models:
 
 - name: H2_controller
   type: H2Controller2
+  parameters:
+    dummy: 0
   inputs:
-    demand1: null
-    demand2: null
-    thermolyzer_out: null
-    buffer_available_h2: null
-    buffer_free_capacity: null
+    demand1: 0
+    demand2: 0
+    thermolyzer_out: 0
+    buffer_available_h2: 0
+    buffer_free_capacity: 0
   outputs:
     dump: 0
     buffer_in: 0
@@ -52,12 +54,12 @@ models:
     h2_soc_max: 100
     h2_charge_eff: 100
     h2_discharge_eff: 100
-    max_h2: 10
-    min_h2: 10
+    max_h2: 100
+    min_h2: 100
     h2_capacity_tot: 100
   inputs:
-    h2_in: null
-    desired_out: null
+    h2_in: 0
+    desired_out: 0
   outputs:
     h2_out: 0
     actual_h2_in: 0
@@ -76,7 +78,7 @@ models:
     compressor_eff: 90
     max_power_in: 10
   inputs:
-    flow2c: null
+    flow2c: 0
   outputs:
     flow_from_c: 0
   states:
@@ -94,8 +96,8 @@ models:
     min_h2: 10
     h2_capacity_tot: 100
   inputs:
-    h2_in: null
-    desired_out: null
+    h2_in: 0
+    desired_out: 0
   outputs:
     h2_out: 0
     actual_h2_in: 0
@@ -111,32 +113,32 @@ models:
     valve_eff: 100
     # max_flow: 100
   inputs:
-    h2_in: null
+    h2_in: 0
     ratio1: 0
     ratio2: 0
     ratio3: 0
   outputs:
-    out1: null
-    out2: null
-    out3: null
+    out1: 0
+    out2: 0
+    out3: 0
 
 - name: H2demand1
   type: H2demand
   parameters:
     units: 1
   inputs:
-    demand: null
+    demand: 0
   states:
-    tot_dem: null
+    tot_dem: 0
 
 - name: H2demand2
   type: H2demand
   parameters:
     units: 1
   inputs:
-    demand: null
+    demand: 0
   states:
-    tot_dem: null
+    tot_dem: 0
 
 connections:
 
@@ -164,6 +166,10 @@ connections:
   to: H2Buffer1.desired_out
   time_shifted: True
 
+# TODO: This is test and may be solved differently:
+- from: H2_controller.desired_out
+  to: H2Buffer2.desired_out
+
 - from: H2Buffer1.h2_out
   to: compressor1.flow2c
 
@@ -180,13 +186,16 @@ connections:
 - from: H2_controller.valve1_ratio2
   to: H2valve1.ratio2
   time_shifted: True
+- from: H2_controller.valve1_ratio3
+  to: H2valve1.ratio3
+  time_shifted: True
 
 monitor:
   file: './examples/h2_system_example/h2_system_example3.csv'
   items:
 
     # - thermolyzer1.h_gen
-    #- CSVthermolyzer_replacement.h2_gen
+    # - CSVthermolyzer_replacement.h2_gen
     - H2demand1.tot_dem
     - H2demand2.tot_dem
     
@@ -198,9 +207,10 @@ monitor:
     # - Controller.valve2_ratio1
     # - Controller.valve2_ratio2
     - H2_controller.dump
+    - H2_controller.desired_out
     
     - H2Buffer1.soc
-    - H2Buffer1.soc
+    - H2Buffer1.h2_out
     # - compressor1.flow_from_c
     # - H2storage1.h2_in
     # - H2storage1.h2_out 

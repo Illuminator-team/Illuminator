@@ -91,7 +91,7 @@ class H2Buffer(ModelConstructor):
         inputs : dict
             Dictionary containing input values, specifically:
             - h2_in: Hydrogen flow that appears to the input of the buffer [kg/timestep]
-            - desired_out: Ther desired output flow of the buffer [kg/timestep]
+            - desired_out: The desired output flow of the buffer [kg/timestep]
         max_advance : int, optional
             Maximum time step size (default 900)
 
@@ -100,13 +100,10 @@ class H2Buffer(ModelConstructor):
         int
             Next simulation time step
         """
-
         input_data = self.unpack_inputs(inputs)
 
-
-        current_time = time * self.time_resolution
-        print('from H2 buffer %%%%%%%%%%%', current_time)
-        results = self.operation(input_data['h2_in'], input['desired_out'])
+        # current_time = time * self.time_resolution
+        results = self.operation(input_data['h2_in'], input_data['desired_out'])
 
         self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in']})
         self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': self.h2_discharge_cap, 'free_capacity': self.h2_charge_cap})
@@ -129,11 +126,13 @@ class H2Buffer(ModelConstructor):
         result : dict
             Collection of parameters and their respective values
         """
-        # current_capacity = self.soc * self.h2_capacity_tot
-
+        print(f'DEBUG: This is desireed_out as viewed from operation: {desired_out}')
+        h2_out = 0  # initialize to 0 
         h2_in = min(h2_in, self.max_h2) # limit the input by the maximum output
+        print(f'DEBUG: This is h2_in as viewed from operation: {h2_in}')
         desired_out = min(desired_out, self.max_h2) # limit the output by the maximum output
         net_h2 = h2_in - desired_out
+        print(f'DEBUG: This is net_h2 as viewed from operation: {net_h2}')
         if net_h2 > 0:
             if net_h2 > self.h2_charge_cap:
                 h2_in = self.h2_charge_cap
@@ -141,17 +140,24 @@ class H2Buffer(ModelConstructor):
                 self.flag = 1
             else:
                 h2_in = net_h2
-                self.soc = self.soc + h2_in * (self.h2_charge_eff/100)
+                self.soc = self.soc + (h2_in * (self.h2_charge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
+            h2_out = desired_out
         elif net_h2 < 0:
             if abs(net_h2) > self.h2_discharge_cap:
+                print(f'DEBUG: abs(net_h2) > self.h2_discharge_cap')
                 h2_out = self.h2_discharge_cap
-                self.soc = self.min_h2
+                print(f'DEBUG: soc = {self.soc}, discharge_cap = {self.h2_discharge_cap}')
+                self.soc = self.h2_soc_min
                 self.flag = -1
             else:
-                h2_out = net_h2
-                self.soc = self.soc - h2_out / (self.h2_discharge_eff/100)
+                print("This case:\n")
+                h2_out = desired_out
+                print(f'h2_out={h2_out}\nsoc before: {self.soc}\ndischarhe eff={self.h2_discharge_eff}\ncap={self.h2_capacity_tot}')
+                self.soc = self.soc - (h2_out / (self.h2_discharge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
+        print(f'DEBUG: This is soc as viewed from operation: {self.soc}')   
+        print(f'DEBUG: This is h2_out as viewed from operation: {h2_out}\n\n')
         self.cap_calc()
         results = {'h2_out': h2_out,
                    'actual_h2_in': h2_in}
@@ -174,9 +180,9 @@ class H2Buffer(ModelConstructor):
             Collection of parameters and their respective values
         """
         h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_discharge_eff/100) 
-        self.h2_charge_cap = h2_charge_soc/100 * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
-        h2_discharge_soc = (self.soc - self.h2_soc_max) * (self.h2_discharge_eff/100)
-        self.h2_discharge_cap = h2_discharge_soc/100 * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
+        self.h2_charge_cap = h2_charge_soc * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
+        h2_discharge_soc = (self.soc - self.h2_soc_min) * (self.h2_discharge_eff/100)
+        self.h2_discharge_cap = h2_discharge_soc * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
     
 
         
