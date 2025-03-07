@@ -3,19 +3,17 @@ import arrow
 from illuminator.engine import current_model
 
 # Define the model parameters, inputs, outputs...
-# csv = IlluminatorModel(
-#     parameters={'time_resolution': None,
-#                 'start': None,
-#                 'date_format': None,
-#                 'delimiter': ',',
-#                 'datafile': None,             
-#                 },
-#     inputs={},
-#     outputs={'next_row'},
-#     states={'next_row'},
-#     time_step_size=1,
-#     time=None
-# )
+csv = IlluminatorModel(
+    parameters={'date_format': 'YYYY-MM-DD HH:mm:ss',
+                'delimiter': ',',
+                'datafile': ''             
+                },
+    inputs={},
+    outputs={'next_row': ''},
+    states={},
+    time_step_size=1,
+    time=None
+)
 
 # construct the model
 class CSV(ModelConstructor):
@@ -238,7 +236,7 @@ class CSV(ModelConstructor):
         """
         self.datafile.close()
 
-# if __name__ == '__main__':
-#     csv_model = CSV(csv)
+if __name__ == '__main__':
+    csv_model = CSV(csv)
 
 #     print(csv_model.step(1))
