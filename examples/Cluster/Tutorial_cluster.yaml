@@ -18,16 +18,16 @@ models:
 - name: Load1
   type: Load
   connect:
-    ip: 192.168.213.120
+    ip: 127.0.0.1
     port: 5123
   parameters:
-    houses: 5  # number of houses that determine the total load demand
+    houses: 6  # number of houses that determine the total load demand
     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
-    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
-    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+    load_dem: # total energy or power consumption for all houses (kWh) over the time step
+    consumption: # Current energy or power consumption based on the number of houses and input load (kWh)
 
 
 
