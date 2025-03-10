@@ -79,11 +79,9 @@ class H2demand(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        current_time = time * self.time_resolution
-        print('from h2demand %%%%%%%%%%%', current_time)   
+        current_time = time * self.time_resolution  
 
         self.set_states({'tot_dem' : self.h2demand(input_data['demand'])})
-        print("outputs:", self.outputs)
         return time + self._model.time_step_size
     
 

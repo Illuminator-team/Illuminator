@@ -154,8 +154,11 @@ class H2Buffer(ModelConstructor):
                 print("This case:\n")
                 h2_out = desired_out
                 print(f'h2_out={h2_out}\nsoc before: {self.soc}\ndischarhe eff={self.h2_discharge_eff}\ncap={self.h2_capacity_tot}')
-                self.soc = self.soc - (h2_out / (self.h2_discharge_eff))/self.h2_capacity_tot * 100
+                self.soc = self.soc - (-net_h2 / (self.h2_discharge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
+        else:
+            if desired_out > 0:
+                h2_out = h2_in
         print(f'DEBUG: This is soc as viewed from operation: {self.soc}')   
         print(f'DEBUG: This is h2_out as viewed from operation: {h2_out}\n\n')
         self.cap_calc()
@@ -179,10 +182,11 @@ class H2Buffer(ModelConstructor):
         result : dict
             Collection of parameters and their respective values
         """
-        h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_discharge_eff/100) 
-        self.h2_charge_cap = h2_charge_soc * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
-        h2_discharge_soc = (self.soc - self.h2_soc_min) * (self.h2_discharge_eff/100)
-        self.h2_discharge_cap = h2_discharge_soc * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
+        h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_charge_eff) 
+        print(f"\nDEBUG: \n THIS IS SOC: {self.soc} \n THIS IS h2_soc_max: {self.h2_soc_max} \n THIS IS discharge eff: {self.h2_charge_eff}\nTHIS IS h2_charge_soc in cap_calc: {h2_charge_soc}\n")
+        self.h2_charge_cap = h2_charge_soc / 100 * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
+        h2_discharge_soc = (self.soc - self.h2_soc_min) * (self.h2_discharge_eff)
+        self.h2_discharge_cap = h2_discharge_soc / 100 * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
     
 
         

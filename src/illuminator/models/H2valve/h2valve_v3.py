@@ -77,7 +77,7 @@ class H2Valve(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)
         self.time = time
-        print(f"DEBUG: This is input data: {input_data}")
+        # print(f"DEBUG: This is input data: {input_data}")
         results = self.calc_flow(h2_in=input_data['h2_in'], 
                                  ratio1=input_data['ratio1'],
                                  ratio2=input_data['ratio2'],

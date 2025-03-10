@@ -146,8 +146,8 @@ class H2Controller2(ModelConstructor):
         tot_demand = demand1 + demand2
         print(f'DEBUG: This is tot_demand as seen from controller: {tot_demand}')
         if tot_demand > 0:  # avoid division by 0
-            valve1_ratio1 = demand1 / tot_demand
-            valve1_ratio2 = demand2 / tot_demand
+            valve1_ratio1 = demand1 / tot_demand * 100
+            valve1_ratio2 = demand2 / tot_demand * 100
         desired_out = tot_demand
         buffer_in = thermolyzer_out
         net_flow = buffer_in - desired_out  # pos for charging, neg for discharging
@@ -158,7 +158,8 @@ class H2Controller2(ModelConstructor):
 
         elif net_flow < -buffer_available_h2:
             print(f"DEBUG: In controller: net_flow < -buffer_available_h2, namely buffer_available={buffer_available_h2}")
-            desired_out = buffer_available_h2
+            desired_out = buffer_in + buffer_available_h2
+            # desired_out = buffer_available_h2
                              
         print(f'DEBUG: This is desired_out as seen from controller: {desired_out}')
         results = { 'dump': dump,

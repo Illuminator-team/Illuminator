@@ -1,7 +1,7 @@
 scenario:
   name: "Hydrogen_system_3" # in mosaik so called world
   start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-30 23:45:00' # duration in seconds 
+  end_time: '2012-01-01 02:00:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 
@@ -10,14 +10,14 @@ models:
 - name: CSVdemand1
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/h2_demand_1.csv'
+    file_path: './examples/h2_system_example/demand_1_gernerated_month.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: CSVdemand2
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/h2_demand_2.csv'
+    file_path: './examples/h2_system_example/demand_1_gernerated_month.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 

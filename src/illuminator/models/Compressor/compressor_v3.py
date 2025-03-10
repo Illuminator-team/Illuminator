@@ -110,15 +110,13 @@ class Compressor(ModelConstructor):
         int
             Next simulation time step
         """
-        print("\nCompressor:")
-        print("inputs (passed): ", inputs)
-        print("inputs (internal): ", self._model.inputs)
+        
         # get input data
         input_data = self.unpack_inputs(inputs)
-        print("input data: ", input_data)
+
 
         current_time = time * self.time_resolution
-        print('from compressor %%%%%%%%%%%', current_time)
+
 
         # calculate power required to compress the hydrogen from one pressure to another [kW] 
         power_params = self.power_req(flow=input_data['flow2c'],
@@ -133,7 +131,7 @@ class Compressor(ModelConstructor):
         # self._model.outputs['flow_from_c'] = input_data['flow2c']
         # self._model.outputs['power_req'] = power_req
         # self._model.outputs['volume_flow_out'] = volume_flow_out
-        print("outputs:", self.outputs)
+
 
         return time + self._model.time_step_size
 
