@@ -31,7 +31,6 @@ def create_world(sim_config: dict, time_resolution: int, start_time: str) -> Mos
     mosaik.World
         The Mosaik world object.
     """
-
     world = MosaikWorld(sim_config, time_resolution=time_resolution)
     world._start_time = start_time
     return world
@@ -130,9 +129,14 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
 
     
     for model in config_simulation['models']:
-        model_config = {model['name']:
-                        {'python': 'illuminator.models' + ':' + model['type']}
-        }
+        if 'connect' in model:
+            model_config = {model['name']:
+                            {'connect': model['connect']['ip']+':'+str(model['connect']['port'])}
+            }
+        else:
+            model_config = {model['name']:
+                            {'python': 'illuminator.models' + ':' + model['type']}
+            }
         mosaik_configuration.update(model_config)
 
     # TODO: write a unit test for this
@@ -160,6 +164,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         model_entities = {}
 
         for model in models:
+
             model_name = model['name']
             model_type = model['type']
             set_current_model(model)
@@ -195,29 +200,34 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
-                
-                # allows instantiating an entity by using the value of 'model_type' dynamically
-                model_factory = getattr(simulator, model_type) 
-                # Mulple entities entities for the same model are created
-                # one at a time. This is by design.
-                # TODO: parameters must be passed as **kwargs in create().
-                # This should be fixed by adapting models to use the Illumnator's interface
 
-                # TODO:
-                # this is a temporary solution to continue developing the CLI
+                if 'connect' in model:
+                    #entity = [{'sim_name': model_name, 'sid': simulator._sid, 'sim_params': model}]
+                    entity = simulator.Model.create(num=1, **model_parameters)
 
-                # TODO: If we wish to use different values here, we must define the parameters used here within the appropriate .yaml file.
-                # Right now adder.yaml defines the custom parameters as "param1"
-                
-        #         entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
-        #                                     panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
-        #   'Power_output_at_STC': 250,'peak_power':600},
-        #                                     m_tilt=14, 
-        #                                     m_az=180, 
-        #                                     cap=500,
-        #                                     output_type='power'
-        #                                     )
-                entity = model_factory.create(num=1, **model_parameters) 
+                else:
+                    # allows instantiating an entity by using the value of 'model_type' dynamically
+                    model_factory = getattr(simulator, model_type) 
+                    # Mulple entities entities for the same model are created
+                    # one at a time. This is by design.
+                    # TODO: parameters must be passed as **kwargs in create().
+                    # This should be fixed by adapting models to use the Illumnator's interface
+
+                    # TODO:
+                    # this is a temporary solution to continue developing the CLI
+
+                    # TODO: If we wish to use different values here, we must define the parameters used here within the appropriate .yaml file.
+                    # Right now adder.yaml defines the custom parameters as "param1"
+                    
+                    #         entity = model_factory.create(num=1, sim_start='2012-01-01 00:00:00', 
+                    #                                     panel_data={'Module_area': 1.26, 'NOCT': 44, 'Module_Efficiency': 0.198, 'Irradiance_at_NOCT': 800,
+                    #   'Power_output_at_STC': 250,'peak_power':600},
+                    #                                     m_tilt=14, 
+                    #                                     m_az=180, 
+                    #                                     cap=500,
+                    #                                     output_type='power'
+                    #                                     )
+                    entity = model_factory.create(num=1, **model_parameters) 
 
             model_entities[model_name] = entity
             print(model_entities)
