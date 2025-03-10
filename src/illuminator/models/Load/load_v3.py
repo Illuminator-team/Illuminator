@@ -1,4 +1,6 @@
-from illuminator.builder import ModelConstructor
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
+
 
 class Load(ModelConstructor):
     """
@@ -45,7 +47,7 @@ class Load(ModelConstructor):
     time=None
 
 
-    def __init__(self, **kwargs) -> None:
+    def init(self, *args, **kwargs) -> None:
         """
         Initialize Load model with given parameters.
 
@@ -58,8 +60,10 @@ class Load(ModelConstructor):
         -------
         None
         """
-        super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.consumption = 0
+        print(f"initialisation houses: {self._model.parameters.get('houses')}")
+        return result
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -80,7 +84,6 @@ class Load(ModelConstructor):
         float
             Next simulation time step
         """
-
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
@@ -118,3 +121,9 @@ class Load(ModelConstructor):
 
         re_params = {'load_dem': self.consumption}
         return re_params
+
+
+if __name__ == '__main__':
+    #load_model = Load(load)
+    #print("")
+    mosaik_api.start_simulation(Load(), 'load Simulator')
