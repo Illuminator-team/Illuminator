@@ -22,7 +22,7 @@ class LED_connection(ModelConstructor):
 
     parameters={
                 }
-    inputs={}
+    inputs={'speed': 0}  # speed for the connection
     outputs={
              }
     states={
@@ -45,7 +45,6 @@ class LED_connection(ModelConstructor):
         None
         """
         result = super().init(*args, **kwargs)
-        self.state = 0
         return result
 
 
@@ -70,13 +69,17 @@ class LED_connection(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        self.send_led_animation()
+        speed = input_data.get('speed', 0) * 100
+        if speed > 100:
+            speed = 100
+
+        self.send_led_animation(speed)
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
     
 
-    def send_led_animation(self):
+    def send_led_animation(self, int: speed) -> None:
         device = '/dev/ttyACM0'
         ser = serial.Serial(device, timeout=5)
         line = ''
@@ -85,18 +88,19 @@ class LED_connection(ModelConstructor):
             line = ser.readline().decode('utf-8').strip()
             print(line)
         
-        colour = 'r'
-        if self.state == 0:
-            colour = 'r'
-            self.state = 1
-        elif self.state == 1:
-            colour = 'g'
-            self.state = 2
-        elif self.state == 2:
+        if speed == 0:
             colour = 'b'
-            self.state = 0
+            delay = 1
+        else:
+            delay = max(50, min(500, int(50 + (500-50) * (1 - speed/100))))  # Maps 0-100% to 500-50, with bounds checking
 
-        ser.write(f"2{colour}1\n".encode('utf-8'))
+            if delay <= 100:
+                colour = 'r'
+            else:
+                colour = 'g'
+
+        print(f"speed: {speed}%, Sending {delay} {colour}1")
+        ser.write(f"{delay}{colour}1\n".encode('utf-8'))
         time.sleep(1)
 
         return
