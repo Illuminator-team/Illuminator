@@ -75,19 +75,19 @@ class LED_connection(ModelConstructor):
         self.time = time
 
         speed = input_data.get('speed', 0)
+        direction = self.direction
+        print("got speed: ", speed)
+
+        if speed < 0:
+            direction = 1 - direction
+            speed *=-1
 
         if speed <= self.min_speed:
             speed = 0
         elif speed >= self.max_speed:
             speed = 100
-        
-        speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
-
-        direction = self.direction
-
-        if speed < 0:
-            direction = 1 - direction
-            speed *=-1
+        else:
+            speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
 
         self.send_led_animation(speed, direction)
         # self.set_outputs(results)
