@@ -134,7 +134,7 @@ class CSV(ModelConstructor):
             The next simulation time.
         """
         data = self.next_row
-        print("NEW CSV DATA: ", data)
+        # print("NEW CSV DATA: ", data)
         if data is None:
             raise IndexError('End of CSV file reached.')
 

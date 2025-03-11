@@ -1,7 +1,7 @@
 scenario:
   name: "Hydrogen_system_3" # in mosaik so called world
   start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-01 02:00:00' # duration in seconds 
+  end_time: '2012-01-30 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 
@@ -10,21 +10,21 @@ models:
 - name: CSVdemand1
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/demand_1_gernerated_month.csv'
+    file_path: './examples/h2_system_example/demand1_generated.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: CSVdemand2
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/demand_1_gernerated_month.csv'
+    file_path: './examples/h2_system_example/demand2_generated.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: CSVthermolyzer_replacement
   type: CSV
   parameters:
-    file_path: './examples/h2_system_example/thermolyzer_replacement.csv'
+    file_path: './examples/h2_system_example/thermolyzer_replacement_generated.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
@@ -54,9 +54,9 @@ models:
     h2_soc_max: 100
     h2_charge_eff: 100
     h2_discharge_eff: 100
-    max_h2: 100
-    min_h2: 100
-    h2_capacity_tot: 100
+    max_h2: 200
+    min_h2: 200
+    h2_capacity_tot: 1000
   inputs:
     h2_in: 0
     desired_out: 0
@@ -75,8 +75,8 @@ models:
     p_in: 30
     p_out: 500
     T_amb: 293.15
-    compressor_eff: 99
-    max_power_in: 1000
+    compressor_eff: 100
+    max_power_in: 10000
   inputs:
     flow2c: 0
   outputs:
@@ -92,9 +92,9 @@ models:
     h2_soc_max: 100
     h2_charge_eff: 100
     h2_discharge_eff: 100
-    max_h2: 100
-    min_h2: 100
-    h2_capacity_tot: 100
+    max_h2: 200
+    min_h2: 200
+    h2_capacity_tot: 1000
   inputs:
     h2_in: 0
     desired_out: 0
@@ -212,7 +212,7 @@ monitor:
     
     - H2Buffer1.soc
     - H2Buffer1.h2_out
-    - H2Buffer1.free_capacity
+    # - H2Buffer1.free_capacity
     # - compressor1.flow_from_c
     # - H2storage1.h2_in
     # - H2storage1.h2_out 

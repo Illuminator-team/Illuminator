@@ -89,7 +89,7 @@ class H2Controller2(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
         self.current_time = time * self.time_resolution
-        print('from controller %%%%%%%%%%%', self.current_time)
+        # print('from controller %%%%%%%%%%%', self.current_time)
         results = self.control(input_data['demand1'],
                                 input_data['demand2'],
                                 thermolyzer_out=input_data['thermolyzer_out'],
@@ -144,7 +144,7 @@ class H2Controller2(ModelConstructor):
         valve1_ratio3 = 0
         dump = 0
         tot_demand = demand1 + demand2
-        print(f'DEBUG: This is tot_demand as seen from controller: {tot_demand}')
+        # print(f'DEBUG: This is tot_demand as seen from controller: {tot_demand}')
         if tot_demand > 0:  # avoid division by 0
             valve1_ratio1 = demand1 / tot_demand * 100
             valve1_ratio2 = demand2 / tot_demand * 100
@@ -157,11 +157,11 @@ class H2Controller2(ModelConstructor):
             buffer_in -= dump   # what is not dumped goes into the buffer
 
         elif net_flow < -buffer_available_h2:
-            print(f"DEBUG: In controller: net_flow < -buffer_available_h2, namely buffer_available={buffer_available_h2}")
+            # print(f"DEBUG: In controller: net_flow < -buffer_available_h2, namely buffer_available={buffer_available_h2}")
             desired_out = buffer_in + buffer_available_h2
             # desired_out = buffer_available_h2
                              
-        print(f'DEBUG: This is desired_out as seen from controller: {desired_out}')
+        # print(f'DEBUG: This is desired_out as seen from controller: {desired_out}')
         results = { 'dump': dump,
                     'valve1_ratio1': valve1_ratio1,
                     'valve1_ratio2': valve1_ratio2,
