@@ -1,8 +1,8 @@
 scenario:
   name: "Tutorial cluster" # in mosaik so called world
-  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  start_time: '2012-06-01 03:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-01 02:45:00' # duration in seconds 
+  end_time: '2012-06-01 05:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -60,7 +60,12 @@ models:
     pv_gen:
     g_aoi:
   
-
+- name: CSV_wind
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial1/winddata_NL.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: Wind1
   type: Wind # models can reuse the same type
   parameters:
@@ -106,7 +111,7 @@ models:
   #   port: 5123
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.5  # maximum speed for the LED connection (0-100%)
+    max_speed: 0.09  # maximum speed for the LED connection (0-100%)
     direction: 0  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
@@ -173,4 +178,4 @@ connections:
 monitor:
   file: './out_Tutorial_cluster.csv'
   items:
-    - Load1.load_dem
+    - Controller1.flow2bState
