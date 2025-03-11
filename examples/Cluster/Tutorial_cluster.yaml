@@ -59,6 +59,25 @@ models:
   outputs:
     pv_gen:
     g_aoi:
+  
+
+- name: Wind1
+  type: Wind # models can reuse the same type
+  parameters:
+    p_rated: 0.3  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
+    u_cutin: 2.8  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
+    u_cutout: 25  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
+    cp: 0.40  # Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.
+    diameter: 2  # Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.
+    output_type: 'power'  # Output type of the wind generation, either 'power' (kW) or 'energy' (kWh).
+  inputs:
+    u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
+  outputs:
+    wind_gen:  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+  states:
+    u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
 
 
 - name: Battery1
@@ -116,6 +135,8 @@ models:
 connections:
 - from: CSVload.load
   to: Load1.load
+- from: Load1.load_dem
+  to: Controller1.load_dem
 
 - from: CSV_pv.G_Gh # start model, pattern: model_name.output_name/input_name
   to: PV1.G_Gh # end model
@@ -131,14 +152,16 @@ connections:
   to: PV1.FF
 - from: CSV_pv.Az
   to: PV1.Az
-
 - from: PV1.pv_gen
   to: Controller1.pv_gen
-- from: Load1.load_dem
-  to: Controller1.load_dem
+
+- from: CSV_wind.u
+  to: Wind1.u
+- from: Wind1.wind_gen
+  to: Controller1.wind_gen
+
 - from: Battery1.soc
   to: Controller1.soc
-
 
 - from: Controller1.flow2b
   to: Battery1.flow2b
