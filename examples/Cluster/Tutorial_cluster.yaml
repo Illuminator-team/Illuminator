@@ -2,7 +2,7 @@ scenario:
   name: "Tutorial cluster" # in mosaik so called world
   start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  end_time: '2012-06-01 00:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -17,11 +17,25 @@ models:
  
 - name: Load1
   type: Load
-  connect:
-    ip: 127.0.0.1
-    port: 5123
+  # connect:
+  #   ip: 145.94.213.75
+  #   port: 5123
   parameters:
-    houses: 6  # number of houses that determine the total load demand
+    houses: 7  # number of houses that determine the total load demand
+    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  outputs:
+    load_dem: # total energy or power consumption for all houses (kWh) over the time step
+    consumption: # Current energy or power consumption based on the number of houses and input load (kWh)
+
+- name: Load_LED
+  type: LED_connection
+  # connect:
+  #   ip: 145.94.213.75
+  #   port: 5123
+  parameters:
+    houses: 7  # number of houses that determine the total load demand
     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)

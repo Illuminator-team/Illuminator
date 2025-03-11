@@ -69,27 +69,27 @@ class LED_connection(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        send_led_animation()
+        self.send_led_animation()
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
     
 
-def send_led_animation():
-    device = '/dev/ttyACM0'
-    ser = serial.Serial(device, timeout=5)
-    line = ''
+    def send_led_animation(self):
+        device = '/dev/ttyACM0'
+        ser = serial.Serial(device, timeout=5)
+        line = ''
 
-    if ser.in_waiting > 0:
-        line = ser.readline().decode('utf-8').strip()
-        print(line)
-    
-    ser.write('2b1\n'.encode('utf-8'))
-    time.sleep(1)
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').strip()
+            print(line)
+        
+        ser.write('2b1\n'.encode('utf-8'))
+        time.sleep(1)
 
-    return
+        return
 
 
 if __name__ == '__main__':
-    send_led_animation()
-    #mosaik_api.start_simulation(LED_connection(), 'LED connection Simulator')
+    #send_led_animation()
+    mosaik_api.start_simulation(LED_connection(), 'LED connection Simulator')

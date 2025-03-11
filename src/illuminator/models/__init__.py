@@ -30,6 +30,8 @@ from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgen
 from .Agents.operators.operator_v3 import Operator_Market
 from .Agents.justice_agent.justice_agent_v3 import JusticeAgent
 
+from .LED.LED_connection import LED_connection
+
 __all__ = [ 'Adder', 
             'Collector', 
             'CSV',
@@ -48,5 +50,6 @@ __all__ = [ 'Adder',
             'Controller_T4',
             'GenerationCompanyAgent',
             'Operator_Market',
-            'JusticeAgent'
+            'JusticeAgent',
+            'LED_connection'
             ]
