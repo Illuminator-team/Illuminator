@@ -84,7 +84,7 @@ class Wind(ModelConstructor):
             including rated power, cut-in/out speeds, rotor diameter, and
             performance coefficient.
         """
-        super().__init__(**kwargs)
+        result = super().__init__(**kwargs)
         self.u_rated = self.parameters['u_rated']
         self.u_cutin = self.parameters['u_cutin']
         self.u_cutout = self.parameters['u_cutout']
@@ -92,6 +92,7 @@ class Wind(ModelConstructor):
         self.cp = self.parameters['cp']
         self.diameter = self.parameters['diameter']
         self.output_type = self.parameters['output_type']
+        return result
 
 
 
