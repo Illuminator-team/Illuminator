@@ -1,4 +1,5 @@
-from illuminator.builder import ModelConstructor
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # Define the model parameters, inputs, outputs...
 # TODO: Currently if a value or category isn't defined in the yaml
@@ -55,7 +56,7 @@ class Battery(ModelConstructor):
     time=None
 
 
-    def __init__(self, **kwargs):
+    def init(self, *args, **kwargs):
         """
         Initialize the battery model with specified parameters.
 
@@ -79,7 +80,7 @@ class Battery(ModelConstructor):
         -------
         None
         """
-        super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
         self.mod = self._model.states.get('mod')
@@ -91,6 +92,7 @@ class Battery(ModelConstructor):
         self.soc_min = self._model.parameters.get('soc_min')
         self.soc_max = self._model.parameters.get('soc_max')
         self.powerout = 0
+        return result
 
 
 
@@ -303,3 +305,7 @@ class Battery(ModelConstructor):
 
 
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Battery(), 'Battery Simulator')
