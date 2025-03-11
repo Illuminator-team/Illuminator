@@ -95,7 +95,7 @@ class LED_connection(ModelConstructor):
             delay = max(0, min(3, int(3 * speed/100)))  # Maps 0-100% to 0-3, with bounds checking
             delay = round(delay)
 
-            if delay <= 100:
+            if delay >= 3:
                 colour = 'r'
             else:
                 colour = 'g'
