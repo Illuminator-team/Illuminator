@@ -92,14 +92,15 @@ class LED_connection(ModelConstructor):
             colour = 'b'
             delay = 1
         else:
-            delay = max(50, min(500, int(50 + (500-50) * (1 - speed/100))))  # Maps 0-100% to 500-50, with bounds checking
+            delay = max(0, min(3, int(3 * speed/100)))  # Maps 0-100% to 0-3, with bounds checking
+            delay = round(delay)
 
             if delay <= 100:
                 colour = 'r'
             else:
                 colour = 'g'
 
-        print(f"speed: {speed}%, Sending {delay} {colour}1")
+        print(f"speed: {speed}%, Sending {delay}{colour}1")
         ser.write(f"{delay}{colour}1\n".encode('utf-8'))
         time.sleep(1)
 
