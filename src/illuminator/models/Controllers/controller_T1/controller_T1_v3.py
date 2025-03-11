@@ -126,7 +126,7 @@ class Controller_T1(ModelConstructor):
             )
 
         self.set_outputs(results)
-        self.set_outputs({'flow2bState': results['flow2b']})
+        self.set_states({'flow2bState': results['flow2b']})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
