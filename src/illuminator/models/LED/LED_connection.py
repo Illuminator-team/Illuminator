@@ -45,6 +45,7 @@ class LED_connection(ModelConstructor):
         None
         """
         result = super().init(*args, **kwargs)
+        self.state = 0
         return result
 
 
@@ -84,7 +85,18 @@ class LED_connection(ModelConstructor):
             line = ser.readline().decode('utf-8').strip()
             print(line)
         
-        ser.write('2b1\n'.encode('utf-8'))
+        colour = 'r'
+        if self.state == 0:
+            colour = 'r'
+            self.state = 1
+        elif self.state == 1:
+            colour = 'g'
+            self.state = 2
+        elif self.state == 2:
+            colour = 'b'
+            self.state = 0
+
+        ser.write(f"2{colour}1\n".encode('utf-8'))
         time.sleep(1)
 
         return
