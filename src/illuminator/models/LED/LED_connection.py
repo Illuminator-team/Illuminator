@@ -79,7 +79,7 @@ class LED_connection(ModelConstructor):
         return time + self._model.time_step_size
     
 
-    def send_led_animation(self, int: speed) -> None:
+    def send_led_animation(self, speed) -> None:
         device = '/dev/ttyACM0'
         ser = serial.Serial(device, timeout=5)
         line = ''
