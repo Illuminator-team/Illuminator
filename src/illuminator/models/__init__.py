@@ -25,6 +25,8 @@ from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import Cont
 from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
 from .Agents.operators.operator_v3 import Operator_Market
 
+from .LED.LED_connection import LED_connection
+
 __all__ = [ 'Adder', 
             'Collector', 
             'CSV',
@@ -39,5 +41,6 @@ __all__ = [ 'Adder',
             'Controller_T1',
             'ControllerT3Congestion',
             'GenerationCompanyAgent',
-            'Operator_Market'
+            'Operator_Market',
+            'LED_connection'
             ]
