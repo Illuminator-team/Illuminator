@@ -5,7 +5,7 @@ import time
 
 
 
-class Load(ModelConstructor):
+class LED_connection(ModelConstructor):
     """
     Calculates total load demand based on number of houses and input load.
 
@@ -69,20 +69,27 @@ class Load(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        device = '/dev/ttyACM0'
-        ser = serial.Serial(device, timeout=5)
-        line = ''
-
-        if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8').strip()
-            print(line)
-        
-        ser.write('2b1\n'.encode('utf-8'))
-        time.sleep(1)
+        send_led_animation()
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
+    
+
+def send_led_animation():
+    device = '/dev/ttyACM0'
+    ser = serial.Serial(device, timeout=5)
+    line = ''
+
+    if ser.in_waiting > 0:
+        line = ser.readline().decode('utf-8').strip()
+        print(line)
+    
+    ser.write('2b1\n'.encode('utf-8'))
+    time.sleep(1)
+
+    return
 
 
 if __name__ == '__main__':
-    mosaik_api.start_simulation(Load(), 'load Simulator')
+    send_led_animation()
+    #mosaik_api.start_simulation(LED_connection(), 'LED connection Simulator')
