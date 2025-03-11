@@ -34,6 +34,9 @@ models:
   # connect:
   #   ip: 145.94.213.75
   #   port: 5123
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.5  # maximum speed for the LED connection (0-100%)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
 
