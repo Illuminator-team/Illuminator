@@ -90,6 +90,10 @@ class LED_connection(ModelConstructor):
         else:
             speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
 
+        if speed < 0:
+            direction = 1 - direction
+            speed *=-1
+
         self.send_led_animation(speed, direction)
         # self.set_outputs(results)
 
