@@ -22,6 +22,7 @@ class LED_connection(ModelConstructor):
 
     parameters={'min_speed': 0,  # minimum speed for the connection
                 'max_speed': 0.5,  # maximum speed for the connection
+                'direction': 0,  # direction of the connection (towards the unit)
                 }
     inputs={'speed': 0}  # speed for the connection
     outputs={
@@ -48,6 +49,7 @@ class LED_connection(ModelConstructor):
         result = super().init(*args, **kwargs)
         self.min_speed = self.parameters.get('min_speed')
         self.max_speed = self.parameters.get('max_speed')
+        self.direction = self.parameters.get('direction')
         return result
 
 
@@ -81,13 +83,15 @@ class LED_connection(ModelConstructor):
         
         speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
 
-        self.send_led_animation(speed)
+        direction = self.direction
+
+        self.send_led_animation(speed, direction)
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
     
 
-    def send_led_animation(self, speed) -> None:
+    def send_led_animation(self, speed, direction) -> None:
         device = '/dev/ttyACM0'
         ser = serial.Serial(device, timeout=5)
         line = ''
@@ -109,7 +113,7 @@ class LED_connection(ModelConstructor):
                 colour = 'g'
 
         print(f"speed: {speed}%, Sending {delay}{colour}1")
-        ser.write(f"{delay}{colour}1\n".encode('utf-8'))
+        ser.write(f"{delay}{colour}{direction}\n".encode('utf-8'))
         time.sleep(3)
 
         return
