@@ -109,6 +109,8 @@ models:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
     dump:  # Excess power that cannot be stored or used (kW)
+  states:
+    flow2bState: 0  # Power flow to/from battery (positive for charging, negative for discharging)
 
 
 connections:
@@ -141,7 +143,7 @@ connections:
 - from: Controller1.flow2b
   to: Battery1.flow2b
   time_shifted: True
-- from: Controller1.flow2b
+- from: Controller1.flow2bState
   to: Bat_LED.speed
 
 
