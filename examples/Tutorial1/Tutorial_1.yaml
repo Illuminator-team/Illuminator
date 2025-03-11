@@ -154,7 +154,6 @@ connections:
 
 - from: CSV_wind.u
   to: Wind1.u
-
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
 
