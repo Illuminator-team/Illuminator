@@ -107,6 +107,9 @@ class Controller_T1(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
 
+        if 'wind_gen' not in input_data:
+            input_data['wind_gen'] = 0
+
         if self.battery_active:
             results = self.control(
             wind_gen=input_data['wind_gen'],
