@@ -102,7 +102,7 @@ class LED_connection(ModelConstructor):
 
         print(f"speed: {speed}%, Sending {delay}{colour}1")
         ser.write(f"{delay}{colour}1\n".encode('utf-8'))
-        time.sleep(1)
+        time.sleep(3)
 
         return
 
