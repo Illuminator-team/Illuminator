@@ -20,7 +20,8 @@ class LED_connection(ModelConstructor):
         Dictionary containing calculated load demand values
     """
 
-    parameters={
+    parameters={'min_speed': 0,  # minimum speed for the connection
+                'max_speed': 0.5,  # maximum speed for the connection
                 }
     inputs={'speed': 0}  # speed for the connection
     outputs={
@@ -45,6 +46,8 @@ class LED_connection(ModelConstructor):
         None
         """
         result = super().init(*args, **kwargs)
+        self.min_speed = self.parameters.get('min_speed')
+        self.max_speed = self.parameters.get('max_speed')
         return result
 
 
@@ -69,9 +72,14 @@ class LED_connection(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        speed = input_data.get('speed', 0) * 100
-        if speed > 100:
+        speed = input_data.get('speed', 0)
+
+        if speed <= self.min_speed:
+            speed = 0
+        elif speed >= self.max_speed:
             speed = 100
+        
+        speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
 
         self.send_led_animation(speed)
         # self.set_outputs(results)
