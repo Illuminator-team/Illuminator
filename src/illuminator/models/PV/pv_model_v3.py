@@ -1,5 +1,6 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
 import numpy as np
+import mosaik_api_v3 as mosaik_api
 
 # construct the model
 class PV(ModelConstructor):
@@ -63,11 +64,12 @@ class PV(ModelConstructor):
         "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
         "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
         }
-    states={'pv_gen': 0}
+    states={'pv_genState': 0
+            }
     time_step_size=1
     time=None
 
-    def __init__(self, **kwargs) -> None:
+    def init(self, *args, **kwargs) -> None:
         """
         Initialize the PV model with the provided parameters.
 
@@ -76,7 +78,7 @@ class PV(ModelConstructor):
         kwargs : dict
             Additional keyword arguments to initialize the model.
         """
-        super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.cap = self._model.parameters.get('cap')
         self.output_type = self._model.parameters.get('output_type')
         self.NOCT = self._model.parameters.get('NOCT')
@@ -97,6 +99,7 @@ class PV(ModelConstructor):
         self.sun_az = 0
         self.svf = 0
         self.g_aoi = 0
+        return result
 
 
     def step(self, time: int, inputs:dict=None, max_advance:int=900) -> None:
@@ -368,3 +371,6 @@ class PV(ModelConstructor):
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(PV(), 'PV Simulator')

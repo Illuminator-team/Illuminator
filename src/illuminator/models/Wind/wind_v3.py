@@ -1,5 +1,6 @@
 from numpy import log, pi
-from illuminator.builder import ModelConstructor
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # construct the model
 class Wind(ModelConstructor):
@@ -58,7 +59,7 @@ class Wind(ModelConstructor):
     u25 = 0  # Wind speeds adjusted for different heights (e.g., 60m and 25m) using logarithmic wind profile equations.
 
 
-    def __init__(self, **kwargs) -> None:
+    def init(self, *args, **kwargs) -> None:
         """
         Initialize the Wind model with the provided parameters.
 
@@ -69,7 +70,7 @@ class Wind(ModelConstructor):
             including rated power, cut-in/out speeds, rotor diameter, and
             performance coefficient.
         """
-        result = super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.u_rated = self.parameters['u_rated']
         self.u_cutin = self.parameters['u_cutin']
         self.u_cutout = self.parameters['u_cutout']
@@ -185,4 +186,8 @@ class Wind(ModelConstructor):
         else:
             re_params = self.production(u)
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Wind(), 'Wind Simulator')
 

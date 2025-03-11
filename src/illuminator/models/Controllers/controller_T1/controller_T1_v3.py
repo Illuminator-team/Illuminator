@@ -1,4 +1,5 @@
-from illuminator.builder import ModelConstructor
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # construct the model
 class Controller_T1(ModelConstructor):
@@ -61,7 +62,7 @@ class Controller_T1(ModelConstructor):
     time = None
 
 
-    def __init__(self, **kwargs) -> None:
+    def init(self, *args, **kwargs) -> None:
         """
         Initialize the Controller model with the provided parameters.
 
@@ -69,7 +70,7 @@ class Controller_T1(ModelConstructor):
         ----------
         kwargs
         """
-        super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.soc_min = self.parameters['soc_min']  # Minumum state of charge of the battery before discharging stops (%)
         self.soc_max = self.parameters['soc_max']  # Maximum state of charge of the battery before charging stops (%)
         self.max_p = self.parameters['max_p']  # Maximum power to/from the battery [kW]
@@ -77,6 +78,7 @@ class Controller_T1(ModelConstructor):
         self.flow_b = 0  # Internal state representing the power flow to/from battery
         self.dump = 0  # Internal state representing excess power
         self.res_load = 0  # Internal state representing the residual load
+        return result
 
 
 
@@ -185,3 +187,7 @@ class Controller_T1(ModelConstructor):
         else:
             re_params = {'res_load': self.res_load,'dump': self.dump}
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Controller_T1(), 'Controller T1 Simulator')
