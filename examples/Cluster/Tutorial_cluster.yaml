@@ -37,9 +37,9 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: PV1
   type: PV # models can reuse the same type
-  # connect:
-  #   ip: 127.0.0.1
-  #   port: 5000
+  connect:
+    ip: 145.94.130.178
+    port: 5123
   parameters:
     m_area: 1.26  # m2
     NOCT: 44  # Celcius
@@ -64,6 +64,17 @@ models:
     g_aoi:
   states:
     pv_genState: 0
+# - name: Bat_LED
+#   type: LED_connection
+#   # connect:
+#   #   ip: 145.94.213.75
+#   #   port: 5123
+#   parameters:
+#     min_speed: 0  # minimum speed for the LED connection (0-100%)
+#     max_speed: 0.09  # maximum speed for the LED connection (0-100%)
+#     direction: 0  # direction of the LED connection (0=towards the white connector)
+#   inputs:
+#     speed: 0  # speed for the LED connection (0-100%)
   
 - name: CSV_wind
   type: CSV
