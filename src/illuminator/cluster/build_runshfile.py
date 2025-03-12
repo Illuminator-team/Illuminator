@@ -5,14 +5,14 @@ from illuminator.schema.simulation import load_config_file
 
 # Constants
 DEFAULT_PORT = 5123
-RUN_PATH = './Desktop/illuminatorclient/configuration/runshfile/'
-RUN_MODEL = '/home/illuminator/Desktop/Final_illuminator'
+RUN_PATH = './Illuminator/configuration/runshfile/'
+RUN_MODEL = '/home/Raspinator/Illuminator/src/illuminator/models/'
 RUN_FILE = 'run.sh'
 
 
 def build_run_command(model_type, connect_ip, connect_port):
     """Builds the SSH run command for a given model."""
-    return f"lxterminal -e ssh illuminator@{connect_ip} '{RUN_PATH}run{model_type}.sh {connect_ip} {connect_port} {RUN_MODEL}'&"
+    return f"lxterminal -e ssh Raspinator@{connect_ip} '{RUN_PATH}run{model_type}.sh {connect_ip} {connect_port} {RUN_MODEL}'&"
 
 def process_models(data, output_file):
     """Processes each model in the YAML data and writes the commands to a file."""
