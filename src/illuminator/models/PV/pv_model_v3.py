@@ -132,6 +132,7 @@ class PV(ModelConstructor):
         results = self.output()
 
         self.set_outputs({'pv_gen': results['pv_gen']})
+        self.set_states({'pv_genState': results['pv_gen']})
 
         return time + self._model.time_step_size
 
