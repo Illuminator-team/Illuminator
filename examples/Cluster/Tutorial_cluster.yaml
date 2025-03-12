@@ -38,7 +38,7 @@ models:
 - name: PV1
   type: PV # models can reuse the same type
   connect:
-    ip: 145.94.130.178
+    ip: 192.168.27.161
     port: 5123
   parameters:
     m_area: 1.26  # m2
@@ -67,7 +67,7 @@ models:
 - name: PV_LED
   type: LED_connection
   connect:
-    ip: 145.94.130.178
+    ip: 192.168.27.161
     port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
@@ -84,9 +84,9 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: Wind1
   type: Wind # models can reuse the same type
-  # connect:
-  #   ip: 127.0.0.1
-  #   port: 5001
+  connect:
+    ip: 192.168.27.19
+    port: 5001
   parameters:
     p_rated: 0.3  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
     u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
@@ -101,7 +101,19 @@ models:
     wind_gen:  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
     u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
   states:
+    wind_genState: 0  # Wind power generation state (kW) based on the chosen output type (power or energy).
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
+- name: Wind_LED
+  type: LED_connection
+  connect:
+    ip: 192.168.27.19 
+    port: 5124
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.5  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
 
 
 - name: Battery1
@@ -191,6 +203,8 @@ connections:
   to: Wind1.u
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
+- from: Wind1.wind_genState
+  to: Wind_LED.speed
 
 - from: Battery1.soc
   to: Controller1.soc
