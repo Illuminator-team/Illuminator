@@ -86,7 +86,7 @@ models:
   type: Wind # models can reuse the same type
   connect:
     ip: 192.168.27.19
-    port: 5001
+    port: 5123
   parameters:
     p_rated: 0.3  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
     u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
