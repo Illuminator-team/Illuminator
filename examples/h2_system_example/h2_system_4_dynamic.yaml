@@ -1,0 +1,179 @@
+connections:
+- from: CSVdemand1.demand
+  to: H2demand1.demand
+- from: CSVdemand2.demand
+  to: H2demand2.demand
+- from: H2demand1.tot_dem
+  to: H2_controller.demand1
+- from: H2demand2.tot_dem
+  to: H2_controller.demand2
+- from: CSVthermolyzer_replacement.h2_gen
+  to: H2_controller.thermolyzer_out
+- from: H2Buffer1.available_h2
+  to: H2_controller.buffer_available_h2
+- from: H2Buffer1.free_capacity
+  to: H2_controller.buffer_free_capacity
+- from: H2_controller.buffer_in
+  time_shifted: true
+  to: H2Buffer1.h2_in
+- from: H2_controller.desired_out
+  time_shifted: true
+  to: H2Buffer1.desired_out
+- from: H2_controller.desired_out
+  time_shifted: true
+  to: H2Buffer2.desired_out
+- from: H2Buffer1.h2_out
+  to: compressor1.flow2c
+- from: compressor1.flow_from_c
+  to: H2Buffer2.h2_in
+- from: H2Buffer2.h2_out
+  to: H2valve1.h2_in
+- from: H2_controller.valve1_ratio1
+  time_shifted: true
+  to: H2valve1.ratio1
+- from: H2_controller.valve1_ratio2
+  time_shifted: true
+  to: H2valve1.ratio2
+- from: H2_controller.valve1_ratio3
+  time_shifted: true
+  to: H2valve1.ratio3
+models:
+- name: CSVdemand1
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/h2_system_example/demand1_generated.csv
+  type: CSV
+- name: CSVdemand2
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/h2_system_example/demand2_generated.csv
+  type: CSV
+- name: CSVthermolyzer_replacement
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/h2_system_example/thermolyzer_replacement_generated.csv
+  type: CSV
+- inputs:
+    buffer_available_h2: 0
+    buffer_free_capacity: 0
+    demand1: 0
+    demand2: 0
+    thermolyzer_out: 0
+  name: H2_controller
+  outputs:
+    buffer_in: 0
+    desired_out: 0
+    dump: 0
+  parameters:
+    dummy: 0
+  states:
+    valve1_ratio1: 0
+    valve1_ratio2: 0
+    valve1_ratio3: 0
+  type: H2Controller2
+- inputs:
+    desired_out: 0
+    h2_in: 0
+  name: H2Buffer1
+  outputs:
+    actual_h2_in: 0
+    h2_out: 0
+  parameters:
+    h2_capacity_tot: 200.00000001
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    h2_soc_max: 100
+    h2_soc_min: 0
+    max_h2: 200
+    min_h2: 200
+  states:
+    available_h2: 0
+    flag: 0
+    free_capacity: 0
+    soc: 80
+  type: H2Buffer
+- inputs:
+    flow2c: 0
+  name: compressor1
+  outputs:
+    flow_from_c: 0
+  parameters:
+    T_amb: 293.15
+    compressor_eff: 100
+    max_power_in: 10000
+    p_in: 30
+    p_out: 500
+  states:
+    power_req: 0
+    volume_flow_out: 0
+  type: Compressor
+- inputs:
+    desired_out: 0
+    h2_in: 0
+  name: H2Buffer2
+  outputs:
+    actual_h2_in: 0
+    h2_out: 0
+  parameters:
+    h2_capacity_tot: 1000
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    h2_soc_max: 100
+    h2_soc_min: 0
+    max_h2: 200
+    min_h2: 200
+  states:
+    available_h2: 0
+    flag: 0
+    free_capacity: 0
+    soc: 80
+  type: H2Buffer
+- inputs:
+    h2_in: 0
+    ratio1: 0
+    ratio2: 0
+    ratio3: 0
+  name: H2valve1
+  outputs:
+    out1: 0
+    out2: 0
+    out3: 0
+  parameters:
+    valve_eff: 100
+  type: H2Valve
+- inputs:
+    demand: 0
+  name: H2demand1
+  parameters:
+    units: 1
+  states:
+    tot_dem: 0
+  type: H2demand
+- inputs:
+    demand: 0
+  name: H2demand2
+  parameters:
+    units: 1
+  states:
+    tot_dem: 0
+  type: H2demand
+monitor:
+  file: ./examples/h2_system_example/h2_system_example4.csv
+  items:
+  - H2demand1.tot_dem
+  - H2demand2.tot_dem
+  - compressor1.flow_from_c
+  - H2valve1.out1
+  - H2valve1.out2
+  - H2_controller.dump
+  - H2_controller.desired_out
+  - H2Buffer1.soc
+  - H2Buffer1.h2_out
+scenario:
+  end_time: '2012-01-30 23:45:00'
+  name: Hydrogen_system_4
+  start_time: '2012-01-01 00:00:00'
+  time_resolution: 900
