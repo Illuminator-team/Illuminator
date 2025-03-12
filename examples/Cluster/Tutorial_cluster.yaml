@@ -37,6 +37,9 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: PV1
   type: PV # models can reuse the same type
+  # connect:
+  #   ip: 127.0.0.1
+  #   port: 5000
   parameters:
     m_area: 1.26  # m2
     NOCT: 44  # Celcius
@@ -59,6 +62,8 @@ models:
   outputs:
     pv_gen:
     g_aoi:
+  states:
+    pv_genState: 0
   
 - name: CSV_wind
   type: CSV
@@ -68,6 +73,9 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: Wind1
   type: Wind # models can reuse the same type
+  # connect:
+  #   ip: 127.0.0.1
+  #   port: 5001
   parameters:
     p_rated: 0.3  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
     u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
@@ -87,6 +95,9 @@ models:
 
 - name: Battery1
   type: Battery # models can reuse the same type
+  # connect:
+  #   ip: 127.0.0.1
+  #   port: 5002
   parameters:
     max_p: 0.8  # maximum charging power limit (kW)
     min_p: -0.8  # maximum discharging power limit (kW)
@@ -118,6 +129,9 @@ models:
 
 - name: Controller1
   type: Controller_T1 # models can reuse the same type
+  # connect:
+  #   ip: 127.0.0.1
+  #   port: 5003
   parameters:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
