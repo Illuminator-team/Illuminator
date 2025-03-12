@@ -64,17 +64,17 @@ models:
     g_aoi:
   states:
     pv_genState: 0
-# - name: Bat_LED
-#   type: LED_connection
-#   # connect:
-#   #   ip: 145.94.213.75
-#   #   port: 5123
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.09  # maximum speed for the LED connection (0-100%)
-#     direction: 0  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
+- name: PV_LED
+  type: LED_connection
+  connect:
+    ip: 145.94.130.178
+    port: 5124
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.5  # maximum speed for the LED connection (0-100%)
+    direction: 0  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
   
 - name: CSV_wind
   type: CSV
@@ -184,6 +184,8 @@ connections:
   to: PV1.Az
 - from: PV1.pv_gen
   to: Controller1.pv_gen
+- from: PV1.pv_genState
+  to: PV_LED.speed
 
 - from: CSV_wind.u
   to: Wind1.u
