@@ -106,11 +106,11 @@ models:
 - name: Wind_LED
   type: LED_connection
   connect:
-    ip: 192.168.27.19 
+    ip: 192.168.27.19 # IP address
     port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.5  # maximum speed for the LED connection (0-100%)
+    max_speed: 0.2  # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
