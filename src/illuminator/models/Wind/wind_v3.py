@@ -48,7 +48,8 @@ class Wind(ModelConstructor):
              'u': 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
              }
     states={'u60': 10,  # Wind speeds adjusted for 60m height using logarithmic wind profile equations.
-            'u25': 0  # Wind speeds adjusted for 25m height using logarithmic wind profile equations.
+            'u25': 0,  # Wind speeds adjusted for 25m height using logarithmic wind profile equations.
+            'wind_genState': 0
             }
 
     # define other attributes
@@ -100,7 +101,7 @@ class Wind(ModelConstructor):
         results = self.generation(u=input_data['u'])
 
         self.set_outputs(results)
-        self.set_states({'u60': self.u60})
+        self.set_states({'u60': self.u60, 'wind_genState': results['wind_gen']})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
