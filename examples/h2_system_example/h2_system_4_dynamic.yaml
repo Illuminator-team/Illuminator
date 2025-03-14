@@ -10,14 +10,14 @@ connections:
 - from: CSVthermolyzer_replacement.h2_gen
   to: H2_controller.thermolyzer_out
 - from: H2Buffer1.available_h2
+  time_shifted: true
   to: H2_controller.buffer_available_h2
 - from: H2Buffer1.free_capacity
+  time_shifted: true
   to: H2_controller.buffer_free_capacity
 - from: H2_controller.buffer_in
-  time_shifted: true
   to: H2Buffer1.h2_in
 - from: H2_controller.desired_out
-  time_shifted: true
   to: H2Buffer1.desired_out
 - from: H2_controller.desired_out
   time_shifted: true
@@ -82,13 +82,13 @@ models:
     actual_h2_in: 0
     h2_out: 0
   parameters:
-    h2_capacity_tot: 200.00000001
+    h2_capacity_tot: 1499.99999999
     h2_charge_eff: 100
     h2_discharge_eff: 100
     h2_soc_max: 100
     h2_soc_min: 0
-    max_h2: 200
-    min_h2: 200
+    max_h2: 230
+    min_h2: 0
   states:
     available_h2: 0
     flag: 0

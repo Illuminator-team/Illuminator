@@ -43,7 +43,8 @@ def random_demand(seed):
             pause_time = np.random.randint(0, 4)
             index += pause_time
             h2_demand_load = np.random.randint(low=min_h2_per_truck, high=max_h2_per_truck)
-            load_time = int(h2_demand_load / 80)
+            load_time = int(h2_demand_load / np.random.uniform(low=h2_per_timestep * (1-0.1), high=h2_per_timestep * (1+0.1)))
+            # load_time = int(h2_demand_load / h2_per_timestep)
             new_index = index + load_time
             demand[index:new_index] = h2_demand_load / load_time
             index = new_index

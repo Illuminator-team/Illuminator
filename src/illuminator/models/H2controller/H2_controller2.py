@@ -151,17 +151,17 @@ class H2Controller2(ModelConstructor):
         desired_out = tot_demand
         buffer_in = thermolyzer_out
         net_flow = buffer_in - desired_out  # pos for charging, neg for discharging
-
+        # print(f'DEBUG: this is net_flow as seen from controller: {net_flow}\n')
         if net_flow > buffer_free_capacity:
-            dump = thermolyzer_out - buffer_free_capacity
+            dump = net_flow - buffer_free_capacity
             buffer_in -= dump   # what is not dumped goes into the buffer
-
+            # print(f'buffer_in after dump: {buffer_in}')
         elif net_flow < -buffer_available_h2:
             # print(f"DEBUG: In controller: net_flow < -buffer_available_h2, namely buffer_available={buffer_available_h2}")
             desired_out = buffer_in + buffer_available_h2
             # desired_out = buffer_available_h2
                              
-        # print(f'DEBUG: This is desired_out as seen from controller: {desired_out}')
+        # print(f'DEBUG: This is dump as seen from controller: {dump}')
         results = { 'dump': dump,
                     'valve1_ratio1': valve1_ratio1,
                     'valve1_ratio2': valve1_ratio2,

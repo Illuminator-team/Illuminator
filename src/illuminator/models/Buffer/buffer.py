@@ -73,8 +73,8 @@ class H2Buffer(ModelConstructor):
         self.h2_capacity_tot = self._model.parameters.get('h2_capacity_tot')
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
-        self.h2_charge_cap = self._model.states.get('available_h2')
-        self.h2_discharge_cap = self._model.states.get('free_capacity')
+        # self.h2_charge_cap = self._model.states.get('available_h2')
+        # self.h2_discharge_cap = self._model.states.get('free_capacity')
         self.cap_calc()
 
     def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:

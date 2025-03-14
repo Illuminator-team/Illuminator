@@ -55,7 +55,7 @@ models:
     h2_charge_eff: 100
     h2_discharge_eff: 100
     max_h2: 200
-    min_h2: 200
+    min_h2: 0
     h2_capacity_tot: 1000
   inputs:
     h2_in: 0
@@ -157,14 +157,16 @@ connections:
 
 - from: H2Buffer1.available_h2
   to: H2_controller.buffer_available_h2
+  time_shifted: True
 - from: H2Buffer1.free_capacity
-  to: H2_controller.buffer_free_capacity
+  to: H2_controller.buffer_free_capacity 
+  time_shifted: True
 - from: H2_controller.buffer_in
   to: H2Buffer1.h2_in
-  time_shifted: True
+  # time_shifted: True
 - from: H2_controller.desired_out
   to: H2Buffer1.desired_out
-  time_shifted: True
+  # time_shifted: True
 
 # TODO: This is test and may be solved differently:
 - from: H2_controller.desired_out
