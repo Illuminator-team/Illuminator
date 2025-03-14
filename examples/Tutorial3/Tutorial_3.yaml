@@ -69,7 +69,7 @@ models:
   type: LoadEV
   parameters:
     houses_case: 10  # number of houses that determine the total load demand
-    houses_data: 1
+    houses_data: 10
   inputs:
     power: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
     n: 1
@@ -80,7 +80,7 @@ models:
   type: LoadHeatpump
   parameters:
     houses_case: 10  # number of houses that determine the total load demand
-    houses_data: 1
+    houses_data: 10
   inputs:
     hp_load: 0  # incoming power demand per house (kWh) for each time step (15 minutes)
   outputs:

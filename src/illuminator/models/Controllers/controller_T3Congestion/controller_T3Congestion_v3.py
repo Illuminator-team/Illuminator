@@ -47,7 +47,10 @@ class ControllerT3Congestion(ModelConstructor):
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops
                 'max_p': 100,  # Maximum power to/from the battery
-                'gridconnect_ctrl': 15  #kW connection capacity
+                'gridconnect_ctrl': 15,  #kW connection capacity
+                'battery_active': True,
+                'elec_assets': True,
+                'load_shift_active': True # if true the controller shifts the load after receiving a flag warning
                 }
     inputs={'wind_gen': 0,  # Wind power generation
             'pv_gen': 0,  # Solar power generation
@@ -81,17 +84,14 @@ class ControllerT3Congestion(ModelConstructor):
         self.soc_min = self.parameters['soc_min']  # Minumum state of charge of the battery before discharging stops (%)
         self.soc_max = self.parameters['soc_max']  # Maximum state of charge of the battery before charging stops (%)
         self.max_p = self.parameters['max_p']  # Maximum power to/from the battery [kW]
+        self.battery_active = self.parameters['battery_active']
+        self.elec_assets = self.parameters['elec_assets'] # True if electrified assets
+        self.load_shift_active = self.parameters['load_shift_active']
         self.flow_b = 0  # Internal state representing the power flow to/from battery
         self.dump = 0  # Internal state representing excess power
         self.res_load = 0  # Internal state representing the residual load
-        self.bat_active = 1  # Internal state representing the battery status
         self.gridconnect_ctrl = self.parameters['gridconnect_ctrl']
         self.load_shift = 0
-
-        if self.soc_min is not None  and  self.soc_max is not None:
-            self.bat_active = 1
-        else:
-            self.bat_active = 0
 
         if self.gridconnect_ctrl is not None:
             self.limit_grid_connect = self.gridconnect_ctrl * 0.7
@@ -123,15 +123,31 @@ class ControllerT3Congestion(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
 
-        results = self.control(
-            wind_gen=input_data['wind_gen'],
-            pv_gen=input_data['pv_gen'],
-            load_dem=input_data['load_dem'],
-            soc=input_data['soc'],
-            load_EV=input_data['load_EV'],
-            load_HP=input_data['load_HP'],
-            flag_warning=input_data['flag_warning']
-            )
+        if self.elec_assets:
+            results = self.control(
+                wind_gen=input_data['wind_gen'],
+                pv_gen=input_data['pv_gen'],
+                load_dem=input_data['load_dem'],
+                soc=input_data['soc'],
+                load_EV=input_data['load_EV'],
+                load_HP=input_data['load_HP'],
+                flag_warning=input_data['flag_warning']
+                )
+        else:
+            if self.battery_active:
+                results = self.control(
+                    wind_gen=input_data['wind_gen'],
+                    pv_gen=input_data['pv_gen'],
+                    load_dem=input_data['load_dem'],
+                    soc=input_data['soc']
+                )
+
+            else:
+                results = self.control(
+                    wind_gen=input_data['wind_gen'],
+                    pv_gen=input_data['pv_gen'],
+                    load_dem=input_data['load_dem']
+                )
 
         self.set_outputs(results)
 
@@ -182,14 +198,16 @@ class ControllerT3Congestion(ModelConstructor):
         else:
             self.res_load = load_dem - wind_gen - pv_gen  # kW
 
-        if self.res_load < self.limit_grid_connect:
-            extra_load_allowed = min(self.limit_grid_connect-self.res_load,self.limit_grid_connect)
-            additional_load = min(extra_load_allowed, self.load_shift)
-            print('additional load: ' + str(additional_load))
-            self.res_load = self.res_load + additional_load
-            self.load_shift -= additional_load
+        if self.load_shift_active == True:
 
-        if self.bat_active == 1:
+            if self.res_load < self.limit_grid_connect:
+                extra_load_allowed = min(self.limit_grid_connect-self.res_load,self.limit_grid_connect)
+                additional_load = min(extra_load_allowed, self.load_shift)
+                print('additional load: ' + str(additional_load))
+                self.res_load = self.res_load + additional_load
+                self.load_shift -= additional_load
+
+        if self.battery_active:
             if self.res_load > 0:
                 # demand not satisfied -> discharge battery if possible
                 if soc > self.soc_min:  # checking if soc is above minimum
@@ -222,7 +240,7 @@ class ControllerT3Congestion(ModelConstructor):
         else:
             self.dump = - self.res_load
 
-        if flag_warning == 1:
+        if self.load_shift_active == True and flag_warning == 1:
             print('enter flag condition')
             overload = (-self.dump) - self.limit_grid_connect
             self.load_shift += min(overload, load_HP + load_EV)
