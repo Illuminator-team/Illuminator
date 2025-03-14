@@ -9,5 +9,5 @@ The main idea of this line of development is to simplify the number of steps req
 3. **Business logic for cluster scenarios:** shall develop the business logic to use the information in (`connect`) in the [scenario configuration file](../user/config-file.md) to start simulators on the clienst; such that, for example, calling `illuminator cluster <scenario.yaml>` reads on which client a model should be started, and start the relevant simulators on that client and runs the simulation.
 
 :::{note}
-The ideas above can be use by contributors to participate in the development of *Illuminator*. Better ideas and solutions always welcome. Please contact the [Illuminator Development Team](mailto:illuminator@tudelft.nl) if you want to contribute.
+The ideas above can be used by contributors to participate in the development of the *Illuminator*. Feedback and solutions are always welcome. Please contact the [Illuminator Development Team](mailto:illuminator@tudelft.nl) if you would like to contribute.
 :::

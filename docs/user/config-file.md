@@ -1,6 +1,6 @@
 # Simulation Configuration File
 
-Simulation scenarios for the *Illuminator* are define using configuration files written in YAML. The structure of a configuration must be as in the example below. 
+Simulation scenarios for the *Illuminator* are defined using configuration files written in YAML. The structure of a configuration must be as in the example below. 
 
 A *simulation file* has four main sections:
 
@@ -12,57 +12,51 @@ A *simulation file* has four main sections:
 ## Example 
 
 The following is an example to explain the basic format of a configuration file. 
-See the table below a description of each keyword and their default values. Optinal keywords can be ommitted, in those case the defaults will be used. 
+A description of each keyword and their default values can be found in the table below. 
+
+Optinal keywords can be ommitted, in those cases the defaults will be used. 
 
 
 ```yaml
-# An example of a configuration file for a simuation. Won't run successfully.
 scenario:
-  name: "ScenarioTest" # name for the similation
-  start_time: '2012-01-01 00:00:00' # ISO 8601 start time 
-  end_time: '2012-01-01 01:00:00'  
-  time_resolution: 900 # time step in seconds (optional).
-models: # list of models for the energy system
+  name: "WindTest" # in mosaik so called world
+  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-01-01 01:00:00' # ISO 8601 end time of the simulation 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+models: # list of models for the energy network
 - name: CSVB # name for the model (must be unique)
-  type: CSV # name the model type in the Illuminator
-  parameters:  # vary per model type
-    start: '2012-01-01 00:00:00' 
-    datafile: './tests/data/solar-sample.csv' 
-- name: PV
-  type: PvAdapter 
-  inputs:  # vary per model type (optional)
-    G_Gh: null 
-    G_Dh: null
+  type: CSV # type of the model registered in the Illuminator
+  parameters: # a CSV model must have a start time and a file as its parameters
+    start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+    file_path: './examples/wind_test.csv' # path to the file with the data
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: Wind1
+  type: Wind # models can reuse the same type
+  parameters:
+    p_rated: 73548  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    u_rated: 100  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
+    u_cutin: 1  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
+    u_cutout: 1000  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
+    cp: 0.40  # Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.
+    diameter: 30  # Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.
+    output_type: 'power'  # Output type of the wind generation, either 'power' (kW) or 'energy' (kWh).
+  inputs:
+    u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
   outputs:
-    G_Gh: null
-  states:
-    state1: null
-    state2: null
-  triggers:
-    - D_Dh
-    - state2
-  connect: # necessary for running a simulation in a Raspberry Pi cluster
-    ip: 168.192.0.3  # IP of client machine
-    port: 5000 
+    wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+
 connections:
-- from: CSVB.G_Gh # origin model, format: model_name.output_name
-  to: PV.G_Gh # destinatioin model, format: model_name.input_name
-- from: CSVB.G_Dh
-  to: PV.G_Dh
-- from: CSVB.G_Bn
-  to: PV.G_Bn
-- from: CSVB.Ta
-  to: PV.Ta
-- from: CSVB.hs
-  to: PV.hs
-- from: CSVB.FF
-  to: PV.FF
-- from: CSVB.Az
-  to: PV.Az
+- from: CSVB.u
+  to: Wind1.u
+
 monitor:
-  file: './out.csv' # file where items are saved during simualation (optional)
+  file: './out_Wind.csv'
   items:
-  - PV.pv_gen  # List of inputs, outputs or states to monitor
+  - Wind1.wind_gen
+  - Wind1.u
 ```
 
 

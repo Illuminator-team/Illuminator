@@ -1,8 +1,8 @@
-# Simulations
+# Running Simulations
 
-Simulations can be directly from Python or suing the *command line interface* (CLI).
+Simulations can be directly run in a python script or using the *command line interface* (CLI).
 
-## Python Interface
+## Python Script
 
 To run a simulation from Python, you need to provide a [configuration file](./config-file.md). Then you can start the simulation as follows:
 
@@ -14,10 +14,9 @@ simulation.run()
 
 ```
 
-## CLI
+## Command Line
 
-You can use the commands `scenario run` to start a simulation from the terminal:
-
+You can use the command `scenario run` to start a simulation from the terminal:
 
 ```shell
 illuminator scenario run <path/to/config.yaml>
