@@ -488,6 +488,70 @@ class Simulation:
     def config(self)-> dict:
         """Returns the configuration file for the simulation."""
         return self.config_file
+    
+    def set_scenario_param(self, parameter: str, value)-> None:
+        """
+        Sets a parameter value in the scenario section of the simulation configuration.
+
+        Parameters
+        ----------
+        parameter : str
+            Name of the parameter to set
+        value : any
+            New value for the parameter
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If parameter is not found in scenario configuration
+        """
+
+        if parameter not in self.config['scenario']:
+            available_params = ', '.join(self.config['scenario'].keys())
+            raise KeyError(f"Parameter {parameter} not found in scenario. Available parameters: {available_params}")
+        
+        self.config['scenario'][parameter] = value
+        return
+    
+
+    def set_model_state(self, model_name: str, state: str, value)-> None:
+        """
+        Sets a state value for a specific model in the simulation configuration.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to modify
+        state : str
+            Name of the state to set
+        value : any
+            New value for the state
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If model_name or state is not found in configuration
+        """
+        for i, model in enumerate(self.config['models']):
+            if model['name'] == model_name:
+                if state not in self.config['models'][i]['states']:
+                    available_states = ', '.join(model['states'].keys())
+                    raise KeyError(f"State '{state}' not found in model '{model_name}'. Available states: {available_states}")
+                
+                self.config['models'][i]['states'][state] = value
+                return
+        raise KeyError(f"Model '{model_name}' not found. Available models: {[m['name'] for m in self.config['models']]}")
+
 
     def set_model_param(self, model_name: str, parameter: str, value)-> None:
         """

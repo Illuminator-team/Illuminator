@@ -6,17 +6,18 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "3.0.0-beta"
+version = "3.0.0-beta.3"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
-readme = "README.md"
+readme = "readme.md"
 requires-python = ">=3.8"
 authors = [
-    { name = "A. Fu"},
+    { name = "Jort Groen"},
+    { name = "Despoina Georgiadi"},
     { name = "Josip Grguric"},
     { name = "Joan Pijpker"},
-    { name = "Manuel Garcia Alvarez", email = "gilbert.mg22@gmail.com"},
-    { name = "Mano Rom"}
+    { name = "Manuel Garcia Alvarez"},
+    { name = "Mano Rom"},
 ]
 maintainers = [
     { name = "Illuminator Team", email = "illuminator@tudelft.nl"}

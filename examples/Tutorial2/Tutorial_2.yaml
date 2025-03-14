@@ -60,10 +60,9 @@ models:
   type: Operator_Market
   parameters:
     demand: 3000
+    results_dir: './results_operator'
   inputs:
     bids: {}
-  outputs:
-    results: {}
   states:
     market_clearing_price: 0
 
