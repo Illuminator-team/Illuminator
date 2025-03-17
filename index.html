@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Illuminator documentation &mdash; Illuminator 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=857d7e63" />
@@ -52,13 +52,19 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster-setup.html">Cluster Pi Setup</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="user/models.html">Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul>
@@ -68,7 +74,7 @@
 <li class="toctree-l1"><a class="reference internal" href="developer/testing-explained.html">Testing: basic principles and ideas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer/writing-tests.html">Creating/writing tests</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developer/dev-cluster-setup.html">Cluster Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer/dev-dashboard.html">Dashboard</a></li>
@@ -76,7 +82,6 @@
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="references/scenario-api.html">Scenario API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
 </ul>
 
         </div>
@@ -121,43 +126,35 @@ and the simulation engine is based on <a class="reference external" href="https:
 <li class="toctree-l2"><a class="reference internal" href="quick-start.html#contact-and-support">Contact and Support</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cluster-setup.html">Cluster Pi Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cluster-setup.html#hardware-requirements">Hardware Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cluster-setup.html#set-up">Set up</a></li>
-</ul>
-</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="user/models.html">Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#battery-storage">Battery storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#electric-boiler">Electric Boiler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#electrolyser">Electrolyser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#fuel-cell">Fuel Cell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#hydrogen-storage">Hydrogen Storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#heat-pump">Heat Pump</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#heat-storage">Heat Storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#pv-model">PV Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#wind-model">Wind Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#load-heat-demand-heat-product-hydrogen-product-and-hydrogen-demand">Load, Heat demand, Heat Product, Hydrogen product and Hydrogen demand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#electricity-network-hydrogen-network-and-heat-network">Electricity network, Hydrogen network and Heat network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/models.html#distribution-network">Distribution network</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user/config-file.html#example">Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Simulations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user/simulations.html#python-interface">Python Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/simulations.html#cli">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/simulations.html#python-script">Python Script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/simulations.html#command-line">Command Line</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references/models.html#illuminator.models.Load.load_v3.Load"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="references/models.html#illuminator.models.Battery.battery_v3.Battery"><code class="docutils literal notranslate"><span class="pre">Battery</span></code></a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
+</ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
@@ -191,7 +188,7 @@ and the simulation engine is based on <a class="reference external" href="https:
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developer/dev-cluster-setup.html">Cluster Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer/dev-dashboard.html">Dashboard</a></li>
@@ -203,10 +200,6 @@ and the simulation engine is based on <a class="reference external" href="https:
 <li class="toctree-l1"><a class="reference internal" href="references/scenario-api.html">Scenario API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="references/scenario-api.html#python-interface">Python Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="references/scenario-api.html#utility-functions">Utility Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="references/models.html#illuminator.models.Battery.battery_model.BatteryModel"><code class="docutils literal notranslate"><span class="pre">BatteryModel</span></code></a></li>
 </ul>
 </li>
 </ul>

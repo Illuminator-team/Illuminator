@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Software Architecture &mdash; Illuminator 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
@@ -53,13 +53,19 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul class="current">
@@ -85,7 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev-cluster-setup.html">Cluster Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
@@ -93,7 +99,6 @@
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../references/scenario-api.html">Scenario API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
 </ul>
 
         </div>
@@ -177,7 +182,7 @@ The Senario API uses the <strong>Scenario Schema</strong> to validate simulation
 <li><p>Create a Python module with the name of the model. For example, <code class="docutils literal notranslate"><span class="pre">example_model.py</span></code></p></li>
 <li><p>In the file, create an IlluminatorModel object for the model. This defines which inputs, output, parameters, states, triggers, etc. a particular model has.  For example:</p></li>
 </ol>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">illuminator.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">IlluminatorModel</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">illuminator.builder</span> <span class="kn">import</span> <span class="n">IlluminatorModel</span>
 <span class="c1"># Defines a model&#39;a paramters, inputs, outputs...</span>
 <span class="n">example_model</span> <span class="o">=</span> <span class="n">IlluminatorModel</span><span class="p">(</span>
     <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;param1&quot;</span><span class="p">:</span> <span class="s2">&quot;addition&quot;</span><span class="p">},</span>
@@ -193,11 +198,11 @@ The Senario API uses the <strong>Scenario Schema</strong> to validate simulation
 <li><p>Create a class that inherits from <code class="docutils literal notranslate"><span class="pre">ModelConstructor</span></code>, and impement the <code class="docutils literal notranslate"><span class="pre">step()</span></code> method. The new class will become a <em>model type</em> in the Illuminator. Instances of this model type will be created by the <strong>Scenario API</strong></p></li>
 </ol>
 <p>For example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">illuminator</span> <span class="n">builder</span> <span class="kn">import</span><span class="w"> </span><span class="nn">ModelConstructor</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">illuminator</span> <span class="n">builder</span> <span class="kn">import</span> <span class="nn">ModelConstructor</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">ExampleModel</span> <span class="p">(</span><span class="n">ModelConstructor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ExampleModel</span> <span class="p">(</span><span class="n">ModelConstructor</span><span class="p">):</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes this in every time step&quot;&quot;&quot;</span>
 
         <span class="c1"># The computation logic goes here:</span>
@@ -209,7 +214,7 @@ The Senario API uses the <strong>Scenario Schema</strong> to validate simulation
 <ol class="arabic simple" start="3">
 <li><p>Update the <code class="docutils literal notranslate"><span class="pre">illuminator/models/__init__.py</span></code> to import the new  model type. For example:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.example_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExampleModel</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.example_model</span> <span class="kn">import</span> <span class="n">ExampleModel</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BatteryModel&#39;</span><span class="p">,</span> 
            <span class="s1">&#39;Collector&#39;</span><span class="p">,</span> 
@@ -220,7 +225,7 @@ The Senario API uses the <strong>Scenario Schema</strong> to validate simulation
 <li><p>To test the new model has been added correctly, try to import it in a Python script:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Python file</span>
-<span class="n">frmo</span> <span class="n">illuminator</span><span class="o">.</span><span class="n">models</span> <span class="kn">import</span><span class="w"> </span><span class="nn">ExampleModel</span> <span class="c1"># test model import</span>
+<span class="n">frmo</span> <span class="n">illuminator</span><span class="o">.</span><span class="n">models</span> <span class="kn">import</span> <span class="nn">ExampleModel</span> <span class="c1"># test model import</span>
 
 <span class="c1"># run the file to check if importing is successful</span>
 </pre></div>

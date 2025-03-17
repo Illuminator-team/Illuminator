@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Creating/writing tests &mdash; Illuminator 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
@@ -53,13 +53,19 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul class="current">
@@ -77,7 +83,7 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev-cluster-setup.html">Cluster Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
@@ -85,7 +91,6 @@
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../references/scenario-api.html">Scenario API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
 </ul>
 
         </div>
@@ -124,10 +129,10 @@
 <section id="writing-unit-tests">
 <h2>Writing unit tests<a class="headerlink" href="#writing-unit-tests" title="Link to this heading"></a></h2>
 <p>To write a unit test we must first create a python file, import pytest and create a class which will contain all the tests. Let us call the file <code class="docutils literal notranslate"><span class="pre">test_eboiler_model.py</span></code> and the class <code class="docutils literal notranslate"><span class="pre">TestEboilerModel()</span></code>. Based on the name of the file and class, we can see that we are writing tests for the <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> file. In addition, since we are testing the <code class="docutils literal notranslate"><span class="pre">eboiler_python</span></code> class within the <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> file we should import it. So now the file should look something like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">illuminator.models.Eboiler.eboiler_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">eboiler_python</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">illuminator.models.Eboiler.eboiler_model</span> <span class="kn">import</span> <span class="n">eboiler_python</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">TestEboilerModel</span><span class="p">():</span>
+<span class="k">class</span> <span class="nc">TestEboilerModel</span><span class="p">():</span>
 </pre></div>
 </div>
 <section id="important-note-1">
@@ -136,7 +141,7 @@
 <div><p>The file name <strong>MUST</strong> start with “test_” or end with “_test” in order to be a valid test file. The class must also start with the name “Test”, hence why we have chosen the names above. In addition, whenever we create test methods we must also ensure their names start with “test_”</p>
 </div></blockquote>
 <p>Now let us create our simple test method. We want to test the creation of an <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> object. Within <code class="docutils literal notranslate"><span class="pre">eboiler_model</span></code> <strong><strong>init</strong>()</strong> method (seen below) we see that it expects a dictionary (<strong>eboiler_set:dict</strong>) and that it returns nothing (meaning we do not need to check what it returns)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eboiler_set</span><span class="p">:</span><span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eboiler_set</span><span class="p">:</span><span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">capacity</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;capacity&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_load</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;min_load&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_load</span> <span class="o">=</span> <span class="n">eboiler_set</span><span class="p">[</span><span class="s1">&#39;max_load&#39;</span><span class="p">]</span>
@@ -166,13 +171,13 @@
 </pre></div>
 </div>
 <p>With this we have now created a simple test for the <code class="docutils literal notranslate"><span class="pre">eboiler</span></code> object constructor method. The full file should look like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">illuminator.models.Eboiler.eboiler_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">eboiler_python</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">illuminator.models.Eboiler.eboiler_model</span> <span class="kn">import</span> <span class="n">eboiler_python</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">TestEboilerModel</span><span class="p">():</span>
+<span class="k">class</span> <span class="nc">TestEboilerModel</span><span class="p">():</span>
 
     <span class="c1"># Note that the test must start with &#39;test_&#39;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_eboiler_constructor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_eboiler_constructor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Create the fake (mocked) data</span>
         <span class="n">mocked_eboiler_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;capacity&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -209,7 +214,7 @@
 <p>Although the term is sometimes used very loosely to mean “any non-real data and objects”, officially mocking is referring to the creation of mock objects (i.e. functions, methods, attributes, environmental variables). For more information on mocking specifically in python (using pytest’s monkeypatch), please read the <a class="reference external" href="https://docs.pytest.org/en/stable/reference/reference.html">following documentation</a>.</p>
 <p>In order to mock functions/methods, we must first add a new parameter called <code class="docutils literal notranslate"><span class="pre">monkeypatch</span></code> to our test method. This will allow that specific test to mock whatever method we wish.
 A simple example of how to mock functions can be found in the code below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_direct_irr_happy_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">monkeypatch</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_direct_irr_happy_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">monkeypatch</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        direct_irr multiplies two values together.</span>
 <span class="sd">                Calculated value, with the given parameters, should be 10</span>

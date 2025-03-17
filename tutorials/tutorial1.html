@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set Up Environment &mdash; Illuminator 1.0.0 documentation</title>
+  <title>Tutorial 1 &mdash; Illuminator 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -26,8 +26,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Software Architecture" href="software-architecture.html" />
-    <link rel="prev" title="Tutorial 3" href="../tutorials/tutorial3.html" /> 
+    <link rel="next" title="Tutorial 2" href="tutorial2.html" />
+    <link rel="prev" title="Tutorials Overview" href="tutorials-overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,27 +61,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Set Up Environment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#running-unit-tests">Running Unit Tests</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="software-architecture.html">Software Architecture</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer-docstrings.html">Custom Model Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/writing-tests.html">Creating/writing tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dev-cluster-setup.html">Cluster Set Up</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/dev-dashboard.html">Dashboard</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
@@ -102,9 +99,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Set Up Environment</li>
+      <li class="breadcrumb-item active">Tutorial 1</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/developer/set-up.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/tutorial1.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -112,47 +109,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="set-up-environment">
-<h1>Set Up Environment<a class="headerlink" href="#set-up-environment" title="Link to this heading"></a></h1>
-<p>Follow these steps to set up a development environment.</p>
-<p><strong>Requirements</strong></p>
-<ul class="simple">
-<li><p>Python &gt;= 3.11</p></li>
-<li><p>Recent version of PIP</p></li>
-</ul>
-<ol class="arabic simple">
-<li><p>Clone the repository:</p></li>
-</ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:Illuminator-team/Illuminator.git
-</pre></div>
+  <section id="tutorial-1">
+<h1>Tutorial 1<a class="headerlink" href="#tutorial-1" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The linked colab files cannot currently be run on web, they serve as a way to scan through the tutorial contents before installing and running them locally.</p>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Go the root tof the repository:</p></li>
-</ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>Illuminator/
-</pre></div>
-</div>
-<ol class="arabic simple" start="3">
-<li><p>install the development dependencies in editable mode:</p></li>
-</ol>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</pre></div>
-</div>
-<section id="running-unit-tests">
-<h2>Running Unit Tests<a class="headerlink" href="#running-unit-tests" title="Link to this heading"></a></h2>
-<p>We use <code class="docutils literal notranslate"><span class="pre">Pytest</span></code> to write and test the source code. To run all unit-tests, run the following command at the root of the repository:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>tests/
-</pre></div>
-</div>
-</section>
+<iframe src="https://nbviewer.org/github/Illuminator-team/Illuminator/blob/educational_material/examples/Tutorial1/tutorial_power_balance.ipynb" width="100%" height="600"></iframe>
+<p>
+    <a href="https://colab.research.google.com/drive/1U12qVE2jlH-1NH_Ig8seSVkw6VikFWmw?usp=drive_open">
+        <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab">
+    </a>
+    <a href="https://github.com/Illuminator-team/Illuminator/raw/educational_material/examples/Tutorial1/Tutorial1.zip">
+        <img src="https://img.shields.io/badge/Download-ZIP-blue?style=for-the-badge&logo=download" alt="Download ZIP">
+    </a>
+</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials/tutorial3.html" class="btn btn-neutral float-left" title="Tutorial 3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="software-architecture.html" class="btn btn-neutral float-right" title="Software Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials-overview.html" class="btn btn-neutral float-left" title="Tutorials Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial2.html" class="btn btn-neutral float-right" title="Tutorial 2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

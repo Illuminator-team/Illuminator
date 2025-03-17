@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Model Development &mdash; Illuminator 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
@@ -53,13 +53,19 @@
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cluster-setup.html">Cluster Pi Setup</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user/models.html">Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul class="current">
@@ -89,7 +95,7 @@
 <li class="toctree-l1"><a class="reference internal" href="testing-explained.html">Testing: basic principles and ideas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Creating/writing tests</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Current Developer</span></p>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev-cluster-setup.html">Cluster Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
@@ -97,7 +103,6 @@
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../references/scenario-api.html">Scenario API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
 </ul>
 
         </div>
@@ -133,7 +138,7 @@
 <p>The points listed in this subsection are general good coding practices already utilised in the Illuminator. We encourage you to adopt these habits for this and any project you are a part of. Such practices directly improve the readability and maintainability of the project.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bad Example</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
 <span class="n">temp</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
@@ -141,7 +146,7 @@
 
 <span class="c1"># Good Example</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">add_numbers</span><span class="p">(</span><span class="n">first_number</span><span class="p">,</span> <span class="n">second_number</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">add_numbers</span><span class="p">(</span><span class="n">first_number</span><span class="p">,</span> <span class="n">second_number</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">first_number</span> <span class="o">+</span> <span class="n">second_number</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">add_numbers</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
@@ -169,14 +174,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="c1"># Bad Example:</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>  <span class="c1"># Entire library is imported but only DataFrame is used</span>
+<span class="kn">import</span> <span class="nn">pandas</span>  <span class="c1"># Entire library is imported but only DataFrame is used</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># Good Example:</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>  <span class="c1"># Only importing what is needed</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>  <span class="c1"># Only importing what is needed</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -198,7 +203,7 @@
 <p>Docstrings are crucial to custom models because each model’s documentation is generated through them. Follow the current style for functions and classes.</p>
 <p>The docstrings should have a clearly separated sections for other parts of the code (if any). These may include, but is not limited to: Parameters, Attributes, Returns, Raises.</p>
 <p>Each separated section should start with the Title of the section, followed by a row of dashes such as in the following section:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the multiplication of two numbers and returns its value.</span>
 
@@ -220,12 +225,12 @@
 </div>
 <p>When appropriate, we should also ensure to include the name and/or type of variables for the any of the aforementioned sections.</p>
 <p>Lastly, type hints are also a useful addition to any code. They can be used to “hint” to other developers what is expected as input and/or output when a function is used.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>As seen from the example above we can immediately conclude that for this function to work it will need an integer <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code>, with the return value being of type float</p>
 <p>Combined, the docstrings may look something like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the sum of `a` and `b` and returns the outcome</span>
 
