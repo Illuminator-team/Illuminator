@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cluster Pi Setup &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="references/scenario-api.html">Scenario API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cluster Pi Setup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cluster-setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cluster-pi-setup">
+<h1>Cluster Pi Setup<a class="headerlink" href="#cluster-pi-setup" title="Link to this heading"></a></h1>
+<p>The Illuminator can be deployed to a cluster of Raspberry Pi’s.  It requires one Raspberry Pi acting as a <strong>server</strong> or ‘master’ and several <strong>clients</strong> Raspberry Pi’s.
+Raspberry Pi’s must be connected and configured as a local network, and the
+<em>server</em> must be configured to have permissions to access and control the <em>clients</em> through the Secure Shell Protocol (SSH).</p>
+<p>During simulation, the <em>server</em> engage with the <em>clients</em> to run the simulations defined in the <a class="reference internal" href="user/config-file.html"><span class="std std-doc">simulation configuration file</span></a>, and
+information is exchanged between Rasberry Pi’s using network sockets.
+The <strong>server</strong> provides a Dashboard to visualize the results, and saves them to a <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files for later analysis.</p>
+<div align="center">
+	<img align="center" src="_static/img/Structure.jpg" width="500">
+</div>
+<section id="hardware-requirements">
+<h2>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>A Raspberry Pi to use as a <em>server</em>.</p></li>
+<li><p>One or more Raspebrry Pi’s to use as <em>clients</em>.</p></li>
+<li><p>A networkw switch to connect all Rasberry Pi’s as a local network.</p></li>
+</ul>
+</section>
+<section id="set-up">
+<h2>Set up<a class="headerlink" href="#set-up" title="Link to this heading"></a></h2>
+<p>Conduct the following steps on each Raspberry Pi to deploy the illuminator in a cluster. These instructions require to install <em>Illuminator</em> from source.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The steps were defined before the release of version <code class="docutils literal notranslate"><span class="pre">3.0.0</span></code> and therefore issues might arise when using the latest Illumiator version.</p>
+</div>
+<ol class="arabic">
+<li><p><a class="reference external" href="https://www.raspberrypi.com/software/">Install Raspberry pi OS using Raspberry Pi imager.</a></p></li>
+<li><p>Set an static IP address for the Raspberry Pi. Use the following command on the terminal to open the <code class="docutils literal notranslate"><span class="pre">dhcpcd.conf</span></code> file:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/dhcpcd.conf
+</pre></div>
+</div>
+<p>In the <code class="docutils literal notranslate"><span class="pre">dhcpcd.conf</span></code> file, find the information to change the IP address to static as following:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>interface<span class="w"> </span>etho
+static<span class="w"> </span><span class="nv">ip_address</span><span class="o">=</span><span class="m">192</span>.168.0.1/24<span class="w"> </span><span class="c1"># change the IP address as you want</span>
+</pre></div>
+</div>
+<p>Give all users execute permission to all the documents in <code class="docutils literal notranslate"><span class="pre">runshfile/</span></code> in order to make sure the <em>server</em> can access the <em>client</em> model.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>-R<span class="w"> </span>a+X<span class="w"> </span>*dir*
+</pre></div>
+</div>
+<p>Finally, reboot the Raspberry Pi using <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">reboot</span></code> on the terminal.</p>
+</li>
+<li><p><a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-2">Configure SSH connections so that the <em>server</em> can connect to the <em>clients</em> without a password.</a></p></li>
+<li><p>Install the Illuminator Python package from source, and the addional dependencies:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># or, if from source code</span>
+pip<span class="w"> </span>install<span class="w"> </span>Illuminator/
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># aditional dependencies</span>
+pip<span class="w"> </span>install<span class="w"> </span>tk<span class="w"> </span>python-csv<span class="w"> </span>python-math<span class="w"> </span>scipy<span class="w"> </span>wandb<span class="w"> </span>itertools
+</pre></div>
+</div>
+</li>
+<li><p>Use the following command on the <em>server’s</em> terminal to check the connections for each of the <em>clients:</em></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># notice that the followng assumes that each client has a </span>
+<span class="c1"># user named &#39;illuminator&#39;</span>
+ssh<span class="w"> </span>illuminator@&lt;ip&gt;<span class="w"> </span><span class="c1">#&lt;ip&gt; represent the client&#39;s IP address set in step 2</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">build_runshfile.py</span></code> file in the configuration directory on the <em>server</em>, this will generate a <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script. Pass the appropiate <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file containing the configuration for the simulation scenario:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>build_runshfile.py<span class="w"> </span>&lt;config.yaml&gt;
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The  <code class="docutils literal notranslate"><span class="pre">runs.sh</span></code> file contains a list of commands that will start the models required by a simulation defined in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, such as:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example</span>
+lxterminal<span class="w"> </span>-e<span class="w"> </span>ssh<span class="w"> </span>illuminator@192.168.0.1<span class="w"> </span><span class="s1">&#39;./Desktop/illuminatorclient/configuration/runshfile/runBattery.sh 192.168.0.1 5123 /home/illuminator/Desktop/Final_illuminator&#39;</span><span class="p">&amp;</span>
+lxterminal<span class="w"> </span>-e<span class="w"> </span>ssh<span class="w"> </span>illuminator@192.168.0.2<span class="w"> </span><span class="s1">&#39;./Desktop/illuminatorclient/configuration/runshfile/runBattery.sh 192.168.0.2 5123 /home/illuminator/Desktop/Final_illuminator&#39;</span><span class="p">&amp;</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Explanation</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">lxterminal</span></code> starts a terminal on a remote machine (a client). So <code class="docutils literal notranslate"><span class="pre">lxterminal</span> <span class="pre">-e</span> <span class="pre">ssh</span> <span class="pre">illuminator&#64;192.168.0.1</span></code>  would use SSH to login to machine <code class="docutils literal notranslate"><span class="pre">192.168.0.1</span></code> with the user <code class="docutils literal notranslate"><span class="pre">illuminator</span></code> which has no password (this should be improved).</p>
+<p>Three values are passed to the <code class="docutils literal notranslate"><span class="pre">ssh</span></code> command (the part between single quoates): <code class="docutils literal notranslate"><span class="pre">'./Desktop/illuminatorclient/configuration/runshfile/runWind.sh</span> <span class="pre">192.168.0.1</span> <span class="pre">5123</span> <span class="pre">/home/illuminator/Desktop/Final_illuminator'&amp;</span></code>.
+This starts the script <code class="docutils literal notranslate"><span class="pre">./Desktop/illuminatorclient/configuration/runshfile/runWind.sh</span></code> on the remote machine with the following parameters:</p>
+<ul class="simple">
+<li><p>IP address:                    <code class="docutils literal notranslate"><span class="pre">192.168.0.1</span></code></p></li>
+<li><p>Port:                          <code class="docutils literal notranslate"><span class="pre">5123</span></code></p></li>
+<li><p>Path of mosaik file:           <code class="docutils literal notranslate"><span class="pre">/home/illuminator/Desktop/Final_illuminator</span></code></p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">&amp;</span> </code>at the end starts the process in the background, so that the <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script does not wait for the command to finish but executes the next command immediately.</p>
+<p>For example, the <code class="docutils literal notranslate"><span class="pre">runWind.sh</span></code> looks like this:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /bin/bash</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$3</span>/Wind
+python<span class="w"> </span>wind_mosaik.py<span class="w"> </span><span class="nv">$1</span>:<span class="nv">$2</span><span class="w"> </span>–remote
+</pre></div>
+</div>
+<p>There you see the three parameters in action.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

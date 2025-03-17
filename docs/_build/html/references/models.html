@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illuminator Models &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorials Overview" href="../tutorials/tutorials-overview.html" />
+    <link rel="prev" title="Running Simulations" href="../user/simulations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Illuminator Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.demand"><code class="docutils literal notranslate"><span class="pre">Load.demand()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.inputs"><code class="docutils literal notranslate"><span class="pre">Load.inputs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.outputs"><code class="docutils literal notranslate"><span class="pre">Load.outputs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.parameters"><code class="docutils literal notranslate"><span class="pre">Load.parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.states"><code class="docutils literal notranslate"><span class="pre">Load.states</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.step"><code class="docutils literal notranslate"><span class="pre">Load.step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.time"><code class="docutils literal notranslate"><span class="pre">Load.time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.time_step_size"><code class="docutils literal notranslate"><span class="pre">Load.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery"><code class="docutils literal notranslate"><span class="pre">Battery</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.charge_battery"><code class="docutils literal notranslate"><span class="pre">Battery.charge_battery()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.discharge_battery"><code class="docutils literal notranslate"><span class="pre">Battery.discharge_battery()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.inputs"><code class="docutils literal notranslate"><span class="pre">Battery.inputs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.output_power"><code class="docutils literal notranslate"><span class="pre">Battery.output_power()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.outputs"><code class="docutils literal notranslate"><span class="pre">Battery.outputs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.parameters"><code class="docutils literal notranslate"><span class="pre">Battery.parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.states"><code class="docutils literal notranslate"><span class="pre">Battery.states</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.step"><code class="docutils literal notranslate"><span class="pre">Battery.step()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.time"><code class="docutils literal notranslate"><span class="pre">Battery.time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.time_step_size"><code class="docutils literal notranslate"><span class="pre">Battery.time_step_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scenario-api.html">Scenario API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Illuminator Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/references/models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="illuminator-models">
+<h1>Illuminator Models<a class="headerlink" href="#illuminator-models" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Load.load_v3.</span></span><span class="sig-name descname"><span class="pre">Load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load" title="Link to this definition"></a></dt>
+<dd><p>Calculates total load demand based on number of houses and input load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>load</strong> (<em>float</em>) – Input load per house in kW or kWh depending on output_type</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing calculated load demand values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.demand">
+<span class="sig-name descname"><span class="pre">demand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.demand" title="Link to this definition"></a></dt>
+<dd><p>Calculates total load demand based on number of houses and input load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>load</strong> (<em>float</em>) – Input load per house in kW or kWh depending on output_type</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing calculated load demand values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'load':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'consumption':</span> <span class="pre">0,</span> <span class="pre">'load_dem':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'houses':</span> <span class="pre">1,</span> <span class="pre">'output_type':</span> <span class="pre">'power'}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'forecast':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single simulation time step by calculating load demand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>float</em>) – Current simulation time in seconds</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values including ‘load’</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step advancement, defaults to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Battery.battery_v3.</span></span><span class="sig-name descname"><span class="pre">Battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery" title="Link to this definition"></a></dt>
+<dd><p>Battery model class for simulating battery charging and discharging behavior.</p>
+<p>This class implements a battery model that can simulate charging and discharging cycles,
+track state of charge, and manage power flows while respecting battery constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_p</strong> (<em>float</em>) – Maximum charging power limit in kW</p></li>
+<li><p><strong>min_p</strong> (<em>float</em>) – Maximum discharging power limit in kW</p></li>
+<li><p><strong>max_energy</strong> (<em>float</em>) – Maximum energy storage capacity in kWh</p></li>
+<li><p><strong>charge_efficiency</strong> (<em>float</em>) – Battery charging efficiency in %</p></li>
+<li><p><strong>discharge_efficiency</strong> (<em>float</em>) – Battery discharging efficiency in %</p></li>
+<li><p><strong>soc_min</strong> (<em>float</em>) – Minimum allowable state of charge in %</p></li>
+<li><p><strong>soc_max</strong> (<em>float</em>) – Maximum allowable state of charge in %</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.charge_battery">
+<span class="sig-name descname"><span class="pre">charge_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.charge_battery" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.discharge_battery">
+<span class="sig-name descname"><span class="pre">discharge_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.discharge_battery" title="Link to this definition"></a></dt>
+<dd><p>Discharge the battery, calculate the state of charge and return parameter information.
+Discharge the battery, calculate the state of charge and return parameter information.</p>
+<p>This method discharges the battery based on the requested power flow, updates the state of
+charge (SOC), and returns a dictionary containing the battery’s operational parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flow2b</strong> (<em>int</em>) – Power flow requested from the battery (negative value) in kW</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Collection of parameters and their respective values:
+- p_out: Output power from the battery after discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge after battery operation (%)
+- mod: Operation mode: 0=no action, 1=charge, -1=discharge
+- flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+Collection of parameters and their respective values:
+- p_out: Output power from the battery after discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge after battery operation (%)
+- mod: Operation mode: 0=no action, 1=charge, -1=discharge
+- flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flow2b':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.output_power">
+<span class="sig-name descname"><span class="pre">output_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.output_power" title="Link to this definition"></a></dt>
+<dd><p>Determine the battery operation mode and power output based on the requested power flow.</p>
+<p>This method controls the battery’s operation by determining whether to charge, discharge,
+or maintain the current state based on the requested power flow and the battery’s
+state of charge (SOC).
+Determine the battery operation mode and power output based on the requested power flow.</p>
+<p>This method controls the battery’s operation by determining whether to charge, discharge,
+or maintain the current state based on the requested power flow and the battery’s
+state of charge (SOC).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flow2b</strong> (<em>int</em>) – Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
+Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing the battery’s operational parameters:
+- p_out: Output power after charge/discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge (%)
+- mod: Operation mode (0=no action, 1=charge, -1=discharge)
+- flag: Battery status (1=fully charged, -1=fully discharged, 0=available)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'p_in':</span> <span class="pre">20,</span> <span class="pre">'p_out':</span> <span class="pre">20}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'charge_efficiency':</span> <span class="pre">90,</span> <span class="pre">'discharge_efficiency':</span> <span class="pre">90,</span> <span class="pre">'max_energy':</span> <span class="pre">50,</span> <span class="pre">'max_p':</span> <span class="pre">150,</span> <span class="pre">'min_p':</span> <span class="pre">250,</span> <span class="pre">'soc_max':</span> <span class="pre">80,</span> <span class="pre">'soc_min':</span> <span class="pre">3}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flag':</span> <span class="pre">-1,</span> <span class="pre">'mod':</span> <span class="pre">0,</span> <span class="pre">'soc':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.step" title="Link to this definition"></a></dt>
+<dd><p>Process one simulation step of the battery model.</p>
+<p>This method processes the inputs for one timestep, updates the battery state based on
+the requested power flow, and sets the model outputs and states accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values, specifically:
+- flow2b: Power flow to/from battery (positive=charging, negative=discharging) in kW</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step size in seconds (default 900)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../user/simulations.html" class="btn btn-neutral float-left" title="Running Simulations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/tutorials-overview.html" class="btn btn-neutral float-right" title="Tutorials Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
