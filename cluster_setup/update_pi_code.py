@@ -10,6 +10,6 @@ system('git pull')
 
 for client_ip in ips:
     print('updating Client: ', client_ip)
-    subprocess.run(f"ssh {USERNAME}@{client_ip} 'git pull'", shell=True)
+    subprocess.run(f"ssh {USERNAME}@{client_ip} 'cd Illuminator & git pull'", shell=True)
 
 print("\nDONE")
