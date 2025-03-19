@@ -9,13 +9,13 @@ import time
 
 from configuration.buildmodelset import *
 
-sim_config_ddf=pd.read_xml('configuration/config.xml')
+sim_config_ddf=pd.read_xml('Illuminator/configuration/config.xml')
 sim_config={row[1]:{row[2]:row[3]}for row in sim_config_ddf.values}
 
 tosh=sim_config_ddf[sim_config_ddf['method']=='connect']
 #! /usr/bin/env python
 if not tosh.empty:
-    with open ('./configuration/runshfile/run.sh', 'w') as rsh:
+    with open ('Illuminator/configuration/runshfile/run.sh', 'w') as rsh:
         rsh.write("#! /bin/bash")
         for row in tosh.values:
             rsh.write("\n"+"lxterminal -e ssh illuminator@"+row[3].replace(':5123',' ')+"'./Desktop/illuminatorclient/configuration/runshfile/run"+row[1]+".sh'&")
