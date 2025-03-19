@@ -1,8 +1,8 @@
 scenario:
   name: "Tutorial cluster" # in mosaik so called world
-  start_time: '2012-06-21 07:45:00' # ISO 8601 start time of the simulation
+  start_time: '2012-06-01 05:45:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-21 18:00:00' # duration in seconds 
+  end_time: '2012-06-01 18:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -71,7 +71,7 @@ models:
     port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.3  # maximum speed for the LED connection (0-100%)
+    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
