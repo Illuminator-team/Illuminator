@@ -79,7 +79,7 @@ models:
 - name: CSV_wind
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/winddata_NL.txt'
+    file_path: './examples/Cluster/wind-15min.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: Wind1
