@@ -2,6 +2,7 @@ from illuminator.builder import IlluminatorModel, ModelConstructor
 import mosaik_api_v3 as mosaik_api
 import serial
 import time
+from numpy import ceil
 
 
 
@@ -84,8 +85,8 @@ class LED_connection(ModelConstructor):
 
         if speed <= self.min_speed:
             speed = 0
-        elif speed >= self.max_speed:
-            speed = 100
+        # elif speed >= self.max_speed:
+        #     speed = 100
         else:
             speed = ((speed - self.min_speed) / (self.max_speed - self.min_speed)) * 100
 
@@ -108,7 +109,7 @@ class LED_connection(ModelConstructor):
             colour = 'g'
             delay = 0
         else:
-            delay = max(0, min(4, round(4 * speed/100)))  # Maps 0-100% to 0-4, with bounds checking
+            delay = max(0, min(4, ceil(4 * speed/100)))  # Maps 0-100% to 0-4, with bounds checking
             delay = round(delay)
 
             if delay >= 4:
