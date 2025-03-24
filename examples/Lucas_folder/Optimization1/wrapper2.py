@@ -5,6 +5,8 @@ import yaml
 import os
 from scipy.optimize import minimize
 
+# Optimal size buffer found for 100 geneartion with optimization1 found (Powell): 262140.85717908642
+# Single objective optimization (minimize sum of dump + buffer size)
 
 scenario = 'examples/h2_system_example/h2_system_4.yaml'
 output_path = 'examples/h2_system_example/h2_system_example4.csv.'
@@ -15,7 +17,7 @@ max_iterations = 6
 
 demand1 = pd.read_csv('./examples/h2_system_example/demand1_generated.csv', header=1)['demand']
 demand2 = pd.read_csv('./examples/h2_system_example/demand2_generated.csv', header=1)['demand']
-tot_demand = (demand1+demand2).round(3)
+tot_demand = (demand1+demand2).round(0)
 
 # with open(scenario, 'r') as file:
 #     data = yaml.load(file, Loader=yaml.FullLoader)
@@ -83,7 +85,7 @@ def run_sim():
 
     index = 0
     while True:
-        time.sleep(3)   # check soc every 3sec
+        time.sleep(8)   # check soc every 3sec
         while True:
             try:
                 df = pd.read_csv(output_path)
@@ -94,10 +96,12 @@ def run_sim():
 
         output_length = len(df)-1
         for l in range(index, output_length):
-            print(f'line {l}, soc={df[soc_col].iloc[l]}')
+            # print(f'line {l}, soc={df[soc_col].iloc[l]}')
             if df[soc_col].iloc[l] < min_soc:
+                print(f'soc violated in line {l}')
                 process.terminate()
                 process.wait()
+                sim_tracker(i, timesteps=l)
                 return True
         if process.poll() is not None:
             break
@@ -105,8 +109,14 @@ def run_sim():
 
     return False
 
+i = 0
 
 def objective(parameter):
+    
+    global i
+    i += 1
+    sim_tracker(i, buffer_size=parameter)
+    print(f'iter {i}')
     parameter = float(parameter[0])
     global scenario
     print(f'Calculating objective with buffer size {parameter}')
@@ -124,6 +134,7 @@ def objective(parameter):
     
     if soc_violation:
         print('soc violated')
+        inter_soc = True
         return 1e8
     
     while True:
@@ -134,10 +145,48 @@ def objective(parameter):
             print("Waiting for output file to be available...")
             time.sleep(1)  # Wait for 1 seconds before trying again
     dump_tot = df[dump_col].sum()
+    sim_tracker(i, dump=dump_tot)
     print(f'for size={parameter}, dump={dump_tot}')
-    return dump_tot
+    
+    return dump_tot + parameter
 
-scenario = 'examples/h2_system_example/h2_system_4_dynamic.yaml'
-result = minimize(objective, x0=[200], bounds=[(10,1500)], method='L-BFGS-B')
+def sim_tracker(iteration, buffer_size=None, dump=None, timesteps=None):
+    # Load existing CSV
+    df = pd.read_csv(csv_filename)
+
+    # Check if the iteration already exists
+    if iteration in df["Iteration"].values:
+        row_index = df.index[df["Iteration"] == iteration][0]
+    else:
+        row_index = len(df)
+        df.loc[row_index, "Iteration"] = iteration  # Add new row
+    
+    # Update only the relevant columns
+    if buffer_size is not None:
+        df.loc[row_index, "Buffer Size"] = buffer_size
+    if dump is not None:
+        df.loc[row_index, "Total Dump"] = dump
+    if timesteps is not None:
+        df.loc[row_index, "Timesteps Checked"] = timesteps
+
+    # Save back to CSV
+    df.to_csv(csv_filename, index=False)
+
+    
+
+
+
+csv_filename = "examples/h2_system_example/Lucas_folder/Optimization1/optimization_results.csv"
+# Ensure the file exists with headers
+columns = ["Iteration", "Buffer Size", "Total Dump", "Timesteps Checked"]
+try:
+    df = pd.read_csv(csv_filename)
+except FileNotFoundError:
+    df = pd.DataFrame(columns=columns)
+    df.to_csv(csv_filename, index=False)
+
+
+scenario = 'examples/h2_system_example/h2_system_4.yaml'
+result = minimize(objective, x0=[200], bounds=[(100000,300000)], method='Powell', options={'ftol': 1e1, 'gtol': 1e1})
 
 print(f'Optmial buffer size is: {result.x[0]}')

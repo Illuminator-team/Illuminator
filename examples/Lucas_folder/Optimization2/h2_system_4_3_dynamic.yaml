@@ -82,7 +82,7 @@ models:
     actual_h2_in: 0
     h2_out: 0
   parameters:
-    h2_capacity_tot: 262140.85696297616
+    h2_capacity_tot: 13764.085235050237
     h2_charge_eff: 100
     h2_discharge_eff: 100
     h2_soc_max: 100
@@ -161,7 +161,7 @@ models:
     tot_dem: 0
   type: H2demand
 monitor:
-  file: ./examples/h2_system_example/h2_system_example4.csv
+  file: ./examples/Lucas_folder/Optimization2/h2_system_example4_3.csv
   items:
   - H2demand1.tot_dem
   - H2demand2.tot_dem
@@ -174,7 +174,7 @@ monitor:
   - H2Buffer1.h2_out
   - H2Buffer1.free_capacity
 scenario:
-  end_time: '2012-01-30 23:45:00'
+  end_time: '2012-01-07 23:45:00'
   name: Hydrogen_system_4
   start_time: '2012-01-01 00:00:00'
   time_resolution: 900

@@ -8,8 +8,8 @@ days = 30       # days
 resolution = 15 # min
 min_h2_per_truck = 200
 max_h2_per_truck = 800   #kg
-h2_per_timestep = 80 # kg
-max_gen_per_step = 300  # kg
+h2_per_timestep = 100 # kg
+max_gen_per_step = 100  # kg
 fac_of_max_gen = 1    # to what rate the production can be reduced
 
 # truck_arivals_day = 3

@@ -1,7 +1,7 @@
 scenario:
   name: "Hydrogen_system_4" # in mosaik so called world
   start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-30 23:45:00' # duration in seconds 
+  end_time: '2012-01-07 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 
@@ -56,7 +56,7 @@ models:
     h2_discharge_eff: 100
     max_h2: 200
     min_h2: 0
-    h2_capacity_tot: 1000
+    h2_capacity_tot: 10000
   inputs:
     h2_in: 0
     desired_out: 0
@@ -193,7 +193,8 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './examples/h2_system_example/h2_system_example4.csv'
+  # file: './examples/h2_system_example/h2_system_example4_3.csv'
+  file: './examples/Lucas_folder/Optimization2/h2_system_example4_3.csv'
   items:
 
     # - thermolyzer1.h_gen
@@ -214,7 +215,7 @@ monitor:
     
     - H2Buffer1.soc
     - H2Buffer1.h2_out
-    # - H2Buffer1.free_capacity
+    - H2Buffer1.free_capacity
     # - compressor1.flow_from_c
     # - H2storage1.h2_in
     # - H2storage1.h2_out 

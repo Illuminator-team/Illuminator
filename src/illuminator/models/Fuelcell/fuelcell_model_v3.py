@@ -92,9 +92,9 @@ class Fuelcell(ModelConstructor):
             Next simulation time step
         """
 
-        print("\nFuelcell:")
-        print("inputs (passed): ", inputs)
-        print("inputs (internal): ", self._model.inputs)
+        # print("\nFuelcell:")
+        # print("inputs (passed): ", inputs)
+        # print("inputs (internal): ", self._model.inputs)
         # get input data 
         input_data = self.unpack_inputs(inputs)
         print("input data: ", input_data)
