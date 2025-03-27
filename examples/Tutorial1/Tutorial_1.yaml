@@ -1,8 +1,8 @@
 scenario:
   name: "Tutorial 1" # in mosaik so called world
-  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  start_time: '2012-06-01 03:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  end_time: '2012-06-01 05:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -73,6 +73,8 @@ models:
   outputs:
     pv_gen:
     g_aoi:
+  states:
+    pv_genState: 0
 
 - name: Wind1
   type: Wind # models can reuse the same type
@@ -91,6 +93,7 @@ models:
     u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
   states:
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
+    wind_genState: 0
 
 - name: Battery1
   type: Battery # models can reuse the same type
@@ -129,6 +132,8 @@ models:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
     dump:  # Excess power that cannot be stored or used (kW)
+  states:
+    flow2bState: 0  # Power flow to/from battery (positive for charging, negative for discharging)
 
 
 connections:
@@ -180,14 +185,14 @@ monitor:
     # - Wind1.wind_gen
     # - Load1.load_dem
 
-    - Controller1.flow2b
-    - Controller1.res_load
-    - Controller1.dump
-    - Battery1.p_out
-    - Battery1.soc
+    # - Controller1.flow2b
+    # - Controller1.res_load
+    # - Controller1.dump
+    # - Battery1.p_out
+    # - Battery1.soc
     - PV1.pv_gen
     - Wind1.wind_gen
-    - Load1.load_dem
+    # - Load1.load_dem
   #    - Wind1.u60
 
   #- CSVload.load
