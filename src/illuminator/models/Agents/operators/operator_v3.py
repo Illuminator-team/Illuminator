@@ -40,14 +40,16 @@ class Operator_Market(ModelConstructor):
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
-    parameters={'demand': {}, # to add later 'overbid_penalty'
+    parameters={# to add later 'overbid_penalty'
                 'results_dir': 'operator_results'
                 }
     inputs={'bids': {} # to add later 'overbid'
             }
-    outputs={'market_results_summary': None,
+    outputs={
              }
     states={'market_clearing_price': 0,
+            'market_results_summary': None,
+            'demand': None
             }
 
     # define other attributes
@@ -66,7 +68,7 @@ class Operator_Market(ModelConstructor):
             including demand values and other market parameters.
         """
         super().__init__(**kwargs)
-        self.demand = self.parameters['demand']
+        #self.demand = self.parameters['demand']
         self.results_dir = self.parameters['results_dir']
 
 
@@ -93,7 +95,7 @@ class Operator_Market(ModelConstructor):
             Next simulation time step in hours, calculated as current time plus time_step_size
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
-
+        self.demand = input_data['demand'] # check if exists!
         if isinstance(input_data['bids'], dict): # if only one bid is submitted
             bids = [pd.DataFrame(input_data['bids'])]
         else:
@@ -114,7 +116,9 @@ class Operator_Market(ModelConstructor):
         #create merit order curve
         #self.create_merit_order_curve(all_bids_sorted, self.demand, market_clearing_price)
 
-        self.set_states({'market_clearing_price': float(market_clearing_price)})  # json serialize needs to be a normal datatype, not a numpy data type
+        self.set_states({'market_clearing_price': float(market_clearing_price),
+                         'demand': float(self.demand),
+                         'market_results_summary': market_results_summary})  # json serialize needs to be a normal datatype, not a numpy data type
         #self.set_states(market_clearing_price=market_clearing_price)
 
         # return the time of the next step (time untill current information is valid)

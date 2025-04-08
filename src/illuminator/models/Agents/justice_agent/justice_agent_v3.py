@@ -4,7 +4,7 @@ from illuminator.builder import ModelConstructor
 class JusticeAgent(ModelConstructor):
     parameters = {'social_parameters': None, # dictionary with a, b,c, d keys per company and values
                   'justice_step': None}
-    inputs = {'results': None,
+    inputs = {'market_results': None,
               'demand': 0,
               'marketclearingprice': 0}
     outputs = {'justice_score': None,
@@ -27,9 +27,9 @@ class JusticeAgent(ModelConstructor):
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        social_parameters = self.parameters['social_parameters']
+        self.social_parameters = self.parameters['social_parameters']
         self.alpha_factors = {company: sum(params.values()) for company, params in
-                              social_parameters.items()}
+                              self.social_parameters.items()}
         self.justice_step = self.parameters['justice_step']
         self.beta_scores = dict.fromkeys(self.social_parameters) # creates a dictionary for the beta scores
 

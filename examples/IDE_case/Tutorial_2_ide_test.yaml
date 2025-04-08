@@ -27,7 +27,6 @@ models:
     file_path: 'C:\Users\jana9\PycharmProjects\illuminator_test\Illuminator\examples\IDE_case\demand_data_test.csv'
     delimiter: ';'
     date_format: 'YYYY-MM-DD HH:mm:ss'
-    send_row: True  # sends the entire row as a dictionary
 
 
 # - name: CSV_company2
@@ -72,14 +71,13 @@ models:
 - name: Operator1
   type: Operator_Market
   parameters:
-    demand: 300
     results_dir: 'operator_results'
   inputs:
     bids: {}
-  outputs:
-    market_results_summary: None
   states:
     market_clearing_price:
+    demand:
+    market_results_summary:
 
 - name: JusticeAgent1
   type: JusticeAgent
@@ -93,7 +91,7 @@ models:
   inputs:
     market_clearing_price : 0
     demand : 0
-    results : None
+    market_results : None
   outputs:
     justice_score : 0
     alpha_scores: {}
@@ -106,8 +104,8 @@ connections:
     to: Company1.portfolio
   - from: CSV_company2.row
     to: Company2.portfolio
-  #- from: CSV_operator.row # add later
-   # to: Operator1.demand
+  - from: CSV_operator.demand # add later
+    to: Operator1.demand
   - from: Company1.bids
     to: Operator1.bids
   - from: Company2.bids
@@ -117,7 +115,7 @@ connections:
   - from: Operator1.demand
     to: JusticeAgent1.demand
   - from: Operator1.market_results_summary
-    to: JusticeAgent1.results
+    to: JusticeAgent1.market_results
 
 monitor:
   file: './out_ide_case_test.csv'
