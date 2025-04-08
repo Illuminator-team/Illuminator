@@ -45,7 +45,7 @@ class Operator_Market(ModelConstructor):
                 }
     inputs={'bids': {} # to add later 'overbid'
             }
-    outputs={
+    outputs={'market_results_summary': None,
              }
     states={'market_clearing_price': 0,
             }
@@ -102,6 +102,7 @@ class Operator_Market(ModelConstructor):
         results = self.calculate_balance(bids)
         all_bids_sorted = results['all_bids_sorted']
         market_clearing_price = results['market_clearing_price']
+        market_results_summary = results['market_results']
 
         # save the all_bids_sorted dataframe to a csv file
         # Create results directory if it doesn't exist
@@ -109,6 +110,7 @@ class Operator_Market(ModelConstructor):
             makedirs(self.results_dir)
         all_bids_sorted.to_csv(path.join(self.results_dir, f'all_bids_sorted_{time}.csv'), index=False)
 
+        market_results_summary.to_csv(path.join(self.results_dir, f'market_resukts_summary_{time}.csv'), index=False)
         #create merit order curve
         #self.create_merit_order_curve(all_bids_sorted, self.demand, market_clearing_price)
 
@@ -215,7 +217,7 @@ class Operator_Market(ModelConstructor):
         print(results_df)
 
         
-        return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted}
+        return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted, 'market_results': results_df}
 
 
     def create_merit_order_curve(self, all_bids_sorted, demand, market_clearing_price):
