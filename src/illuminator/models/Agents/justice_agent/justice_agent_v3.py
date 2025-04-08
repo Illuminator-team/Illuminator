@@ -7,10 +7,9 @@ class JusticeAgent(ModelConstructor):
     inputs = {'market_results': None,
               'demand': 0,
               'marketclearingprice': 0}
-    outputs = {'justice_score': None,
-               'alpha_scores': {}
-               }
-    states = {'beta_scores': {}}
+    states = {  'beta_scores': {},
+                'justice_score': None,
+                'alpha_scores': {}}
 
     """
        A class to represent a Justice Agent.
@@ -31,7 +30,7 @@ class JusticeAgent(ModelConstructor):
         self.alpha_factors = {company: sum(params.values()) for company, params in
                               self.social_parameters.items()}
         self.justice_step = self.parameters['justice_step']
-        self.beta_scores = dict.fromkeys(self.social_parameters) # creates a dictionary for the beta scores
+        self.beta_scores = {k: 0 for k in self.social_parameters} # creates a dictionary for the beta scores initialized to 0
 
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:
 
@@ -49,6 +48,8 @@ class JusticeAgent(ModelConstructor):
 
         if time % self.justice_step == 0:
             self.calculate_justice_score()
+        
+        self.set_states({'beta_scores': self.beta_scores, 'justice_score' : self.justice_score, 'alpha_scores': self.alpha_factors})
 
         return time + self._model.time_step_size
 
@@ -58,7 +59,7 @@ class JusticeAgent(ModelConstructor):
 
         # Calculate beta scores for all companies
         for index, company in self.market_results['Company'].items():
-            supplied_capacity = self.market_results['Company'].loc[index,'Supplied Capacity (MW)']
+            supplied_capacity = self.market_results['Supplied Capacity (MW)'].loc[index]
             beta_scores_t[company] = supplied_capacity/self.demand
             beta_scores_sum += beta_scores_t[company]
 

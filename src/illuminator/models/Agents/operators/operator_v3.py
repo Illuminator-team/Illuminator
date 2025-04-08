@@ -214,6 +214,8 @@ class Operator_Market(ModelConstructor):
                                     'Revenue (€)': [revenue], 'Total Costs (€)': [costs]
                                     ,'Profit (€)': [revenue - costs]}) # to add later'Costs for Overbidding (€)': [penalty]
             results_df = pd.concat([results_df, new_row])
+        
+        results_df.reset_index(drop=True, inplace=True)
 
         # Show Market Clearing Results
         print(f"Market Clearing Price: {market_clearing_price} €/MWh")
