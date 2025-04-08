@@ -118,7 +118,7 @@ class Operator_Market(ModelConstructor):
 
         self.set_states({'market_clearing_price': float(market_clearing_price),
                          'demand': float(self.demand),
-                         'market_results_summary': market_results_summary})  # json serialize needs to be a normal datatype, not a numpy data type
+                         'market_results_summary': market_results_summary.to_dict()})  # json serialize needs to be a normal datatype, not a numpy data type
         #self.set_states(market_clearing_price=market_clearing_price)
 
         # return the time of the next step (time untill current information is valid)

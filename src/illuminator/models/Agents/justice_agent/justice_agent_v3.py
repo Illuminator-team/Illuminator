@@ -36,7 +36,8 @@ class JusticeAgent(ModelConstructor):
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:
 
         input_data = self.unpack_inputs(inputs)
-        self.market_results = input_data['market_results']
+        market_results = input_data['market_results']
+        self.market_results = pd.DataFrame(market_results)
         #market results format pd.DataFrame({'Company': [company], 'Supplied Capacity (MW)': [supplied_capacity],
                                  #   'Revenue (€)': [revenue], 'Total Costs (€)': [costs]
                                   #  ,'Profit (€)': [revenue - costs]})
@@ -44,10 +45,10 @@ class JusticeAgent(ModelConstructor):
         self.market_clearing_price = input_data['market_clearing_price'] # currently unused
 
         # always determine/update the share of each company at each point in time
-        determine_share(self)
+        self.determine_share()
 
         if time % self.justice_step == 0:
-            calculate_justice_score(self)
+            self.calculate_justice_score()
 
         return time + self._model.time_step_size
 
