@@ -82,7 +82,7 @@ models:
     actual_h2_in: 0
     h2_out: 0
   parameters:
-    h2_capacity_tot: 13764.085235050237
+    h2_capacity_tot: 28336.52171946333
     h2_charge_eff: 100
     h2_discharge_eff: 100
     h2_soc_max: 100

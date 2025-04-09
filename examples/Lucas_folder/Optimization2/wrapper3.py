@@ -28,63 +28,7 @@ demand1 = pd.read_csv('./examples/h2_system_example/demand1_generated.csv', head
 demand2 = pd.read_csv('./examples/h2_system_example/demand2_generated.csv', header=1)['demand']
 tot_demand = (demand1+demand2).round(0)
 
-# with open(scenario, 'r') as file:
-#     data = yaml.load(file, Loader=yaml.FullLoader)
-# model = next ((m for m in data['models'] if m['name'] == 'H2Buffer1'), None)
-# print(model['parameters']['max_h2'])
-
-
-
-### First optimization test (iterative with the max_h2)
-# for i in range(max_iterations):
-#     print(f'ITERATION {i}. Running scenario {scenario}')
-#     command = ['illuminator', 'scenario', 'run', scenario]
-#     process = subprocess.Popen(command)
-#     index = 0
-#     while True:
-#         time.sleep(3)
-        
-#         # Reading the output CSV
-#         while True:
-#             try:
-#                 df = pd.read_csv(output_path)
-#                 break  # Break out of loop if file is successfully read
-#             except pd.errors.EmptyDataError:
-#                 print("Waiting for output file to be available...")
-#                 time.sleep(1)  # Wait for 1 seconds before trying again
-        
-#         demand_met = True
-#         output_length = len(df)-1
-#         for l in range(index, output_length):
-#             # with open(scenario, 'r') as file:
-#             #     debug_data = yaml.load(file, Loader=yaml.FullLoader)
-#             #     debug_model = next ((m for m in debug_data['models'] if m['name'] == 'H2Buffer1'), None)
-#             # h2_max = debug_model['parameters']['max_h2']
-#             print(f'row={l} demand={tot_demand[l]}') # , h2max={h2_max}')
-#             if tot_demand[l] != round(df['H2Buffer1-0.time-based_0-h2_out'].iloc[l], 3):
-#                 print(f"DEMAND NOT MET at row {l} namely tot_demand[{l}]={ tot_demand[l]} while h2_out ={df['H2Buffer1-0.time-based_0-h2_out'].iloc[l+1]}")
-#                 demand_met = False
-#                 break
-#         index = output_length
-#         if not demand_met:
-#             process.terminate()
-#             process.wait()
-#             print('process terminated')
-#             break
-#     with open(scenario, 'r') as file:
-#         data = yaml.load(file, Loader=yaml.FullLoader)
-#         model = next ((m for m in data['models'] if m['name'] == 'H2Buffer1'), None)
-#         model['parameters']['max_h2'] += 10
-
-#     with open('examples/h2_system_example/h2_system_4_dynamic.yaml', 'w') as file:
-#         yaml.dump(data, file)  # Write the modified YAML data back to the file
-
-#     # time.sleep(1)   # This is to prevent reading the cached yaml
-#     scenario = 'examples/h2_system_example/h2_system_4_dynamic.yaml'
-    
-
-
-### Trying actual optimization
+### Trying multiobjective
 
 def run_sim(buffer_size):
     global scenario
@@ -119,7 +63,8 @@ def run_sim(buffer_size):
             break
             
     return dump_tot, soc_violations, buffer_size
-    
+
+
 def save_pareto_solutions(result):
     F = result.F  # Objective values (Dump, SoC Violations, Buffer Size)
     X = result.X  # Decision variable (Buffer size)
@@ -131,29 +76,44 @@ def save_pareto_solutions(result):
 def plot_pareto(result):
     F = result.F  # Objective values (Dump, SoC Violations, Buffer Size)
     print("DEBUG: F =", F)
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111, projection='3d')
 
-    # Scatter all solutions (gray)
-    ax.scatter(F[:, 0], F[:, 1], F[:, 2], color='gray', alpha=0.5, label="All Solutions")
+    # Extract relevant objectives (SoC Violations vs. Buffer Size)
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # As it seems that all solutions provided by res.F seem to be pareto optimal (4 solutions are printed)
+    # while i run 4gens of 5 pop size I now plot solutions found in the iteration csv
+
+    dfx = pd.read_csv('examples/Lucas_folder/Optimization2/optimization_iter_results.csv')
+
+
+# Plot all solutions
+    ax.scatter(dfx["Buffer size"], dfx['SoC Violations'], color='blue', label='All Solutions', zorder=2, alpha=0.5)
+    # # Scatter all solutions (gray)
+    # ax.scatter(F[:, 2], F[:, 1], color='blue', alpha=0.5, label="All Solutions")  # (Buffer Size, SoC Violations)
 
     # Extract Pareto front
     pareto_front = result.opt.get("F")
     
     # Scatter Pareto front solutions (red)
-    ax.scatter(pareto_front[:, 0], pareto_front[:, 1], pareto_front[:, 2], 
-               color='red', edgecolors='black', linewidth=1.2, label="Pareto Front")
+    ax.scatter(pareto_front[:, 2], pareto_front[:, 1], color='red', edgecolors='black', linewidth=1.2, label="Pareto Front", zorder=3, alpha=0.5)
 
     # Labels
-    ax.set_xlabel("Total H2 Dump")
+    ax.set_xlabel("Buffer Size")
     ax.set_ylabel("SoC Violations")
-    ax.set_zlabel("Buffer Size")
-    ax.set_title("3D Pareto Front (NSGA-II)")
+    ax.set_title("Pareto Front (NSGA-II)")
     ax.legend()
     
+    plt.grid()
     plt.show()
 
-
+def track_generation_results(iter_df):
+    csv_file = "examples/Lucas_folder/Optimization2/optimization_iter_results.csv"
+    columns=["Generation", "Population index", "Buffer size", "Total dump", "SoC Violations"]
+    if  (iter_df.iloc[:, 0] == 0).all():
+        iter_df.to_csv(csv_file, header=columns, index=False, mode='w')
+    else:
+        iter_df.to_csv(csv_file, mode='a', header=False, index=False)
+    
 
 # Defining the problem
 class BufferProblem(Problem):
@@ -162,14 +122,13 @@ class BufferProblem(Problem):
             n_var=1,
             n_obj=3,
             n_const=0,
-            xl=np.array([500]),
-            xu=np.array([20000])
+            xl=np.array([2000]),
+            xu=np.array([40000])
         )
 
     def _evaluate(self, X, out, *args, **kwargs):
+        global generation
         results = []
-        algorithm = kwargs.get('algorithm', None)  # Get algorithm if available
-        generation = algorithm.n_gen if algorithm else -1  # Get current generation or use -1 if missing
         iter_data_list = []
 
         for i, x in enumerate (X):
@@ -178,13 +137,13 @@ class BufferProblem(Problem):
 
             print(f"Iter {i}: buffer={buffer_size}, dump={dump_tot}, violations={soc_violations}")
             iter_data_list.append([generation, i, buffer_size, dump_tot, soc_violations])
-        iter_data = pd.DataFrame(iter_data_list, columns=["Generation", "Population index", "Buffer seze", "Total dump", "SoC Violations"])
-        iter_data.to_csv("examples/Lucas_folder/Optimization2/optimization_iter_results.csv", mode='a', index=False)
-
+        iter_data = pd.DataFrame(iter_data_list)
+        track_generation_results(iter_data)
         results = np.array(results)
         out["F"] = np.column_stack([results[:, 0], results[:, 1], results[:, 2]])  # Objectives to minimize
+        generation += 1
 
-algorithm = NSGA2(pop_size=5,
+algorithm = NSGA2(pop_size=10,
                   sampling=FloatRandomSampling(),
                     crossover=SBX(prob=0.9, eta=15),
                     mutation=PM(eta=20),
@@ -204,15 +163,17 @@ with open(original_scenario, 'r') as file:
 with open(scenario, 'w') as file:
     yaml.dump(data, file)
 
+generation = 0 
+
 result = minimize(BufferProblem(), 
                   algorithm,
-                    termination=("n_gen", 3),  # Stop after x generations
+                    termination=("n_gen", 10),  # Stop after x generations
                     seed=1,
                     verbose=True
                 )
 
 
-
+time.sleep(3)
 save_pareto_solutions(result)
 plot_pareto(result)
 

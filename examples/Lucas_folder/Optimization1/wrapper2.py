@@ -187,6 +187,6 @@ except FileNotFoundError:
 
 
 scenario = 'examples/h2_system_example/h2_system_4.yaml'
-result = minimize(objective, x0=[200], bounds=[(100000,300000)], method='Powell', options={'ftol': 1e1, 'gtol': 1e1})
+result = minimize(objective, x0=[200], bounds=[(100000,300000)], method='Powell', tol=1e1)
 
 print(f'Optmial buffer size is: {result.x[0]}')
