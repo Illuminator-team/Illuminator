@@ -166,6 +166,8 @@ class Operator_Market(ModelConstructor):
                     total_supplied = total_supplied + all_bids_sorted.iloc[i]['Bid Capacity (MW)']
                     bid_to_add = all_bids_sorted.loc[[i]]
                     accepted_bids = pd.concat([accepted_bids, bid_to_add])
+                    if total_supplied == self.demand:
+                        market_clearing_price = all_bids_sorted.iloc[i]['Bid Price (€/MWh)']
                 else:
                     remaining_capacity = self.demand - total_supplied
                     total_supplied += remaining_capacity

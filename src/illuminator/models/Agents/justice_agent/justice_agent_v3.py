@@ -1,9 +1,12 @@
 import pandas as pd
 from illuminator.builder import ModelConstructor
+from os import makedirs
+from os import path
 
 class JusticeAgent(ModelConstructor):
     parameters = {'social_parameters': None, # dictionary with a, b,c, d keys per company and values
-                  'justice_step': None}
+                  'justice_step': None,
+                  'results_dir': 'justice_agent_results'}
     inputs = {'market_results': None,
               'demand': 0,
               'marketclearingprice': 0}
@@ -31,6 +34,8 @@ class JusticeAgent(ModelConstructor):
                               self.social_parameters.items()}
         self.justice_step = self.parameters['justice_step']
         self.beta_scores = {k: 0 for k in self.social_parameters} # creates a dictionary for the beta scores initialized to 0
+        self.results_dir = self.parameters['results_dir']
+        self.justice_score = 0
 
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:
 
@@ -46,9 +51,15 @@ class JusticeAgent(ModelConstructor):
         # always determine/update the share of each company at each point in time
         self.determine_share()
 
-        if time % self.justice_step == 0:
+        if time == self.justice_step :
             self.calculate_justice_score()
-        
+            #print(self.beta_scores)
+            beta_df = pd.DataFrame(self.beta_scores, index=[0])
+            if not path.exists(self.results_dir):
+                makedirs(self.results_dir)
+            beta_df.to_csv(path.join(self.results_dir, f'betascores_{time}.csv'),
+                                          index=False)
+
         self.set_states({'beta_scores': self.beta_scores, 'justice_score' : self.justice_score, 'alpha_scores': self.alpha_factors})
 
         return time + self._model.time_step_size
@@ -74,6 +85,7 @@ class JusticeAgent(ModelConstructor):
         # add beta at t to overall beta
         for key in self.beta_scores.keys():
             self.beta_scores[key] += beta_scores_t[key]
+            #print(self.beta_scores)
 
 
     def calculate_justice_score(self):
