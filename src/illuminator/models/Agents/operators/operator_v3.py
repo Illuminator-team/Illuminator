@@ -70,9 +70,8 @@ class Operator_Market(ModelConstructor):
         super().__init__(**kwargs)
         #self.demand = self.parameters['demand']
         self.results_dir = self.parameters['results_dir']
-
-
-
+        if self.states['demand']:
+            self.demand = self.states['demand']
 
     # define step function
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -95,7 +94,8 @@ class Operator_Market(ModelConstructor):
             Next simulation time step in hours, calculated as current time plus time_step_size
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
-        self.demand = input_data['demand'] # check if exists!
+        if 'demand' in input_data:
+            self.demand = input_data['demand'] # check if exists!
         if isinstance(input_data['bids'], dict): # if only one bid is submitted
             bids = [pd.DataFrame(input_data['bids'])]
         else:

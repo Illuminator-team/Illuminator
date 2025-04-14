@@ -127,7 +127,7 @@ connections:
     to: Company2.portfolio
   - from: CSV_company3.row
     to: Company3.portfolio
-  - from: CSV_operator.demand # add later
+  - from: CSV_operator.demand
     to: Operator1.demand
   - from: Company1.bids
     to: Operator1.bids
