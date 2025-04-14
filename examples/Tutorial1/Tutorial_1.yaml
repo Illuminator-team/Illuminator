@@ -28,8 +28,8 @@ models:
 - name: Load1
   type: Load
   parameters:
-    houses: 5  # number of houses that determine the total load demand
-    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+    houses: 1  # number of houses that determine the total load demand
+    output_type: 'energy'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
   outputs:
@@ -62,7 +62,7 @@ models:
 - name: PV1
   type: PV # models can reuse the same type
   parameters:
-    m_area: 1.26  # m2
+    m_area: 4  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -105,9 +105,9 @@ models:
 - name: Battery1
   type: Battery # models can reuse the same type
   parameters:
-    max_p: 0.8  # maximum charging power limit (kW)
+    max_p: 0.8  # maximum chkWrging power limit (kW)
     min_p: -0.8  # maximum discharging power limit (kW)
-    max_energy: 0.8  # maximum energy storage capacity of the battery (kWh)
+    max_energy: 10  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -119,7 +119,7 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 10  # state of charge of the battery (%)
+    soc: 50  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
@@ -197,7 +197,7 @@ monitor:
     # - Load1.load_dem
 
     - Controller1.flow2b
-    #- Controller1.res_load
+    # - Controller1.res_load
     - Controller1.dump
     - Battery1.p_out
     - Battery1.p_in
