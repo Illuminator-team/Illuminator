@@ -1,0 +1,7 @@
+﻿company1;;;;;;;;;;;;
+time;Oil_capacity;Oil_cost;Oil_availability;Nuclear_capacity;Nuclear_cost;Nuclear_availability;Gas (CCGT)_capacity;Gas (CCGT)_cost;Gas (CCGT)_availability;Gas (OCGT)_capacity;Gas (OCGT)_cost;Gas (OCGT)_availability
+2024-01-01 00:00:00;300;104;1;700;70;1;400;85;1;200;75;1
+2024-01-02 00:00:00;200;120;1;800;60;1;200;110;1;300;100;1
+2024-01-03 00:00:00;250;120;1;900;50;1;400;85;1;300;150;1
+2024-01-04 00:00:00;200;120;1;800;60;1;200;110;1;300;100;1
+2024-01-05 00:00:00;300;104;1;700;70;1;400;85;1;200;75;1

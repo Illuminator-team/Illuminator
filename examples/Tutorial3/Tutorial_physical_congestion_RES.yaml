@@ -1,0 +1,159 @@
+scenario:
+  name: "Tutorial 3" # in mosaik so called world
+  start_time: '2012-07-06 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2012-07-06 23:45:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+models: 
+- name: CSVload
+  type: CSV
+  parameters:
+    file_path: 'load_data.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+- name: CSV_pv
+  type: CSV
+  parameters:
+    file_path: 'pv_data_Rotterdam_NL-15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+- name: CSV_wind
+  type: CSV
+  parameters:
+    file_path: 'winddata_NL.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: Grid1
+  type: GridConnection
+  parameters:
+    connection_capacity: 15 # size of the neighbourhood
+    tolerance_limit: 0.67 # a load on the connection between 67% and 90% is tolerable but causes a warning
+    critical_limit: 0.9 # a load on the connection over 90% of the connection capacity is critical
+  inputs:
+    dump: 0
+  states:
+    flag_critical:  # 
+    flag_warning:
+
+- name: Load1
+  type: Load
+  parameters:
+    houses: 10  # number of houses that determine the total load demand
+    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  outputs:
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+
+- name: PV1
+  type: PV # models can reuse the same type
+  parameters:
+    m_area: 1.26  # m2
+    NOCT: 44  # Celcius
+    m_efficiency_stc: 0.198
+    G_NOCT: 800  # W/m2
+    P_STC: 250  # W
+    peak_power: 600  # W
+    m_tilt: 14  # degrees
+    m_az: 180  # degrees
+    cap: 20000  # W
+    output_type: 'power'
+  inputs: 
+    G_Gh: null 
+    G_Dh: null
+    G_Bn: null
+    Ta: null
+    hs: null
+    FF: null
+    Az: null
+  outputs:
+    pv_gen:
+    g_aoi:
+
+- name: Wind1
+  type: Wind # models can reuse the same type
+  parameters:
+    p_rated: 10  # Rated power output (kW) of the wind turbine at the rated wind speed and above.
+    u_rated: 10.3  # Rated wind speed (m/s) where the wind turbine reaches its maximum power output.
+    u_cutin: 2.8  # Cut-in wind speed (m/s) below which the wind turbine does not generate power.
+    u_cutout: 25  # Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.
+    cp: 0.40  # Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.
+    diameter: 2  # Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.
+    output_type: 'power'  # Output type of the wind generation, either 'power' (kW) or 'energy' (kWh).
+  inputs:
+    u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
+  outputs:
+    wind_gen:  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
+    u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+  states:
+    u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
+
+- name: Controller1
+  type: ControllerT3Congestion # models can reuse the same type
+  parameters:
+    soc_min: None  # Minimum state of charge of the battery before discharging stops
+    soc_max: None  # Maximum state of charge of the battery before charging stops
+    max_p: None  # Maximum power flow to/from the battery (kW)
+    gridconnect_ctrl: 15 # kW grid connection capacity
+    battery_active: False
+    elec_assets: False
+    load_shift_active: False # indicates whether the controller should actively shift the load based on flag warning
+  inputs:
+    wind_gen: 0  # Wind power generation
+    pv_gen: 0  # Solar power generation
+    load_dem: 0  # Electrical load demand
+    #soc: Null  # State of charge of the battery
+    #load_EV: 0  # Electrical vehicle load demand
+    #load_HP: 0  # Heat pump load demand
+    #flag_warning:
+  outputs:
+    flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
+    res_load:  # Residual load after considering the generation and load demand (kW)
+    dump:  # Excess power that cannot be stored or used (kW)
+  states:
+    limit_grid_connect:  # "enforced" limit of the grid connection Kw
+
+
+connections:
+# connections from CSV readers to the loads
+- from: CSVload.load
+  to: Load1.load
+
+# connections from the CSV reader to the PV
+- from: CSV_pv.G_Gh # start model, pattern: model_name.output_name/input_name
+  to: PV1.G_Gh # end model
+- from: CSV_pv.G_Dh
+  to: PV1.G_Dh
+- from: CSV_pv.G_Bn
+  to: PV1.G_Bn
+- from: CSV_pv.Ta
+  to: PV1.Ta
+- from: CSV_pv.hs
+  to: PV1.hs
+- from: CSV_pv.FF
+  to: PV1.FF
+- from: CSV_pv.Az
+  to: PV1.Az
+
+# connection from the CSV reader to the wind
+- from: CSV_wind.u
+  to: Wind1.u
+
+- from: Wind1.wind_gen
+  to: Controller1.wind_gen
+- from: PV1.pv_gen
+  to: Controller1.pv_gen
+- from: Load1.load_dem
+  to: Controller1.load_dem
+
+- from: Controller1.dump
+  to: Grid1.dump
+
+monitor:
+  file: './out_Tutorial_RES.csv'
+  items:
+    - Controller1.dump

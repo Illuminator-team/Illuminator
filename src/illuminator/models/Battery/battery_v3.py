@@ -176,7 +176,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-discharge Case
-                    self.powerout = energy_capacity / self.discharge_efficiency / hours
+                    self.powerout = energy_capacity * self.discharge_efficiency / hours  # Can only discharge remaining capacity, but even less because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_min
                     self.flag = -1  # Set flag as 1 to show fully discharged state
@@ -195,38 +195,7 @@ class Battery(ModelConstructor):
 
 
     def charge_battery(self, flow2b:int) -> dict:
-        """
-        Charge the battery, calculate the state of charge and return parameter information.
-        This method charges the battery based on the provided power input, updates the state of charge (SOC),
-        and returns a dictionary containing relevant parameters.
-            Power input to the battery in kW.
-            A dictionary containing the following keys:
-            - 'p_out' : float
-                The power output of the battery in kW.
-            - 'p_in' : int
-                The power input to the battery in kW.
-            - 'soc' : float
-                The state of charge of the battery as a percentage.
-            - 'mod' : int
-                A mode indicator (always 1 in this implementation).
-            - 'flag' : int
-                A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
-        Charge the battery, calculate the state of charge and return parameter information.
-        This method charges the battery based on the provided power input, updates the state of charge (SOC),
-        and returns a dictionary containing relevant parameters.
-            Power input to the battery in kW.
-            A dictionary containing the following keys:
-            - 'p_out' : float
-                The power output of the battery in kW.
-            - 'p_in' : int
-                The power input to the battery in kW.
-            - 'soc' : float
-                The state of charge of the battery as a percentage.
-            - 'mod' : int
-                A mode indicator (always 1 in this implementation).
-            - 'flag' : int
-                A flag indicating the state of the battery (0 for ready to charge/discharge, 1 for fully charged).
-        """
+        
         hours = self.time_resolution / 60 / 60
         flow = min(self.max_p, flow2b)
         if (flow > 0):
@@ -242,7 +211,7 @@ class Battery(ModelConstructor):
                     self.flag = 0  # Set flag as ready to discharge or charge
 
                 else:  # Fully-charge Case
-                    self.powerout = energy_capacity / self.charge_efficiency / hours
+                    self.powerout = energy_capacity / self.charge_efficiency / hours  # you can only charge the remaining capacity, but it would cost more because of inefficiency
                     # warn('\n Home Battery is fully discharged!! Cannot deliver more energy!')
                     self.soc = self.soc_max
                     self.flag = 1  # Set flag as 1 to show fully discharged state
