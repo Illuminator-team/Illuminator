@@ -4,6 +4,45 @@ from os import makedirs
 from os import path
 
 class JusticeAgent(ModelConstructor):
+    """
+    Justice evaluator agent that calculates justice metrics for electricity market participants.
+    
+    This agent monitors market outcomes and calculates justice scores based on company market shares
+    and predefined social parameters. It tracks beta scores (market shares) over time and computes
+    an overall justice score at specified intervals.
+
+    Parameters
+    ----------
+    social_parameters : dict
+        Dictionary containing social parameter weights (a,b,c,d) for each company
+    justice_step : int
+        Time step at which to calculate final justice scores
+    results_dir : str, optional
+        Directory to save justice metric results, defaults to 'justice_agent_results'
+
+    Inputs
+    ----------
+    market_results : pd.DataFrame
+        Market clearing results with company capacities, revenues, costs and profits
+    demand : float
+        Total market demand
+    market_clearing_price : float 
+        Market clearing price
+    
+    Outputs
+    ----------
+    None
+
+    States 
+    -------
+    beta_scores : dict
+        Cumulative market shares for each company
+    justice_score : float
+        Overall justice metric
+    alpha_scores : dict
+        Social parameter weights for each company
+    """
+
     parameters = {'social_parameters': None, # dictionary with a, b,c, d keys per company and values
                   'justice_step': None,
                   'results_dir': 'justice_agent_results'}
@@ -14,18 +53,6 @@ class JusticeAgent(ModelConstructor):
                 'justice_score': None,
                 'alpha_scores': {}}
 
-    """
-       A class to represent a Justice Agent.
-       This class provides methods to create bids for power plants based on their specifications and market conditions.
-
-       Attributes
-
-       Methods
-       __init__(**kwargs)
-
-       step()
-        Simulates one time step of the Justice Agent.
-       """
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -38,6 +65,26 @@ class JusticeAgent(ModelConstructor):
         self.justice_score = 0
 
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:
+        """
+        Performs a single simulation time step by processing market results and calculating justice metrics.
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict
+            Dictionary containing input values including 'market_results', 'demand', and 'market_clearing_price'
+        max_advance : int, optional
+            Maximum time step advancement, defaults to 1
+        Returns
+        -------
+        int
+            Next simulation time step
+        Notes
+        -----
+        The method processes market results, determines company shares, and calculates justice 
+        scores at specified intervals. Results are saved to CSV files and state variables are updated.
+        Market results include company data with supplied capacity, revenue, costs and profits.
+        """
 
         input_data = self.unpack_inputs(inputs)
         market_results = input_data['market_results']
@@ -65,6 +112,25 @@ class JusticeAgent(ModelConstructor):
         return time + self._model.time_step_size
 
     def determine_share(self):
+        """
+        Calculates market share distribution based on supplied capacity of companies.
+        The function calculates beta scores for each company based on their supplied capacity 
+        relative to total demand. If the sum of beta scores is less than 1, the remaining share 
+        is added to the company with the lowest beta score. The calculated beta scores are then 
+        added to the cumulative beta scores.
+        Parameters
+        ----------
+        None
+        Returns
+        -------
+        None
+        Notes
+        -----
+        Updates self.beta_scores dictionary with new cumulative beta scores for each company.
+        Uses self.market_results DataFrame containing 'Company' and 'Supplied Capacity (MW)' columns.
+        Uses self.demand for total market demand.
+        """
+
         beta_scores_sum = 0
         beta_scores_t = dict.fromkeys(self.beta_scores)
 
@@ -89,6 +155,16 @@ class JusticeAgent(ModelConstructor):
 
 
     def calculate_justice_score(self):
+        """
+        Calculates the justice score based on alpha factors and beta scores.
+        The justice score is computed as the sum of products between alpha factors
+        and beta scores for each company.
+        Returns
+        -------
+        float
+            The calculated justice score, representing the weighted sum of beta scores
+        """
+
         self.justice_score = 0
         for company in self.beta_scores.keys():
             self.justice_score += self.alpha_factors[company] * self.beta_scores[company]

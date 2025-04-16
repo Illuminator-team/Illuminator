@@ -3,41 +3,47 @@ from illuminator.builder import ModelConstructor
 # construct the model
 class Controller_T1(ModelConstructor):
     """
-    A class to represent a Controller model for a renewable energy system.
-    This class provides methods to manage power flows between renewable sources, 
-    battery storage and electrical loads.
+    Controller for managing power flows between renewable generation, load, and battery storage.
+    
+    This controller determines how power should be distributed between renewable sources (wind, solar),
+    load demands, and battery storage. It implements basic control logic for battery charging and
+    discharging based on state of charge limits and power constraints.
 
-    Attributes
-    parameters : dict
-        Dictionary containing control parameters:
-        - soc_min: Minimum state of charge of the battery (%)
-        - soc_max: Maximum state of charge of the battery (%)
-        - max_p: Maximum power to/from the battery (kW)
-    inputs : dict
-        Dictionary containing inputs:
-        - wind_gen: Wind power generation (kW)
-        - pv_gen: Solar power generation (kW)
-        - load_dem: Electrical load demand (kW)
-        - soc: State of charge of the battery (%)
-    outputs : dict
-        Dictionary containing calculated outputs:
-        - flow2b: Power flow to/from battery (kW)
-        - res_load: Residual load (kW)
-        - dump: Excess power that cannot be stored (kW)
-    states : dict
-        Dictionary containing the state variables of the system.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
+    Parameters
+    ----------
+    soc_min : float
+        Minimum state of charge of the battery before discharging stops (%)
+    soc_max : float
+        Maximum state of charge of the battery before charging stops (%)
+    max_p : float
+        Maximum power to/from the battery (kW)
+    battery_active : bool
+        Flag to enable/disable battery operation
+    
+    Inputs
+    ----------
+    wind_gen : float
+        Wind power generation (kW)
+    pv_gen : float
+        Solar power generation (kW)
+    load_dem : float
+        Electrical load demand (kW)
+    soc : float
+        State of charge of the battery (%)
 
-    Methods
-    __init__(**kwargs)
-        Initializes the Controller model with the provided parameters.
-    step(time, inputs, max_advance)
-        Simulates one time step of the Controller model.
-    control(wind_gen, pv_gen, load_dem, soc)
-        Manages power flows based on generation, demand and storage states.
+    Outputs
+    ----------
+    flow2b : float 
+        Power flow to/from battery (kW, positive for charging, negative for discharging)
+    res_load : float
+        Residual load after renewable generation (kW)
+    dump : float
+        Excess power that cannot be stored or used (kW)
+    
+    States
+    ----------
+    None
+        
     """
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops

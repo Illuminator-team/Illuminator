@@ -4,32 +4,47 @@ from illuminator.builder import ModelConstructor
 # construct the model
 class Wind(ModelConstructor):
     """
-    A class to represent a Wind Turbine model.
-    This class provides methods to calculate wind power output based on wind speeds and turbine specifications.
+    A wind turbine model that calculates power generation based on wind speed.
+    
+    This model simulates wind turbine performance considering wind speed at different
+    heights, power curve characteristics, and system parameters. It can output
+    either power or energy values.
 
-    Attributes
-    parameters : dict
-        Dictionary containing wind turbine parameters such as rated power, cut-in/out speeds, rotor diameter, and performance coefficient.
-    inputs : dict
-        Dictionary containing wind speed input at a specific height.
-    outputs : dict
-        Dictionary containing calculated outputs like wind power generation and adjusted wind speeds.
-    states : dict
-        Dictionary containing the state variables of wind speeds at different heights.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
+    Parameters
+    ----------
+    p_rated : float
+        Rated power output (kW) at rated wind speed
+    u_rated : float
+        Rated wind speed (m/s)
+    u_cutin : float
+        Cut-in wind speed (m/s)
+    u_cutout : float
+        Cut-out wind speed (m/s)
+    cp : float
+        Coefficient of performance (Betz limit max 0.59)
+    diameter : float
+        Rotor diameter (m)
+    output_type : str
+        Output type ('power' or 'energy')
+    
+    Inputs
+    ----------
+    u : float
+        Wind speed at hub height (m/s)
 
-    Methods
-    __init__(**kwargs)
-        Initializes the Wind model with the provided parameters.
-    step(time, inputs, max_advance)
-        Simulates one time step of the Wind model.
-    production(u)
-        Calculates wind power production using basic wind power equation.
-    generation(u)
-        Calculates final wind power output considering cut-in/out speeds and rated power.
+    Outputs
+    ----------
+    wind_gen : float
+        Wind generation in kW or kWh
+    u : float
+        Adjusted wind speed at 25m height (m/s)
+    
+    States
+    ----------
+    u60 : float
+        Wind speed at 60m height (m/s)
+    u25 : float
+        Wind speed at 25m height (m/s)
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes

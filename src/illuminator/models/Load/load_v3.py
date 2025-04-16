@@ -6,13 +6,29 @@ class Load(ModelConstructor):
 
     Parameters
     ----------
+    houses : int
+        Number of houses that determine the total load demand
+    output_type : str
+        Type of output for consumption calculation ('energy' or 'power')
+
+    Inputs
+    ----------
     load : float
-        Input load per house in kW or kWh depending on output_type
-        
-    Returns
+        Incoming energy or power demand per house in kW or kWh
+    
+    Outputs
     -------
-    re_params : dict
-        Dictionary containing calculated load demand values
+    load_dem : float
+        Total energy or power consumption for all houses (kWh) over the time step
+    consumption : float
+        Current energy or power consumption based on the number of houses and input load (kWh)
+    
+    States
+    ------
+    time : int
+        Current simulation time in seconds
+    forecast : None
+        Placeholder for future load forecasting functionality
     """
 
     parameters={'houses': 1,  # number of houses that determine the total load demand

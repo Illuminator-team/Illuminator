@@ -3,46 +3,59 @@ from illuminator.builder import ModelConstructor
 # construct the model
 class ControllerT3Congestion(ModelConstructor):
     """
-    A class to represent a Controller model for a renewable energy system.
-    This class provides methods to manage power flows between renewable sources, 
-    battery storage and electrical loads, with congestion management capabilities.
+    Controller for managing power flows between renewable generation, load, battery storage, and electrified assets.
+    
+    This controller determines power distribution between renewable sources (wind, solar), load demands,
+    battery storage, and electrified assets like EVs and heat pumps. It implements control logic for battery 
+    charging/discharging and load shifting to manage grid congestion.
 
-    Attributes
-    parameters : dict
-        Dictionary containing control parameters:
-        - soc_min: Minimum state of charge of the battery (%)
-        - soc_max: Maximum state of charge of the battery (%)
-        - max_p: Maximum power to/from the battery (kW)
-        - gridconnect_ctrl: Maximum grid connection capacity (kW)
-    inputs : dict
-        Dictionary containing inputs:
-        - wind_gen: Wind power generation (kW)
-        - pv_gen: Solar power generation (kW)
-        - load_dem: Electrical load demand (kW)
-        - soc: State of charge of the battery (%)
-        - load_EV: Electric vehicle load demand (kW)
-        - load_HP: Heat pump load demand (kW)
-        - flag_warning: Warning flag for grid congestion
-        - limit_grid_connect: Grid connection limit
-    outputs : dict
-        Dictionary containing calculated outputs:
-        - flow2b: Power flow to/from battery (kW)
-        - res_load: Residual load (kW)
-        - dump: Excess power that cannot be stored (kW)
-    states : dict
-        Dictionary containing the state variables of the system.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
+    Parameters
+    ----------
+    soc_min : float
+        Minimum state of charge of the battery before discharging stops (%)
+    soc_max : float
+        Maximum state of charge of the battery before charging stops (%)
+    max_p : float
+        Maximum power to/from the battery (kW)
+    gridconnect_ctrl : float
+        Grid connection capacity limit (kW)
+    battery_active : bool
+        Flag to enable/disable battery operation
+    elec_assets : bool
+        Flag to enable/disable electrified assets
+    load_shift_active : bool
+        Flag to enable/disable load shifting during congestion warnings
+    
+    Inputs
+    ----------
+    wind_gen : float
+        Wind power generation (kW)
+    pv_gen : float
+        Solar power generation (kW)
+    load_dem : float
+        Base electrical load demand (kW)
+    soc : float
+        State of charge of the battery (%)
+    load_EV : float
+        Electric vehicle load demand (kW)
+    load_HP : float
+        Heat pump load demand (kW)
+    flag_warning : int
+        Warning flag for grid congestion
 
-    Methods
-    __init__(**kwargs)
-        Initializes the Controller model with the provided parameters.
-    step(time, inputs, max_advance)
-        Simulates one time step of the Controller model.
-    control(wind_gen, pv_gen, load_dem, soc, load_EV, load_HP, flag_warning)
-        Manages power flows based on generation, demand, storage states and grid congestion.
+    Outputs
+    ----------
+    flow2b : float 
+        Power flow to/from battery (kW, positive for charging, negative for discharging)
+    res_load : float
+        Residual load after renewable generation (kW)
+    dump : float
+        Excess power that cannot be stored or used (kW)
+    
+    States
+    ----------
+    limit_grid_connect : float
+        Grid connection limit for congestion management (kW)
     """
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops

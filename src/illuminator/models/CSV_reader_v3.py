@@ -20,17 +20,32 @@ from illuminator.engine import current_model
 # construct the model
 class CSV(ModelConstructor):
     """
-    CSV is a model for reading CSV files.
-    parameters : dict
-        Default parameters for the CSV reader.
-        Input attributes for the model.
-        Output attributes for the model.
-    states : dict
-        State attributes for the model.
-    time_step_size : int
-        The size of each time step in the simulation.
-    time : None
-        The current time in the simulation.
+    A model for reading time series data from CSV files.
+
+    This model reads data from a CSV file line by line, synchronizing with simulation time.
+    The CSV file should contain a header row with column names and a timestamp column.
+
+    Parameters
+    ----------
+    date_format : str
+        Format of the date/time column in the CSV file
+    delimiter : str
+        Column delimiter character in the CSV file (default ',')
+    datafile : str
+        Path to the CSV file to read from
+
+    Inputs
+    ----------
+    None
+
+    Outputs
+    ----------
+    next_row : dict
+        The data from the current row, with column names as keys
+
+    States
+    ----------
+    None
     """
 
     parameters={'date_format': '',

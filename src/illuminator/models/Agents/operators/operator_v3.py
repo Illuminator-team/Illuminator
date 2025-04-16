@@ -9,34 +9,34 @@ from os import makedirs
 # construct the model
 class Operator_Market(ModelConstructor):
     """
-    A class to represent a Market Operator Agent that clears electricity markets.
-    This class manages bid processing, price formation, and market clearing calculations.
+    Market operator agent responsible for clearing the electricity market.
 
-    Attributes
+    This agent processes bids from generators, calculates market clearing prices using
+    merit order principles, and determines accepted capacities and financial results
+    for market participants.
+
+    Parameters
     ----------
-    parameters : dict
-        Dictionary containing market parameters such as demand and results directory.
-    inputs : dict
-        Dictionary containing submitted bids from electricity generators.
-    outputs : dict
-        Dictionary containing market clearing prices and results per company.
-    states : dict
-        Dictionary containing state variables like market clearing price.
-    time_step_size : int
-        Time step size for the simulation in hours.
-    time : int or None
-        Current simulation time in hours.
+    results_dir : str
+        Directory to save market results and visualizations
 
-    Methods
+    Inputs
+    ----------
+    bids : dict or list[dict]
+        Bid information from generators containing prices and capacities
+
+    Outputs
+    ----------
+    None
+
+    States
     -------
-    __init__(**kwargs)
-        Initializes the Market Operator with the provided parameters.
-    step(time, inputs, max_advance)
-        Advances simulation by processing bids and calculating market results.
-    calculate_balance(bids)
-        Determines market clearing price and financial results from submitted bids.
-    create_merit_order_curve(all_bids_sorted, demand, market_clearing_price)
-        Visualizes merit order curve showing price formation.
+    market_clearing_price : float
+        Cleared market price in €/MWh
+    market_results_summary : dict
+        Summary of market results including revenues and profits
+    demand : float
+        Total market demand in MW
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
