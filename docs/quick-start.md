@@ -5,9 +5,8 @@ The *Illuminator* is written in Python and its dependencies are also Python.
 ## Installation
 
 **Requirements** 
-- Python >= 3.8
-- Miniconda (optional)
-- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
+- Python >= 3.8 < 3.12
+- (optional) A Rasberry Pi cluster, for cluster deployment ( [cluster set up](cluster-setup.md) for specific instructions)
 
 ### Using Pip
 
@@ -46,7 +45,7 @@ git clone https://github.com/Illuminator-team/Illuminator.git
 ```shell
 cd Illuminator/
 
-pip install .
+pip install -e .
 ```
 
 ## Usage
@@ -98,13 +97,13 @@ The illuminator has two interfaces for user, one for the command line (CLI) and 
 
   ```shell
   # to run a simulation scenario:
-  illuminator scenario <path/to/scenario-config.yaml>
+  illuminator scenario run <path/to/scenario-config.yaml>
 
   # to get help, use:
   illuminator scenario --help
   ```
 
-2. If using Python:
+2. Using a Python script:
 
   ```python
 

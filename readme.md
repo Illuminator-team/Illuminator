@@ -2,59 +2,11 @@
 [![documentation](https://github.com/Illuminator-team/Illuminator/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/Illuminator-team/Illuminator/actions/workflows/deploy-docs.yml)
 
 # Illuminator
-The Illuminator is an easy-to-use Energy System Integration 
-Development kit to demystify energy system's operation, illustrate challenges 
-that arise due to the energy transition and test 
-state-of-the-art energy management concepts. 
-The kit utilises Raspberry Pi's as individual components of an energy system emulator, 
-and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
+The Illuminator is a user-friendly development kit for simulating integrated energy systems.
+It supports the design of energy systems, the testing of advanced energy management concepts, and the demonstration of challenges posed by the energy transition.
+Illuminator builts on [Mosaik](https://mosaik.offis.de/), and supports both stand-alone simulations and distributed computing.
 
-## Installation
-
-**Requirements** 
-- Python >= 3.8
-- Miniconda (optional)
-- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
-
-### Using Pip
-
-The simpliest way to install *Illuminator* is from PYPI, using `pip`:
-
-```shell
-pip install illuminator
-```
-
-### Using Conda
-
-The `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
-
-```shell
-conda env create -f environment.yml
-
-conda activate illuminator
-```
-
-> Refer to the [documenation](https://illuminator-team.github.io/Illuminator/quick-start.html#usage) for an explanation on how to set up and run a simulation.
-
-
-## Raspberry Pi Setup
-
-The setup for the Illuminator requires one **server** Raspberry Pi and several **clients** Raspberry Pi's.
-Raspberry Pi's must be connected and configured as a local network, and the
-*server* must be configured to have permissions to access and control the *clients* through Secure Shell Protocol (SSH).
-
-During simulation, the *server* engage with the *clients* to run the simulations defined in the *simulation configuration*, and
-information is exchanged between Rasberry Pi's using network sockets.
-The **server** provides a Dashboard to viazulize the results, and saves them to a `.csv` files for later analysis. 
-
-<div align="center">
-	<img align="center" src="docs/_static/img/Structure.jpg" width="500">
-</div>
-
-
-### Set up 
-
-Consult the [Cluster Pi Setup](docs/cluster-setup.md) document for instructions on how to set up a cluster.
+> See [documenation](https://illuminator-team.github.io/Illuminator/quick-start.html#usage) for an explanation on how to set up and run a simulation.
 
 ## Contributing Guidelines
 
