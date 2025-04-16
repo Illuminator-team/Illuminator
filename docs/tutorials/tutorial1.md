@@ -1,4 +1,4 @@
-# Tutorial 1
+# Tutorial: Power Balancing
 :::{note}
 The linked colab files cannot currently be run on web, they serve as a way to scan through the tutorial contents before installing and running them locally.
 :::
