@@ -20,14 +20,6 @@ Illuminator builts on `Mosaik. <https://mosaik.offis.de/>`_ and supports both st
    .. user/models
 
 .. toctree::
-   :maxdepth: 3
-   :caption: User's Documentation
-
-   user/config-file.md
-   user/simulations.md
-   references/models.rst
-
-.. toctree::
    :maxdepth: 2
    :caption: Educational tutorials
 
@@ -35,6 +27,15 @@ Illuminator builts on `Mosaik. <https://mosaik.offis.de/>`_ and supports both st
    tutorials/tutorial1.md
    tutorials/tutorial2.md
    tutorials/tutorial3.md
+   
+
+.. toctree::
+   :maxdepth: 3
+   :caption: User's Documentation
+
+   user/config-file.md
+   user/simulations.md
+   references/models.rst
 
 .. toctree::
    :maxdepth: 2
