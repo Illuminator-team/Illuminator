@@ -1,11 +1,9 @@
 import pandas as pd
 
 
-def cost_fun1(column: pd.Series):
+def cost_fun1(df: pd.DataFrame):
     """
-    Simply calculates the total sum of one column of the output,
-    for example the total power pulled from the grid, or the 
-    total flared hydrogen.
+    Calculates the sum of the dump column.
 
     Inputs:
         column: pd.df
@@ -14,5 +12,6 @@ def cost_fun1(column: pd.Series):
         sum: float
             the sum of a dataframe column
     """
-    sum = column.sum
-    return sum
+    summed_col = -df['Controller1-0.time-based_0-dump'].sum()
+    # summed_col = df['H2_controller-0.time-based_0-dump'].sum()
+    return summed_col

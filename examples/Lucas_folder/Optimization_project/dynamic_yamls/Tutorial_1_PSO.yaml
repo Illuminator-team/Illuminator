@@ -1,0 +1,167 @@
+connections:
+- from: CSVload.load
+  to: Load1.load
+- from: CSVload.load
+  to: Load2.load
+- from: CSV_pv.G_Gh
+  to: PV1.G_Gh
+- from: CSV_pv.G_Dh
+  to: PV1.G_Dh
+- from: CSV_pv.G_Bn
+  to: PV1.G_Bn
+- from: CSV_pv.Ta
+  to: PV1.Ta
+- from: CSV_pv.hs
+  to: PV1.hs
+- from: CSV_pv.FF
+  to: PV1.FF
+- from: CSV_pv.Az
+  to: PV1.Az
+- from: CSV_wind.u
+  to: Wind1.u
+- from: Wind1.wind_gen
+  to: Controller1.wind_gen
+- from: PV1.pv_gen
+  to: Controller1.pv_gen
+- from: Load1.load_dem
+  to: Controller1.load_dem
+- from: Battery1.soc
+  to: Controller1.soc
+- from: Controller1.flow2b
+  time_shifted: true
+  to: Battery1.flow2b
+models:
+- name: CSVload
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/Tutorial1/load_data.txt
+  states:
+    load: null
+  type: CSV
+- name: CSV_pv
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt
+  type: CSV
+- name: CSV_wind
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/Tutorial1/winddata_NL.txt
+  type: CSV
+- inputs:
+    load: 0
+  name: Load1
+  outputs:
+    consumption: null
+    load_dem: null
+  parameters:
+    houses: 1
+    output_type: energy
+  type: Load
+- inputs:
+    load: 0
+  name: Load2
+  outputs:
+    consumption: null
+    load_dem: null
+  parameters:
+    houses: 5
+    output_type: power
+  type: Load
+- inputs:
+    Az: null
+    FF: null
+    G_Bn: null
+    G_Dh: null
+    G_Gh: null
+    Ta: null
+    hs: null
+  name: PV1
+  outputs:
+    g_aoi: null
+    pv_gen: null
+  parameters:
+    G_NOCT: 800
+    NOCT: 44
+    P_STC: 250
+    cap: 500
+    m_area: 9.276741515592791
+    m_az: 180
+    m_efficiency_stc: 0.198
+    m_tilt: 4.196351767893027
+    output_type: power
+    peak_power: 600
+  type: PV
+- inputs:
+    u: 0
+  name: Wind1
+  outputs:
+    u: null
+    wind_gen: null
+  parameters:
+    cp: 0.4
+    diameter: 2
+    output_type: power
+    p_rated: 0.3
+    u_cutin: 2.8
+    u_cutout: 25
+    u_rated: 10.3
+  states:
+    u60: 0
+  type: Wind
+- inputs:
+    flow2b: 0
+  name: Battery1
+  outputs:
+    p_in: 0
+    p_out: 0
+  parameters:
+    charge_efficiency: 90
+    discharge_efficiency: 90
+    max_energy: 10
+    max_p: 0.8
+    min_p: -0.8
+    soc_max: 90
+    soc_min: 10
+  states:
+    flag: 0
+    mod: 0
+    soc: 10
+  type: Battery
+- inputs:
+    load_EV: 0
+    load_dem: 0
+    pv_gen: 0
+    soc: 0
+    wind_gen: 0
+  name: Controller1
+  outputs:
+    dump: null
+    flow2b: null
+    res_load: null
+  parameters:
+    battery_active: true
+    max_p: 0.8
+    soc_max: 90
+    soc_min: 10
+  type: Controller_T1
+monitor:
+  file: examples\Tutorial1\out_Tutorial1.csv
+  items:
+  - Controller1.flow2b
+  - Controller1.res_load
+  - Controller1.dump
+  - Battery1.p_out
+  - Battery1.p_in
+  - Battery1.soc
+  - PV1.pv_gen
+  - Wind1.wind_gen
+  - Load1.load_dem
+scenario:
+  end_time: '2012-07-06 23:45:00'
+  name: Tutorial 1
+  start_time: '2012-07-06 00:00:00'
+  time_resolution: 900
