@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illuminator Agent Models &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Illuminator Component Models" href="../Components/Components.html" />
+    <link rel="prev" title="Illuminator Models" href="../models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../models.html">Illuminator Models</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Illuminator Agent Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.bid"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.bid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.inputs"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.outputs"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.parameters"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.states"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.step"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time_step_size"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent"><code class="docutils literal notranslate"><span class="pre">JusticeAgent</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.calculate_justice_score"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.calculate_justice_score()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.determine_share"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.determine_share()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.inputs"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.parameters"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.states"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.step"><code class="docutils literal notranslate"><span class="pre">JusticeAgent.step()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market"><code class="docutils literal notranslate"><span class="pre">Operator_Market</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.calculate_balance"><code class="docutils literal notranslate"><span class="pre">Operator_Market.calculate_balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.create_merit_order_curve"><code class="docutils literal notranslate"><span class="pre">Operator_Market.create_merit_order_curve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.inputs"><code class="docutils literal notranslate"><span class="pre">Operator_Market.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.outputs"><code class="docutils literal notranslate"><span class="pre">Operator_Market.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.parameters"><code class="docutils literal notranslate"><span class="pre">Operator_Market.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.states"><code class="docutils literal notranslate"><span class="pre">Operator_Market.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.step"><code class="docutils literal notranslate"><span class="pre">Operator_Market.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.time"><code class="docutils literal notranslate"><span class="pre">Operator_Market.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.time_step_size"><code class="docutils literal notranslate"><span class="pre">Operator_Market.time_step_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Components/Components.html">Illuminator Component Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Controllers/Controllers.html">Illuminator Controller Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Data/Data.html">Illuminator Data Models</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario-api.html">Scenario API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../models.html">Illuminator Models</a></li>
+      <li class="breadcrumb-item active">Illuminator Agent Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/references/Agents/Agents.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="illuminator-agent-models">
+<h1>Illuminator Agent Models<a class="headerlink" href="#illuminator-agent-models" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Agents.generators.generation_company_agent_v3.</span></span><span class="sig-name descname"><span class="pre">GenerationCompanyAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent" title="Link to this definition"></a></dt>
+<dd><p>Generation Company Agent that participates in electricity markets by submitting bids.</p>
+<p>This agent represents a power generation company that owns a portfolio of power plants
+and can submit either automated marginal cost-based bids or manual bids to the market.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>company_name</strong> (<em>str</em>) – Name identifier for the generation company</p></li>
+<li><p><strong>automated_bids</strong> (<em>bool</em>) – Flag to determine if bids are generated automatically based on marginal costs</p></li>
+<li><p><strong>bids_manual</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Manual bid data if automated_bids is False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>portfolio</strong> (<em>dict</em>) – Portfolio of power plants with their characteristics (capacity, cost, availability)</p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>bids</strong> (<em>dict</em>) – Current market bids for each power plant</p></li>
+<li><p><strong>profit</strong> (<em>float</em>) – Cumulative profit from market operations</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.bid">
+<span class="sig-name descname"><span class="pre">bid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.bid" title="Link to this definition"></a></dt>
+<dd><p>Creates bids for each power plant in the portfolio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing bids DataFrame with columns:
+- Company : str
+Name of the generation company
+- Technology : str
+Type of power plant
+- Capacity (MW) : float
+Nominal capacity
+- Cost (€/MWh) : float
+Marginal cost
+- Availability : float
+Plant availability factor
+- Available Capacity (MW) : float
+Actual available capacity
+- Bid Capacity (MW) : float
+Capacity offered to market
+- Bid Price (€/MWh) : float
+Price offered to market</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'portfolio':</span> <span class="pre">{}}</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'automated_bids':</span> <span class="pre">True,</span> <span class="pre">'bids_manual':</span> <span class="pre">None,</span> <span class="pre">'company_name':</span> <span class="pre">'no</span> <span class="pre">name'}</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bids':</span> <span class="pre">{},</span> <span class="pre">'profit':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single simulation time step by processing portfolio information and generating market bids.
+:param time: Current simulation time in hours
+:type time: int
+:param inputs: Dictionary containing market inputs and portfolio information
+:type inputs: dict
+:param max_advance: Maximum time step advancement in hours, defaults to 1
+:type max_advance: int, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Next simulation time in hours. Returns current time plus model time step size</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Agents.justice_agent.justice_agent_v3.</span></span><span class="sig-name descname"><span class="pre">JusticeAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent" title="Link to this definition"></a></dt>
+<dd><p>Justice evaluator agent that calculates justice metrics for electricity market participants.</p>
+<p>This agent monitors market outcomes and calculates justice scores based on company market shares
+and predefined social parameters. It tracks beta scores (market shares) over time and computes
+an overall justice score at specified intervals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>social_parameters</strong> (<em>dict</em>) – Dictionary containing social parameter weights (a,b,c,d) for each company</p></li>
+<li><p><strong>justice_step</strong> (<em>int</em>) – Time step at which to calculate final justice scores</p></li>
+<li><p><strong>results_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory to save justice metric results, defaults to ‘justice_agent_results’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>market_results</strong> (<em>pd.DataFrame</em>) – Market clearing results with company capacities, revenues, costs and profits</p></li>
+<li><p><strong>demand</strong> (<em>float</em>) – Total market demand</p></li>
+<li><p><strong>market_clearing_price</strong> (<em>float</em>) – Market clearing price</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>beta_scores</strong> (<em>dict</em>) – Cumulative market shares for each company</p></li>
+<li><p><strong>justice_score</strong> (<em>float</em>) – Overall justice metric</p></li>
+<li><p><strong>alpha_scores</strong> (<em>dict</em>) – Social parameter weights for each company</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.calculate_justice_score">
+<span class="sig-name descname"><span class="pre">calculate_justice_score</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.calculate_justice_score" title="Link to this definition"></a></dt>
+<dd><p>Calculates the justice score based on alpha factors and beta scores.
+The justice score is computed as the sum of products between alpha factors
+and beta scores for each company.
+:returns: The calculated justice score, representing the weighted sum of beta scores
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.determine_share">
+<span class="sig-name descname"><span class="pre">determine_share</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.determine_share" title="Link to this definition"></a></dt>
+<dd><p>Calculates market share distribution based on supplied capacity of companies.
+The function calculates beta scores for each company based on their supplied capacity
+relative to total demand. If the sum of beta scores is less than 1, the remaining share
+is added to the company with the lowest beta score. The calculated beta scores are then
+added to the cumulative beta scores.
+:param None:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Updates self.beta_scores dictionary with new cumulative beta scores for each company.
+Uses self.market_results DataFrame containing ‘Company’ and ‘Supplied Capacity (MW)’ columns.
+Uses self.demand for total market demand.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'demand':</span> <span class="pre">0,</span> <span class="pre">'market_results':</span> <span class="pre">None,</span> <span class="pre">'marketclearingprice':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'justice_step':</span> <span class="pre">None,</span> <span class="pre">'results_dir':</span> <span class="pre">'justice_agent_results',</span> <span class="pre">'social_parameters':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'alpha_scores':</span> <span class="pre">{},</span> <span class="pre">'beta_scores':</span> <span class="pre">{},</span> <span class="pre">'justice_score':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single simulation time step by processing market results and calculating justice metrics.
+:param time: Current simulation time
+:type time: int
+:param inputs: Dictionary containing input values including ‘market_results’, ‘demand’, and ‘market_clearing_price’
+:type inputs: dict
+:param max_advance: Maximum time step advancement, defaults to 1
+:type max_advance: int, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Next simulation time step</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The method processes market results, determines company shares, and calculates justice
+scores at specified intervals. Results are saved to CSV files and state variables are updated.
+Market results include company data with supplied capacity, revenue, costs and profits.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Agents.operators.operator_v3.</span></span><span class="sig-name descname"><span class="pre">Operator_Market</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market" title="Link to this definition"></a></dt>
+<dd><p>Market operator agent responsible for clearing the electricity market.</p>
+<p>This agent processes bids from generators, calculates market clearing prices using
+merit order principles, and determines accepted capacities and financial results
+for market participants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>results_dir</strong> (<em>str</em>) – Directory to save market results and visualizations</p>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>bids</strong> (<em>dict or list[dict]</em>) – Bid information from generators containing prices and capacities</p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>market_clearing_price</strong> (<em>float</em>) – Cleared market price in €/MWh</p></li>
+<li><p><strong>market_results_summary</strong> (<em>dict</em>) – Summary of market results including revenues and profits</p></li>
+<li><p><strong>demand</strong> (<em>float</em>) – Total market demand in MW</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.calculate_balance">
+<span class="sig-name descname"><span class="pre">calculate_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bids</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.calculate_balance" title="Link to this definition"></a></dt>
+<dd><p>Calculates market clearing price and generates results based on submitted bids.</p>
+<p>The function processes all bids to determine the market clearing price based on
+the merit order, calculates accepted capacities, and computes financial results
+for each company including revenue, costs, and profits. It also triggers the
+creation of a merit order curve visualization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bids</strong> (<em>list</em>) – List of DataFrames containing bid information from each company</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- market_clearing_price: float representing the cleared market price
+- results: DataFrame with company-wise financial and operational results</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.create_merit_order_curve">
+<span class="sig-name descname"><span class="pre">create_merit_order_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_bids_sorted</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demand</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">market_clearing_price</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.create_merit_order_curve" title="Link to this definition"></a></dt>
+<dd><p>Creates a merit order curve plot based on sorted bids and market clearing results.</p>
+<p>The function visualizes the merit order by plotting each bid as a bar segment,
+showing the cumulative generation capacity against bid prices. The plot includes
+annotations for technologies, market clearing price lines, and company legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_bids_sorted</strong> (<em>pandas.DataFrame</em>) – Sorted DataFrame containing bid information including capacity and prices</p></li>
+<li><p><strong>demand</strong> (<em>float</em>) – Total market demand in MW</p></li>
+<li><p><strong>market_clearing_price</strong> (<em>float</em>) – Cleared market price in €/MWh</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Displays the merit order curve plot</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bids':</span> <span class="pre">{}}</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'results_dir':</span> <span class="pre">'operator_results'}</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'demand':</span> <span class="pre">None,</span> <span class="pre">'market_clearing_price':</span> <span class="pre">0,</span> <span class="pre">'market_results_summary':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.step" title="Link to this definition"></a></dt>
+<dd><p>Advances the simulation one time step, processes bids, calculates market clearing
+results and stores state information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time in hours</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing submitted bids from generators with bid prices and capacities</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time to advance in hours. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step in hours, calculated as current time plus time_step_size</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Agents.operators.operator_v3.Operator_Market.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Agents.operators.operator_v3.Operator_Market.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../models.html" class="btn btn-neutral float-left" title="Illuminator Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Components/Components.html" class="btn btn-neutral float-right" title="Illuminator Component Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

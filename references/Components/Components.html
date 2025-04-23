@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illuminator Component Models &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Illuminator Controller Models" href="../Controllers/Controllers.html" />
+    <link rel="prev" title="Illuminator Agent Models" href="../Agents/Agents.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../models.html">Illuminator Models</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Agents/Agents.html">Illuminator Agent Models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Illuminator Component Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery"><code class="docutils literal notranslate"><span class="pre">Battery</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.charge_battery"><code class="docutils literal notranslate"><span class="pre">Battery.charge_battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.discharge_battery"><code class="docutils literal notranslate"><span class="pre">Battery.discharge_battery()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.inputs"><code class="docutils literal notranslate"><span class="pre">Battery.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.output_power"><code class="docutils literal notranslate"><span class="pre">Battery.output_power()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.outputs"><code class="docutils literal notranslate"><span class="pre">Battery.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.parameters"><code class="docutils literal notranslate"><span class="pre">Battery.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.states"><code class="docutils literal notranslate"><span class="pre">Battery.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.step"><code class="docutils literal notranslate"><span class="pre">Battery.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.time"><code class="docutils literal notranslate"><span class="pre">Battery.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Battery.battery_v3.Battery.time_step_size"><code class="docutils literal notranslate"><span class="pre">Battery.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV"><code class="docutils literal notranslate"><span class="pre">CSV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.finalize"><code class="docutils literal notranslate"><span class="pre">CSV.finalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.init"><code class="docutils literal notranslate"><span class="pre">CSV.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.inputs"><code class="docutils literal notranslate"><span class="pre">CSV.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.outputs"><code class="docutils literal notranslate"><span class="pre">CSV.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.parameters"><code class="docutils literal notranslate"><span class="pre">CSV.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.states"><code class="docutils literal notranslate"><span class="pre">CSV.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.step"><code class="docutils literal notranslate"><span class="pre">CSV.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.time"><code class="docutils literal notranslate"><span class="pre">CSV.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.CSV_reader_v3.CSV.time_step_size"><code class="docutils literal notranslate"><span class="pre">CSV.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection"><code class="docutils literal notranslate"><span class="pre">GridConnection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.check_limits"><code class="docutils literal notranslate"><span class="pre">GridConnection.check_limits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.inputs"><code class="docutils literal notranslate"><span class="pre">GridConnection.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.outputs"><code class="docutils literal notranslate"><span class="pre">GridConnection.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.parameters"><code class="docutils literal notranslate"><span class="pre">GridConnection.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.states"><code class="docutils literal notranslate"><span class="pre">GridConnection.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.step"><code class="docutils literal notranslate"><span class="pre">GridConnection.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time"><code class="docutils literal notranslate"><span class="pre">GridConnection.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time_step_size"><code class="docutils literal notranslate"><span class="pre">GridConnection.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.demand"><code class="docutils literal notranslate"><span class="pre">Load.demand()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.inputs"><code class="docutils literal notranslate"><span class="pre">Load.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.outputs"><code class="docutils literal notranslate"><span class="pre">Load.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.parameters"><code class="docutils literal notranslate"><span class="pre">Load.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.states"><code class="docutils literal notranslate"><span class="pre">Load.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.step"><code class="docutils literal notranslate"><span class="pre">Load.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.time"><code class="docutils literal notranslate"><span class="pre">Load.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Load.load_v3.Load.time_step_size"><code class="docutils literal notranslate"><span class="pre">Load.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV"><code class="docutils literal notranslate"><span class="pre">PV</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.Temp_effect"><code class="docutils literal notranslate"><span class="pre">PV.Temp_effect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.aoi"><code class="docutils literal notranslate"><span class="pre">PV.aoi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.diffused_irr"><code class="docutils literal notranslate"><span class="pre">PV.diffused_irr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.direct_irr"><code class="docutils literal notranslate"><span class="pre">PV.direct_irr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.inputs"><code class="docutils literal notranslate"><span class="pre">PV.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.output"><code class="docutils literal notranslate"><span class="pre">PV.output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.outputs"><code class="docutils literal notranslate"><span class="pre">PV.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.parameters"><code class="docutils literal notranslate"><span class="pre">PV.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.reflected_irr"><code class="docutils literal notranslate"><span class="pre">PV.reflected_irr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.states"><code class="docutils literal notranslate"><span class="pre">PV.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.step"><code class="docutils literal notranslate"><span class="pre">PV.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.sun_azimuth"><code class="docutils literal notranslate"><span class="pre">PV.sun_azimuth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.sun_elevation"><code class="docutils literal notranslate"><span class="pre">PV.sun_elevation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.time"><code class="docutils literal notranslate"><span class="pre">PV.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.time_step_size"><code class="docutils literal notranslate"><span class="pre">PV.time_step_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.PV.pv_model_v3.PV.total_irr"><code class="docutils literal notranslate"><span class="pre">PV.total_irr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind"><code class="docutils literal notranslate"><span class="pre">Wind</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.generation"><code class="docutils literal notranslate"><span class="pre">Wind.generation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.inputs"><code class="docutils literal notranslate"><span class="pre">Wind.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.outputs"><code class="docutils literal notranslate"><span class="pre">Wind.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.parameters"><code class="docutils literal notranslate"><span class="pre">Wind.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.powerout"><code class="docutils literal notranslate"><span class="pre">Wind.powerout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.production"><code class="docutils literal notranslate"><span class="pre">Wind.production()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.states"><code class="docutils literal notranslate"><span class="pre">Wind.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.step"><code class="docutils literal notranslate"><span class="pre">Wind.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.time"><code class="docutils literal notranslate"><span class="pre">Wind.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.time_step_size"><code class="docutils literal notranslate"><span class="pre">Wind.time_step_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.u25"><code class="docutils literal notranslate"><span class="pre">Wind.u25</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Wind.wind_v3.Wind.u60"><code class="docutils literal notranslate"><span class="pre">Wind.u60</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Controllers/Controllers.html">Illuminator Controller Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Data/Data.html">Illuminator Data Models</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario-api.html">Scenario API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../models.html">Illuminator Models</a></li>
+      <li class="breadcrumb-item active">Illuminator Component Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/references/Components/Components.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="illuminator-component-models">
+<h1>Illuminator Component Models<a class="headerlink" href="#illuminator-component-models" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Battery.battery_v3.</span></span><span class="sig-name descname"><span class="pre">Battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery" title="Link to this definition"></a></dt>
+<dd><p>Battery model class for simulating battery charging and discharging behavior.</p>
+<p>This class implements a battery model that can simulate charging and discharging cycles,
+track state of charge, and manage power flows while respecting battery constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_p</strong> (<em>float</em>) – Maximum charging power limit in kW</p></li>
+<li><p><strong>min_p</strong> (<em>float</em>) – Maximum discharging power limit in kW</p></li>
+<li><p><strong>max_energy</strong> (<em>float</em>) – Maximum energy storage capacity in kWh</p></li>
+<li><p><strong>charge_efficiency</strong> (<em>float</em>) – Battery charging efficiency in %</p></li>
+<li><p><strong>discharge_efficiency</strong> (<em>float</em>) – Battery discharging efficiency in %</p></li>
+<li><p><strong>soc_min</strong> (<em>float</em>) – Minimum allowable state of charge in %</p></li>
+<li><p><strong>soc_max</strong> (<em>float</em>) – Maximum allowable state of charge in %</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.charge_battery">
+<span class="sig-name descname"><span class="pre">charge_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.charge_battery" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.discharge_battery">
+<span class="sig-name descname"><span class="pre">discharge_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.discharge_battery" title="Link to this definition"></a></dt>
+<dd><p>Discharge the battery, calculate the state of charge and return parameter information.
+Discharge the battery, calculate the state of charge and return parameter information.</p>
+<p>This method discharges the battery based on the requested power flow, updates the state of
+charge (SOC), and returns a dictionary containing the battery’s operational parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flow2b</strong> (<em>int</em>) – Power flow requested from the battery (negative value) in kW</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Collection of parameters and their respective values:
+- p_out: Output power from the battery after discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge after battery operation (%)
+- mod: Operation mode: 0=no action, 1=charge, -1=discharge
+- flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+Collection of parameters and their respective values:
+- p_out: Output power from the battery after discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge after battery operation (%)
+- mod: Operation mode: 0=no action, 1=charge, -1=discharge
+- flag: Flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flow2b':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.output_power">
+<span class="sig-name descname"><span class="pre">output_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow2b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.output_power" title="Link to this definition"></a></dt>
+<dd><p>Determine the battery operation mode and power output based on the requested power flow.</p>
+<p>This method controls the battery’s operation by determining whether to charge, discharge,
+or maintain the current state based on the requested power flow and the battery’s
+state of charge (SOC).
+Determine the battery operation mode and power output based on the requested power flow.</p>
+<p>This method controls the battery’s operation by determining whether to charge, discharge,
+or maintain the current state based on the requested power flow and the battery’s
+state of charge (SOC).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flow2b</strong> (<em>int</em>) – Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)
+Power flow requested to/from the battery. Positive for charging, negative for discharging (kW)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing the battery’s operational parameters:
+- p_out: Output power after charge/discharge decision (kW)
+- p_in: Input power to the battery (kW)
+- soc: Updated state of charge (%)
+- mod: Operation mode (0=no action, 1=charge, -1=discharge)
+- flag: Battery status (1=fully charged, -1=fully discharged, 0=available)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'p_in':</span> <span class="pre">20,</span> <span class="pre">'p_out':</span> <span class="pre">20}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'charge_efficiency':</span> <span class="pre">90,</span> <span class="pre">'discharge_efficiency':</span> <span class="pre">90,</span> <span class="pre">'max_energy':</span> <span class="pre">50,</span> <span class="pre">'max_p':</span> <span class="pre">150,</span> <span class="pre">'min_p':</span> <span class="pre">250,</span> <span class="pre">'soc_max':</span> <span class="pre">80,</span> <span class="pre">'soc_min':</span> <span class="pre">3}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flag':</span> <span class="pre">-1,</span> <span class="pre">'mod':</span> <span class="pre">0,</span> <span class="pre">'soc':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.step" title="Link to this definition"></a></dt>
+<dd><p>Process one simulation step of the battery model.</p>
+<p>This method processes the inputs for one timestep, updates the battery state based on
+the requested power flow, and sets the model outputs and states accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values, specifically:
+- flow2b: Power flow to/from battery (positive=charging, negative=discharging) in kW</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step size in seconds (default 900)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Battery.battery_v3.Battery.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Battery.battery_v3.Battery.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.CSV_reader_v3.</span></span><span class="sig-name descname"><span class="pre">CSV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV" title="Link to this definition"></a></dt>
+<dd><p>A model for reading time series data from CSV files.</p>
+<p>This model reads data from a CSV file line by line, synchronizing with simulation time.
+The CSV file should contain a header row with column names and a timestamp column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date_format</strong> (<em>str</em>) – Format of the date/time column in the CSV file</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Column delimiter character in the CSV file (default ‘,’)</p></li>
+<li><p><strong>datafile</strong> (<em>str</em>) – Path to the CSV file to read from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong></p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>next_row</strong> (<em>dict</em>) – The data from the current row, with column names as keys</p>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.finalize" title="Link to this definition"></a></dt>
+<dd><p>Closes the file object within <cite>self.datafile</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">sim_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.init" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Initialize the simulator with the ID <em>sid</em> and pass the</dt><dd><p><em>time_resolution</em> and additional parameters <em>(sim_params)</em>
+sent by mosaik. Return the meta data <a class="reference internal" href="../Data/Data.html#illuminator.models.CSV_reader_v3.CSV.meta" title="illuminator.models.CSV_reader_v3.CSV.meta"><code class="xref py py-attr docutils literal notranslate"><span class="pre">meta</span></code></a>.</p>
+</dd>
+</dl>
+<p>If your simulator has no <em>sim_params</em>, you don’t need to override this
+method.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'next_row':</span> <span class="pre">''}</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'datafile':</span> <span class="pre">'',</span> <span class="pre">'date_format':</span> <span class="pre">'',</span> <span class="pre">'delimiter':</span> <span class="pre">','}</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.step" title="Link to this definition"></a></dt>
+<dd><p>Perform one step of the simulation.</p>
+<section id="parameters">
+<h2>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>time<span class="classifier">int</span></dt><dd><p>The current time of the simulation.</p>
+</dd>
+<dt>inputs<span class="classifier">dict</span></dt><dd><p>Input values for the simulation step.</p>
+</dd>
+<dt>max_advance<span class="classifier">int</span></dt><dd><p>Maximum time the simulator can advance (default is 900 seconds).</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt>int</dt><dd><p>The next simulation time.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.CSV_reader_v3.CSV.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.CSV_reader_v3.CSV.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Gridconnection.grid_connection_v3.</span></span><span class="sig-name descname"><span class="pre">GridConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection" title="Link to this definition"></a></dt>
+<dd><p>Grid connection model that monitors power flows and sets warning flags for grid congestion.</p>
+<p>This model tracks power flows through a grid connection point and sets warning flags when
+pre-defined capacity limits are exceeded. It uses tolerance and critical thresholds as
+percentages of the total connection capacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection_capacity</strong> (<em>float</em>) – Maximum power capacity of the grid connection (kW)</p></li>
+<li><p><strong>tolerance_limit</strong> (<em>float</em>) – Threshold for warning flag as fraction of connection capacity (e.g. 0.8 = 80%)</p></li>
+<li><p><strong>critical_limit</strong> (<em>float</em>) – Threshold for critical flag as fraction of connection capacity (e.g. 0.9 = 90%)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dump</strong> (<em>float</em>) – Power flow through grid connection (kW, negative for export)</p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>flag_critical</strong> (<em>int</em>) – Flag indicating critical limit exceeded (1) or not (0)</p></li>
+<li><p><strong>flag_warning</strong> (<em>int</em>) – Flag indicating warning limit exceeded (1) or not (0)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.check_limits">
+<span class="sig-name descname"><span class="pre">check_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dump</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.check_limits" title="Link to this definition"></a></dt>
+<dd><p>Checks if power flow exceeds grid connection limits and sets warning flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dump</strong> (<em>float</em>) – Power flow to the grid in kW (negative values for export)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing warning flag states</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dump':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'connection_capacity':</span> <span class="pre">None,</span> <span class="pre">'critical_limit':</span> <span class="pre">None,</span> <span class="pre">'tolerance_limit':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flag_critical':</span> <span class="pre">None,</span> <span class="pre">'flag_warning':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single simulation time step by checking grid connection limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>float</em>) – Current simulation time in seconds</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values including ‘dump’ (power flow to grid)</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step advancement, defaults to 900</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Load.load_v3.</span></span><span class="sig-name descname"><span class="pre">Load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load" title="Link to this definition"></a></dt>
+<dd><p>Calculates total load demand based on number of houses and input load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>houses</strong> (<em>int</em>) – Number of houses that determine the total load demand</p></li>
+<li><p><strong>output_type</strong> (<em>str</em>) – Type of output for consumption calculation (‘energy’ or ‘power’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>load</strong> (<em>float</em>) – Incoming energy or power demand per house in kW or kWh</p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_dem</strong> (<em>float</em>) – Total energy or power consumption for all houses (kWh) over the time step</p></li>
+<li><p><strong>consumption</strong> (<em>float</em>) – Current energy or power consumption based on the number of houses and input load (kWh)</p></li>
+</ul>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time in seconds</p></li>
+<li><p><strong>forecast</strong> (<em>None</em>) – Placeholder for future load forecasting functionality</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.demand">
+<span class="sig-name descname"><span class="pre">demand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.demand" title="Link to this definition"></a></dt>
+<dd><p>Calculates total load demand based on number of houses and input load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>load</strong> (<em>float</em>) – Input load per house in kW or kWh depending on output_type</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>re_params</strong> – Dictionary containing calculated load demand values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'load':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'consumption':</span> <span class="pre">0,</span> <span class="pre">'load_dem':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'houses':</span> <span class="pre">1,</span> <span class="pre">'output_type':</span> <span class="pre">'power'}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'forecast':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.step" title="Link to this definition"></a></dt>
+<dd><p>Performs a single simulation time step by calculating load demand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>float</em>) – Current simulation time in seconds</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values including ‘load’</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step advancement, defaults to 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Load.load_v3.Load.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Load.load_v3.Load.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.PV.pv_model_v3.</span></span><span class="sig-name descname"><span class="pre">PV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV" title="Link to this definition"></a></dt>
+<dd><p>A PV model that calculates power generation based on environmental conditions.</p>
+<p>This model simulates photovoltaic panel performance considering irradiance components,
+panel orientation, temperature effects, and system losses. It can output either power
+or energy values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m_area</strong> (<em>float</em>) – Module area of the PV panel in m²</p></li>
+<li><p><strong>NOCT</strong> (<em>float</em>) – Nominal Operating Cell Temperature in °C</p></li>
+<li><p><strong>m_efficiency_stc</strong> (<em>float</em>) – Module efficiency under standard test conditions</p></li>
+<li><p><strong>G_NOCT</strong> (<em>float</em>) – Irradiance at NOCT conditions in W/m²</p></li>
+<li><p><strong>P_STC</strong> (<em>float</em>) – Power output under standard test conditions in W</p></li>
+<li><p><strong>m_tilt</strong> (<em>float</em>) – Module tilt angle in degrees</p></li>
+<li><p><strong>m_az</strong> (<em>float</em>) – Module azimuth angle in degrees</p></li>
+<li><p><strong>cap</strong> (<em>float</em>) – Installed capacity in kW</p></li>
+<li><p><strong>output_type</strong> (<em>str</em>) – Output type (‘power’ or ‘energy’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>G_Gh</strong> (<em>float</em>) – Global horizontal irradiance in W/m²</p></li>
+<li><p><strong>G_Dh</strong> (<em>float</em>) – Diffuse horizontal irradiance in W/m²</p></li>
+<li><p><strong>G_Bn</strong> (<em>float</em>) – Direct normal irradiance in W/m²</p></li>
+<li><p><strong>Ta</strong> (<em>float</em>) – Ambient temperature in °C</p></li>
+<li><p><strong>hs</strong> (<em>float</em>) – Solar elevation angle in degrees</p></li>
+<li><p><strong>FF</strong> (<em>float</em>) – Wind speed in m/s</p></li>
+<li><p><strong>Az</strong> (<em>float</em>) – Sun azimuth angle in degrees</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pv_gen</strong> (<em>float</em>) – PV generation in kW or kWh</p></li>
+<li><p><strong>total_irr</strong> (<em>float</em>) – Total irradiance on tilted surface in W/m²</p></li>
+<li><p><strong>g_aoi</strong> (<em>float</em>) – Total irradiance considering angle of incidence in W/m²</p></li>
+</ul>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.Temp_effect">
+<span class="sig-name descname"><span class="pre">Temp_effect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.Temp_effect" title="Link to this definition"></a></dt>
+<dd><p>Calculates the temperature-dependent module efficiency.
+Calculates the temperature-dependent module efficiency.</p>
+<p>Takes into account:
+- Module temperature based on NOCT conditions
+- Wind speed effects
+- Temperature coefficient of efficiency
+Takes into account:
+- Module temperature based on NOCT conditions
+- Wind speed effects
+- Temperature coefficient of efficiency</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>efficiency</strong> – Temperature-adjusted module efficiency as a fraction
+Temperature-adjusted module efficiency as a fraction</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.aoi">
+<span class="sig-name descname"><span class="pre">aoi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.aoi" title="Link to this definition"></a></dt>
+<dd><p>Calculates the cosine of the angle of incidence (AOI) between the sun’s rays and the PV module surface.</p>
+<p>Takes into account:
+- Module tilt angle
+- Sun elevation angle
+- Sun azimuth angle
+- Module azimuth angle
+Calculates the cosine of the angle of incidence (AOI) between the sun’s rays and the PV module surface.</p>
+<p>Takes into account:
+- Module tilt angle
+- Sun elevation angle
+- Sun azimuth angle
+- Module azimuth angle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cos_aoi</strong> – Cosine of the angle of incidence (AOI) as a fraction
+Cosine of the angle of incidence (AOI) as a fraction</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.diffused_irr">
+<span class="sig-name descname"><span class="pre">diffused_irr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.diffused_irr" title="Link to this definition"></a></dt>
+<dd><p>Calculates diffuse irradiance on the tilted PV surface.
+Calculates diffuse irradiance on the tilted PV surface.</p>
+<p>Takes into account:
+- Sky view factor (SVF) based on module tilt
+- Diffuse Horizontal Irradiance (DHI)
+Takes into account:
+- Sky view factor (SVF) based on module tilt
+- Diffuse Horizontal Irradiance (DHI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>g_diff</strong> – Diffuse irradiance on the tilted PV surface in W/m²
+Diffuse irradiance on the tilted PV surface in W/m²</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.direct_irr">
+<span class="sig-name descname"><span class="pre">direct_irr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.direct_irr" title="Link to this definition"></a></dt>
+<dd><p>Calculates direct beam irradiance on tilted surface.
+Calculates direct beam irradiance on tilted surface.</p>
+<p>Accounts for angle of incidence between sun rays and module surface.
+Accounts for angle of incidence between sun rays and module surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>g_dir</strong> – Direct beam irradiance on tilted surface in W/m²
+Direct beam irradiance on tilted surface in W/m²</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Az':</span> <span class="pre">0,</span> <span class="pre">'FF':</span> <span class="pre">0,</span> <span class="pre">'G_Bn':</span> <span class="pre">0,</span> <span class="pre">'G_Dh':</span> <span class="pre">0,</span> <span class="pre">'G_Gh':</span> <span class="pre">0,</span> <span class="pre">'Ta':</span> <span class="pre">0,</span> <span class="pre">'hs':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.output">
+<span class="sig-name descname"><span class="pre">output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.output" title="Link to this definition"></a></dt>
+<dd><p>Calculates PV power or energy output based on environmental conditions.</p>
+<p>Takes into account:
+- Module temperature effects
+- Inverter and MPPT efficiency
+- System losses
+- Total module area
+- Solar irradiance
+Calculates PV power or energy output based on environmental conditions.</p>
+<p>Takes into account:
+- Module temperature effects
+- Inverter and MPPT efficiency
+- System losses
+- Total module area
+- Solar irradiance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing:
+- ‘pv_gen’: PV generation in kW (power) or kWh (energy)
+- ‘total_irr’: Total irradiance on tilted surface in W/m² &lt;- check
+Dictionary containing:
+- ‘pv_gen’: PV generation in kW (power) or kWh (energy)
+- ‘total_irr’: Total irradiance on tilted surface in W/m² &lt;- check</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'g_aoi':</span> <span class="pre">0,</span> <span class="pre">'pv_gen':</span> <span class="pre">0,</span> <span class="pre">'total_irr':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'G_NOCT':</span> <span class="pre">0,</span> <span class="pre">'NOCT':</span> <span class="pre">0,</span> <span class="pre">'P_STC':</span> <span class="pre">0,</span> <span class="pre">'cap':</span> <span class="pre">0,</span> <span class="pre">'m_area':</span> <span class="pre">0,</span> <span class="pre">'m_az':</span> <span class="pre">0,</span> <span class="pre">'m_efficiency_stc':</span> <span class="pre">0,</span> <span class="pre">'m_tilt':</span> <span class="pre">0,</span> <span class="pre">'output_type':</span> <span class="pre">'power',</span> <span class="pre">'peak_power':</span> <span class="pre">0,</span> <span class="pre">'sim_start':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.reflected_irr">
+<span class="sig-name descname"><span class="pre">reflected_irr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.reflected_irr" title="Link to this definition"></a></dt>
+<dd><p>Calculates ground-reflected irradiance on the PV module.
+Calculates ground-reflected irradiance on the PV module.</p>
+<p>Takes into account:
+- Albedo (reflectivity) of the ground surface
+- Sky view factor (SVF) based on module tilt
+- Global Horizontal Irradiance (GHI)
+Takes into account:
+- Albedo (reflectivity) of the ground surface
+- Sky view factor (SVF) based on module tilt
+- Global Horizontal Irradiance (GHI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>g_ref</strong> – Ground-reflected irradiance on the PV module in W/m²
+Ground-reflected irradiance on the PV module in W/m²</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'pv_gen':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.step" title="Link to this definition"></a></dt>
+<dd><p>Step function that updates model state and outputs based on current inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary containing input values</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time step size, defaults to 900</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.sun_azimuth">
+<span class="sig-name descname"><span class="pre">sun_azimuth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.sun_azimuth" title="Link to this definition"></a></dt>
+<dd><p>Getter for the <cite>self.sun_az</cite> attribute</p>
+<p>…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>sun_azimuth</strong> (<em>float</em>) – Sun azimuth angle in degrees, indicating the sun’s position in the horizontal plane.</p></li>
+<li><p><strong>sun_azimuth</strong> (<em>float</em>) – Sun azimuth angle in degrees, indicating the sun’s position in the horizontal plane.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.sun_elevation">
+<span class="sig-name descname"><span class="pre">sun_elevation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.sun_elevation" title="Link to this definition"></a></dt>
+<dd><p>Getter for the <cite>self.sun_el</cite> attribute</p>
+<p>…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>sun_elevation</strong> (<em>float</em>) – Solar elevation angle in degrees, indicating the height of the sun in the sky.</p></li>
+<li><p><strong>sun_elevation</strong> (<em>float</em>) – Solar elevation angle in degrees, indicating the height of the sun in the sky.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.PV.pv_model_v3.PV.total_irr">
+<span class="sig-name descname"><span class="pre">total_irr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#illuminator.models.PV.pv_model_v3.PV.total_irr" title="Link to this definition"></a></dt>
+<dd><p>Calculates total irradiance on the tilted PV surface.
+Calculates total irradiance on the tilted PV surface.</p>
+<p>Combines direct beam, diffuse, and ground-reflected irradiance components
+accounting for module tilt and orientation.
+Combines direct beam, diffuse, and ground-reflected irradiance components
+accounting for module tilt and orientation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self.g_aoi</strong> – Total irradiance on tilted surface in W/m²
+Total irradiance on tilted surface in W/m²</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Wind.wind_v3.</span></span><span class="sig-name descname"><span class="pre">Wind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind" title="Link to this definition"></a></dt>
+<dd><p>A wind turbine model that calculates power generation based on wind speed.</p>
+<p>This model simulates wind turbine performance considering wind speed at different
+heights, power curve characteristics, and system parameters. It can output
+either power or energy values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p_rated</strong> (<em>float</em>) – Rated power output (kW) at rated wind speed</p></li>
+<li><p><strong>u_rated</strong> (<em>float</em>) – Rated wind speed (m/s)</p></li>
+<li><p><strong>u_cutin</strong> (<em>float</em>) – Cut-in wind speed (m/s)</p></li>
+<li><p><strong>u_cutout</strong> (<em>float</em>) – Cut-out wind speed (m/s)</p></li>
+<li><p><strong>cp</strong> (<em>float</em>) – Coefficient of performance (Betz limit max 0.59)</p></li>
+<li><p><strong>diameter</strong> (<em>float</em>) – Rotor diameter (m)</p></li>
+<li><p><strong>output_type</strong> (<em>str</em>) – Output type (‘power’ or ‘energy’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>u</strong> (<em>float</em>) – Wind speed at hub height (m/s)</p>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wind_gen</strong> (<em>float</em>) – Wind generation in kW or kWh</p></li>
+<li><p><strong>u</strong> (<em>float</em>) – Adjusted wind speed at 25m height (m/s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>u60</strong> (<em>float</em>) – Wind speed at 60m height (m/s)</p></li>
+<li><p><strong>u25</strong> (<em>float</em>) – Wind speed at 25m height (m/s)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.generation">
+<span class="sig-name descname"><span class="pre">generation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.generation" title="Link to this definition"></a></dt>
+<dd><p>Calculates the final wind power output considering cut-in/out speeds and rated power.</p>
+<p>This function determines the actual power output based on the adjusted wind speed,
+taking into account the turbine’s operational limits such as cut-in speed,
+rated speed, and cut-out speed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>float</em>) – Wind speed at hub height (100m) in m/s</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- wind_gen: Power output in kW or energy output in kWh
+- u: Adjusted wind speed at 25m height in m/s</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'u':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'u':</span> <span class="pre">0,</span> <span class="pre">'wind_gen':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cp':</span> <span class="pre">0.4,</span> <span class="pre">'diameter':</span> <span class="pre">30,</span> <span class="pre">'output_type':</span> <span class="pre">'power',</span> <span class="pre">'p_rated':</span> <span class="pre">500,</span> <span class="pre">'u_cutin':</span> <span class="pre">1,</span> <span class="pre">'u_cutout':</span> <span class="pre">1000,</span> <span class="pre">'u_rated':</span> <span class="pre">100}</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.powerout">
+<span class="sig-name descname"><span class="pre">powerout</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.powerout" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.production">
+<span class="sig-name descname"><span class="pre">production</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.production" title="Link to this definition"></a></dt>
+<dd><p>Calculates the wind power production using the basic wind power equation.</p>
+<p>The function accounts for air density, rotor area, and the wind turbine’s
+coefficient of performance. It also adjusts wind speeds for different heights
+using logarithmic wind profile equations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>u</strong> (<em>float</em>) – Wind speed at hub height (100m) in m/s</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- wind_gen: Power output in kW or energy output in kWh
+- u: Adjusted wind speed at 25m height in m/s</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'u25':</span> <span class="pre">0,</span> <span class="pre">'u60':</span> <span class="pre">10}</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.step" title="Link to this definition"></a></dt>
+<dd><p>Advances the simulation one time step.
+:param time: Current simulation time in seconds
+:type time: float
+:param inputs: Dictionary containing input values:
+:type inputs: dict
+:param - u: Wind speed [m/s] at hub height
+:type - u: float
+:param max_advance: Maximum time to advance in seconds. Defaults to 1.
+:type max_advance: int, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Next simulation time in seconds</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.u25">
+<span class="sig-name descname"><span class="pre">u25</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.u25" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Wind.wind_v3.Wind.u60">
+<span class="sig-name descname"><span class="pre">u60</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#illuminator.models.Wind.wind_v3.Wind.u60" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Agents/Agents.html" class="btn btn-neutral float-left" title="Illuminator Agent Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Controllers/Controllers.html" class="btn btn-neutral float-right" title="Illuminator Controller Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

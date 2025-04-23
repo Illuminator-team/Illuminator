@@ -53,18 +53,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul>
@@ -110,12 +110,9 @@
              
   <section id="illuminator-documentation">
 <h1>Illuminator documentation<a class="headerlink" href="#illuminator-documentation" title="Link to this heading"></a></h1>
-<p>The Illuminator is an easy-to-use Energy System Integration
-Development kit to demystify energy system operation, illustrate challenges
-that arise due to the energy transition and test
-state-of-the-art energy management concepts. we utilise Raspberry Pis
-as the individual components of the energy system emulator,
-and the simulation engine is based on <a class="reference external" href="https://mosaik.offis.de/">Mosaik.</a></p>
+<p>TThe Illuminator is a user-friendly development kit for simulating integrated energy systems.
+It supports the design of energy systems, the testing of advanced energy management concepts, and the demonstration of challenges posed by the energy transition.
+Illuminator builts on <a class="reference external" href="https://mosaik.offis.de/">Mosaik.</a> and supports both stand-alone simulations and distributed computing.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
@@ -126,6 +123,15 @@ and the simulation engine is based on <a class="reference external" href="https:
 <li class="toctree-l2"><a class="reference internal" href="quick-start.html#contact-and-support">Contact and Support</a></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -141,19 +147,32 @@ and the simulation engine is based on <a class="reference external" href="https:
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="references/models.html#illuminator.models.Load.load_v3.Load"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="references/models.html#illuminator.models.Battery.battery_v3.Battery"><code class="docutils literal notranslate"><span class="pre">Battery</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="references/Agents/Agents.html">Illuminator Agent Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent"><code class="docutils literal notranslate"><span class="pre">GenerationCompanyAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent"><code class="docutils literal notranslate"><span class="pre">JusticeAgent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market"><code class="docutils literal notranslate"><span class="pre">Operator_Market</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references/Components/Components.html">Illuminator Component Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery"><code class="docutils literal notranslate"><span class="pre">Battery</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV"><code class="docutils literal notranslate"><span class="pre">CSV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection"><code class="docutils literal notranslate"><span class="pre">GridConnection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.Load.load_v3.Load"><code class="docutils literal notranslate"><span class="pre">Load</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV"><code class="docutils literal notranslate"><span class="pre">PV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind"><code class="docutils literal notranslate"><span class="pre">Wind</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references/Controllers/Controllers.html">Illuminator Controller Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1"><code class="docutils literal notranslate"><span class="pre">Controller_T1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references/Data/Data.html">Illuminator Data Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV"><code class="docutils literal notranslate"><span class="pre">CSV</span></code></a></li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -222,7 +241,7 @@ and the simulation engine is based on <a class="reference external" href="https:
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Illuminator Team.</p>
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

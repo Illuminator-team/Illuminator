@@ -51,18 +51,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul>
@@ -114,18 +114,27 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.aoi">aoi() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="references/scenario-api.html#illuminator.engine.apply_default_values">apply_default_values() (in module illuminator.engine)</a>
 </li>
@@ -135,10 +144,12 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery">Battery (class in illuminator.models.Battery.battery_v3)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery">Battery (class in illuminator.models.Battery.battery_v3)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.bid">bid() (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent method)</a>
+</li>
       <li><a href="references/scenario-api.html#illuminator.engine.build_connections">build_connections() (in module illuminator.engine)</a>
 </li>
   </ul></td>
@@ -147,17 +158,37 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.charge_battery">charge_battery() (illuminator.models.Battery.battery_v3.Battery method)</a>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.calculate_balance">calculate_balance() (illuminator.models.Agents.operators.operator_v3.Operator_Market method)</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.calculate_justice_score">calculate_justice_score() (illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.charge_battery">charge_battery() (illuminator.models.Battery.battery_v3.Battery method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.check_limits">check_limits() (illuminator.models.Gridconnection.grid_connection_v3.GridConnection method)</a>
 </li>
       <li><a href="references/scenario-api.html#illuminator.engine.compute_mosaik_end_time">compute_mosaik_end_time() (in module illuminator.engine)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="references/scenario-api.html#illuminator.engine.Simulation.config">config (illuminator.engine.Simulation property)</a>
 </li>
       <li><a href="references/scenario-api.html#illuminator.engine.connect_monitor">connect_monitor() (in module illuminator.engine)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.control">control() (illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 method)</a>
+
+      <ul>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.control">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion method)</a>
+</li>
+      </ul></li>
+      <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1">Controller_T1 (class in illuminator.models.Controllers.controller_T1.controller_T1_v3)</a>
+</li>
+      <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion">ControllerT3Congestion (class in illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3)</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.create_merit_order_curve">create_merit_order_curve() (illuminator.models.Agents.operators.operator_v3.Operator_Market method)</a>
+</li>
       <li><a href="references/scenario-api.html#illuminator.engine.create_world">create_world() (in module illuminator.engine)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV">CSV (class in illuminator.models.CSV_reader_v3)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -165,11 +196,17 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.demand">demand() (illuminator.models.Load.load_v3.Load method)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.demand">demand() (illuminator.models.Load.load_v3.Load method)</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.determine_share">determine_share() (illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.discharge_battery">discharge_battery() (illuminator.models.Battery.battery_v3.Battery method)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.diffused_irr">diffused_irr() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.direct_irr">direct_irr() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.discharge_battery">discharge_battery() (illuminator.models.Battery.battery_v3.Battery method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -182,10 +219,26 @@
   </ul></td>
 </tr></table>
 
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.finalize">finalize() (illuminator.models.CSV_reader_v3.CSV method)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.finalize">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="references/scenario-api.html#illuminator.engine.generate_mosaik_configuration">generate_mosaik_configuration() (in module illuminator.engine)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.generation">generation() (illuminator.models.Wind.wind_v3.Wind method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent">GenerationCompanyAgent (class in illuminator.models.Agents.generators.generation_company_agent_v3)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection">GridConnection (class in illuminator.models.Gridconnection.grid_connection_v3)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -193,19 +246,55 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.inputs">inputs (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.init">init() (illuminator.models.CSV_reader_v3.CSV method)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.init">[1]</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.inputs">inputs (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.inputs">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.inputs">(illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent attribute)</a>
+</li>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.inputs">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.inputs">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.inputs">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.inputs">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.inputs">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.inputs">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.inputs">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.inputs">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.inputs">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.inputs">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent">JusticeAgent (class in illuminator.models.Agents.justice_agent.justice_agent_v3)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Load.load_v3.Load">Load (class in illuminator.models.Load.load_v3)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load">Load (class in illuminator.models.Load.load_v3)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.meta">meta (illuminator.models.CSV_reader_v3.CSV attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -213,14 +302,32 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.output_power">output_power() (illuminator.models.Battery.battery_v3.Battery method)</a>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market">Operator_Market (class in illuminator.models.Agents.operators.operator_v3)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.outputs">outputs (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.output">output() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.output_power">output_power() (illuminator.models.Battery.battery_v3.Battery method)</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.outputs">outputs (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.outputs">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.outputs">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.outputs">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.outputs">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.outputs">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.outputs">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.outputs">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.outputs">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.outputs">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.outputs">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.outputs">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -229,17 +336,47 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.parameters">parameters (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.parameters">parameters (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.parameters">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.parameters">(illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent attribute)</a>
+</li>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.parameters">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.parameters">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.parameters">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.parameters">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.parameters">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.parameters">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.parameters">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.parameters">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.parameters">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.parameters">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.powerout">powerout (illuminator.models.Wind.wind_v3.Wind attribute)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.production">production() (illuminator.models.Wind.wind_v3.Wind method)</a>
+</li>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV">PV (class in illuminator.models.PV.pv_model_v3)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.reflected_irr">reflected_irr() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="references/scenario-api.html#illuminator.engine.Simulation.run">run() (illuminator.engine.Simulation method)</a>
 </li>
@@ -253,42 +390,142 @@
 </li>
       <li><a href="references/scenario-api.html#illuminator.engine.Simulation.set_model_parameters">set_model_parameters() (illuminator.engine.Simulation method)</a>
 </li>
+      <li><a href="references/scenario-api.html#illuminator.engine.Simulation.set_model_state">set_model_state() (illuminator.engine.Simulation method)</a>
+</li>
+      <li><a href="references/scenario-api.html#illuminator.engine.Simulation.set_scenario_param">set_scenario_param() (illuminator.engine.Simulation method)</a>
+</li>
       <li><a href="references/scenario-api.html#illuminator.engine.Simulation">Simulation (class in illuminator.engine)</a>
 </li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.states">states (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
+
+      <ul>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.states">(illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent attribute)</a>
+</li>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.states">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.states">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.states">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.states">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.states">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.states">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.states">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.states">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.states">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.states">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.states">states (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.step">step() (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent method)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.states">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent.step">(illuminator.models.Agents.justice_agent.justice_agent_v3.JusticeAgent method)</a>
+</li>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.step">(illuminator.models.Agents.operators.operator_v3.Operator_Market method)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.step">(illuminator.models.Battery.battery_v3.Battery method)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.step">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 method)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.step">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion method)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.step">(illuminator.models.CSV_reader_v3.CSV method)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.step">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.step">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection method)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.step">(illuminator.models.Load.load_v3.Load method)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.step">(illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.step">(illuminator.models.Wind.wind_v3.Wind method)</a>
 </li>
       </ul></li>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.step">step() (illuminator.models.Battery.battery_v3.Battery method)</a>
-
-      <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.step">(illuminator.models.Load.load_v3.Load method)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.sun_azimuth">sun_azimuth() (illuminator.models.PV.pv_model_v3.PV method)</a>
 </li>
-      </ul></li>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.sun_elevation">sun_elevation() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.time">time (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.Temp_effect">Temp_effect() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time">time (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.time">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.time">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.time">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.time">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.time">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.time">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.time">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.time">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="references/models.html#illuminator.models.Battery.battery_v3.Battery.time_step_size">time_step_size (illuminator.models.Battery.battery_v3.Battery attribute)</a>
+      <li><a href="references/Agents/Agents.html#illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent.time_step_size">time_step_size (illuminator.models.Agents.generators.generation_company_agent_v3.GenerationCompanyAgent attribute)</a>
 
       <ul>
-        <li><a href="references/models.html#illuminator.models.Load.load_v3.Load.time_step_size">(illuminator.models.Load.load_v3.Load attribute)</a>
+        <li><a href="references/Agents/Agents.html#illuminator.models.Agents.operators.operator_v3.Operator_Market.time_step_size">(illuminator.models.Agents.operators.operator_v3.Operator_Market attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Battery.battery_v3.Battery.time_step_size">(illuminator.models.Battery.battery_v3.Battery attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time_step_size">(illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1 attribute)</a>
+</li>
+        <li><a href="references/Controllers/Controllers.html#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time_step_size">(illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.CSV_reader_v3.CSV.time_step_size">(illuminator.models.CSV_reader_v3.CSV attribute)</a>, <a href="references/Data/Data.html#illuminator.models.CSV_reader_v3.CSV.time_step_size">[1]</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Gridconnection.grid_connection_v3.GridConnection.time_step_size">(illuminator.models.Gridconnection.grid_connection_v3.GridConnection attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Load.load_v3.Load.time_step_size">(illuminator.models.Load.load_v3.Load attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.time_step_size">(illuminator.models.PV.pv_model_v3.PV attribute)</a>
+</li>
+        <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.time_step_size">(illuminator.models.Wind.wind_v3.Wind attribute)</a>
 </li>
       </ul></li>
+      <li><a href="references/Components/Components.html#illuminator.models.PV.pv_model_v3.PV.total_irr">total_irr() (illuminator.models.PV.pv_model_v3.PV method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.u25">u25 (illuminator.models.Wind.wind_v3.Wind attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind.u60">u60 (illuminator.models.Wind.wind_v3.Wind attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="references/Components/Components.html#illuminator.models.Wind.wind_v3.Wind">Wind (class in illuminator.models.Wind.wind_v3)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -301,7 +538,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Illuminator Team.</p>
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

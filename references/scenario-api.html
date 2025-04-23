@@ -53,18 +53,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick-start.html">Quick Start</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user/config-file.html">Simulation Configuration File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/simulations.html">Running Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">Illuminator Models</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul>
@@ -89,6 +89,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.run"><code class="docutils literal notranslate"><span class="pre">Simulation.run()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.set_model_param"><code class="docutils literal notranslate"><span class="pre">Simulation.set_model_param()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.set_model_parameters"><code class="docutils literal notranslate"><span class="pre">Simulation.set_model_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.set_model_state"><code class="docutils literal notranslate"><span class="pre">Simulation.set_model_state()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.engine.Simulation.set_scenario_param"><code class="docutils literal notranslate"><span class="pre">Simulation.set_scenario_param()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -216,6 +218,53 @@ Example: {‘model1’: {‘param1’: val1}, ‘model2’: {‘param2’: val2}
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>KeyError</strong> – If model_name or any parameter is not found in configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.engine.Simulation.set_model_state">
+<span class="sig-name descname"><span class="pre">set_model_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.engine.Simulation.set_model_state" title="Link to this definition"></a></dt>
+<dd><p>Sets a state value for a specific model in the simulation configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> (<em>str</em>) – Name of the model to modify</p></li>
+<li><p><strong>state</strong> (<em>str</em>) – Name of the state to set</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – New value for the state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updates the configuration in place</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If model_name or state is not found in configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.engine.Simulation.set_scenario_param">
+<span class="sig-name descname"><span class="pre">set_scenario_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.engine.Simulation.set_scenario_param" title="Link to this definition"></a></dt>
+<dd><p>Sets a parameter value in the scenario section of the simulation configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter</strong> (<em>str</em>) – Name of the parameter to set</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – New value for the parameter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updates the configuration in place</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If parameter is not found in scenario configuration</p>
 </dd>
 </dl>
 </dd></dl>
@@ -375,7 +424,7 @@ Example: ‘%(python)s Illuminator_Engine/collector.py %(addr)s’</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Illuminator Team.</p>
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

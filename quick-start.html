@@ -26,7 +26,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Simulation Configuration File" href="user/config-file.html" />
+    <link rel="next" title="Tutorials Overview" href="tutorials/tutorials-overview.html" />
     <link rel="prev" title="Illuminator documentation" href="index.html" /> 
 </head>
 
@@ -68,18 +68,18 @@
 </ul>
 </li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user/config-file.html">Simulation Configuration File</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user/simulations.html">Running Simulations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references/models.html">Illuminator Models</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorials-overview.html">Tutorials Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial1.html">Tutorial 1</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial2.html">Tutorial 2</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial3.html">Tutorial 3</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
 <ul>
@@ -130,9 +130,8 @@
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <p><strong>Requirements</strong></p>
 <ul class="simple">
-<li><p>Python &gt;= 3.8</p></li>
-<li><p>Miniconda (optional)</p></li>
-<li><p>A Rasberry Pi cluster, for cluster deplyment ( <a class="reference internal" href="cluster-setup.html"><span class="std std-doc">cluster set up</span></a> for specific instructions)</p></li>
+<li><p>Python &gt;= 3.8 &lt; 3.12</p></li>
+<li><p>(optional) A Rasberry Pi cluster, for cluster deployment ( see <a class="reference internal" href="cluster-setup.html"><span class="std std-doc">cluster set up</span></a> for specific instructions)</p></li>
 </ul>
 <section id="using-pip">
 <h3>Using Pip<a class="headerlink" href="#using-pip" title="Link to this heading"></a></h3>
@@ -143,7 +142,7 @@
 </section>
 <section id="using-conda">
 <h3>Using Conda<a class="headerlink" href="#using-conda" title="Link to this heading"></a></h3>
-<p>If you prefer to use conda the <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> provides all dependecies to create a conda environment called <strong>illuminator</strong>.</p>
+<p>If you prefer to use conda, the <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> provides all dependecies to create a conda environment called <strong>illuminator</strong>.</p>
 <ol class="arabic simple">
 <li><p>Clone the repository or download the <a class="reference external" href="https://github.com/Illuminator-team/Illuminator/blob/main/environment.yml">environment.yml</a> file.</p></li>
 <li><p>Use Miniconda to create a new invironment:</p></li>
@@ -169,16 +168,16 @@ conda<span class="w"> </span>activate<span class="w"> </span>illuminator
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>Illuminator/
 
-pip<span class="w"> </span>install<span class="w"> </span>.
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
-<p>In version 3.0.0 and above, simulation scenarios are configure using <code class="docutils literal notranslate"><span class="pre">YAML</span></code> files.</p>
+<p>In version 3.0.0 and above, simulation scenarios are configured using <code class="docutils literal notranslate"><span class="pre">YAML</span></code> files.</p>
 <section id="simulation-file">
 <h3>Simulation file<a class="headerlink" href="#simulation-file" title="Link to this heading"></a></h3>
-<p>Simulations are declared using a configulation file that must have the structure below. Refer to  <a class="reference internal" href="user/config-file.html"><span class="std std-doc">simulation file</span></a> for a full explanation.</p>
+<p>Simulations are set up using a configulation file that must have the structure below. See <a class="reference internal" href="user/config-file.html"><span class="std std-doc">simulation file</span></a> for a full explanation.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># config.yaml</span>
 <span class="nt">scenario</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AddingNumbers&quot;</span><span class="w"> </span><span class="c1"># a name for the simulation scenario</span>
@@ -213,19 +212,19 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 </section>
 <section id="running-simulations">
 <h3>Running Simulations<a class="headerlink" href="#running-simulations" title="Link to this heading"></a></h3>
-<p>The illuminator has two interfaces for user, one for the command line (CLI) and one for Python:</p>
+<p>The illuminator has two interfaces for a user, one for the command line (CLI) and one for Python:</p>
 <ol class="arabic simple">
 <li><p>To run a simulation *<em>scenario</em> using the CLI, use the following:</p></li>
 </ol>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># to run a simulation scenario:</span>
-illuminator<span class="w"> </span>scenario<span class="w"> </span>&lt;path/to/scenario-config.yaml&gt;
+illuminator<span class="w"> </span>scenario<span class="w"> </span>run<span class="w"> </span>&lt;path/to/scenario-config.yaml&gt;
 
 <span class="c1"># to get help, use:</span>
 illuminator<span class="w"> </span>scenario<span class="w"> </span>--help
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>If using Python:</p></li>
+<li><p>Using a Python script:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span> <span class="nn">illuminator.engine</span> <span class="kn">import</span> <span class="n">Simulation</span>
@@ -252,13 +251,13 @@ illuminator<span class="w"> </span>scenario<span class="w"> </span>--help
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Illuminator documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="user/config-file.html" class="btn btn-neutral float-right" title="Simulation Configuration File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/tutorials-overview.html" class="btn btn-neutral float-right" title="Tutorials Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, Illuminator Team.</p>
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

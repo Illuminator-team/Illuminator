@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illuminator Controller Models &mdash; Illuminator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=857d7e63" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Illuminator Data Models" href="../Data/Data.html" />
+    <link rel="prev" title="Illuminator Component Models" href="../Components/Components.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/illuminator.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quick-start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Educational tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorials-overview.html">Tutorials Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial1.html">Tutorial: Power Balancing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial2.html">Tutorial: Electricity Markets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial3.html">Tutorial: Grid Congestion</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/config-file.html">Simulation Configuration File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/simulations.html">Running Simulations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../models.html">Illuminator Models</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../Agents/Agents.html">Illuminator Agent Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../Components/Components.html">Illuminator Component Models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Illuminator Controller Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1"><code class="docutils literal notranslate"><span class="pre">Controller_T1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.control"><code class="docutils literal notranslate"><span class="pre">Controller_T1.control()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.inputs"><code class="docutils literal notranslate"><span class="pre">Controller_T1.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.outputs"><code class="docutils literal notranslate"><span class="pre">Controller_T1.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.parameters"><code class="docutils literal notranslate"><span class="pre">Controller_T1.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.states"><code class="docutils literal notranslate"><span class="pre">Controller_T1.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.step"><code class="docutils literal notranslate"><span class="pre">Controller_T1.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time"><code class="docutils literal notranslate"><span class="pre">Controller_T1.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time_step_size"><code class="docutils literal notranslate"><span class="pre">Controller_T1.time_step_size</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.control"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.control()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.inputs"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.inputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.outputs"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.outputs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.parameters"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.states"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.states</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.step"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time_step_size"><code class="docutils literal notranslate"><span class="pre">ControllerT3Congestion.time_step_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Data/Data.html">Illuminator Data Models</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/set-up.html">Set Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/software-architecture.html">Software Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/developer-docstrings.html">Custom Model Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/testing-explained.html">Testing: basic principles and ideas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/writing-tests.html">Creating/writing tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-cluster-setup.html">Cluster Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/dev-dashboard.html">Dashboard</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scenario-api.html">Scenario API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Illuminator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../models.html">Illuminator Models</a></li>
+      <li class="breadcrumb-item active">Illuminator Controller Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/references/Controllers/Controllers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="illuminator-controller-models">
+<h1>Illuminator Controller Models<a class="headerlink" href="#illuminator-controller-models" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Controllers.controller_T1.controller_T1_v3.</span></span><span class="sig-name descname"><span class="pre">Controller_T1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1" title="Link to this definition"></a></dt>
+<dd><p>Controller for managing power flows between renewable generation, load, and battery storage.</p>
+<p>This controller determines how power should be distributed between renewable sources (wind, solar),
+load demands, and battery storage. It implements basic control logic for battery charging and
+discharging based on state of charge limits and power constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>soc_min</strong> (<em>float</em>) – Minimum state of charge of the battery before discharging stops (%)</p></li>
+<li><p><strong>soc_max</strong> (<em>float</em>) – Maximum state of charge of the battery before charging stops (%)</p></li>
+<li><p><strong>max_p</strong> (<em>float</em>) – Maximum power to/from the battery (kW)</p></li>
+<li><p><strong>battery_active</strong> (<em>bool</em>) – Flag to enable/disable battery operation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>wind_gen</strong> (<em>float</em>) – Wind power generation (kW)</p></li>
+<li><p><strong>pv_gen</strong> (<em>float</em>) – Solar power generation (kW)</p></li>
+<li><p><strong>load_dem</strong> (<em>float</em>) – Electrical load demand (kW)</p></li>
+<li><p><strong>soc</strong> (<em>float</em>) – State of charge of the battery (%)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow2b</strong> (<em>float</em>) – Power flow to/from battery (kW, positive for charging, negative for discharging)</p></li>
+<li><p><strong>res_load</strong> (<em>float</em>) – Residual load after renewable generation (kW)</p></li>
+<li><p><strong>dump</strong> (<em>float</em>) – Excess power that cannot be stored or used (kW)</p></li>
+</ul>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>None</strong></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.control">
+<span class="sig-name descname"><span class="pre">control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wind_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pv_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_dem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.control" title="Link to this definition"></a></dt>
+<dd><p>Controls power flows based on generation, demand and storage states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wind_gen</strong> (<em>float</em>) – Wind power generation [kW]</p></li>
+<li><p><strong>pv_gen</strong> (<em>float</em>) – Solar power generation [kW]</p></li>
+<li><p><strong>load_dem</strong> (<em>float</em>) – Load demand [kW]</p></li>
+<li><p><strong>soc</strong> (<em>float</em>) – Battery state of charge [%]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- flow2b (float): Power flow to/from battery [kW]
+- res_load (float): Residual load [kW]
+- dump (float): Excess power [kW]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'load_dem':</span> <span class="pre">0,</span> <span class="pre">'pv_gen':</span> <span class="pre">0,</span> <span class="pre">'soc':</span> <span class="pre">0,</span> <span class="pre">'wind_gen':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dump':</span> <span class="pre">0,</span> <span class="pre">'flow2b':</span> <span class="pre">0,</span> <span class="pre">'res_load':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'battery_active':</span> <span class="pre">True,</span> <span class="pre">'max_p':</span> <span class="pre">100,</span> <span class="pre">'soc_max':</span> <span class="pre">100,</span> <span class="pre">'soc_min':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.step" title="Link to this definition"></a></dt>
+<dd><p>Advances the simulation one time step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values:</p></li>
+<li><p><strong>wind_gen</strong> (<em>-</em>) – Wind power generation [kW]</p></li>
+<li><p><strong>pv_gen</strong> (<em>-</em>) – Solar power generation [kW]</p></li>
+<li><p><strong>load_dem</strong> (<em>-</em>) – Load demand [kW]</p></li>
+<li><p><strong>soc</strong> (<em>-</em>) – Battery state of charge [%]</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time to advance in seconds. Defaults to 900.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T1.controller_T1_v3.Controller_T1.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.</span></span><span class="sig-name descname"><span class="pre">ControllerT3Congestion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion" title="Link to this definition"></a></dt>
+<dd><p>Controller for managing power flows between renewable generation, load, battery storage, and electrified assets.</p>
+<p>This controller determines power distribution between renewable sources (wind, solar), load demands,
+battery storage, and electrified assets like EVs and heat pumps. It implements control logic for battery
+charging/discharging and load shifting to manage grid congestion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>soc_min</strong> (<em>float</em>) – Minimum state of charge of the battery before discharging stops (%)</p></li>
+<li><p><strong>soc_max</strong> (<em>float</em>) – Maximum state of charge of the battery before charging stops (%)</p></li>
+<li><p><strong>max_p</strong> (<em>float</em>) – Maximum power to/from the battery (kW)</p></li>
+<li><p><strong>gridconnect_ctrl</strong> (<em>float</em>) – Grid connection capacity limit (kW)</p></li>
+<li><p><strong>battery_active</strong> (<em>bool</em>) – Flag to enable/disable battery operation</p></li>
+<li><p><strong>elec_assets</strong> (<em>bool</em>) – Flag to enable/disable electrified assets</p></li>
+<li><p><strong>load_shift_active</strong> (<em>bool</em>) – Flag to enable/disable load shifting during congestion warnings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Inputs<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>wind_gen</strong> (<em>float</em>) – Wind power generation (kW)</p></li>
+<li><p><strong>pv_gen</strong> (<em>float</em>) – Solar power generation (kW)</p></li>
+<li><p><strong>load_dem</strong> (<em>float</em>) – Base electrical load demand (kW)</p></li>
+<li><p><strong>soc</strong> (<em>float</em>) – State of charge of the battery (%)</p></li>
+<li><p><strong>load_EV</strong> (<em>float</em>) – Electric vehicle load demand (kW)</p></li>
+<li><p><strong>load_HP</strong> (<em>float</em>) – Heat pump load demand (kW)</p></li>
+<li><p><strong>flag_warning</strong> (<em>int</em>) – Warning flag for grid congestion</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Outputs<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flow2b</strong> (<em>float</em>) – Power flow to/from battery (kW, positive for charging, negative for discharging)</p></li>
+<li><p><strong>res_load</strong> (<em>float</em>) – Residual load after renewable generation (kW)</p></li>
+<li><p><strong>dump</strong> (<em>float</em>) – Excess power that cannot be stored or used (kW)</p></li>
+</ul>
+</dd>
+<dt class="field-even">States<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>limit_grid_connect</strong> (<em>float</em>) – Grid connection limit for congestion management (kW)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.control">
+<span class="sig-name descname"><span class="pre">control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wind_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pv_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_dem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">soc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_EV</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_HP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.control" title="Link to this definition"></a></dt>
+<dd><p>Controls power flows based on generation, demand and storage states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wind_gen</strong> (<em>float</em>) – Wind power generation [kW]</p></li>
+<li><p><strong>pv_gen</strong> (<em>float</em>) – Solar power generation [kW]</p></li>
+<li><p><strong>load_dem</strong> (<em>float</em>) – Load demand [kW]</p></li>
+<li><p><strong>soc</strong> (<em>float</em>) – Battery state of charge [%]</p></li>
+<li><p><strong>load_EV</strong> (<em>float</em><em>, </em><em>optional</em>) – Electric vehicle load demand [kW]</p></li>
+<li><p><strong>load_HP</strong> (<em>float</em><em>, </em><em>optional</em>) – Heat pump load demand [kW]</p></li>
+<li><p><strong>flag_warning</strong> (<em>int</em><em>, </em><em>optional</em>) – Warning flag for grid congestion</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing:
+- flow2b (float): Power flow to/from battery [kW]
+- res_load (float): Residual load [kW]
+- dump (float): Excess power [kW]</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flag_warning':</span> <span class="pre">None,</span> <span class="pre">'load_EV':</span> <span class="pre">0,</span> <span class="pre">'load_HP':</span> <span class="pre">0,</span> <span class="pre">'load_dem':</span> <span class="pre">0,</span> <span class="pre">'pv_gen':</span> <span class="pre">0,</span> <span class="pre">'soc':</span> <span class="pre">0,</span> <span class="pre">'wind_gen':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.outputs">
+<span class="sig-name descname"><span class="pre">outputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dump':</span> <span class="pre">0,</span> <span class="pre">'flow2b':</span> <span class="pre">0,</span> <span class="pre">'res_load':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.outputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'battery_active':</span> <span class="pre">True,</span> <span class="pre">'elec_assets':</span> <span class="pre">True,</span> <span class="pre">'gridconnect_ctrl':</span> <span class="pre">15,</span> <span class="pre">'load_shift_active':</span> <span class="pre">True,</span> <span class="pre">'max_p':</span> <span class="pre">100,</span> <span class="pre">'soc_max':</span> <span class="pre">100,</span> <span class="pre">'soc_min':</span> <span class="pre">0}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.states">
+<span class="sig-name descname"><span class="pre">states</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'limit_grid_connect':</span> <span class="pre">None}</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.states" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_advance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.step" title="Link to this definition"></a></dt>
+<dd><p>Advances the simulation one time step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>int</em>) – Current simulation time</p></li>
+<li><p><strong>inputs</strong> (<em>dict</em>) – Dictionary containing input values:</p></li>
+<li><p><strong>wind_gen</strong> (<em>-</em>) – Wind power generation [kW]</p></li>
+<li><p><strong>pv_gen</strong> (<em>-</em>) – Solar power generation [kW]</p></li>
+<li><p><strong>load_dem</strong> (<em>-</em>) – Load demand [kW]</p></li>
+<li><p><strong>soc</strong> (<em>-</em>) – Battery state of charge [%]</p></li>
+<li><p><strong>load_EV</strong> (<em>-</em>) – Electric vehicle load demand [kW]</p></li>
+<li><p><strong>load_HP</strong> (<em>-</em>) – Heat pump load demand [kW]</p></li>
+<li><p><strong>flag_warning</strong> (<em>-</em>) – Warning flag for grid congestion</p></li>
+<li><p><strong>max_advance</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum time to advance in seconds. Defaults to 900.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Next simulation time step</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time_step_size">
+<span class="sig-name descname"><span class="pre">time_step_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#illuminator.models.Controllers.controller_T3Congestion.controller_T3Congestion_v3.ControllerT3Congestion.time_step_size" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Components/Components.html" class="btn btn-neutral float-left" title="Illuminator Component Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Data/Data.html" class="btn btn-neutral float-right" title="Illuminator Data Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Illuminator Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
