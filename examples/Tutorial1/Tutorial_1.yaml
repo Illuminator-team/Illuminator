@@ -38,16 +38,16 @@ models:
     load_dem:  # total energy or power consumption for all houses (kWh) over the time step
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
-- name: Load2
-  type: Load
-  parameters:
-    houses: 5  # number of houses that determine the total load demand
-    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
-  inputs:
-    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
-  outputs:
-    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
-    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+# - name: Load2
+#   type: Load
+#   parameters:
+#     houses: 5  # number of houses that determine the total load demand
+#     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+#   inputs:
+#     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+#   outputs:
+#     load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+#     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: PV1
   type: PV # models can reuse the same type
@@ -134,8 +134,8 @@ models:
 connections:
 - from: CSVload.load
   to: Load1.load
-- from: CSVload.load
-  to: Load2.load
+# - from: CSVload.load
+#   to: Load2.load
 
 - from: CSV_pv.G_Gh # start model, pattern: model_name.output_name/input_name
   to: PV1.G_Gh # end model

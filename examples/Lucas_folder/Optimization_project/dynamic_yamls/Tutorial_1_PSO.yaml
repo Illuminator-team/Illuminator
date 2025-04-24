@@ -1,8 +1,6 @@
 connections:
 - from: CSVload.load
   to: Load1.load
-- from: CSVload.load
-  to: Load2.load
 - from: CSV_pv.G_Gh
   to: PV1.G_Gh
 - from: CSV_pv.G_Dh
@@ -62,16 +60,6 @@ models:
     output_type: energy
   type: Load
 - inputs:
-    load: 0
-  name: Load2
-  outputs:
-    consumption: null
-    load_dem: null
-  parameters:
-    houses: 5
-    output_type: power
-  type: Load
-- inputs:
     Az: null
     FF: null
     G_Bn: null
@@ -88,10 +76,10 @@ models:
     NOCT: 44
     P_STC: 250
     cap: 500
-    m_area: 9.276741515592791
+    m_area: 4.169672637985904
     m_az: 180
     m_efficiency_stc: 0.198
-    m_tilt: 4.196351767893027
+    m_tilt: 35.97634241415046
     output_type: power
     peak_power: 600
   type: PV
@@ -165,3 +153,4 @@ scenario:
   name: Tutorial 1
   start_time: '2012-07-06 00:00:00'
   time_resolution: 900
+

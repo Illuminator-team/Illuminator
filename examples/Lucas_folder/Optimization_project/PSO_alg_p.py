@@ -9,6 +9,9 @@ import csv
 import os
 from multiprocessing.pool import Pool
 
+n_cores = os.cpu_count() - 2 # leave two cores
+n_cores = 3
+
 PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
 
 class PSOLogger:
@@ -36,26 +39,41 @@ class PSOLogger:
             # writer.writerow([gen, best_gen_solution, best_gen_fitness, mean, global_best_solution, global_best_fitness, std_fitness])
             for sol, fit in zip(X, F):
                 writer.writerow([gen, sol.tolist(), fit.tolist()])  # Log solution and its fitness
-                
-def run_pso(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
+
+class SimulationProblem(ElementwiseProblem):
+    def __init__(self, scenario, output_path, dec_vars_map, n_var, cost_fun, xl, xu, runner):
+        super().__init__(n_var=n_var, n_obj=1, xl=xl, xu=xu, elementwise_runner=runner)
+        self.scenario = scenario
+        self.output_path = output_path
+        self.dec_vars_map = dec_vars_map
+        self.cost_fun = cost_fun
+        
+    def _evaluate(self, x, out, *args, **kwargs):
+        print(f"DEBUG: in _evaluate x = {x}")
+        result = eval_sim(scenario=self.scenario,
+                output_path=self.output_path,
+                dec_vars_map=self.dec_vars_map,
+                x=x,
+                cost_fun=self.cost_fun
+                )
+        out["F"] = result
+
+def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
     print(dec_vars_map)
-    class SimulationProblem(ElementwiseProblem):
-        def __init__(self):
-            super().__init__(n_var=n_var,
-                            n_obj=1,
-                            xl=xl,
-                            xu=xu)
-        def _evaluate(self, x, out, *args, **kwargs):
-            print(f"DEBUG: in _evaluate x = {x}")
-            result = eval_sim(scenario=scenario,
-                    output_path=output_path,
-                    dec_vars_map=dec_vars_map,
-                    x=x,
-                    cost_fun=cost_fun
-                    )
-            out["F"] = result
+    n_cores = os.cpu_count() - 2 # leave two cores
     
-    problem = SimulationProblem()
+    pool = Pool(processes=n_cores)
+    runner = StarmapParallelization(pool.starmap)
+    problem = SimulationProblem(
+        scenario=scenario,
+        output_path=output_path,
+        dec_vars_map=dec_vars_map,
+        n_var=n_var,
+        cost_fun=cost_fun,
+        xl=xl,
+        xu=xu,
+        runner=runner)
+    
     algorithm = PSO(pop_size=3,
                     w=0.9,
                     c1=2.0,
@@ -65,11 +83,14 @@ def run_pso(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, x
                     remove_duplicates=True)
 
     result = minimize(problem,
-                      algorithm,
-                      callback=PSOLogger(PSO_log_file),
-                      termination=termination,
-                      seed=42,
-                      verbose=True)
+                    algorithm,
+                    callback=PSOLogger(PSO_log_file),
+                    termination=termination,
+                    seed=42,
+                    verbose=True,
+                    )
+    pool.close()
+    pool.join()
     return result
 
 

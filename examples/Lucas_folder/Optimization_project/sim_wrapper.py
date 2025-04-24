@@ -21,7 +21,6 @@ def update_scenario(scenario, dec_vars_map, x):
     print(f"DEBUG: THIS IS X: {x}")
     for model in data['models']:
         for i, (model_name, param) in enumerate(dec_vars_map):
-            print(f"DEBUG: this is i type: {type(i)} and x[i] type: {type(x[i])}")
             if model['name'] == model_name:
                 model["parameters"][param] = float(x[i])
     with open(scenario, 'w') as file:
