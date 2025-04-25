@@ -1,12 +1,11 @@
-from PSO_alg import run_pso
-from PSO_alg_p import run_pso_p
+from PSO_alg_p import run_pso_p, run_pso
 from cost_fun import *
 import numpy as np
 import os
 import yaml
 ## Specify scenario and output path
 source_scenario = './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
-output_path = 'examples/Tutorial1/out_Tutorial1.csv'# './examples/h2_system_example/h2_system_example4.csv'
+output_path = './examples/Lucas_folder/Optimization_project/temp_out/out_Tutorial1.csv'# './examples/h2_system_example/h2_system_example4.csv'
 
 if __name__ == "__main__":
     ## Define the decision variables here (model, paramter)
@@ -19,8 +18,8 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
 
-    ## Define the algorithm used (possible entries are PSO,GA,SA or ABC)
-    alg = "PSO"
+    ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
+    alg = "PSO_P"
 
     ## Determine which cost function from cost_fun.py to use
     cost_fun = cost_fun1
@@ -66,6 +65,16 @@ if __name__ == "__main__":
     # ## Run PSO:
     match alg:
         case 'PSO':
+            result = run_pso(scenario=make_dynamic_yaml_path(source_scenario, alg),
+                        output_path=output_path,
+                        dec_vars_map=dec_vars,
+                        n_var=n_var,
+                        cost_fun=cost_fun,
+                        termination=termination,
+                        xl=xl,
+                        xu=xu)
+            
+        case 'PSO_P':
             result = run_pso_p(scenario=make_dynamic_yaml_path(source_scenario, alg),
                         output_path=output_path,
                         dec_vars_map=dec_vars,

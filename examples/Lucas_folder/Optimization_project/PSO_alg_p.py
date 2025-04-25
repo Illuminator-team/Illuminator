@@ -10,7 +10,7 @@ import os
 from multiprocessing.pool import Pool
 
 n_cores = os.cpu_count() - 2 # leave two cores
-n_cores = 3
+n_cores = 3     # this is amount of simulataneous processes
 
 PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
 
@@ -41,8 +41,11 @@ class PSOLogger:
                 writer.writerow([gen, sol.tolist(), fit.tolist()])  # Log solution and its fitness
 
 class SimulationProblem(ElementwiseProblem):
-    def __init__(self, scenario, output_path, dec_vars_map, n_var, cost_fun, xl, xu, runner):
-        super().__init__(n_var=n_var, n_obj=1, xl=xl, xu=xu, elementwise_runner=runner)
+    def __init__(self, scenario, output_path, dec_vars_map, n_var, cost_fun, xl, xu, runner=None):
+        if runner is not None:
+            super().__init__(n_var=n_var, n_obj=1, xl=xl, xu=xu, elementwise_runner=runner)
+        else:
+            super().__init__(n_var=n_var, n_obj=1, xl=xl, xu=xu)
         self.scenario = scenario
         self.output_path = output_path
         self.dec_vars_map = dec_vars_map
@@ -54,7 +57,8 @@ class SimulationProblem(ElementwiseProblem):
                 output_path=self.output_path,
                 dec_vars_map=self.dec_vars_map,
                 x=x,
-                cost_fun=self.cost_fun
+                cost_fun=self.cost_fun,
+                n_cores=n_cores
                 )
         out["F"] = result
 
@@ -65,14 +69,14 @@ def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination,
     pool = Pool(processes=n_cores)
     runner = StarmapParallelization(pool.starmap)
     problem = SimulationProblem(
-        scenario=scenario,
-        output_path=output_path,
-        dec_vars_map=dec_vars_map,
-        n_var=n_var,
-        cost_fun=cost_fun,
-        xl=xl,
-        xu=xu,
-        runner=runner)
+                                scenario=scenario,
+                                output_path=output_path,
+                                dec_vars_map=dec_vars_map,
+                                n_var=n_var,
+                                cost_fun=cost_fun,
+                                xl=xl,
+                                xu=xu,
+                                runner=runner)
     
     algorithm = PSO(pop_size=3,
                     w=0.9,
@@ -93,5 +97,32 @@ def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination,
     pool.join()
     return result
 
+def run_pso(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
+    print(dec_vars_map)
+    
+    
+    problem = SimulationProblem(scenario=scenario,
+                                output_path=output_path,
+                                dec_vars_map=dec_vars_map,
+                                n_var=n_var,
+                                cost_fun=cost_fun,
+                                xl=xl,
+                                xu=xu,
+                                runner=None)
+    algorithm = PSO(pop_size=3,
+                    w=0.9,
+                    c1=2.0,
+                    c2=2.0,
+                    vmax=np.inf,
+                    adaptive=False,
+                    remove_duplicates=True)
+
+    result = minimize(problem,
+                      algorithm,
+                      callback=PSOLogger(PSO_log_file),
+                      termination=termination,
+                      seed=42,
+                      verbose=True)
+    return result
 
     
