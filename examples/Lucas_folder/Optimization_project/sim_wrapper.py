@@ -7,13 +7,16 @@ import time
 import os
 
 def eval_sim(scenario: str, output_path: str, dec_vars_map: list, x: np.ndarray, cost_fun, n_cores: int):
-    output_path = unique_output_path(output_path, x, n_cores)
+    x_floored = x.astype(int)
+    output_path = unique_output_path(output_path, x_floored, n_cores)
+    # scenario = unique_scenario_path()
     update_scenario(scenario, dec_vars_map, x, output_path)
     command = ['illuminator', 'scenario', 'run', scenario]
     process = subprocess.Popen(command)
+    # exec(f'illuminator scenario run {scenario}')
     # os.system(f'illuminator scenario run {scenario}')
     df = pd.read_csv(output_path)
-    df = read_csv_out(process, output_path)
+    # df = read_csv_out(process, output_path)
     result = cost_fun(df)
     return result
         
@@ -39,14 +42,21 @@ def read_csv_out(process, output_path):
             except pd.errors.EmptyDataError:
                 print("Output CSV not available yet")
                 time.sleep(2)
+    # while True:
+    #     if process.wait() == 0 and os.path.exists(output_path):
+    #         try:
+    #             df = pd.read_csv(output_path)
+    #             return df
+    #         except pd.errors.EmptyDataError:s
+    #             print("Output CSV not available yet")
+    #             time.sleep(2)
      
 def unique_output_path(original_path, x, n_cores):
-    x_floored = x.astype(int)
     if original_path.endswith(".csv"):
         splitted_path = original_path.split('/')
         file_name = splitted_path[-1].removesuffix('.csv')
         temp_out_dir = '/'.join(splitted_path[:-1])
-        unique_path = f"examples/Lucas_folder/Optimization_project/temp_out/{file_name}_{'_'.join(map(str, x_floored))}.csv"
+        unique_path = f"./examples/Lucas_folder/Optimization_project/temp_out/{file_name}_{'_'.join(map(str, x))}.csv"
     else:
         raise ValueError("Provided output file is not a csv file")
     
@@ -61,8 +71,15 @@ def unique_output_path(original_path, x, n_cores):
 
     return unique_path
 
-
-
-
+def unique_scenario_path(scenario, x, n_cores):
+    if scenario.endswith('.yaml'):
+        splitted_path = scenario.split('/')
+        file_name = splitted_path[-1].removesuffix('.yaml')
+        temp_scenario_dir = '/'.join(splitted_path[:-1])
+        unique_scenario = f"examples/Lucas_folder/Optimization_project/temp_scenario/{file_name}_{'_'.join(map(str, x))}.yaml"
+    else:
+        raise ValueError("Provided scenario file is not a yaml file")
+    
+    return unique_scenario
     
 

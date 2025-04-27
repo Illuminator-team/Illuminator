@@ -8,9 +8,12 @@ import numpy as np
 import csv
 import os
 from multiprocessing.pool import Pool
+# from multiprocessing.pool import ThreadPool
 
 n_cores = os.cpu_count() - 2 # leave two cores
 n_cores = 3     # this is amount of simulataneous processes
+n_threads = 3
+
 
 PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
 
@@ -64,10 +67,12 @@ class SimulationProblem(ElementwiseProblem):
 
 def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
     print(dec_vars_map)
-    n_cores = os.cpu_count() - 2 # leave two cores
+    # n_cores = os.cpu_count() - 2 # leave two cores
     
     pool = Pool(processes=n_cores)
     runner = StarmapParallelization(pool.starmap)
+    # pool = ThreadPool(n_threads)
+    # runner = StarmapParallelization(pool.starmap)
     problem = SimulationProblem(
                                 scenario=scenario,
                                 output_path=output_path,

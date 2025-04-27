@@ -36,11 +36,12 @@ class H2Controller2(ModelConstructor):
             'buffer_available_h2': 0, # available h2 for discharge in buffer [kg]
             'buffer_free_capacity': 0 # h2 that can be stored in buffer before being full [kg]
             }
-    outputs={'dump': 0,              # keeps track of shortage/overpoduction in the system [kg/timestep]
-             'buffer_in': 0,        # input presented to the buffer [kg/timestep]
-             'desired_out': 0       # desired output of the buffer [kg/timestep]
+    outputs={'dump': 0              # keeps track of shortage/overpoduction in the system [kg/timestep]
+
             }
-    states={'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
+    states={'buffer_in': 0,      # input presented to the buffer [kg/timestep]
+            'desired_out': 0,    # desired output of the buffer [kg/timestep]
+            'valve1_ratio1': 0,  # fraction of hydrogen flow to valve 1 output 1 [%]
             'valve1_ratio2': 0,  # fraction of hydrogen flow to valve 1 output 2 [%]
             'valve1_ratio3': 0   # fraction of hydrogen flow to valve 1 output 3 [%]
             }
@@ -100,8 +101,6 @@ class H2Controller2(ModelConstructor):
         # print(f"DEBUG: results in h2_controller.py: {results}")
         outputs = {}
         outputs['dump'] = results.pop('dump')
-        outputs['buffer_in'] = results.pop('buffer_in')
-        outputs['desired_out'] = results.pop('desired_out')
         self.set_outputs(outputs)
         self.set_states(results)
 

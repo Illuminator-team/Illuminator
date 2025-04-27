@@ -40,9 +40,9 @@ models:
     buffer_free_capacity: 0
   outputs:
     dump: 0
+  states:
     buffer_in: 0
     desired_out: 0
-  states:
     valve1_ratio1: 0 
     valve1_ratio2: 0
     valve1_ratio3: 0
