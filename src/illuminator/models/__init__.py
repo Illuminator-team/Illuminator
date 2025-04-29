@@ -35,6 +35,7 @@ from .H2_joint.H2_joint_v3 import H2Joint
 from .H2controller.H2_controller_v3 import H2Controller
 from .H2controller.H2_controller2 import H2Controller2
 from .Buffer.buffer import H2Buffer
+from .H2controller.H2_controller_example import H2ControllerExample
 
 # controllers
 from .Controllers.default_controller.controller_v3 import Controller
@@ -64,6 +65,7 @@ __all__ = [ 'Adder',
             'H2Joint',
             'H2Controller',
             'H2Controller2',
+            'H2ControllerExample',
             'H2Buffer',
             'Controller',
             'Controller_T1',

@@ -1,0 +1,103 @@
+connections:
+- from: CSVdemand.demand
+  to: H2demand.demand
+- from: H2demand.tot_dem
+  to: H2_controller.demand
+- from: CSVprod.production
+  to: H2_controller.h2_out
+- from: H2Buffer1.available_h2
+  time_shifted: true
+  to: H2_controller.buffer_available_h2
+- from: H2Buffer1.free_capacity
+  time_shifted: true
+  to: H2_controller.buffer_free_capacity
+- from: H2_controller.buffer_in
+  to: H2Buffer1.h2_in
+- from: H2_controller.desired_out
+  to: H2Buffer1.desired_out
+- from: H2Buffer1.h2_out
+  to: compressor1.flow2c
+models:
+- name: CSVdemand
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/Lucas_folder/Illuminator_presentation/h2_gas_station_weekly_demand.csv
+  type: CSV
+- name: CSVprod
+  parameters:
+    date_format: YYYY-MM-DD HH:mm:ss
+    delimiter: ','
+    file_path: ./examples/Lucas_folder/Illuminator_presentation/h2_production.csv
+  type: CSV
+- inputs:
+    buffer_available_h2: 0
+    buffer_free_capacity: 0
+    demand: 0
+    h2_out: 0
+  name: H2_controller
+  outputs:
+    dump: 0
+  parameters:
+    dummy: 0
+  states:
+    buffer_in: 0
+    desired_out: 0
+  type: H2ControllerExample
+- inputs:
+    desired_out: 0
+    h2_in: 0
+  name: H2Buffer1
+  outputs:
+    actual_h2_in: 0
+    h2_out: 0
+  parameters:
+    h2_capacity_tot: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    h2_soc_max: 100
+    h2_soc_min: 0
+    max_h2: 20
+    min_h2: 0
+  states:
+    available_h2: 0
+    flag: 0
+    free_capacity: 0
+    soc: 50
+  type: H2Buffer
+- inputs:
+    flow2c: 0
+  name: compressor1
+  outputs:
+    flow_from_c: 0
+  parameters:
+    T_amb: 293.15
+    compressor_eff: 100
+    max_power_in: 100
+    p_in: 30
+    p_out: 500
+  states:
+    power_req: 0
+    volume_flow_out: 0
+  type: Compressor
+- inputs:
+    demand: 0
+  name: H2demand
+  parameters:
+    units: 1
+  states:
+    tot_dem: 0
+  type: H2demand
+monitor:
+  file: ./examples/Lucas_folder/Illuminator_presentation/ouput_CSV.csv
+  items:
+  - H2demand.tot_dem
+  - CSVprod.production
+  - H2_controller.dump
+  - H2Buffer1.soc
+  - H2Buffer1.h2_out
+scenario:
+  end_time: '2025-04-27 23:45:00'
+  name: Hydrogen_system_4
+  start_time: '2025-04-21 00:00:00'
+  time_resolution: 900

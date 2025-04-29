@@ -3,17 +3,23 @@ from cost_fun import *
 import numpy as np
 import os
 import yaml
+import time
+
+start = time.time()
 ## Specify scenario and output path
-source_scenario = './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
-output_path = './examples/Lucas_folder/Optimization_project/temp_out/out_Tutorial1.csv'# './examples/h2_system_example/h2_system_example4.csv'
+# source_scenario = './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
+# output_path = './examples/Lucas_folder/Optimization_project/temp_out/out_Tutorial1.csv'# './examples/h2_system_example/h2_system_example4.csv'
+source_scenario = './examples/Lucas_folder/Illuminator_presentation/presentation_scenario.yaml'
+output_path = './examples/Lucas_folder/Illuminator_presentation/temp_out/out_presentation_scenario.csv'# './examples/h2_system_example/h2_system_example4.csv'
 
 if __name__ == "__main__":
     ## Define the decision variables here (model, paramter)
     dec_vars = [
         # ('H2Buffer', 'h2_capacity_tot'),
         # ('H2Buffer', 'h2_soc_min')
-        ('PV1', 'm_tilt'),
-        ('PV1', 'm_area')
+        # ('PV1', 'm_tilt'),
+        # ('PV1', 'm_area')
+        ('H2Buffer1', 'h2_capacity_tot')
     ]
     n_var = len(dec_vars)
 
@@ -22,7 +28,9 @@ if __name__ == "__main__":
     alg = "PSO_P"
 
     ## Determine which cost function from cost_fun.py to use
-    cost_fun = cost_fun1
+    # cost_fun = cost_fun1
+    cost_fun = cost_fun_presentation
+
 
     ## Determine termination criterium
     termination = ("n_gen", 10)
@@ -30,8 +38,10 @@ if __name__ == "__main__":
     ## set lower and upper bounds for decision variables
     # xl = np.array([0, 0])
     # xu = np.array([100000, 99])
-    xl = np.array([0, 0])
-    xu = np.array([90, 10])
+    # xl = np.array([0, 0])
+    # xu = np.array([90, 10])
+    xl = np.array([100])
+    xu = np.array([200])
 
     def result_print(dec_vars, results):
         optimal_params = {}
@@ -87,3 +97,5 @@ if __name__ == "__main__":
 
     print(result)
     result_print(dec_vars, result)
+    elapsed = time.time() - start
+    print("Elapsed time is ", elapsed)

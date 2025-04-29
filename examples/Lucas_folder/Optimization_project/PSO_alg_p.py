@@ -15,7 +15,8 @@ n_cores = 3     # this is amount of simulataneous processes
 n_threads = 3
 
 
-PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
+# PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
+PSO_log_file = "./examples/Lucas_folder/Illuminator_presentation/PSO_live_log.csv"
 
 class PSOLogger:
     def __init__(self, logfile):
@@ -29,6 +30,7 @@ class PSOLogger:
         gen = algorithm.n_gen
         X = algorithm.pop.get("X")
         F = algorithm.pop.get("F")
+        print(f"DEBUG: in logger x={X} fitness={F}")
         best_idx = F.argmin()
         best_gen_solution = X[best_idx].tolist()
         best_gen_fitness = F[best_idx]
@@ -56,13 +58,14 @@ class SimulationProblem(ElementwiseProblem):
         
     def _evaluate(self, x, out, *args, **kwargs):
         print(f"DEBUG: in _evaluate x = {x}")
-        result = eval_sim(scenario=self.scenario,
+        result = eval_sim(original_scenario=self.scenario,
                 output_path=self.output_path,
                 dec_vars_map=self.dec_vars_map,
                 x=x,
                 cost_fun=self.cost_fun,
                 n_cores=n_cores
                 )
+        print(f"DEBUG: IN _evaluate after result: x={x} and result={result}")
         out["F"] = result
 
 def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
@@ -103,7 +106,7 @@ def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination,
     return result
 
 def run_pso(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
-    print(dec_vars_map)
+    # print(dec_vars_map)
     
     
     problem = SimulationProblem(scenario=scenario,
