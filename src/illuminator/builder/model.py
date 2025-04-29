@@ -11,6 +11,23 @@ class SimulatorType(Enum):
     EVENT_BASED = 'event-based'
     HYBRID = 'hybrid'
 
+    @classmethod
+    def from_str(cls, label: str) -> 'SimulatorType':
+        """
+        Convert a string to the corresponding SimulatorType.
+        Raises ValueError if `label` isn’t one of the enum values.
+        """
+        try:
+            # Directly leverage Enum’s built-in string lookup
+            return cls(label)
+        except ValueError:
+            allowed = ', '.join(member.value for member in cls)
+            raise ValueError(f"Invalid simulator type {label!r}; must be one of: {allowed}")
+
+    def __str__(self) -> str:
+        # ensures str(my_enum) == its .value
+        return self.value
+
 # TOOD: IMPORTANT 
 # each model file must provide a way to run it remotely. In the current implementation,
 # that is achieved by including a the folloowing code on the simulator file:
@@ -56,8 +73,8 @@ class IlluminatorModel():
     inputs: Optional[Dict] = field(default_factory=dict) 
     outputs: Dict = field(default_factory=dict)
     states: Dict = field(default_factory=dict)
-    triggers: Optional[Dict] = field(default_factory=list)
-    simulator_type: SimulatorType = SimulatorType.TIME_BASED
+    trigger: Optional[list] = field(default_factory=list)
+    simulator_type: SimulatorType = SimulatorType.TIME_BASED  # default is time-based
     time_step_size: int = 1   # This is closely related to logic in the step method. 
     # Currently, all models have the same time step size (15 minutes). 
     # This is a global setting for the simulation, not a model-specific setting.
@@ -68,14 +85,15 @@ class IlluminatorModel():
     def __post_init__(self):
         self._validate_attributes()
         self._validate_triggers()
-        # self.validate_simulator_type()
+        #self._validate_simulator_type()
     
     @property
     def simulator_meta(self) -> dict:
         """Returns the metadata required by the mosaik API"""
-        
+
         meta = {
             'type': self.simulator_type.value,
+            'trigger': self.trigger,
             'models': {
                 self.model_type: { # This must be the name of he model 
                     'public': True,
@@ -98,7 +116,7 @@ class IlluminatorModel():
 
     def _validate_triggers(self):
         """Check if triggers are in inputs or outputs"""
-        for trigger in self.triggers:
+        for trigger in self.trigger:
             if trigger not in self.inputs and trigger not in self.outputs:
                 raise ValueError(f"Trigger: {trigger} must be either an input "
                                  "or an output")
@@ -107,12 +125,12 @@ class IlluminatorModel():
         """Check if triggers are defined for time-based and event-based
         simulations only
         """
-        if self.simulator_type == SimulatorType.TIME_BASED and self.triggers:
+        if self.simulator_type == SimulatorType.TIME_BASED and self.trigger:
             raise ValueError("Triggers are not allowed in time-based "
                              "simulators")
 
         if self.simulator_type == SimulatorType.EVENT_BASED and \
-                not self.triggers:
+                not self.trigger:
             raise ValueError("Triggers are required in event-based simulators")
 
 
@@ -138,6 +156,8 @@ class ModelConstructor(ABC, Simulator):
         #model: IlluminatorModel
         model_vals = engine.current_model
         
+        self.simulator_type = SimulatorType.from_str(model_vals.get('simulator_type', SimulatorType.TIME_BASED.value))
+        self.trigger = model_vals.get('trigger', [])
         self.parameters = model_vals.get('parameters', self.parameters)
         self.inputs = model_vals.get('inputs', self.inputs)
         self.outputs = model_vals.get('outputs', self.outputs)
@@ -146,6 +166,8 @@ class ModelConstructor(ABC, Simulator):
         self.model_type = model_vals.get('type', 'Model')
 
         model = IlluminatorModel(
+                simulator_type=self.simulator_type,
+                trigger=self.trigger,
                 parameters=self.parameters, # get the yaml values or the default from the model
                 inputs=self.inputs,
                 outputs=self.outputs,

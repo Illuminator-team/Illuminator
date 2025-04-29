@@ -135,6 +135,8 @@ schema = Schema(  # a mapping of mappings
                     [{
                         "name": And(str, len),
                         "type": And(str, len),
+                        Optional('simulator_type', default="time-based"): And(str, len, error='if simulation_type is used, it must be a non-empty string'),
+                        Optional("trigger"): And(list, len, error="if 'trigger' is used, it must contain at least one value (in a list)"),
                         Optional("inputs"): And(dict, len, error="if 'inputs' is used,"
                                       "it must contain at least one key-value "
                                       "pair"),
@@ -145,7 +147,6 @@ schema = Schema(  # a mapping of mappings
                                                     len,
                                                     error="if 'parameters' is used, it must contain at least one key-value pair"),
                         Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
-                        Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
                         Optional("connect"): Schema( # a mapping of mappings
                             {
                                 "ip": Regex(ipv4_pattern, error="you must provide an IP address that matches versions IPv4 or IPv6"),

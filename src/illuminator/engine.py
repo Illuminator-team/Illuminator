@@ -341,6 +341,21 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
 
 def set_current_model(model):
     global current_model
+    
+    try:
+        current_model["simulator_type"] = model['simulator_type']
+    except KeyError as e:
+        print(f"Warning: Missing 'type' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'type'. {e}")
+    
+    try:
+        current_model["trigger"] = model['trigger']
+    except KeyError as e:
+        print(f"Warning: Missing 'type' key in model. {e}")
+    except Exception as e:
+        print(f"Warning: An error occurred while assigning 'type'. {e}")
+    
     try:
         current_model["type"] = model['type']
     except KeyError as e:
