@@ -1,0 +1,38 @@
+scenario:
+  name: "Async example" # in mosaik so called world
+  start_time: '2012-06-01 00:00:00' # ISO 8601 start time of the simulation
+  #end_time: '2012-01-01 01:00:00' # duration in seconds 
+  end_time: '2012-06-01 23:45:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+models: 
+- name: CSVload
+  type: CSV
+  parameters:
+    file_path: './examples/async/data/load_data.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+
+- name: Load1
+  type: Load
+  parameters:
+    houses: 5  # number of houses that determine the total load demand
+    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  outputs:
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+
+
+connections:
+- from: CSVload.load
+  to: Load1.load
+
+
+monitor:
+  file: './out_async.csv'
+  items:
+    - Load1.load_dem
