@@ -6,25 +6,27 @@ import numpy as np
 import time
 import os
 import shutil
-import random
+import secrets
+from pathlib import Path
+from datetime import datetime
 
-def eval_sim(original_scenario: str, output_path: str, dec_vars_map: list, x: np.ndarray, cost_fun, n_cores: int):
+def eval_sim(original_scenario: str, scenario_temp_path: str, output_path: str, dec_vars_map: list, x: np.ndarray, cost_fun, n_cores: int):
     x_floored = x.astype(int)
-    output_path = unique_output_path(output_path, x_floored, n_cores)
-    scenario = unique_scenario_path(original_scenario, x_floored, n_cores)
+    output_path = unique_output_path(output_path, x_floored)
+    scenario = unique_scenario_path(original_scenario, scenario_temp_path, x_floored)
     shutil.copy(original_scenario ,scenario)
     update_scenario(scenario, dec_vars_map, x, output_path)
     print(f"DEBUG:\nthis is scenario in eval_sim: {scenario}\n this is x: {x}")
     command = ['illuminator', 'scenario', 'run', scenario]
     process = subprocess.Popen(command)
     print(f"DEBUG: A NEW PROCESS STARTED FOR SCENARIO {scenario}")
-    # df = pd.read_csv(output_path)
-    df = read_csv_out(process, output_path)
-    # result = cost_fun(df)
-    result = cost_fun(df, x)
+
+    df = read_csv_out(output_path)
+    result = cost_fun(df)
+    # result = cost_fun(df, x)
     print(f"DEBUG: CSV read with result = {result}")
     return result
-        
+
 def update_scenario(scenario, dec_vars_map, x, output_path):
     print(f"DEBUG: THIS IS OUTPUT FILE FOR X={x}: {output_path}")
     with open(scenario, 'r') as file:
@@ -37,16 +39,7 @@ def update_scenario(scenario, dec_vars_map, x, output_path):
     with open(scenario, 'w') as file:
         yaml.dump(data, file, default_flow_style=False)
 
-def read_csv_out(process, output_path):
-    # while True:
-    #     if process.poll() is not None:
-    #         try:
-    #             time.sleep(0.2)
-    #             df = pd.read_csv(output_path)
-    #             return df
-    #         except pd.errors.EmptyDataError:
-    #             print("Output CSV not available yet")
-    #             time.sleep(2)
+def read_csv_out(output_path):
     """Wait until CSV exists and is stable, then read it."""
     print("DEBUG: NOW IN READ csv FUNCTION")
     stable_wait = 3
@@ -68,25 +61,21 @@ def read_csv_out(process, output_path):
             print("CSV not available yet, waiting...")
             time.sleep(1)
         
-
-
-    # while True:
-    #     if process.wait() == 0 and os.path.exists(output_path):
-    #         try:
-    #             df = pd.read_csv(output_path)
-    #             return df
-    #         except pd.errors.EmptyDataError:s
-    #             print("Output CSV not available yet")
-    #             time.sleep(2)
-     
-def unique_output_path(original_path, x, n_cores):
+def unique_output_path(original_path, x):
     if original_path.endswith(".csv"):
-        splitted_path = original_path.split('/')
-        file_name = splitted_path[-1].removesuffix('.csv')
-        temp_out_dir = '/'.join(splitted_path[:-1])
+        original_path = Path(original_path)
+        file_name = original_path.stem
+        temp_out_dir = original_path.parent
+        random_suffix = secrets.token_hex(6)
+        
+        while True:
+            timestamp = datetime.now().strftime("%f")
+            unique_path = temp_out_dir / f"{file_name}_{timestamp}_{'_'.join(map(str, x))}.csv"
+            if not unique_path.exists():
+                return str(unique_path)
         # unique_path = f"./examples/Lucas_folder/Optimization_project/temp_out/{file_name}_{'_'.join(map(str, x))}.csv"
         # unique_path = f"./examples/Lucas_folder/Illuminator_presentation/temp_out/{file_name}_{'_'.join(map(str, x))}.csv"
-        unique_path = f"./examples/Lucas_folder/Illuminator_presentation/temp_out/{file_name}_{random.randint(0, 1e6)}.csv"
+        # unique_path = f"./examples/Lucas_folder/Illuminator_presentation/temp_out/{file_name}_{random.randint(0, 1e6)}.csv"
 
     else:
         raise ValueError("Provided output file is not a csv file")
@@ -102,17 +91,22 @@ def unique_output_path(original_path, x, n_cores):
 
     return unique_path
 
-def unique_scenario_path(scenario, x, n_cores):
+def unique_scenario_path(scenario, scenario_temp_path, x):
     if scenario.endswith('.yaml'):
-        splitted_path = scenario.split('/')
-        file_name = splitted_path[-1].removesuffix('.yaml')
-        temp_scenario_dir = '/'.join(splitted_path[:-1])
-        # unique_scenario = f"./examples/Lucas_folder/Optimization_project/temp_scenario/{file_name}_{'_'.join(map(str, x))}.yaml"
+        scenario = Path(scenario)
+        scenario_temp_path = Path(scenario_temp_path)
+        file_name = scenario.stem
+        # random_suffix = secrets.token_hex(6)
+        while True:
+            timestamp = datetime.now().strftime("%f")
+            unique_path = scenario_temp_path / f"{file_name}_{timestamp}_{'_'.join(map(str, x))}.yaml"
+            if not unique_path.exists():
+                return str(unique_path)
+        
         # unique_scenario = f"./examples/Lucas_folder/Illuminator_presentation/temp_scenario/{file_name}_{'_'.join(map(str, x))}.yaml"
-        unique_scenario = f"./examples/Lucas_folder/Illuminator_presentation/temp_scenario/{file_name}_{random.randint(0, 1e6)}.yaml"
+        # unique_scenario = f"./examples/Lucas_folder/Illuminator_presentation/temp_scenario/{file_name}_{random.randint(0, 1e6)}.yaml"
     else:
         raise ValueError("Provided scenario file is not a yaml file")
     
-    return unique_scenario
     
 

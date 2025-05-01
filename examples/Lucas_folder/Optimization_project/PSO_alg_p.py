@@ -10,7 +10,7 @@ import os
 from multiprocessing.pool import Pool
 # from multiprocessing.pool import ThreadPool
 
-n_cores = os.cpu_count() - 2 # leave two cores
+n_cores = os.cpu_count() - 3 # leave two cores
 n_cores = 3     # this is amount of simulataneous processes
 n_threads = 3
 
@@ -46,7 +46,7 @@ class PSOLogger:
                 writer.writerow([gen, sol.tolist(), fit.tolist()])  # Log solution and its fitness
 
 class SimulationProblem(ElementwiseProblem):
-    def __init__(self, scenario, output_path, dec_vars_map, n_var, cost_fun, xl, xu, runner=None):
+    def __init__(self, scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_fun, xl, xu, runner=None):
         if runner is not None:
             super().__init__(n_var=n_var, n_obj=1, xl=xl, xu=xu, elementwise_runner=runner)
         else:
@@ -55,10 +55,12 @@ class SimulationProblem(ElementwiseProblem):
         self.output_path = output_path
         self.dec_vars_map = dec_vars_map
         self.cost_fun = cost_fun
+        self.scenario_temp_path = scenario_temp_path
         
     def _evaluate(self, x, out, *args, **kwargs):
         print(f"DEBUG: in _evaluate x = {x}")
         result = eval_sim(original_scenario=self.scenario,
+                scenario_temp_path=self.scenario_temp_path,
                 output_path=self.output_path,
                 dec_vars_map=self.dec_vars_map,
                 x=x,
@@ -68,16 +70,15 @@ class SimulationProblem(ElementwiseProblem):
         print(f"DEBUG: IN _evaluate after result: x={x} and result={result}")
         out["F"] = result
 
-def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
+def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
     print(dec_vars_map)
     # n_cores = os.cpu_count() - 2 # leave two cores
     
     pool = Pool(processes=n_cores)
     runner = StarmapParallelization(pool.starmap)
-    # pool = ThreadPool(n_threads)
-    # runner = StarmapParallelization(pool.starmap)
     problem = SimulationProblem(
                                 scenario=scenario,
+                                scenario_temp_path=scenario_temp_path,
                                 output_path=output_path,
                                 dec_vars_map=dec_vars_map,
                                 n_var=n_var,
@@ -86,7 +87,7 @@ def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination,
                                 xu=xu,
                                 runner=runner)
     
-    algorithm = PSO(pop_size=3,
+    algorithm = PSO(pop_size=9,
                     w=0.9,
                     c1=2.0,
                     c2=2.0,
@@ -105,11 +106,12 @@ def run_pso_p(scenario, output_path, dec_vars_map, n_var, cost_fun, termination,
     pool.join()
     return result
 
-def run_pso(scenario, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
+def run_pso(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
     # print(dec_vars_map)
     
     
     problem = SimulationProblem(scenario=scenario,
+                                scenario_temp_path=scenario_temp_path,
                                 output_path=output_path,
                                 dec_vars_map=dec_vars_map,
                                 n_var=n_var,
