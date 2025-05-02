@@ -11,8 +11,9 @@ from multiprocessing.pool import Pool
 # from multiprocessing.pool import ThreadPool
 
 n_cores = os.cpu_count() - 3 # leave two cores
-n_cores = 3     # this is amount of simulataneous processes
-n_threads = 3
+# n_cores = 3     # this is amount of simulataneous processes
+print(n_cores)
+# n_threads = 3
 
 
 # PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"

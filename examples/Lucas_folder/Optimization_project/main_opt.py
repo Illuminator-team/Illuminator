@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
 
     ## Determine termination criterium
-    termination = ("n_gen", 3)
+    termination = ("n_gen", 10)
 
     ## set lower and upper bounds for decision variables
     # xl = np.array([0, 0])
