@@ -16,8 +16,8 @@ print(n_cores)
 # n_threads = 3
 
 
-# PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
-PSO_log_file = "./examples/Lucas_folder/Illuminator_presentation/PSO_live_log.csv"
+PSO_log_file = "./examples/Lucas_folder/Optimization_project/PSO_live_log.csv"
+# PSO_log_file = "./examples/Lucas_folder/Illuminator_presentation/PSO_live_log.csv"
 
 class PSOLogger:
     def __init__(self, logfile):

@@ -1,4 +1,5 @@
 from PSO_alg_p import run_pso_p, run_pso
+from LBFGSB_alg import run_LBFGSB
 from cost_fun import *
 import numpy as np
 import os
@@ -24,17 +25,12 @@ if __name__ == "__main__":
     ]
     n_var = len(dec_vars)
 
-
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = "PSO_P"
+    alg = "LBFGSB"
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
     cost_fun = cost_fun1
-
-
-    ## Determine termination criterium
-    termination = ("n_gen", 10)
 
     ## set lower and upper bounds for decision variables
     # xl = np.array([0, 0])
@@ -44,10 +40,20 @@ if __name__ == "__main__":
     # xl = np.array([100])
     # xu = np.array([200])
 
-    def result_print(dec_vars, results):
-        optimal_params = {}
-        for i , (name, param) in enumerate(dec_vars):
-            optimal_params[param] = results.X[i] 
+    ## FOR PSO
+    ## Determine termination criterium (FOR PSO)
+    termination = ("n_gen", 10)
+
+    ## FOR LBFGSB
+    ## Determine initial guess x0 and epsilons
+    epsilons = [1e-5, 1e-5]
+    x0 = (xl + xu)/2
+
+
+
+    def result_print(dec_vars, params, cost):
+        
+
         cost = results.F[0]
         print(f"The optimal parameters are:\n {optimal_params}\n Resulting in a cost of: {cost}")
         return optimal_params, cost
@@ -64,6 +70,10 @@ if __name__ == "__main__":
                         termination=termination,
                         xl=xl,
                         xu=xu)
+            params = {}
+            for i , (name, param) in enumerate(dec_vars):
+                params[param] = result.X[i] 
+            cost = result.F[0]
             
         case 'PSO_P':
             result = run_pso_p(scenario=source_scenario,
@@ -75,11 +85,29 @@ if __name__ == "__main__":
                         termination=termination,
                         xl=xl,
                         xu=xu)
-        # add other algs
-
+            params = {}
+            for i , (name, param) in enumerate(dec_vars):
+                params[param] = result.X[i] 
+            cost = result.F[0]
+            
+        case 'LBFGSB':
+            result = run_LBFGSB(scenario=source_scenario,
+                                scenario_temp_path=scenario_temp_path,
+                                output_path=output_path,
+                                dec_vars_map=dec_vars,
+                                cost_fun=cost_fun,
+                                xl=xl,
+                                xu=xu,
+                                x0=x0,
+                                epsilons=epsilons
+                                        )
+            params = {}
+            for i , (name, param) in enumerate(dec_vars):
+                params[param] = result.x[i] 
+            cost = result.fun
 
 
     print(result)
-    result_print(dec_vars, result)
+    result_print(dec_vars, params, cost)
     elapsed = time.time() - start
     print("Elapsed time is ", elapsed)
