@@ -459,7 +459,8 @@ class Simulation:
         # A way to define custom collectors should be provided by the Illuminator.
         collector = world.start('Collector', 
                                 time_resolution=_time_resolution, 
-                                start_date=_start_time,  
+                                start_date=_start_time,
+                                items = config['monitor']['items'],  
                                 results_show={'write2csv':True, 'dashboard_show':False, 
                                             'Finalresults_show':False,'database':False, 'mqtt':False}, 
                                 output_file=_results_file)
