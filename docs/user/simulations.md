@@ -9,7 +9,7 @@ To run a simulation from Python, you need to provide a [configuration file](./co
 ```python
 from illuminator.engine import Simulation
 
-simulation = Simulation('<path/to/config.yaml>')
+simulation = Simulation('<path/to/scenario_config.yaml>')
 simulation.run()
 
 ```
@@ -19,5 +19,5 @@ simulation.run()
 You can use the command `scenario run` to start a simulation from the terminal:
 
 ```shell
-illuminator scenario run <path/to/config.yaml>
+illuminator scenario run <path/to/scenario_config.yaml>
 ```
