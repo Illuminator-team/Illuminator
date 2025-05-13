@@ -18,3 +18,18 @@ simulation.set_monitor_param(parameter='file', value='tests/outputs/out_e2e_T1.c
 # run the simulation
 simulation.run()
 
+import csv
+import sys
+
+def read_csv(path):
+    with open(path, newline='') as f:
+        return list(csv.reader(f))
+
+actual = read_csv('tests/outputs/out_e2e_T1.csv')
+expected = read_csv('tests/outputs/expected_out_e2e_T1.csv')
+
+if actual != expected:
+    print("❌ CSV files differ.")
+    sys.exit(1)
+else:
+    print("✅ CSV files match.")
