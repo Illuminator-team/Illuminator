@@ -1,35 +1,38 @@
 from illuminator.engine import Simulation
 
 # initialize simulation according to tutorial1 yaml
-CONFIG_FILE = 'tests/data/Tutorial_1.yaml'
-simulation = Simulation(CONFIG_FILE)
-simulation.set_model_param(model_name='CSVload', parameter='file_path', value='tests/data/load_data.txt')
-simulation.set_model_param(model_name='CSV_pv', parameter='file_path', value='tests/data/pv_data_Rotterdam_NL-15min.txt')
-simulation.set_model_param(model_name='CSV_wind', parameter='file_path', value='tests/data/winddata_NL.txt')
 
-simulation.set_monitor_param(parameter='file', value='tests/outputs/out_e2e_T1.csv')
+def tutorial1():
+    CONFIG_FILE = 'tests/data/Tutorial_1.yaml'
+    simulation = Simulation(CONFIG_FILE)
+    simulation.set_monitor_param(parameter='file', value='tests/outputs/out_e2e_T1.csv')
 
-# # set multiple models at once
-# new_settings = {'Wind1': {'diameter': 5},
-#                 'Load2': {'houses': 100}
-#                 }
-# simulation.edit_models(new_settings)
+    # run the simulation
+    simulation.run()
+    return
 
-# run the simulation
-simulation.run()
+def tutorial3():
+    CONFIG_FILE = 'tests/data/Tutorial_physical_congestion_RES_bat_elec_loadshift.yaml'
+    simulation = Simulation(CONFIG_FILE)
 
-import csv
-import sys
+    new_settings = {'Wind1': {'p_rated': 10},
+                    'Load1': {'houses': 10},
+                    'PV1': {'cap': 20000},
+                    'Battery1': {'max_p': 40, 'min_p': -40, 'soc_min': 10, 'soc_max': 90},
+                    'Grid1':{'connection_capacity' : 15, 'tolerance_limit': 0.67, 'critical_limit': 0.9},
+                    'Controller1': {'load_shift_active' : True}
+                    }
 
-def read_csv(path):
-    with open(path, newline='') as f:
-        return list(csv.reader(f))
+    simulation.edit_models(new_settings)
 
-actual = read_csv('tests/outputs/out_e2e_T1.csv')
-expected = read_csv('tests/outputs/expected_out_e2e_T1.csv')
+    # you can switch between the selected days 2012-02-01 and 2012-07-06 by changing the date in the two lines below for better readibility it is advised to keep the observed time slot at 1 day
+    simulation.set_scenario_param('start_time', '2012-02-01 00:00:00')
+    simulation.set_scenario_param('end_time', '2012-02-01 23:45:00')
 
-if actual != expected:
-    print("❌ CSV files differ.")
-#    sys.exit(1)
-else:
-    print("✅ CSV files match.")
+    simulation.set_monitor_param(parameter='file', value='tests/outputs/out_e2e_T3.csv')
+
+    # run the simulation
+    simulation.run()
+
+#tutorial1()
+tutorial3()
