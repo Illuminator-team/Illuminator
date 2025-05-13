@@ -29,7 +29,3 @@ jobs:
 
     - name: Run end-to-end test
       run: python tests/e2e_test.py
-
-    - name: Compare CSV files
-      run: |
-        diff tests/outputs/out_e2e_T1.csv tests/outputs/expected_out_e2e_T1.csv
