@@ -93,12 +93,12 @@ class Load(ModelConstructor):
         # incoming value of load is in kWh
         houses = self._model.parameters.get('houses')
         output_type = self._model.parameters.get('output_type')
-        deltaTime = self.time_resolution * self.time_step_size / 60 / 60
+        deltaTime = self.time_resolution * self.time_step_size / 60 / 60  # in case of 15 min interval, deltaTime = 0.25 h
 
         if output_type == 'energy':
-            self.consumption = houses * load # kW
+            self.consumption = houses * load # kWh
         elif output_type == 'power':
-            self.consumption = houses * load * deltaTime # kWh
+            self.consumption = houses * load / deltaTime # kW
 
         re_params = {'load_dem': self.consumption}
         return re_params
