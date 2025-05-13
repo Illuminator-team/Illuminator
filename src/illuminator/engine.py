@@ -517,6 +517,35 @@ class Simulation:
         
         self.config['scenario'][parameter] = value
         return
+
+    def set_monitor_param(self, parameter: str, value)-> None:
+        """
+        Sets a parameter value in the scenario section of the simulation configuration.
+
+        Parameters
+        ----------
+        parameter : str
+            Name of the parameter to set
+        value : any
+            New value for the parameter
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If parameter is not found in scenario configuration
+        """
+
+        if parameter not in self.config['monitor']:
+            available_params = ', '.join(self.config['monitor'].keys())
+            raise KeyError(f"Parameter {parameter} not found in monitor. Available parameters: {available_params}")
+        
+        self.config['monitor'][parameter] = value
+        return
     
 
     def set_model_state(self, model_name: str, state: str, value)-> None:
