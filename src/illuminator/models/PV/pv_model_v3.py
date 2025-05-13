@@ -362,7 +362,7 @@ class PV(ModelConstructor):
         p_ac = 0
         if self.output_type == 'energy':
             p_ac = (total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4 / 1000 # kWh TODO: implement time interval or smh
+                    self.Temp_effect() * inv_eff * mppt_eff * losses) / 1000 * self.time_resolution * self.time_step_size / 60 / 60  # time_res is the simulation time step in seconds, time_step_size is the number of simulation steps per step call
         elif self.output_type == 'power':
             p_ac = ((total_m_area * self.total_irr() *
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
