@@ -12,13 +12,13 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 ## Installation
 
 **Requirements** 
-- Python >= 3.8
+- Python >= 3.8 & < 3.12
 - Miniconda (optional)
-- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
+- A Rasberry Pi cluster, for cluster deployment (optional)
 
 ### Using Pip
 
-The simpliest way to install *Illuminator* is from PYPI, using `pip`:
+The simplest way to install *Illuminator* is from PYPI, using `pip`:
 
 ```shell
 pip install illuminator
@@ -34,27 +34,12 @@ conda env create -f environment.yml
 conda activate illuminator
 ```
 
-> Refer to the [documenation](https://illuminator-team.github.io/Illuminator/quick-start.html#usage) for an explanation on how to set up and run a simulation.
+> Refer to the [Quick Start](https://illuminator-team.github.io/Illuminator/quick-start.html) guide for a brief explanation on how to set up and run your first simulation.
 
 
-## Raspberry Pi Setup
+### Illuminator Raspberry Pi Cluster
 
-The setup for the Illuminator requires one **server** Raspberry Pi and several **clients** Raspberry Pi's.
-Raspberry Pi's must be connected and configured as a local network, and the
-*server* must be configured to have permissions to access and control the *clients* through Secure Shell Protocol (SSH).
-
-During simulation, the *server* engage with the *clients* to run the simulations defined in the *simulation configuration*, and
-information is exchanged between Rasberry Pi's using network sockets.
-The **server** provides a Dashboard to viazulize the results, and saves them to a `.csv` files for later analysis. 
-
-<div align="center">
-	<img align="center" src="docs/_static/img/Structure.jpg" width="500">
-</div>
-
-
-### Set up 
-
-Consult the [Cluster Pi Setup](docs/cluster-setup.md) document for instructions on how to set up a cluster.
+> Refer to the [Cluster Pi Setup](https://illuminator-team.github.io/Illuminator/developer/dev-cluster-setup.html) documentation for instructions on how to set up an Illuminator cluster.
 
 ## Contributing Guidelines
 
@@ -74,14 +59,18 @@ Please cite this software as follows:
 Many people have contributed to the development of *Illuminator*, we list their names and contributions below:
 
 | [Role](https://credit.niso.org/contributor-roles-defined/) | Contributor |
-|------|--------|
+|------|--------| 
+| v3 Core Developers| J. Groen, D. Georgiadi |
 | Conceptualization | A. Fu, A. Neagu, M. Cvetkovic, M. Garcia Alvarez, M. Rom |
 | Funding acquisition | A. Fu, M. Cvetkovic,  P. Palensky |
 | Project management | A. Neagu, M. Cvetkovic  |
 | Research |A. Fu, M. Cvetkovic,  N. Balassi, R. Saini, S.K. Trichy Siva Raman |
 | Resources | R. Koornneef |
 | Software | A. Fu, J. Grguric, J. Pijpker, M. Garcia Alvarez,  M. Rom., D. Georgiadi,  J. Groen |
+| Model Development | J. Groen, D. Georgiadi, L. Klootwijk | 
+| Tutorials |  J. Riedler |
 | Supervision |  A. Neagu, M. Cvetkovic |
+
 
 ## Acknowledgements
 
@@ -98,8 +87,10 @@ Each of these individuals has been essential in shaping the success and evolutio
 * The Illuminator project is supported by [TU Delft PowerWeb](https://www.tudelft.nl/powerweb) and [Stichting 3E](https://www.stichting3e.nl/).
 * The development of the *Illuminator* was supported by the [Digital Competence Centre](https://dcc.tudelft.nl), Delft University of Technology.
 
-
 ## Contact and Support
 
 For more comprehensive support, please contact us at [illuminator@tudelft.nl](mailto:illuminator@tudelft.nl). Additionally, you can reach out to the main contributors for specific inquiries:
+
+* [Dr.ir. Jort A. Groen](mailto:J.A.Groen@tudelft.nl)
+* [Despoina Georgiadi](mailto:D.Georgiadi@tudelft.nl)
 * [Dr.ir. Milos Cvetkovic](mailto:M.Cvetkovic@tudelft.nl)
