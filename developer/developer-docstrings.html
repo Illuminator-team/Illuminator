@@ -131,7 +131,7 @@
              
   <section id="custom-model-development">
 <h1>Custom Model Development<a class="headerlink" href="#custom-model-development" title="Link to this heading"></a></h1>
-<p>The Illuminator supports and endorses the creation of custom models for your simulation needs. Templates for these models are provided in TODO LINK. Model creation can be done with basic prior programming knowledge and a basic understanding of inheritance and object oriented programming.</p>
+<p>The Illuminator supports and endorses the creation of custom models for your simulation needs. Model creation can be done with basic prior programming knowledge and a basic understanding of inheritance and object oriented programming.</p>
 <p>All new models must satisfy the below criteria, this is to ensure a smooth integration and contribution to the Illuminator. Any model created &amp; submitted must fulfill the following conventions to be added to the Illuminator package.</p>
 <section id="good-coding-practices">
 <h2>Good Coding Practices<a class="headerlink" href="#good-coding-practices" title="Link to this heading"></a></h2>
@@ -162,7 +162,10 @@
 <h3>Unnecessary Computations<a class="headerlink" href="#unnecessary-computations" title="Link to this heading"></a></h3>
 <p>Avoid redundant computations, excessive loops, and duplicate code segments to enhance efficiency and reduce points of error.</p>
 <p>Evaluate whether computations can be precomputed, reused, or consolidated to minimize resource consumption. By refactoring repetitive patterns into shared methods, you not only simplify maintenance but also prevent errors caused by inconsistent updates to duplicated logic.</p>
-<p>If you come across any such improvement in the existing Illuminator code, we would love to hear them! Contact the main developers at TODO LINK.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Feedback and solutions are always welcome. Please contact the <a class="reference external" href="mailto:illuminator&#37;&#52;&#48;tudelft&#46;nl">Illuminator Development Team</a> if you would like to contribute.</p>
+</div>
 </section>
 <section id="hard-coded-bits-spaghetti-code">
 <h3>Hard-Coded bits &amp; Spaghetti Code<a class="headerlink" href="#hard-coded-bits-spaghetti-code" title="Link to this heading"></a></h3>
@@ -257,7 +260,7 @@
 <section id="consistency-linting">
 <h3>Consistency &amp; Linting<a class="headerlink" href="#consistency-linting" title="Link to this heading"></a></h3>
 <p>Always adhere to the conventions and style used in the existing code, including naming patterns, indentation, spacing, and structure. For example, if camelCase is used for variable names, avoid switching to snake_case.</p>
-<p>Tools like linters and formatters can help enforce these conventions, this project utilises pylint TODO LINK across its codebase. This package also helps maintain good coding practices mentioned in TODO LINK. Any submitted code must pass pylint’s format check.</p>
+<p>Tools like linters and formatters can help enforce these conventions, this project utilises <a class="reference external" href="https://pypi.org/project/pylint/">pylint</a> across its codebase. This package also helps maintain aforementioned good coding practices. Any submitted code must pass pylint’s format check.</p>
 </section>
 </section>
 <section id="model-testing">
@@ -269,7 +272,7 @@
 </section>
 <section id="unit-tests">
 <h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h3>
-<p>Unit tests are a critical component of ensuring the internal functionality of your custom model. These tests validate individual methods and components to confirm that they produce the expected outputs for a variety of input cases, including edge scenarios. Further instructions can be found in TODO LINK.</p>
+<p>Unit tests are a critical component of ensuring the internal functionality of your custom model. These tests validate individual methods and components to confirm that they produce the expected outputs for a variety of input cases, including edge scenarios. Further instructions can be found in the <a class="reference external" href="https://illuminator-team.github.io/Illuminator/developer/writing-tests.html">Creating/Writing Tests</a> section.</p>
 <!-- ## Missing data in older docstrings
 There is still a lot of missing data for older docstrings, which has not been completed due to missing domain knowledge.
 In order to contribute to those, one should simply search for any file which contains `???` in its docstrings and change it to whatever is appropriate.

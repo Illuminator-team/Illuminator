@@ -130,8 +130,8 @@
 <section id="master-worker-raspberry-pis">
 <h2>Master-Worker Raspberry Pis<a class="headerlink" href="#master-worker-raspberry-pis" title="Link to this heading"></a></h2>
 <p>For the cluster setup the Raspberry Pis need to be connected to the same network. The master Raspberry pi holds the yaml file of the scenario to be run. It connects to the worker Raspberry Pis through ssh and “tasks” them with running specific models of the scenario.</p>
-<p><img alt="alt text" src="https://github.com/Illuminator-team/Illuminator-Demonstrator/blob/main/figs/image-1.png" />
-<em>Example setup of a Raspberry Pi cluster running the Illminator</em></p>
+<p><img alt="alt text" src="https://raw.githubusercontent.com/Illuminator-team/Illuminator-Demonstrator/refs/heads/main/figs/image-1.png?token=GHSAT0AAAAAAC4762D6BQXODDXAGXTGH4AY2BDHTVQ" />
+<em>Example setup of a Raspberry Pi cluster running the Illuminator</em></p>
 <p>All Raspberry Pis can run multiple models, specifically they can run one model per available port.</p>
 </section>
 <section id="raspberry-pi-setup">
@@ -179,9 +179,9 @@ In the config file of the imager add the following configurations:</p>
 <h3>Simulation Preparation<a class="headerlink" href="#simulation-preparation" title="Link to this heading"></a></h3>
 <p>Normally the Illuminator scenarios are defined as yaml files. Similarly, those very same files are used in the cluster setup with some additional steps which allow us to run specific models in the worker Raspberry Pis.</p>
 <p>Within your yaml file define the additional fields</p>
-<div class="highlight-yml notranslate"><div class="highlight"><pre><span></span>  connect:
-    ip: 145.94.213.75 # IP of the worker Pi we want to run this model
-    port: 5123 # port of the worker Pi that will run this model
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">connect</span><span class="p">:</span>
+    <span class="n">ip</span><span class="p">:</span> <span class="mf">145.94.213.75</span> <span class="c1"># IP of the worker Pi we want to run this model</span>
+    <span class="n">port</span><span class="p">:</span> <span class="mi">5123</span> <span class="c1"># port of the worker Pi that will run this model</span>
 </pre></div>
 </div>
 <p>To prepare the scenario you wish to run in the cluster run <code class="docutils literal notranslate"><span class="pre">Illuminator</span> <span class="pre">cluster</span> <span class="pre">your_scenario.yaml</span></code>.</p>

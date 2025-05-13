@@ -1,6 +1,6 @@
 # Custom Model Development
 
-The Illuminator supports and endorses the creation of custom models for your simulation needs. Templates for these models are provided in TODO LINK. Model creation can be done with basic prior programming knowledge and a basic understanding of inheritance and object oriented programming. 
+The Illuminator supports and endorses the creation of custom models for your simulation needs. Model creation can be done with basic prior programming knowledge and a basic understanding of inheritance and object oriented programming. 
 
 All new models must satisfy the below criteria, this is to ensure a smooth integration and contribution to the Illuminator. Any model created & submitted must fulfill the following conventions to be added to the Illuminator package.
 
@@ -38,7 +38,9 @@ Avoid redundant computations, excessive loops, and duplicate code segments to en
 
 Evaluate whether computations can be precomputed, reused, or consolidated to minimize resource consumption. By refactoring repetitive patterns into shared methods, you not only simplify maintenance but also prevent errors caused by inconsistent updates to duplicated logic.
 
-If you come across any such improvement in the existing Illuminator code, we would love to hear them! Contact the main developers at TODO LINK.
+:::{note}
+Feedback and solutions are always welcome. Please contact the [Illuminator Development Team](mailto:illuminator@tudelft.nl) if you would like to contribute.
+:::
 
 ### Hard-Coded bits & Spaghetti Code
 
@@ -144,7 +146,7 @@ Docstrings are essential to the Illuminator since each model's documentation is 
 
 Always adhere to the conventions and style used in the existing code, including naming patterns, indentation, spacing, and structure. For example, if camelCase is used for variable names, avoid switching to snake_case.
 
-Tools like linters and formatters can help enforce these conventions, this project utilises pylint TODO LINK across its codebase. This package also helps maintain good coding practices mentioned in TODO LINK. Any submitted code must pass pylint's format check.
+Tools like linters and formatters can help enforce these conventions, this project utilises [pylint](https://pypi.org/project/pylint/) across its codebase. This package also helps maintain aforementioned good coding practices. Any submitted code must pass pylint's format check.
 
 ## Model Testing
 
@@ -156,7 +158,7 @@ Creating a YAML scenario file for your custom model is essential for verifying t
 
 ### Unit Tests
 
-Unit tests are a critical component of ensuring the internal functionality of your custom model. These tests validate individual methods and components to confirm that they produce the expected outputs for a variety of input cases, including edge scenarios. Further instructions can be found in TODO LINK. 
+Unit tests are a critical component of ensuring the internal functionality of your custom model. These tests validate individual methods and components to confirm that they produce the expected outputs for a variety of input cases, including edge scenarios. Further instructions can be found in the [Creating/Writing Tests](https://illuminator-team.github.io/Illuminator/developer/writing-tests.html) section. 
 
 <!-- ## Missing data in older docstrings
 There is still a lot of missing data for older docstrings, which has not been completed due to missing domain knowledge.
