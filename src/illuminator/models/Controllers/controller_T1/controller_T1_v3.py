@@ -166,10 +166,9 @@ class Controller_T1(ModelConstructor):
                     # print ('Flow Bat: '  + str(self.flow_b))
                     # print('Excess generation that cannot be stored: ' + str(-self.res_load-self.flow_b))
 
-            else:
+            else:  # res.load == 0
                 # print('No Residual Load, RES production exactly covers demand')
                 self.flow_b = 0
-                self.dump = 0
                 #demand_res = residual_load
 
             #update residual load with battery discharge/charge
