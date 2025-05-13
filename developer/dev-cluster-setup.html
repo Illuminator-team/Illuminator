@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cluster Set Up &mdash; Illuminator 1.0.0 documentation</title>
+  <title>Illuminator Cluster Set Up &mdash; Illuminator 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -77,7 +77,22 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Future Work</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Cluster Set Up</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Illuminator Cluster Set Up</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#master-worker-raspberry-pis">Master-Worker Raspberry Pis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raspberry-pi-setup">Raspberry Pi Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#flash-sd-card">Flash SD card</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-illuminator">Install Illuminator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#master-pi-setup">Master Pi Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ip-address-setup">IP Address Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-preparation">Simulation Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Simulation Preparation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#warnings">Warnings</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="dev-dashboard.html">Dashboard</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">References</span></p>
@@ -99,7 +114,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Cluster Set Up</li>
+      <li class="breadcrumb-item active">Illuminator Cluster Set Up</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/developer/dev-cluster-setup.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -109,20 +124,92 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="cluster-set-up">
-<h1>Cluster Set Up<a class="headerlink" href="#cluster-set-up" title="Link to this heading"></a></h1>
-<p>We are currently working on automating some of the steps to deploy the <strong>Illuminator</strong> on a Raspberry Pi cluster.
-The main idea of this line of development is to simplify the number of steps required to install and enable simulations, after the networking of the cluster is completed. The following are some of the goals we will like to achieve:</p>
-<ol class="arabic simple">
-<li><p><strong>Installation:</strong> it shall be possible to install the ‘Illuminator’ on each <em>client</em> and <em>server</em> with a single command on the terminal. For example: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">illuminator</span></code>. This  will remove the burden of copying the source code to to each client and server imposed by the current implementation. Achieving this will make goal (2) more feasible.</p></li>
-<li><p><strong>Model accessibility:</strong> it shall be possible for the <em>server</em> to run models in any <em>client</em> by using the <code class="docutils literal notranslate"><span class="pre">lxterminal</span></code> command, with a command such as:
-<code class="docutils literal notranslate"><span class="pre">lxterminal</span> <span class="pre">-e</span> <span class="pre">ssh</span> <span class="pre">illuminator&#64;192.168.0.1</span> <span class="pre">'illuminator</span> <span class="pre">cluster</span> <span class="pre">run</span> <span class="pre">&lt;model-name&gt;</span> <span class="pre">--remote'</span></code>. Where the <code class="docutils literal notranslate"><span class="pre">--remote</span></code> flag must tell <em>Mosaik</em> that the simulation will run in a distributed environment (cluster). In the current implementation, one has to specified the path to the Python file containing the model (usually a directoy on the client). However, that is harder to maintain because new versions of the Illuminator rely on the source code and not on Python wheels or TARs. Therefore, the focus here should be on making sure that once the Illuminator is installed to the Python path, then all models are accessible at the OS level and they can be run in <em>remote</em> model.</p></li>
-<li><p><strong>Business logic for cluster scenarios:</strong> shall develop the business logic to use the information in (<code class="docutils literal notranslate"><span class="pre">connect</span></code>) in the <a class="reference internal" href="../user/config-file.html"><span class="std std-doc">scenario configuration file</span></a> to start simulators on the clienst; such that, for example, calling <code class="docutils literal notranslate"><span class="pre">illuminator</span> <span class="pre">cluster</span> <span class="pre">&lt;scenario.yaml&gt;</span></code> reads on which client a model should be started, and start the relevant simulators on that client and runs the simulation.</p></li>
-</ol>
+  <section id="illuminator-cluster-set-up">
+<h1>Illuminator Cluster Set Up<a class="headerlink" href="#illuminator-cluster-set-up" title="Link to this heading"></a></h1>
+<p>The Illuminator cluster setup is an optional execution of Illuminator scenarios in different Raspberry Pis. This offers a more hands-on approach to running Illuminator cases with the option to have one or multiple models of a scenario running on different Raspberry Pi devices. The Illuminator Cluster is also used for the <a class="reference external" href="https://github.com/Illuminator-team/Illuminator-Demonstrator">Illuminator Demonstator Kit</a>, a physical setup in which flows and interactions between components of a specific scenario are visualised for educational purposes.</p>
+<section id="master-worker-raspberry-pis">
+<h2>Master-Worker Raspberry Pis<a class="headerlink" href="#master-worker-raspberry-pis" title="Link to this heading"></a></h2>
+<p>For the cluster setup the Raspberry Pis need to be connected to the same network. The master Raspberry pi holds the yaml file of the scenario to be run. It connects to the worker Raspberry Pis through ssh and “tasks” them with running specific models of the scenario.</p>
+<p><img alt="alt text" src="https://github.com/Illuminator-team/Illuminator-Demonstrator/blob/main/figs/image-1.png" />
+<em>Example setup of a Raspberry Pi cluster running the Illminator</em></p>
+<p>All Raspberry Pis can run multiple models, specifically they can run one model per available port.</p>
+</section>
+<section id="raspberry-pi-setup">
+<h2>Raspberry Pi Setup<a class="headerlink" href="#raspberry-pi-setup" title="Link to this heading"></a></h2>
+<p>The following 2 steps need to be done to all Raspberry Pis, in the future the Install Illuminator step will also be done through the master to make deployment smoother.</p>
+<section id="flash-sd-card">
+<h3>Flash SD card<a class="headerlink" href="#flash-sd-card" title="Link to this heading"></a></h3>
+<p>Install a Raspberry Pi imager and flash the SD card with Raspberry Pi OS.
+In the config file of the imager add the following configurations:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p><strong>Parameter</strong></p></th>
+<th class="head text-center"><p>value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><strong>Username</strong></p></td>
+<td class="text-center"><p>your_username</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><strong>Password</strong></p></td>
+<td class="text-center"><p>your_password</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><strong>ssh</strong></p></td>
+<td class="text-center"><p>Enabled</p></td>
+</tr>
+</tbody>
+</table>
+<p>Your defined username and password will be needed to connect to the worker Raspberry Pis through your master. Note that the username field is case sensitive.</p>
+</section>
+<section id="install-illuminator">
+<h3>Install Illuminator<a class="headerlink" href="#install-illuminator" title="Link to this heading"></a></h3>
+<p>Clone the github repository by running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/Illuminator-team/Illuminator.git</span></code>. Enter the Illuminator directory and switch to the cluster branch by running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">cluster</span></code>.</p>
+<p>Note that the Illuminator directory needs to have a capital I.</p>
+</section>
+</section>
+<section id="master-pi-setup">
+<h2>Master Pi Setup<a class="headerlink" href="#master-pi-setup" title="Link to this heading"></a></h2>
+<p>The following steps are all conducted through the Master Raspberry Pi. First we need to ensure our connection to the worker Raspberry Pis for remote execution of our scripts.</p>
+<section id="ip-address-setup">
+<h3>IP Address Setup<a class="headerlink" href="#ip-address-setup" title="Link to this heading"></a></h3>
+<p>The IPs of all Raspberry Pis need to be static for us to know where to connect. Navigate to the <code class="docutils literal notranslate"><span class="pre">Illuminator/cluster_setup</span></code> directory and run <code class="docutils literal notranslate"><span class="pre">static_ip.py</span></code>. The script will automatically make the device’s IP static.</p>
+<p>To make the worker Raspberry Pis’IPs static navigate to <code class="docutils literal notranslate"><span class="pre">Illuminator</span></code> dir and edit and run <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>. This script generates keys for ssh connections without needing a password. Make sure your username, password and IPs reflect those of the worker Pis you wish to set up.</p>
+</section>
+<section id="simulation-preparation">
+<h3>Simulation Preparation<a class="headerlink" href="#simulation-preparation" title="Link to this heading"></a></h3>
+<p>Normally the Illuminator scenarios are defined as yaml files. Similarly, those very same files are used in the cluster setup with some additional steps which allow us to run specific models in the worker Raspberry Pis.</p>
+<p>Within your yaml file define the additional fields</p>
+<div class="highlight-yml notranslate"><div class="highlight"><pre><span></span>  connect:
+    ip: 145.94.213.75 # IP of the worker Pi we want to run this model
+    port: 5123 # port of the worker Pi that will run this model
+</pre></div>
+</div>
+<p>To prepare the scenario you wish to run in the cluster run <code class="docutils literal notranslate"><span class="pre">Illuminator</span> <span class="pre">cluster</span> <span class="pre">your_scenario.yaml</span></code>.</p>
+</section>
+<section id="id1">
+<h3>Simulation Preparation<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Execute <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> and run <code class="docutils literal notranslate"><span class="pre">Illuminator</span> <span class="pre">scenario</span> <span class="pre">run</span> <span class="pre">your_scenario.yaml</span></code>.</p>
+</section>
+</section>
+<section id="warnings">
+<h2>Warnings<a class="headerlink" href="#warnings" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Slaves might need to be updated after adding a model.</p></li>
+<li><p>Slaves run .sh files to actually start the host (available in Illuminator/configuration/runshfile), if changed/added they need to be made executable through chmod +x &lt;file.sh&gt;.</p></li>
+</ul>
+<p>This section of the documentation is a work in progress, please consult the related guide of the Illuminator Demonstrator Kit repository found <a class="reference external" href="https://github.com/Illuminator-team/Illuminator-Demonstrator">here</a>.</p>
+<!-- We are currently working on automating some of the steps to deploy the **Illuminator** on a Raspberry Pi cluster. 
+The main idea of this line of development is to simplify the number of steps required to install and enable simulations, after the networking of the cluster is completed. The following are some of the goals we will like to achieve:
+
+1. **Installation:** it shall be possible to install the 'Illuminator' on each *client* and *server* with a single command on the terminal. For example: `pip install illuminator`. This  will remove the burden of copying the source code to to each client and server imposed by the current implementation. Achieving this will make goal (2) more feasible.   
+2. **Model accessibility:** it shall be possible for the *server* to run models in any *client* by using the `lxterminal` command, with a command such as:
+     `lxterminal -e ssh illuminator@192.168.0.1 'illuminator cluster run <model-name> --remote'`. Where the `--remote` flag must tell *Mosaik* that the simulation will run in a distributed environment (cluster). In the current implementation, one has to specified the path to the Python file containing the model (usually a directoy on the client). However, that is harder to maintain because new versions of the Illuminator rely on the source code and not on Python wheels or TARs. Therefore, the focus here should be on making sure that once the Illuminator is installed to the Python path, then all models are accessible at the OS level and they can be run in *remote* model. 
+3. **Business logic for cluster scenarios:** shall develop the business logic to use the information in (`connect`) in the [scenario configuration file](../user/config-file.md) to start simulators on the clienst; such that, for example, calling `illuminator cluster <scenario.yaml>` reads on which client a model should be started, and start the relevant simulators on that client and runs the simulation. -->
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The ideas above can be used by contributors to participate in the development of the <em>Illuminator</em>. Feedback and solutions are always welcome. Please contact the <a class="reference external" href="mailto:illuminator&#37;&#52;&#48;tudelft&#46;nl">Illuminator Development Team</a> if you would like to contribute.</p>
 </div>
+</section>
 </section>
 
 

@@ -16,8 +16,6 @@ Illuminator builts on `Mosaik. <https://mosaik.offis.de/>`_ and supports both st
    :caption: Getting Started
 
    quick-start
-   .. cluster-setup
-   .. user/models
 
 .. toctree::
    :maxdepth: 2
