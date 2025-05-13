@@ -48,7 +48,7 @@ To make the worker Raspberry Pis'IPs static navigate to `Illuminator` dir and ed
 Normally the Illuminator scenarios are defined as yaml files. Similarly, those very same files are used in the cluster setup with some additional steps which allow us to run specific models in the worker Raspberry Pis.
 
 Within your yaml file define the additional fields
-```yml
+```
   connect:
     ip: 145.94.213.75 # IP of the worker Pi we want to run this model
     port: 5123 # port of the worker Pi that will run this model
