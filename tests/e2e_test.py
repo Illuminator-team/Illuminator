@@ -34,5 +34,5 @@ def tutorial3():
     # run the simulation
     simulation.run()
 
-#tutorial1()
+tutorial1()
 tutorial3()
