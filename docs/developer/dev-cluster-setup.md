@@ -5,8 +5,8 @@ The Illuminator cluster setup is an optional execution of Illuminator scenarios 
 ## Master-Worker Raspberry Pis
 For the cluster setup the Raspberry Pis need to be connected to the same network. The master Raspberry pi holds the yaml file of the scenario to be run. It connects to the worker Raspberry Pis through ssh and "tasks" them with running specific models of the scenario. 
 
-![alt text](https://github.com/Illuminator-team/Illuminator-Demonstrator/blob/main/figs/image-1.png)
-*Example setup of a Raspberry Pi cluster running the Illminator*
+![alt text](https://raw.githubusercontent.com/Illuminator-team/Illuminator-Demonstrator/refs/heads/main/figs/image-1.png?token=GHSAT0AAAAAAC4762D6BQXODDXAGXTGH4AY2BDHTVQ)
+*Example setup of a Raspberry Pi cluster running the Illuminator*
 
 
 All Raspberry Pis can run multiple models, specifically they can run one model per available port. 
