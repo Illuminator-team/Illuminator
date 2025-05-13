@@ -27,9 +27,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
 
-    - name: Run end-to-end test
+    - name: Run end-to-end test simulations
       run: python tests/e2e_test.py
 
-    - name: Compare CSV files
+    - name: Compare Tutorial1 CSV files
       run: |
         diff tests/outputs/out_e2e_T1.csv tests/outputs/expected_out_e2e_T1.csv
+
+    - name: Compare Tutorial3 CSV files
+      run: |
+        diff tests/outputs/out_e2e_T3.csv tests/outputs/expected_out_e2e_T3.csv
