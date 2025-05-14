@@ -54,7 +54,7 @@ class load_python():
         if self.output_type == 'energy':
             self.consumption = (self.houses * load) # kWh
         elif self.output_type == 'power':
-            self.consumption = (self.houses * load)/60*self.resolution # kWh
+            self.consumption = (self.houses * load)/60*self.resolution # kW
 
         re_params = {'load_dem': self.consumption}
         return re_params

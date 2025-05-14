@@ -2,20 +2,36 @@ from illuminator.builder import ModelConstructor
 
 class GridConnection(ModelConstructor):
     """
-    Monitors grid connection capacity and sets warning flags when power flow exceeds limits.
+    Grid connection model that monitors power flows and sets warning flags for grid congestion.
+    
+    This model tracks power flows through a grid connection point and sets warning flags when
+    pre-defined capacity limits are exceeded. It uses tolerance and critical thresholds as 
+    percentages of the total connection capacity.
 
     Parameters
     ----------
     connection_capacity : float
-        Maximum grid connection capacity in kW
+        Maximum power capacity of the grid connection (kW)
     tolerance_limit : float
-        Warning threshold as fraction of connection capacity
-    critical_limit : float 
-        Critical threshold as fraction of connection capacity
-
-    Returns
-    -------
+        Threshold for warning flag as fraction of connection capacity (e.g. 0.8 = 80%)
+    critical_limit : float
+        Threshold for critical flag as fraction of connection capacity (e.g. 0.9 = 90%)
+    
+    Inputs
+    ----------
+    dump : float
+        Power flow through grid connection (kW, negative for export)
+    
+    Outputs
+    ----------
     None
+
+    States
+    ----------
+    flag_critical : int
+        Flag indicating critical limit exceeded (1) or not (0)
+    flag_warning : int
+        Flag indicating warning limit exceeded (1) or not (0)
     """
 
     parameters={'connection_capacity': None,  #

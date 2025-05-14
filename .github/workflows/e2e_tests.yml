@@ -1,0 +1,39 @@
+name: End-to-End Test on PR to dev
+
+on:
+  pull_request:
+    branches: [dev]
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install system dependencies
+      run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-dev libxslt-dev
+          
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+
+    - name: Run end-to-end test simulations
+      run: python tests/e2e_test.py
+
+    - name: Compare Tutorial1 CSV files
+      run: |
+        diff tests/outputs/out_e2e_T1.csv tests/outputs/expected_out_e2e_T1.csv
+
+    - name: Compare Tutorial3 CSV files
+      run: |
+        diff tests/outputs/out_e2e_T3.csv tests/outputs/expected_out_e2e_T3.csv

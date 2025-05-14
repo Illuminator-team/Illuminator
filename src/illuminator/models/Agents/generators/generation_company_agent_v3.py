@@ -4,30 +4,35 @@ from illuminator.builder import ModelConstructor
 # construct the model
 class GenerationCompanyAgent(ModelConstructor):
     """
-    A class to represent a Generation Company Agent.
-    This class provides methods to create bids for power plants based on their specifications and market conditions.
+    Generation Company Agent that participates in electricity markets by submitting bids.
+    
+    This agent represents a power generation company that owns a portfolio of power plants
+    and can submit either automated marginal cost-based bids or manual bids to the market.
 
-    Attributes
-    parameters : dict
-        Dictionary containing company parameters such as portfolio, company name, automated bidding flag, and manual bids.
-    inputs : dict
-        Dictionary for potential market inputs (currently empty).
-    outputs : dict
-        Dictionary containing the generated bids for power plants.
-    states : dict
-        Dictionary containing the state variables like profit.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
+    Parameters
+    ----------
+    company_name : str
+        Name identifier for the generation company
+    automated_bids : bool
+        Flag to determine if bids are generated automatically based on marginal costs
+    bids_manual : pd.DataFrame, optional
+        Manual bid data if automated_bids is False
+    
+    Inputs
+    ----------
+    portfolio : dict
+        Portfolio of power plants with their characteristics (capacity, cost, availability)
 
-    Methods
-    __init__(**kwargs)
-        Initializes the Generation Company Agent with the provided parameters.
-    step(time, inputs, max_advance)
-        Simulates one time step of the Generation Company Agent.
-    bid()
-        Creates bids for each power plant in the portfolio based on marginal costs or manual inputs.
+    Outputs
+    ----------
+    None
+    
+    States
+    -------
+    bids : dict
+        Current market bids for each power plant
+    profit : float
+        Cumulative profit from market operations
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
@@ -76,13 +81,19 @@ class GenerationCompanyAgent(ModelConstructor):
     # define step function
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
         """
-        Advances the simulation one time step.
-        Args:
-            time (int): Current simulation time in hours
-            inputs (dict): Dictionary containing market inputs and portfolio information
-            max_advance (int, optional): Maximum time to advance in hours. Defaults to 1.
-        Returns:
-            int: Next simulation time in hours
+        Performs a single simulation time step by processing portfolio information and generating market bids.
+        Parameters
+        ----------
+        time : int
+            Current simulation time in hours
+        inputs : dict
+            Dictionary containing market inputs and portfolio information
+        max_advance : int, optional
+            Maximum time step advancement in hours, defaults to 1
+        Returns
+        -------
+        int
+            Next simulation time in hours. Returns current time plus model time step size
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         if 'portfolio' in input_data:
@@ -103,17 +114,30 @@ class GenerationCompanyAgent(ModelConstructor):
         """
         Creates bids for each power plant in the portfolio.
 
-        The function creates bids based on either automated marginal cost bidding
-        or manual bids provided as input. For automated bidding, the bid capacity
-        equals available capacity and bid price equals marginal cost. For manual
-        bidding, uses pre-defined bid quantities and prices.
+        Parameters
+        ----------
+        None
 
         Returns
         -------
         dict
-            Dictionary containing:
-            - bids: DataFrame with columns for Company, Capacity, Cost, Availability,
-               Available Capacity, Bid Capacity and Bid Price
+            Dictionary containing bids DataFrame with columns:
+            - Company : str
+            Name of the generation company
+            - Technology : str  
+            Type of power plant
+            - Capacity (MW) : float
+            Nominal capacity
+            - Cost (€/MWh) : float
+            Marginal cost
+            - Availability : float
+            Plant availability factor
+            - Available Capacity (MW) : float
+            Actual available capacity
+            - Bid Capacity (MW) : float 
+            Capacity offered to market
+            - Bid Price (€/MWh) : float
+            Price offered to market
         """
         #print("entered bid function of gen agent")
         portfolio_for_bidding = self.portfolio.copy()
@@ -149,17 +173,25 @@ class GenerationCompanyAgent(ModelConstructor):
 
 def process_portfolio(data: dict) -> dict:
     """
-    Process the portfolio data read from the CSV file.
-
-    Parameters
-    ----------
-    data : dict
-        Dictionary containing the portfolio data read from the CSV file.
-
-    Returns
-    -------
-    dict
-        Dictionary containing the processed portfolio data.
+    Process the portfolio data read from the CSV file into a structured DataFrame.
+    The function takes a dictionary containing portfolio data with keys in the format 
+    'technology_attribute' where attribute can be 'availability', 'capacity', or 'cost'.
+    It transforms this into a DataFrame with columns for Technology, Capacity, Cost and 
+    Availability.
+        Dictionary containing the portfolio data with keys in format 'technology_attribute'
+        and corresponding values. Must include capacity, cost and availability for each
+        technology. Special 'time' key is ignored.
+    pd.DataFrame
+        DataFrame with columns:
+        - Technology (str): Name of power generation technology
+        - Capacity (MW) (float): Power generation capacity
+        - Cost (€/MWh) (float): Generation cost per MWh
+        - Availability (int): Availability factor of the technology
+    Raises
+    ------
+    ValueError
+        If an unknown attribute is encountered in the data keys
+        If any technology is missing values for capacity, cost or availability
     """
     # process the portfolio data
     portfolio = pd.DataFrame(columns=['Capacity (MW)', 'Cost (€/MWh)', 'Availability'])

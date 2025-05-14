@@ -1,4 +1,4 @@
-# Tutorial 1
+# Tutorial: Power Balancing
 :::{note}
 The linked colab files cannot currently be run on web, they serve as a way to scan through the tutorial contents before installing and running them locally.
 :::
@@ -15,6 +15,7 @@ The linked colab files cannot currently be run on web, they serve as a way to sc
     </a>
 </p>
 
-test
-
+:::{note}
+The ideas above can be use by contributors to participate in the development of *Illuminator*. Better ideas and solutions always welcome. Please contact the [Illuminator Development Team](mailto:illuminator@tudelft.nl) if you want to contribute.
+:::
 
