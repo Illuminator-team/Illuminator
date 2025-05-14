@@ -4,36 +4,62 @@ import numpy as np
 # construct the model
 class PV(ModelConstructor):
     """
-    A class to represent a PV model.
-    This class provides methods to calculate PV power output based on environmental conditions and panel specifications.
+    A PV model that calculates power generation based on environmental conditions.
+    
+    This model simulates photovoltaic panel performance considering irradiance components,
+    panel orientation, temperature effects, and system losses. It can output either power
+    or energy values.
 
-    Attributes
-    parameters : dict
-        Dictionary containing PV parameters such as module area, NOCT, efficiencies, peak power, tilt angle, and azimuth.
-    inputs : dict
-        Dictionary containing environmental inputs like irradiance, temperature, solar angles and wind speed.
-    outputs : dict
-        Dictionary containing calculated outputs like PV generation and irradiance values.
-    states : dict
-        Dictionary containing the state variables of the PV model.
-    time_step_size : int
-        Time step size for the simulation.
-    time : int or None
-        Current simulation time.
+    Parameters
+    ----------
+    m_area : float
+        Module area of the PV panel in m²
+    NOCT : float
+        Nominal Operating Cell Temperature in °C
+    m_efficiency_stc : float 
+        Module efficiency under standard test conditions
+    G_NOCT : float
+        Irradiance at NOCT conditions in W/m²
+    P_STC : float
+        Power output under standard test conditions in W
+    m_tilt : float
+        Module tilt angle in degrees
+    m_az : float
+        Module azimuth angle in degrees 
+    cap : float
+        Installed capacity in kW
+    output_type : str
+        Output type ('power' or 'energy')
+    
+    Inputs
+    ----------
+    G_Gh : float
+        Global horizontal irradiance in W/m²
+    G_Dh : float 
+        Diffuse horizontal irradiance in W/m²
+    G_Bn : float
+        Direct normal irradiance in W/m²
+    Ta : float
+        Ambient temperature in °C
+    hs : float
+        Solar elevation angle in degrees
+    FF : float
+        Wind speed in m/s
+    Az : float
+        Sun azimuth angle in degrees
 
-    Methods
-    __init__(**kwargs)
-        Initializes the PV model with the provided parameters.
-    step(time, inputs, max_advance=900)
-        Simulates one time step of the PV model.
-    connect(G_Gh, G_Dh, G_Bn, Ta, hs, FF, Az)
-        Processes input parameters and calculates PV output.
-    total_irr()
-        Calculates total irradiance on tilted surface.
-    Temp_effect()
-        Calculates temperature-dependent module efficiency.
-    output()
-        Calculates final PV power or energy output.
+    Outputs
+    ----------
+    pv_gen : float
+        PV generation in kW or kWh
+    total_irr : float
+        Total irradiance on tilted surface in W/m²
+    g_aoi : float
+        Total irradiance considering angle of incidence in W/m²
+    
+    States
+    ----------
+    None
     """
 
     parameters={
@@ -101,20 +127,21 @@ class PV(ModelConstructor):
 
     def step(self, time: int, inputs:dict=None, max_advance:int=900) -> None:
         """
-        Advances the simulation one time step.
-        Args:
-            time (float): Current simulation time in seconds
-            inputs (dict): Dictionary containing input values from other components:
-                - G_Gh (float): Global horizontal irradiance [W/m²]
-                - G_Dh (float): Diffuse horizontal irradiance [W/m²]
-                - G_Bn (float): Direct normal irradiance [W/m²]
-                - Ta (float): Ambient temperature [°C]
-                - hs (float): Solar height [rad]
-                - FF (float): View factor to sky [-]
-                - Az (float): Solar azimuth [rad]
-            max_advance (int, optional): Maximum time to advance in seconds. Defaults to 900.
-        Returns:
-            float: Next simulation time in seconds
+        Step function that updates model state and outputs based on current inputs.
+
+        Parameters
+        ----------
+        time : int
+            Current simulation time
+        inputs : dict, optional
+            Dictionary containing input values
+        max_advance : int, optional
+            Maximum time step size, defaults to 900
+
+        Returns
+        -------
+        int
+            Next simulation time step
         """
         
         input_data = self.unpack_inputs(inputs)
@@ -128,7 +155,7 @@ class PV(ModelConstructor):
 
         results = self.output()
 
-        self.set_outputs({'pv_gen': results['pv_gen']})
+        self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
 
         return time + self._model.time_step_size
 
@@ -362,7 +389,7 @@ class PV(ModelConstructor):
         p_ac = 0
         if self.output_type == 'energy':
             p_ac = (total_m_area * self.total_irr() *
-                    self.Temp_effect() * inv_eff * mppt_eff * losses)/4 / 1000 # kWh TODO: implement time interval or smh
+                    self.Temp_effect() * inv_eff * mppt_eff * losses) / 1000 * self.time_resolution * self.time_step_size / 60 / 60  # time_res is the simulation time step in seconds, time_step_size is the number of simulation steps per step call
         elif self.output_type == 'power':
             p_ac = ((total_m_area * self.total_irr() *
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW

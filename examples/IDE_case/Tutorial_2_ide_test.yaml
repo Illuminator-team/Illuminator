@@ -1,0 +1,152 @@
+scenario:
+  name: "Tutorial 2" # in mosaik so called world
+  start_time: '2024-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2024-01-06 00:00:00' # duration in seconds
+  time_resolution: 86400 # time step in seconds (optional). 1 day step
+
+models:
+- name: CSV_company1
+  type: CSV
+  parameters:
+    file_path: 'Company_Solar1.csv'
+    delimiter: ';'
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+    send_row: True  # sends the entire row as a dictionary
+
+- name: CSV_company2
+  type: CSV
+  parameters:
+    file_path: 'Company_Solar2.csv'
+    delimiter: ';'
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+    send_row: True  # sends the entire row as a dictionary
+
+- name: CSV_company3
+  type: CSV
+  parameters:
+    file_path: 'Company_Solar3.csv'
+    delimiter: ';'
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+    send_row: True  # sends the entire row as a dictionary
+
+- name: CSV_operator
+  type: CSV
+  parameters:
+    file_path: 'demand_data_test.csv'
+    delimiter: ';'
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+
+# - name: CSV_company2
+#   type: CSV
+#   parameters:
+#     file_path: './examples/Tutorial2/company2.xlsx'
+#     delimiter: ','
+#     date_format: 'YYYY-MM-DD HH:mm:ss'
+# - name: CSV_company3
+#   type: CSV
+#   parameters:
+#     file_path: './examples/Tutorial2/company3.xlsx'
+#     delimiter: ','
+#     date_format: 'YYYY-MM-DD HH:mm:ss'
+  
+- name: Company1
+  type: GenerationCompanyAgent
+  parameters:
+    company_name: 'Company1'
+    automated_bids: True
+    bids_manual: null
+  inputs:
+    portfolio: [
+    ]
+  states:
+    bids: null
+    profit: 0
+
+- name: Company2
+  type: GenerationCompanyAgent
+  parameters:
+    company_name: 'Company2'
+    automated_bids: True
+    bids_manual: null    
+  inputs:
+    portfolio: [
+      ]
+  states:
+    bids: null
+    profit: 0
+
+- name: Company3
+  type: GenerationCompanyAgent
+  parameters:
+    company_name: 'Company3'
+    automated_bids: True
+    bids_manual: null
+  inputs:
+    portfolio: [
+      ]
+  states:
+    bids: null
+    profit: 0
+    
+- name: Operator1
+  type: Operator_Market
+  parameters:
+    results_dir: 'operator_results'
+  inputs:
+    bids: {}
+  states:
+    market_clearing_price:
+    demand:
+    market_results_summary:
+
+- name: JusticeAgent1
+  type: JusticeAgent
+  parameters:
+    social_parameters: {
+            'Company1': {'a': 0.91, 'b': 0.55, 'c': 0.6, 'd': 2.6},
+            'Company2': {'a': 0.82, 'b': 0.40, 'c': 0.8, 'd': 2.8},
+            'Company3': {'a': 0.85, 'b': 0.16, 'c': 0.2, 'd': 0.35}
+        }
+    justice_step: 4 #after 5 days calculated for tests
+    results_dir: 'justice_agent_results'
+  inputs:
+    market_clearing_price : 0
+    demand : 0
+    market_results : None
+  states:
+    beta_scores: {}
+    justice_score : 0
+    alpha_scores: {}
+
+
+connections:
+  - from: CSV_company1.row
+    to: Company1.portfolio
+  - from: CSV_company2.row
+    to: Company2.portfolio
+  - from: CSV_company3.row
+    to: Company3.portfolio
+  - from: CSV_operator.demand
+    to: Operator1.demand
+  - from: Company1.bids
+    to: Operator1.bids
+  - from: Company2.bids
+    to: Operator1.bids
+  - from: Company3.bids
+    to: Operator1.bids
+  - from: Operator1.market_clearing_price
+    to: JusticeAgent1.market_clearing_price
+  - from: Operator1.demand
+    to: JusticeAgent1.demand
+  - from: Operator1.market_results_summary
+    to: JusticeAgent1.market_results
+
+monitor:
+  file: './out_ide_case_test.csv'
+  items:
+    - Operator1.market_clearing_price
+    - Operator1.demand
+    - JusticeAgent1.justice_score
+    #- JusticeAgent1.alphascore to be checked later
+    #- JusticeAgent1.beta_scores

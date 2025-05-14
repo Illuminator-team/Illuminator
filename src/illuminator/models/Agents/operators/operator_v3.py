@@ -9,38 +9,38 @@ from os import makedirs
 # construct the model
 class Operator_Market(ModelConstructor):
     """
-    A class to represent a Market Operator Agent that clears electricity markets.
-    This class manages bid processing, price formation, and market clearing calculations.
+    Market operator agent responsible for clearing the electricity market.
 
-    Attributes
+    This agent processes bids from generators, calculates market clearing prices using
+    merit order principles, and determines accepted capacities and financial results
+    for market participants.
+
+    Parameters
     ----------
-    parameters : dict
-        Dictionary containing market parameters such as demand and results directory.
-    inputs : dict
-        Dictionary containing submitted bids from electricity generators.
-    outputs : dict
-        Dictionary containing market clearing prices and results per company.
-    states : dict
-        Dictionary containing state variables like market clearing price.
-    time_step_size : int
-        Time step size for the simulation in hours.
-    time : int or None
-        Current simulation time in hours.
+    results_dir : str
+        Directory to save market results and visualizations
 
-    Methods
+    Inputs
+    ----------
+    bids : dict or list[dict]
+        Bid information from generators containing prices and capacities
+
+    Outputs
+    ----------
+    None
+
+    States
     -------
-    __init__(**kwargs)
-        Initializes the Market Operator with the provided parameters.
-    step(time, inputs, max_advance)
-        Advances simulation by processing bids and calculating market results.
-    calculate_balance(bids)
-        Determines market clearing price and financial results from submitted bids.
-    create_merit_order_curve(all_bids_sorted, demand, market_clearing_price)
-        Visualizes merit order curve showing price formation.
+    market_clearing_price : float
+        Cleared market price in €/MWh
+    market_results_summary : dict
+        Summary of market results including revenues and profits
+    demand : float
+        Total market demand in MW
     """
     # Define the model parameters, inputs, outputs...
     # all parameters will be directly available as attributes
-    parameters={'demand': {}, # to add later 'overbid_penalty'
+    parameters={# to add later 'overbid_penalty'
                 'results_dir': 'operator_results'
                 }
     inputs={'bids': {} # to add later 'overbid'
@@ -48,6 +48,8 @@ class Operator_Market(ModelConstructor):
     outputs={
              }
     states={'market_clearing_price': 0,
+            'market_results_summary': None,
+            'demand': None
             }
 
     # define other attributes
@@ -66,11 +68,10 @@ class Operator_Market(ModelConstructor):
             including demand values and other market parameters.
         """
         super().__init__(**kwargs)
-        self.demand = self.parameters['demand']
+        #self.demand = self.parameters['demand']
         self.results_dir = self.parameters['results_dir']
-
-
-
+        if self.states['demand']:
+            self.demand = self.states['demand']
 
     # define step function
     def step(self, time: int, inputs: dict=None, max_advance: int=1) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -93,7 +94,8 @@ class Operator_Market(ModelConstructor):
             Next simulation time step in hours, calculated as current time plus time_step_size
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
-
+        if 'demand' in input_data:
+            self.demand = input_data['demand'] # check if exists!
         if isinstance(input_data['bids'], dict): # if only one bid is submitted
             bids = [pd.DataFrame(input_data['bids'])]
         else:
@@ -102,6 +104,7 @@ class Operator_Market(ModelConstructor):
         results = self.calculate_balance(bids)
         all_bids_sorted = results['all_bids_sorted']
         market_clearing_price = results['market_clearing_price']
+        market_results_summary = results['market_results']
 
         # save the all_bids_sorted dataframe to a csv file
         # Create results directory if it doesn't exist
@@ -109,10 +112,13 @@ class Operator_Market(ModelConstructor):
             makedirs(self.results_dir)
         all_bids_sorted.to_csv(path.join(self.results_dir, f'all_bids_sorted_{time}.csv'), index=False)
 
+        market_results_summary.to_csv(path.join(self.results_dir, f'market_resukts_summary_{time}.csv'), index=False)
         #create merit order curve
         #self.create_merit_order_curve(all_bids_sorted, self.demand, market_clearing_price)
 
-        self.set_states({'market_clearing_price': float(market_clearing_price)})  # json serialize needs to be a normal datatype, not a numpy data type
+        self.set_states({'market_clearing_price': float(market_clearing_price),
+                         'demand': float(self.demand),
+                         'market_results_summary': market_results_summary.to_dict()})  # json serialize needs to be a normal datatype, not a numpy data type
         #self.set_states(market_clearing_price=market_clearing_price)
 
         # return the time of the next step (time untill current information is valid)
@@ -160,6 +166,8 @@ class Operator_Market(ModelConstructor):
                     total_supplied = total_supplied + all_bids_sorted.iloc[i]['Bid Capacity (MW)']
                     bid_to_add = all_bids_sorted.loc[[i]]
                     accepted_bids = pd.concat([accepted_bids, bid_to_add])
+                    if total_supplied == self.demand:
+                        market_clearing_price = all_bids_sorted.iloc[i]['Bid Price (€/MWh)']
                 else:
                     remaining_capacity = self.demand - total_supplied
                     total_supplied += remaining_capacity
@@ -208,6 +216,8 @@ class Operator_Market(ModelConstructor):
                                     'Revenue (€)': [revenue], 'Total Costs (€)': [costs]
                                     ,'Profit (€)': [revenue - costs]}) # to add later'Costs for Overbidding (€)': [penalty]
             results_df = pd.concat([results_df, new_row])
+        
+        results_df.reset_index(drop=True, inplace=True)
 
         # Show Market Clearing Results
         print(f"Market Clearing Price: {market_clearing_price} €/MWh")
@@ -215,7 +225,7 @@ class Operator_Market(ModelConstructor):
         print(results_df)
 
         
-        return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted}
+        return {'market_clearing_price' : market_clearing_price, 'all_bids_sorted' : all_bids_sorted, 'market_results': results_df}
 
 
     def create_merit_order_curve(self, all_bids_sorted, demand, market_clearing_price):

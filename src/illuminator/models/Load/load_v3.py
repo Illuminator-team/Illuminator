@@ -6,13 +6,29 @@ class Load(ModelConstructor):
 
     Parameters
     ----------
+    houses : int
+        Number of houses that determine the total load demand
+    output_type : str
+        Type of output for consumption calculation ('energy' or 'power')
+
+    Inputs
+    ----------
     load : float
-        Input load per house in kW or kWh depending on output_type
-        
-    Returns
+        Incoming energy or power demand per house in kW or kWh
+    
+    Outputs
     -------
-    re_params : dict
-        Dictionary containing calculated load demand values
+    load_dem : float
+        Total energy or power consumption for all houses (kWh) over the time step
+    consumption : float
+        Current energy or power consumption based on the number of houses and input load (kWh)
+    
+    States
+    ------
+    time : int
+        Current simulation time in seconds
+    forecast : None
+        Placeholder for future load forecasting functionality
     """
 
     parameters={'houses': 1,  # number of houses that determine the total load demand
@@ -93,12 +109,12 @@ class Load(ModelConstructor):
         # incoming value of load is in kWh
         houses = self._model.parameters.get('houses')
         output_type = self._model.parameters.get('output_type')
-        deltaTime = self.time_resolution * self.time_step_size / 60 / 60
+        deltaTime = self.time_resolution * self.time_step_size / 60 / 60  # in case of 15 min interval, deltaTime = 0.25 h
 
         if output_type == 'energy':
-            self.consumption = houses * load # kW
+            self.consumption = houses * load # kWh
         elif output_type == 'power':
-            self.consumption = houses * load * deltaTime # kWh
+            self.consumption = houses * load / deltaTime # kW
 
         re_params = {'load_dem': self.consumption}
         return re_params

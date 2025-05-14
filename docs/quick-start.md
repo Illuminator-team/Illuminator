@@ -5,9 +5,8 @@ The *Illuminator* is written in Python and its dependencies are also Python.
 ## Installation
 
 **Requirements** 
-- Python >= 3.8
-- Miniconda (optional)
-- A Rasberry Pi cluster, for cluster deplyment ( [cluster set up](cluster-setup.md) for specific instructions)
+- Python >= 3.8 < 3.12
+- (optional) A Rasberry Pi cluster, for cluster deployment ( see [cluster set up](cluster-setup.md) for specific instructions)
 
 ### Using Pip
 
@@ -19,7 +18,7 @@ pip install illuminator
 
 ### Using Conda
 
-If you prefer to use conda the `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
+If you prefer to use conda, the `environment.yml` provides all dependecies to create a conda environment called **illuminator**.
 
 1. Clone the repository or download the [environment.yml](https://github.com/Illuminator-team/Illuminator/blob/main/environment.yml) file.
 
@@ -46,16 +45,16 @@ git clone https://github.com/Illuminator-team/Illuminator.git
 ```shell
 cd Illuminator/
 
-pip install .
+pip install -e .
 ```
 
 ## Usage
 
-In version 3.0.0 and above, simulation scenarios are configure using `YAML` files. 
+In version 3.0.0 and above, simulation scenarios are configured using `YAML` files. 
 
 ### Simulation file
 
-Simulations are declared using a configulation file that must have the structure below. Refer to  [simulation file](./user/config-file.md) for a full explanation. 
+Simulations are set up using a configulation file that must have the structure below. See [simulation file](./user/config-file.md) for a full explanation. 
 
 ```yaml
 # config.yaml
@@ -91,20 +90,20 @@ monitor:  # a list of models, its inputs, output and states to be monitored and 
 
 ### Running Simulations
 
-The illuminator has two interfaces for user, one for the command line (CLI) and one for Python:
+The illuminator has two interfaces for a user, one for the command line (CLI) and one for Python:
 
 
 1. To run a simulation **scenario* using the CLI, use the following:
 
   ```shell
   # to run a simulation scenario:
-  illuminator scenario <path/to/scenario-config.yaml>
+  illuminator scenario run <path/to/scenario-config.yaml>
 
   # to get help, use:
   illuminator scenario --help
   ```
 
-2. If using Python:
+2. Using a Python script:
 
   ```python
 

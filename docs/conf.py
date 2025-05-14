@@ -20,7 +20,7 @@ autodoc_mock_imports = ["arrow",
                         ]
 
 project = 'Illuminator'
-copyright = '2024, Illuminator Team'
+copyright = '2025, Illuminator Team'
 author = 'Illuminator Team'
 release = '1.0.0'
 
@@ -36,6 +36,13 @@ extensions = ["myst_parser",
               "sphinx_copybutton",
               "nbsphinx",
               ]
+
+napoleon_custom_sections = [
+    ('Inputs', 'params_style'),
+    ('Outputs', 'params_style'),
+    ('States', 'params_style'),
+]
+
 
 myst_enable_extensions = ["colon_fence",
                           ]

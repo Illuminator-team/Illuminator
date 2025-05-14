@@ -41,7 +41,7 @@ class Collector(mosaik_api.Simulator):
         self.eid = None
         self.data = collections.defaultdict(lambda: collections.defaultdict(dict))
 
-    def init(self, sid:str, time_resolution:int, start_date, results_show,output_file,
+    def init(self, sid:str, time_resolution:int, start_date, items, results_show,output_file,
              date_format:str='%Y-%m-%d %H:%M:%S',
              db_file:str='Result/result.db',
              mqtt_broker:str='mqtt://192.168.10.90:1883', mqtt_topic:str='TGVFCBB75',
@@ -105,6 +105,7 @@ class Collector(mosaik_api.Simulator):
         self.start_date = pd.to_datetime(start_date, format=date_format)
         self.output_file = output_file
         self.print_results = print_results
+        self.items = items
         self.results_show=results_show
         self.db_file=db_file
         self.mqtt_client=None
@@ -218,10 +219,12 @@ class Collector(mosaik_api.Simulator):
         df_dict = {'date': current_date}
 
         data = inputs.get(self.eid, {})
+
         for attr, values in data.items():
             for src, value in values.items():
                 self.data[src][attr][time] = value
-                df_dict[f'{src}-{attr}'] = [value['value']]
+                src = src.split('-0')[0]
+                df_dict[f'{src}.{attr}'] = [value['value']]
 
         df = pd.DataFrame.from_dict(df_dict)
         columns = list(df.columns)
@@ -231,6 +234,7 @@ class Collector(mosaik_api.Simulator):
         # columns.insert(1, 'Controller1-0.time-based_0-flow2b')
         # df = df[columns]
         df = df.set_index('date')
+        df = df[self.items]  # put in the order as defined in the yaml file
 
         if self.results_show['dashboard_show']==True:
             # TODO: raise warning, not implemented
@@ -239,21 +243,11 @@ class Collector(mosaik_api.Simulator):
                            "custom_step":time/900})  # TODO replace 900 by something better
 
         if self.results_show['write2csv'] == True:
-            if time == 0:
-                # Overwrite the CSV file at the first time step
-                df.to_csv(self.output_file, mode='w', header=True)
-            else:
-                if os.path.exists(self.output_file):
-                    # Read existing CSV
-                    existing_df = pd.read_csv(self.output_file, index_col='date', parse_dates=True)
+            if self.results_show['write2csv']:
+                mode = 'w' if time == 0 else 'a'
+                header = (time == 0)
+                df.to_csv(self.output_file, mode=mode, header=header, index=True)
 
-                    # Align the columns
-                    combined_df = pd.concat([existing_df, df])
-                else:
-                    combined_df = df
-
-                # Write the merged data to CSV
-                combined_df.to_csv(self.output_file, mode='w', header=True)
 
 
         if self.results_show['database']==True:

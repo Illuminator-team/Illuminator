@@ -459,7 +459,8 @@ class Simulation:
         # A way to define custom collectors should be provided by the Illuminator.
         collector = world.start('Collector', 
                                 time_resolution=_time_resolution, 
-                                start_date=_start_time,  
+                                start_date=_start_time,
+                                items = config['monitor']['items'],  
                                 results_show={'write2csv':True, 'dashboard_show':False, 
                                             'Finalresults_show':False,'database':False, 'mqtt':False}, 
                                 output_file=_results_file)
@@ -516,6 +517,35 @@ class Simulation:
             raise KeyError(f"Parameter {parameter} not found in scenario. Available parameters: {available_params}")
         
         self.config['scenario'][parameter] = value
+        return
+
+    def set_monitor_param(self, parameter: str, value)-> None:
+        """
+        Sets a parameter value in the scenario section of the simulation configuration.
+
+        Parameters
+        ----------
+        parameter : str
+            Name of the parameter to set
+        value : any
+            New value for the parameter
+            
+        Returns
+        -------
+        None
+            Updates the configuration in place
+            
+        Raises
+        ------
+        KeyError
+            If parameter is not found in scenario configuration
+        """
+
+        if parameter not in self.config['monitor']:
+            available_params = ', '.join(self.config['monitor'].keys())
+            raise KeyError(f"Parameter {parameter} not found in monitor. Available parameters: {available_params}")
+        
+        self.config['monitor'][parameter] = value
         return
     
 

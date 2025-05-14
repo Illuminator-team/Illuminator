@@ -92,7 +92,6 @@ models:
 - name: Operator1
   type: Operator_Market
   parameters:
-    demand: 3000
     results_dir: '.\results_operator'
   inputs:
     bids: {}
@@ -100,6 +99,8 @@ models:
     results: {}
   states:
     market_clearing_price:
+    demand: 5000
+    market_results_summary:
 
 connections:
   - from: Company1.bids
