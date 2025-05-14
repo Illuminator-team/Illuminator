@@ -65,7 +65,7 @@ def summarize_results(outputfile, battery_active):
             color='red', linestyle='-', marker='o', markersize=4, linewidth=2, label='Load Demand (kW)')
     if battery_active == True:
         ax.plot(result_pd_df.index, -result_pd_df['Controller1-0.time-based_0-dump'],
-                color='green', linestyle='-', marker='o', markersize=4, linewidth=2, label='Power to Grid (kW)')
+                color='green', linestyle='-', marker='o', markersize=4, linewidth=2, label='Power from Grid (kW)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=1))  # Show every hour
     ax.xaxis.set_minor_locator(mdates.MinuteLocator(interval=15))  # Minor ticks every 15 minutes
@@ -128,6 +128,31 @@ def summarize_results(outputfile, battery_active):
                  .format(lambda x: f'{x:g}' if isinstance(x, float) else x)
                  .set_caption("Hourly Simulation results"))
     display(styled_df)
+
+    return
+
+def plot_soc(outputfile, soc_min= 10, soc_max= 90):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    result_pd_df = pd.read_csv(outputfile, index_col=0)
+    result_pd_df.index = pd.to_datetime(result_pd_df.index)
+    ax.plot(result_pd_df.index, result_pd_df['Battery1-0.time-based_0-soc'],
+            color='mediumslateblue', linestyle='-', marker='o', markersize=4, linewidth=2)
+    ax.hlines(y=soc_min, xmin=min(result_pd_df.index), xmax=max(result_pd_df.index), color='grey', linestyles='--', label = 'Minimum')
+    ax.hlines(y=soc_max, xmin=min(result_pd_df.index), xmax=max(result_pd_df.index), color='grey', linestyles='--', label = 'Maximum')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    ax.xaxis.set_major_locator(mdates.HourLocator(interval=1))  # Show every hour
+    ax.xaxis.set_minor_locator(mdates.MinuteLocator(interval=15))  # Minor ticks every 15 minutes
+    ax.set_title(f'Battery State of Charge over Time', fontsize=16)
+    ax.set_xlabel('Time', fontsize=14)
+    ax.set_ylabel('State of Charge (%)', fontsize=14)
+    plt.xticks(rotation=45, ha='right')
+    plt.xlim(min(result_pd_df.index), max(result_pd_df.index))
+    plt.ylim(0,100)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax.legend(loc='upper right', fontsize=12)
+    plt.tight_layout()
+    #plt.savefig("T1_Results_csv/load_resload.pdf", format='pdf')
+    plt.show()
 
     return
 
