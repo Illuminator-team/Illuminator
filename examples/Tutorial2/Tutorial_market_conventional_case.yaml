@@ -6,13 +6,6 @@ scenario:
 
 models:
 
-- name: CSV_operator
-  type: CSV
-  parameters:
-    file_path: 'demand_data_conventional.csv'
-    delimiter: ';'
-    date_format: 'YYYY-MM-DD HH:mm:ss'
-
 - name: Company1
   type: GenerationCompanyAgent
   parameters:
@@ -84,8 +77,6 @@ connections:
     to: Operator1.bids
   - from: Company3.bids
     to: Operator1.bids
-  - from: CSV_operator.demand
-    to: Operator1.demand
 
 monitor:
   file: './out_Tutorial2_conventionalgeneration.csv'
