@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+
+
 def cost_fun1(df: pd.DataFrame):
     """
     Calculates the sum of the dump column.
@@ -18,8 +20,6 @@ def cost_fun1(df: pd.DataFrame):
 
 def cost_fun_presentation(df: pd.DataFrame, x):
     """
-    Calculates the sum of the dump column.
-
     Inputs:
         df: pd.df
             ouput dataframe 
@@ -29,9 +29,36 @@ def cost_fun_presentation(df: pd.DataFrame, x):
     """
     count_0 = np.isclose(df['H2Buffer1-0.time-based_0-soc'], 0.0).sum()
     count_100 = np.isclose(df['H2Buffer1-0.time-based_0-soc'], 100.0).sum()
+    
     buffer_size = float(x[0])
     if count_0 + count_100 > 0:
         sum = buffer_size * 100
     else:
         sum = buffer_size
     return sum
+
+def optimal_buffer_size(df: pd.DataFrame, x):
+    """
+    Inputs:
+        df: pd.df
+            ouput dataframe 
+    Returns:
+        sum: float
+            times the SoC was 0 and 100
+    """
+    count_0 = np.isclose(df['H2Buffer1-0.time-based_0-soc'], 0.0).sum()
+    count_100 = np.isclose(df['H2Buffer1-0.time-based_0-soc'], 100.0).sum()
+    
+    buffer_size = float(x[0])
+    penalty_factor = 1e4  # How strongly you penalize SoC violations
+    violation_penalty = (count_0 + count_100) * penalty_factor
+
+    # Objective: minimize size while avoiding extremes
+    cost = buffer_size + violation_penalty
+
+    return cost
+
+# x = [102]
+# df = pd.read_csv("./examples/Lucas_folder/Thesis_comparison1/temp_out/thesis_comparison_hydrogen_monthly_154443616426_473a1654a041_102.csv")
+# print(df['H2Buffer1-0.time-based_0-soc'].dtype)
+# print("THIS IS COST FUN:", cost_fun_presentation(df, x))

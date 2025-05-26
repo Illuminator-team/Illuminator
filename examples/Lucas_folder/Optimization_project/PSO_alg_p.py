@@ -12,7 +12,7 @@ from multiprocessing.pool import Pool
 
 n_cores = os.cpu_count() - 3 # leave two cores
 # n_cores = 3     # this is amount of simulataneous processes
-print(n_cores)
+# print(n_cores)
 # n_threads = 3
 
 
@@ -31,7 +31,7 @@ class PSOLogger:
         gen = algorithm.n_gen
         X = algorithm.pop.get("X")
         F = algorithm.pop.get("F")
-        print(f"DEBUG: in logger x={X} fitness={F}")
+        # print(f"DEBUG: in logger x={X} fitness={F}")
         best_idx = F.argmin()
         best_gen_solution = X[best_idx].tolist()
         best_gen_fitness = F[best_idx]
@@ -59,7 +59,7 @@ class SimulationProblem(ElementwiseProblem):
         self.scenario_temp_path = scenario_temp_path
         
     def _evaluate(self, x, out, *args, **kwargs):
-        print(f"DEBUG: in _evaluate x = {x}")
+        # print(f"DEBUG: in _evaluate x = {x}")
         result = eval_sim(original_scenario=self.scenario,
                 scenario_temp_path=self.scenario_temp_path,
                 output_path=self.output_path,
@@ -68,11 +68,11 @@ class SimulationProblem(ElementwiseProblem):
                 cost_fun=self.cost_fun,
                 n_cores=n_cores
                 )
-        print(f"DEBUG: IN _evaluate after result: x={x} and result={result}")
+        # print(f"DEBUG: IN _evaluate after result: x={x} and result={result}")
         out["F"] = result
 
 def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
-    print(dec_vars_map)
+    # print(dec_vars_map)
     # n_cores = os.cpu_count() - 2 # leave two cores
     
     pool = Pool(processes=n_cores)
@@ -88,7 +88,7 @@ def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, co
                                 xu=xu,
                                 runner=runner)
     
-    algorithm = PSO(pop_size=9,
+    algorithm = PSO(pop_size=8,
                     w=0.9,
                     c1=2.0,
                     c2=2.0,

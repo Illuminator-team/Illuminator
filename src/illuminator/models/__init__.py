@@ -22,6 +22,9 @@ from .Load.load_v3 import Load
 from .Load.LoadEV.load_EV_v3 import LoadEV
 from .Load.LoadHeatpump.load_heatpump_v3 import LoadHeatpump
 
+from .EV.EV import EV
+from .Controllers.controller_EV_nb.controller_EV1 import ControllerEV
+
 from .Battery.battery_v3 import Battery
 
 # Hydrogen models
@@ -71,5 +74,7 @@ __all__ = [ 'Adder',
             'Controller_T1',
             'ControllerT3Congestion',
             'GenerationCompanyAgent',
-            'Operator_Market'
+            'Operator_Market',
+            'EV',
+            'ControllerEV'
             ]

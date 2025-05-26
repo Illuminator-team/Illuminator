@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
-# Generate timestamps: every 15 minutes for one week
-start_time = datetime(2025, 4, 21)
-end_time = start_time + timedelta(days=7)
+# Generate timestamps: every 15 minutes for one month
+start_time = datetime(2025, 4, 1)
+end_time = datetime(2025, 5, 1)  # One full month
 timestamps = pd.date_range(start=start_time, end=end_time, freq='15min')[:-1]
 
 # Generate synthetic hydrogen demand (kg) for each 15-minute interval
@@ -43,7 +43,6 @@ for ts in timestamps:
     hour = ts.hour + ts.minute / 60
     weekday = ts.weekday()
 
-    # Electrolyzer production varies only slightly over the day, with smooth ramps
     if weekday < 5:
         if 6 <= hour <= 9:
             val = base_production_rate + np.random.normal(0.1, 0.05)
@@ -63,59 +62,45 @@ for ts in timestamps:
         else:
             val = base_production_rate - np.random.normal(0.05, 0.02)
 
-    production.append(max(val, 0))  # Ensure non-negative production
+    production.append(max(val, 0))
 
-# Calculate the total demand and production for scaling
+# Scale production to meet 108% of demand
 total_demand = np.sum(demand)
 total_production = np.sum(production)
-
-# Calculate scaling factor to match total demand
 scaling_factor = (total_demand * 1.08) / total_production
-
-# Apply scaling to production values
+print(scaling_factor)
 production_scaled = [p * scaling_factor for p in production]
 
-# Create DataFrame for demand and scaled production
-df_demand = pd.DataFrame({
-    'Time': timestamps,
-    'demand': np.round(demand, 2)
-})
+# Create DataFrames
+df_demand = pd.DataFrame({'Time': timestamps, 'demand': np.round(demand, 2)})
+df_production = pd.DataFrame({'Time': timestamps, 'production': np.round(production_scaled, 2)})
 
-df_production = pd.DataFrame({
-    'Time': timestamps,
-    'production': np.round(production_scaled, 2)
-})
+# Save to CSV
+demand_file_name = "./examples/Lucas_folder/Illuminator_presentation/h2_gas_station_monthly_demand.csv"
+production_file_name = "./examples/Lucas_folder/Illuminator_presentation/h2_production_monthly.csv"
 
-
-# Save Demand to CSV
-demand_file_name = "./examples/Lucas_folder/Illuminator_presentation/h2_gas_station_weekly_demand.csv"
 with open(demand_file_name, "w", newline='') as f:
-    f.write("Demand_data\n")           # Custom header
-    df_demand.to_csv(f, index=False)   # Writes "Time,demand" and the data
+    f.write("Demand_data\n")
+    df_demand.to_csv(f, index=False)
+
+with open(production_file_name, "w", newline='') as f:
+    f.write("Production_data\n")
+    df_production.to_csv(f, index=False)
 
 print(f"Demand saved to {demand_file_name}")
-
-# Save Production to CSV
-production_file_name = "./examples/Lucas_folder/Illuminator_presentation/h2_production.csv"
-with open(production_file_name, "w", newline='') as f:
-    f.write("Production_data\n")       # Custom header
-    df_production.to_csv(f, index=False)  # Writes "Time,production" and the data
-
 print(f"Production saved to {production_file_name}")
 
-# Optionally, plot the data
+# Plotting
 df_demand = pd.read_csv(demand_file_name, header=1, names=["Time", "demand"], parse_dates=["Time"])
 df_production = pd.read_csv(production_file_name, header=1, names=["Time", "production"], parse_dates=["Time"])
 
-# Plot
-plt.figure(figsize=(12, 5))
-plt.plot(df_demand['Time'], df_demand['demand'], label='Demand (kg)', color='blue', linewidth=1.5)
-plt.plot(df_production['Time'], df_production['production'], label='Electrolyzer Production (kg)', color='orange', linewidth=1.5)
-plt.title("Hydrogen Demand and Electrolyzer Production (15-min Intervals Over 1 Week)")
+plt.figure(figsize=(14, 6))
+plt.plot(df_demand['Time'], df_demand['demand'], label='Demand (kg)', color='blue', linewidth=1)
+plt.plot(df_production['Time'], df_production['production'], label='Production (kg)', color='orange', linewidth=1)
+plt.title("Hydrogen Demand and Electrolyzer Production (15-min Intervals Over 1 Month)")
 plt.xlabel("Time")
 plt.ylabel("Hydrogen (kg)")
 plt.grid(True)
-plt.tight_layout()
 plt.legend()
+plt.tight_layout()
 plt.show()
-

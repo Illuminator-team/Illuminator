@@ -1,4 +1,9 @@
-from PSO_alg_p import run_pso_p, run_pso
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Optimization_project')))
+# Now you can import by filename (no package prefix)
+from PSO_alg_p import run_pso, run_pso_p
 from LBFGSB_alg import run_LBFGSB
 from cost_fun import *
 import numpy as np
@@ -10,25 +15,16 @@ import math
 start = time.time()
 ## Specify scenario and output path
 
-source_scenario = './examples/Lucas_folder/EV_optimize/EV_scenario1.yaml' # './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
-output_path = './examples/Lucas_folder/Optimization_project/temp_out/EV_single_day_out.csv'# './examples/h2_system_example/h2_system_example4.csv'
-scenario_temp_path = './examples/Lucas_folder/Optimization_project/temp_scenario'
+source_scenario = './examples/Lucas_folder/Thesis_comparison1/thesis_comparison_hydrogen_monthly.yaml' # './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
+output_path = './examples/Lucas_folder/Thesis_comparison1/temp_out/thesis_comparison_hydrogen_monthly.csv'# './examples/h2_system_example/h2_system_example4.csv'
+scenario_temp_path = './examples/Lucas_folder/Thesis_comparison1/temp_scenario'
 # source_scenario = './examples/Lucas_folder/Illuminator_presentation/presentation_scenario.yaml'
 # output_path = './examples/Lucas_folder/Illuminator_presentation/temp_out/out_presentation_scenario.csv'# './examples/h2_system_example/h2_system_example4.csv'
 
 if __name__ == "__main__":
     ## Define the decision variables here (model, paramter)
     dec_vars = [
-        # ('H2Buffer', 'h2_capacity_tot'),
-        # ('H2Buffer', 'h2_soc_min')
-        # ('PV1', 'm_tilt'),
-        # ('PV1', 'm_area')
-        ('EV1', 'start_charge'),
-        ('EV2', 'start_charge'),
-        ('EV3', 'start_charge'),
-        ('EV4', 'start_charge'),
-        ('EV5', 'start_charge')
-        # ('H2Buffer1', 'h2_capacity_tot')
+        ('H2Buffer1', 'h2_capacity_tot')
     ]
     n_var = len(dec_vars)
 
@@ -37,22 +33,16 @@ if __name__ == "__main__":
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
-    cost_fun = cost_fun1
+    cost_fun = optimal_buffer_size
+    
 
     ## set lower and upper bounds for decision variables
-    # xl = np.array([0, 0])
-    # xu = np.array([100000, 99])
-    # xl = np.array([0, 0])
-    # xu = np.array([90, 10])
-    xl = np.array([32, 0, 0, 52, 0])
-    xu = np.array([43, 73, 73, 67, 73])
-
-    # xl = np.array([100])
-    # xu = np.array([200])
+    xl = np.array([100])
+    xu = np.array([500])
 
     ## FOR PSO
     ## Determine termination criterium (FOR PSO)
-    termination = ("n_gen", 100)
+    termination = ("n_gen", 10)
 
     ## FOR LBFGSB
     ## Determine initial guess x0 and epsilons

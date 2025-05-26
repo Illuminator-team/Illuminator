@@ -9,6 +9,7 @@ import shutil
 import secrets
 from pathlib import Path
 from datetime import datetime
+import math
 
 def count_calls(func):
     def wrapper(*args, **kwargs):
@@ -24,19 +25,19 @@ def eval_sim(original_scenario: str, scenario_temp_path: str, output_path: str, 
     scenario = unique_scenario_path(original_scenario, scenario_temp_path, x_floored, n_cores)
     shutil.copy(original_scenario, scenario)
     update_scenario(scenario, dec_vars_map, x, output_path)
-    print(f"DEBUG:\nthis is scenario in eval_sim: {scenario}\n this is x: {x}")
+    # print(f"DEBUG:\nthis is scenario in eval_sim: {scenario}\n this is x: {x}")
     command = ['illuminator', 'scenario', 'run', scenario]
     process = subprocess.Popen(command)
-    print(f"DEBUG: A NEW PROCESS STARTED FOR SCENARIO {scenario}")
-    print("Function called so many times: ", eval_sim.call_count)
+    # print(f"DEBUG: A NEW PROCESS STARTED FOR SCENARIO {scenario}")
+    # print("Function called so many times: ", eval_sim.call_count)
     df = read_csv_out(output_path)
-    result = cost_fun(df)
-    # result = cost_fun(df, x)
-    print(f"DEBUG: CSV read with result = {result}")
+    # result = cost_fun(df)
+    result = cost_fun(df, x)
+    # print(f"DEBUG: CSV read with result = {result}")
     return result
 
 def update_scenario(scenario, dec_vars_map, x, output_path):
-    print(f"DEBUG: THIS IS OUTPUT FILE FOR X={x}: {output_path}")
+    # print(f"DEBUG: THIS IS OUTPUT FILE FOR X={x}: {output_path}")
     with open(scenario, 'r') as file:
         data = yaml.load(file, Loader=yaml.FullLoader)
     for model in data['models']:
@@ -49,24 +50,24 @@ def update_scenario(scenario, dec_vars_map, x, output_path):
 
 def read_csv_out(output_path):
     """Wait until CSV exists and is stable, then read it."""
-    print("DEBUG: NOW IN READ csv FUNCTION")
-    stable_wait = 3
+    # print("DEBUG: NOW IN READ csv FUNCTION")
+    stable_wait = 2
     while True:
-        print(f"DEBUG: Trying to read {output_path}")
+        # print(f"DEBUG: Trying to read {output_path}")
         if os.path.exists(output_path):
             last_size = os.path.getsize(output_path)
             time.sleep(stable_wait)
             new_size = os.path.getsize(output_path)
 
             if last_size == new_size:
-                print("CSV is stable, reading...")
-                time.sleep(2)
+                # print("CSV is stable, reading...")
+                # time.sleep(2)
                 df = pd.read_csv(output_path)
                 return df
-            else:
-                print("CSV still growing, waiting...")
+            # else:
+                # print("CSV still growing, waiting...")
         else:
-            print("CSV not available yet, waiting...")
+            # print("CSV not available yet, waiting...")
             time.sleep(1)
         
 def unique_output_path(original_path, x, n_cores):

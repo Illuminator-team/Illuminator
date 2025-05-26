@@ -239,21 +239,26 @@ class Collector(mosaik_api.Simulator):
                            "custom_step":time/900})  # TODO replace 900 by something better
 
         if self.results_show['write2csv'] == True:
-            if time == 0:
-                # Overwrite the CSV file at the first time step
-                df.to_csv(self.output_file, mode='w', header=True)
-            else:
-                if os.path.exists(self.output_file):
-                    # Read existing CSV
-                    existing_df = pd.read_csv(self.output_file, index_col='date', parse_dates=True)
+            # if time == 0:
+            #     # Overwrite the CSV file at the first time step
+            #     df.to_csv(self.output_file, mode='w', header=True)
+            # else:
+            #     if os.path.exists(self.output_file):
+            #         # Read existing CSV
+            #         existing_df = pd.read_csv(self.output_file, index_col='date', parse_dates=True)
 
-                    # Align the columns
-                    combined_df = pd.concat([existing_df, df])
-                else:
-                    combined_df = df
+            #         # Align the columns
+            #         combined_df = pd.concat([existing_df, df])
+            #     else:
+            #         combined_df = df
+            if self.results_show['write2csv']:
+                mode = 'w' if time == 0 else 'a'
+                header = (time == 0)
+                df.to_csv(self.output_file, mode=mode, header=header, index=True)
 
-                # Write the merged data to CSV
-                combined_df.to_csv(self.output_file, mode='w', header=True)
+
+                # # Write the merged data to CSV
+                # combined_df.to_csv(self.output_file, mode='w', header=True)
 
 
         if self.results_show['database']==True:
