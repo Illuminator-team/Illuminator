@@ -21,7 +21,7 @@ class LBFGSB_logger:
         self.iter = 0
         with open(self.logfile, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["iter", "obj", "x"])
+            writer.writerow(["iter", "fitness", "solution"])
 
         with open(self.grad_logfile, mode='w', newline='') as file:
             writer = csv.writer(file)

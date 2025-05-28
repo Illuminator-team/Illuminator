@@ -10,7 +10,7 @@ import os
 from multiprocessing.pool import Pool
 # from multiprocessing.pool import ThreadPool
 
-n_cores = os.cpu_count() - 3 # leave two cores
+n_cores = os.cpu_count() - 3 # leave three cores
 # n_cores = 3     # this is amount of simulataneous processes
 # print(n_cores)
 # n_threads = 3
@@ -72,8 +72,7 @@ class SimulationProblem(ElementwiseProblem):
         out["F"] = result
 
 def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_fun, termination, xl, xu):
-    # print(dec_vars_map)
-    # n_cores = os.cpu_count() - 2 # leave two cores
+
     
     pool = Pool(processes=n_cores)
     runner = StarmapParallelization(pool.starmap)
@@ -88,12 +87,12 @@ def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, co
                                 xu=xu,
                                 runner=runner)
     
-    algorithm = PSO(pop_size=8,
+    algorithm = PSO(pop_size=20,
                     w=0.9,
-                    c1=2.0,
-                    c2=2.0,
+                    c1=1.5,
+                    c2=1.5,
                     vmax=np.inf,
-                    adaptive=False,
+                    adaptive=True,
                     remove_duplicates=True)
 
     result = minimize(problem,

@@ -50,7 +50,7 @@ def optimal_buffer_size(df: pd.DataFrame, x):
     count_100 = np.isclose(df['H2Buffer1-0.time-based_0-soc'], 100.0).sum()
     
     buffer_size = float(x[0])
-    penalty_factor = 1e4  # How strongly you penalize SoC violations
+    penalty_factor = 1e3  # How strongly you penalize SoC violations
     violation_penalty = (count_0 + count_100) * penalty_factor
 
     # Objective: minimize size while avoiding extremes
