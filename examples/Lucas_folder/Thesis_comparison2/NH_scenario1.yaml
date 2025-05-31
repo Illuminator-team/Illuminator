@@ -2,37 +2,66 @@ scenario:
   name: "Neighborhood_sencario1" # in mosaik so called world
   start_time: '2007-01-01 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2007-01-01 23:45:00' # duration in seconds 
+  end_time: '2007-12-31 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
 - name: CSV_EV_presence
   type: CSV
   parameters:
-    file_path: './examples/Lucas_folder/data_generation/ev_presence.csv'
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/ev_presence.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: CSVload
   type: CSV
   parameters:
-    file_path: './examples/Lucas_folder/Thesis_comparison2/data/household_power_consumption_15min.csv'
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/household_power_consumption_15min_complete.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
+### https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption
 
-- name: CSV_pv
+## -- All PV CSVs --
+- name: CSV_pv1
   type: CSV
   parameters:
-    file_path: './examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt'
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/pv_data_Rotterdam_NL_2007_15min.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
+- name: CSV_pv2
+  type: CSV
+  parameters:
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/pv_data_Rotterdam_NL_2007_15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSV_pv3
+  type: CSV
+  parameters:
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/pv_data_Rotterdam_NL_2007_15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSV_pv4
+  type: CSV
+  parameters:
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/pv_data_Rotterdam_NL_2007_15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSV_pv5
+  type: CSV
+  parameters:
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/pv_data_Rotterdam_NL_2007_15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
                     
 ## -- House 1 --
 - name: PV1
   type: PV # models can reuse the same type
   parameters:
-    m_area: 20  # m2
+    m_area: 60  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -66,14 +95,13 @@ models:
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: EV1
-  type: EV
+  type: EV2
   parameters:
     end_initial_phase: 2    
     end_mid_phase: 80         
     max_power: 11             
     battery_cap: 60           
-    fast: False              
-    start_charge: 32        
+    fast: False                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -88,7 +116,7 @@ models:
 - name: PV2
   type: PV # models can reuse the same type
   parameters:
-    m_area: 20  # m2
+    m_area: 60  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -122,14 +150,13 @@ models:
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: EV2
-  type: EV
+  type: EV2
   parameters:
     end_initial_phase: 2    
     end_mid_phase: 80         
     max_power: 11             
     battery_cap: 60           
-    fast: False              
-    start_charge: 32        
+    fast: False                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -144,7 +171,7 @@ models:
 - name: PV3
   type: PV # models can reuse the same type
   parameters:
-    m_area: 20  # m2
+    m_area: 60  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -178,14 +205,13 @@ models:
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: EV3
-  type: EV
+  type: EV2
   parameters:
     end_initial_phase: 2    
     end_mid_phase: 80         
     max_power: 11             
     battery_cap: 60           
-    fast: False              
-    start_charge: 32        
+    fast: False                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -200,7 +226,7 @@ models:
 - name: PV4
   type: PV # models can reuse the same type
   parameters:
-    m_area: 20  # m2
+    m_area: 60  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -234,14 +260,13 @@ models:
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: EV4
-  type: EV
+  type: EV2
   parameters:
     end_initial_phase: 2    
     end_mid_phase: 80         
     max_power: 11             
     battery_cap: 60           
-    fast: False              
-    start_charge: 32        
+    fast: False                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -256,7 +281,7 @@ models:
 - name: PV5
   type: PV # models can reuse the same type
   parameters:
-    m_area: 20  # m2
+    m_area: 60  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -290,14 +315,13 @@ models:
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
 
 - name: EV5
-  type: EV
+  type: EV2
   parameters:
     end_initial_phase: 2    
     end_mid_phase: 80         
     max_power: 11             
     battery_cap: 60           
-    fast: False              
-    start_charge: 32        
+    fast: False                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -312,9 +336,9 @@ models:
 - name: Battery1
   type: Battery # models can reuse the same type
   parameters:
-    max_p: 0.8  # maximum chkWrging power limit (kW)
-    min_p: -0.8  # maximum discharging power limit (kW)
-    max_energy: 10  # maximum energy storage capacity of the battery (kWh)
+    max_p: 500  # maximum charging power limit (kW)
+    min_p: -500  # maximum discharging power limit (kW)
+    max_energy: 1000  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -326,16 +350,16 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 10  # state of charge of the battery (%)
+    soc: 50  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 ## -- Central Controller --
 - name: Controller1
-  type: ControllerEV # models can reuse the same type
+  type: ControllerThesisNB # models can reuse the same type
   parameters:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
-    max_p: 0.8  # Maximum power flow to/from the battery (kW)
+    max_p: 500  # Maximum power flow to/from the battery (kW)
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
@@ -357,19 +381,19 @@ connections:
 
 - from: PV1.pv_gen
   to: Controller1.pv_gen
-- from: CSV_pv.G_Gh 
+- from: CSV_pv1.G_Gh 
   to: PV1.G_Gh
-- from: CSV_pv.G_Dh
+- from: CSV_pv1.G_Dh
   to: PV1.G_Dh
-- from: CSV_pv.G_Bn
+- from: CSV_pv1.G_Bn
   to: PV1.G_Bn
-- from: CSV_pv.Ta
+- from: CSV_pv1.Ta
   to: PV1.Ta
-- from: CSV_pv.hs
+- from: CSV_pv1.hs
   to: PV1.hs
-- from: CSV_pv.FF
+- from: CSV_pv1.FF
   to: PV1.FF
-- from: CSV_pv.Az
+- from: CSV_pv1.Az
   to: PV1.Az
 
 - from: CSV_EV_presence.ev1
@@ -382,23 +406,23 @@ connections:
 - from: CSVload.load2
   to: Load2.load
 - from: Load2.load_dem
-  to: Controller2.load_dem
+  to: Controller1.load_dem
 
 - from: PV2.pv_gen
   to: Controller1.pv_gen
-- from: CSV_pv.G_Gh 
+- from: CSV_pv2.G_Gh 
   to: PV2.G_Gh
-- from: CSV_pv.G_Dh
+- from: CSV_pv2.G_Dh
   to: PV2.G_Dh
-- from: CSV_pv.G_Bn
+- from: CSV_pv2.G_Bn
   to: PV2.G_Bn
-- from: CSV_pv.Ta
+- from: CSV_pv2.Ta
   to: PV2.Ta
-- from: CSV_pv.hs
+- from: CSV_pv2.hs
   to: PV2.hs
-- from: CSV_pv.FF
+- from: CSV_pv2.FF
   to: PV2.FF
-- from: CSV_pv.Az
+- from: CSV_pv2.Az
   to: PV2.Az
 
 - from: CSV_EV_presence.ev2
@@ -415,19 +439,19 @@ connections:
 
 - from: PV3.pv_gen
   to: Controller1.pv_gen
-- from: CSV_pv.G_Gh 
+- from: CSV_pv3.G_Gh 
   to: PV3.G_Gh
-- from: CSV_pv.G_Dh
+- from: CSV_pv3.G_Dh
   to: PV3.G_Dh
-- from: CSV_pv.G_Bn
+- from: CSV_pv3.G_Bn
   to: PV3.G_Bn
-- from: CSV_pv.Ta
+- from: CSV_pv3.Ta
   to: PV3.Ta
-- from: CSV_pv.hs
+- from: CSV_pv3.hs
   to: PV3.hs
-- from: CSV_pv.FF
+- from: CSV_pv3.FF
   to: PV3.FF
-- from: CSV_pv.Az
+- from: CSV_pv3.Az
   to: PV3.Az
 
 - from: CSV_EV_presence.ev3
@@ -444,19 +468,19 @@ connections:
 
 - from: PV4.pv_gen
   to: Controller1.pv_gen
-- from: CSV_pv.G_Gh 
+- from: CSV_pv4.G_Gh 
   to: PV4.G_Gh
-- from: CSV_pv.G_Dh
+- from: CSV_pv4.G_Dh
   to: PV4.G_Dh
-- from: CSV_pv.G_Bn
+- from: CSV_pv4.G_Bn
   to: PV4.G_Bn
-- from: CSV_pv.Ta
+- from: CSV_pv4.Ta
   to: PV4.Ta
-- from: CSV_pv.hs
+- from: CSV_pv4.hs
   to: PV4.hs
-- from: CSV_pv.FF
+- from: CSV_pv4.FF
   to: PV4.FF
-- from: CSV_pv.Az
+- from: CSV_pv4.Az
   to: PV4.Az
   
 - from: CSV_EV_presence.ev4
@@ -472,19 +496,19 @@ connections:
 
 - from: PV5.pv_gen
   to: Controller1.pv_gen
-- from: CSV_pv.G_Gh 
+- from: CSV_pv5.G_Gh 
   to: PV5.G_Gh
-- from: CSV_pv.G_Dh
+- from: CSV_pv5.G_Dh
   to: PV5.G_Dh
-- from: CSV_pv.G_Bn
+- from: CSV_pv5.G_Bn
   to: PV5.G_Bn
-- from: CSV_pv.Ta
+- from: CSV_pv5.Ta
   to: PV5.Ta
-- from: CSV_pv.hs
+- from: CSV_pv5.hs
   to: PV5.hs
-- from: CSV_pv.FF
+- from: CSV_pv5.FF
   to: PV5.FF
-- from: CSV_pv.Az
+- from: CSV_pv5.Az
   to: PV5.Az
 
 - from: CSV_EV_presence.ev5
@@ -505,17 +529,32 @@ monitor:
   file: './examples/Lucas_folder/Thesis_comparison2/out_CSV.csv'
   items:
     - PV1.pv_gen
+    - PV2.pv_gen
+    - PV3.pv_gen
+    - PV4.pv_gen
+    - PV5.pv_gen
+
     - Load1.load_dem
     - Load2.load_dem
     - Load3.load_dem
     - Load4.load_dem
     - Load5.load_dem
-    - Controller1.flow2b
-    - Controller1.res_load
-    - Controller1.dump
+
     - CSV_EV_presence.ev1
     - CSV_EV_presence.ev2
     - CSV_EV_presence.ev3
     - CSV_EV_presence.ev4
     - CSV_EV_presence.ev5
+    - EV1.demand
+    - EV2.demand
+    - EV3.demand
+    - EV4.demand
+    - EV5.demand
+
+
     - Battery1.soc
+    - Battery1.p_out
+    - Controller1.flow2b
+    - Controller1.res_load
+    - Controller1.dump
+     

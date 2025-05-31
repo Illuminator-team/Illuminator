@@ -25,6 +25,7 @@ from .Load.LoadHeatpump.load_heatpump_v3 import LoadHeatpump
 from .EV.EV import EV
 from .EV.EV2 import EV2
 from .Controllers.controller_EV_nb.controller_EV1 import ControllerEV
+from .Controllers.controller_EV_nb.controller_thesisNB import ControllerThesisNB
 
 from .Battery.battery_v3 import Battery
 
@@ -78,5 +79,6 @@ __all__ = [ 'Adder',
             'Operator_Market',
             'EV',
             'EV2',
-            'ControllerEV'
+            'ControllerEV',
+            'ControllerThesisNB'
             ]

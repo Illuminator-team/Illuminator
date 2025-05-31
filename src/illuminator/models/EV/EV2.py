@@ -100,7 +100,7 @@ class EV2(ModelConstructor):
         # self.set_outputs({'demand': demand})
         demand, self.soc = self.charge()
         self.set_outputs({'demand': demand})
-        print(f"self.soc at time {time} = {self.soc}")
+        # print(f"self.soc at time {time} = {self.soc}")
         self.set_states({'soc': self.soc})
         
         # print("DEBUG: self.time in step():", self.time)       
@@ -110,32 +110,36 @@ class EV2(ModelConstructor):
     def charge(self):     
         # Only follow curve when the EV is present
         # print(f"DEBUG at time: {self.time}\n-self.start_charge = {self.start_charge}\n-self.presence = {self.presence}\n-self.soc = {self.soc}\n-self.desired_soc = {self.desired_soc}")
-        if self.presence == 1 and self.soc < self.desired_soc:
-            # print('DEBUG: self.start_charge == self.time at time:', self.time)
-            if self.fast is False:
-                
-                energy_needed = (self.desired_soc - self.soc)/100 * self.battery_cap
-                if energy_needed < self.max_power * 1/4:
-                    demand = energy_needed / (1/4)
-                    self.soc = self.desired_soc
+        if self.presence == 1:
+            if self.soc < self.desired_soc:
+                # print('DEBUG: self.start_charge == self.time at time:', self.time)
+                if self.fast is False:
+                    
+                    energy_needed = (self.desired_soc - self.soc)/100 * self.battery_cap
+                    if energy_needed < self.max_power * 1/4:
+                        demand = energy_needed / (1/4)
+                        self.soc = self.desired_soc
+                    else:
+                        demand = self.max_power
+                        energy_plus = demand * 1/4 # 15min timestep
+                        self.soc += energy_plus/self.battery_cap *100
+                    
+                    
                 else:
-                    demand = self.max_power
-                    energy_plus = demand * 1/4 # 15min timestep
-                    self.soc += energy_plus/self.battery_cap *100
-                
-                
+                # implement charging curve
+                # needs to be corrected 
+                    if 0 <= self.soc < self.end_initial_phase:  # initial phase
+                        p_in = self.max_power/(self.end_initial_phase - 0) * self.soc
+                    elif self.end_initial_phase <= self.soc < self.end_mid_phase:   # mid phase
+                        p_in = self.max_power*(0.9 -1)/(self.end_initial_phase-self.end_mid_phase) * self.soc
+                    else:   # final phase
+                        p_in = (0 - self.max_power*0.9)/(100-self.end_mid_phase) * self.soc
             else:
-            # implement charging curve
-            # needs to be corrected 
-                if 0 <= self.soc < self.end_initial_phase:  # initial phase
-                    p_in = self.max_power/(self.end_initial_phase - 0) * self.soc
-                elif self.end_initial_phase <= self.soc < self.end_mid_phase:   # mid phase
-                    p_in = self.max_power*(0.9 -1)/(self.end_initial_phase-self.end_mid_phase) * self.soc
-                else:   # final phase
-                    p_in = (0 - self.max_power*0.9)/(100-self.end_mid_phase) * self.soc
+                demand = 0
         else:
             # p_in = 0
-            demand = 0 
+            demand = 0
+            self.soc = 0 # reset soc to 0 when away
         return demand, self.soc
 
         # # power input is limited by the chargong curve or the available power

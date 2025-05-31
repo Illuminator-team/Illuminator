@@ -108,9 +108,8 @@ class ControllerThesisNB(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
 
-        # print("DEBUG:", input_data)
+        # # print("DEBUG:", input_data)
         results = self.control(
-            wind_gen=input_data['wind_gen'],
             pv_gen=input_data['pv_gen'],
             load_dem=input_data['load_dem'],
             soc=input_data['soc'],
@@ -121,7 +120,7 @@ class ControllerThesisNB(ModelConstructor):
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
 
-    def control(self, wind_gen, pv_gen, load_dem, soc=None, load_EV=None, load_HP=None, flag_warning = None):
+    def control(self, pv_gen, load_dem, soc=None, load_EV=None, load_HP=None, flag_warning = None):
         """
         Controls power flows based on generation, demand and storage states.
 
@@ -143,34 +142,34 @@ class ControllerThesisNB(ModelConstructor):
         # reset flow2b
         self.flow_b = 0
 
-        self.res_load = load_dem + load_EV - wind_gen - pv_gen  # kW
+        self.res_load = load_dem - pv_gen # + load_EV  # kW
 
         if self.res_load > 0:
             # demand not satisfied -> discharge battery if possible
             if soc > self.soc_min:  # checking if soc is above minimum
-                print('Discharge Battery')
+                # print('Discharge Battery')
                 max_discharge = (soc - self.soc_min) / 100 * self.max_p
-                print(f'max discharge: {max_discharge}')
-                print(f'res load: {self.res_load}')
+                # print(f'max discharge: {max_discharge}')
+                # print(f'res load: {self.res_load}')
                 self.flow_b = -min(self.res_load, max_discharge)
-                print('Flow Bat: ' + str(self.flow_b))
+                # print('Flow Bat: ' + str(self.flow_b))
                 # self.soc_b = self.soc_b + self.flow_b soc is not updated in controller
 
         elif self.res_load < 0:
             if soc < self.soc_max:
-                print('Charge Battery')
+                # print('Charge Battery')
                 max_flow2b = ((self.soc_max - soc) / 100) * self.max_p  # Energy flow in kW
                 self.flow_b = min((-self.res_load), max_flow2b)
-                print('Flow Bat: ' + str(self.flow_b))
-                print('Excess generation that cannot be stored: ' + str(-self.res_load - self.flow_b))
+                # print('Flow Bat: ' + str(self.flow_b))
+                # print('Excess generation that cannot be stored: ' + str(-self.res_load - self.flow_b))
 
         else:
-            print('No Residual Load, RES production exactly covers demand')
+            # print('No Residual Load, RES production exactly covers demand')
             self.flow_b = 0
             self.dump = 0
             # demand_res = residual_load
 
-        self.dump = -(self.res_load + self.flow_b)
+        self.dump = -(self.res_load + load_EV + self.flow_b)
 
         re_params = {'flow2b': self.flow_b, 'res_load': self.res_load, 'dump': self.dump}
 

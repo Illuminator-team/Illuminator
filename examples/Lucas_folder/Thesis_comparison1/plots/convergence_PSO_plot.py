@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import ast 
 # Load the CSV file into a DataFrame
-file_name = './examples/Lucas_folder/Thesis_comparison1/data/PSO_live_log_try_3.csv'
-
+file_name = './examples/Lucas_folder/Thesis_comparison1/data/PSO_live_log_n9g30.csv'
+file_name = './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g30.csv'
 df = pd.read_csv(file_name)
 
 # Convert strings to floats
@@ -15,7 +15,7 @@ df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x)[0])
 best_fitness_per_gen = df.groupby('generation')['fitness'].min()
 global_best_fitness = best_fitness_per_gen.cummin()
 
-pop_size = 30
+pop_size = 9
 
 particle_traject_matrix = np.zeros((pop_size, int(len(df['fitness'])/pop_size)))
 print(particle_traject_matrix)
@@ -28,7 +28,7 @@ for row_ix in range(pop_size):
 print(particle_traject_matrix)
 for i in range(particle_traject_matrix.shape[0]):
     for j in range(particle_traject_matrix.shape[1]):
-        particle_traject_matrix[i,j] = df['fitness'][int(particle_traject_matrix[i,j])]
+        particle_traject_matrix[i,j] = df['solution'][int(particle_traject_matrix[i,j])] # change to 'fitness' to see fitness of each particle over generations
 
 # --- Plot 1: Fitness vs Solution (Search Space) ---
 df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
@@ -65,4 +65,5 @@ plt.ylabel('Solution')
 # plt.legend()
 plt.grid(True)
 plt.tight_layout()
+
 plt.show()

@@ -12,8 +12,8 @@ soc = soc_0
 
 
 n_evs = 5
-start_date = "2012-01-01"
-n_days = 1
+start_date = "2007-01-01"
+n_days = 365
 
 def generate_ev_presence_matrix(n_evs, start_date, n_days):
     np.random.seed(42)
@@ -72,12 +72,13 @@ def generate_ev_presence_matrix(n_evs, start_date, n_days):
 df = generate_ev_presence_matrix(n_evs, start_date, n_days)
 
 
-with open("./examples/Lucas_folder/data_generation/ev_presence.csv", 'w', newline='') as f:
+with open("./examples/Lucas_folder/Thesis_comparison2/data/ev_presence.csv", 'w', newline='') as f:
+    
     f.write("Data\n")
     df.to_csv(f, index=True)
 # print(df.head(90))
 
-df = pd.read_csv("./examples/Lucas_folder/data_generation/ev_presence.csv", index_col=0, parse_dates=True, skiprows=1)
+df = pd.read_csv("./examples/Lucas_folder/Thesis_comparison2/data/ev_presence.csv", index_col=0, parse_dates=True, skiprows=1)
 
 # Plotting
 plt.figure(figsize=(12, 6))
