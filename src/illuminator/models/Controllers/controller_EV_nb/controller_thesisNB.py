@@ -52,7 +52,9 @@ class ControllerThesisNB(ModelConstructor):
             'pv_gen': 0,  # Solar power generation
             'load_dem': 0,  # Electrical load demand
             'soc': 0,  # State of charge of the battery
-            'load_EV': 0
+            'load_EV': 0,
+            'shortage_price': 0,
+            'surplus_price': 0
             }
     outputs={'flow2b': 0,  # Power flow to/from battery (positive for charging, negative for discharging)
              'dump': 0,  # Excess power that cannot be stored or used

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-
+price_df = pd.read_csv('examples/Lucas_folder/Thesis_comparison2/data/settlement_prices_2023_TenneT.csv')
 
 def cost_fun1(df: pd.DataFrame):
     """
@@ -17,6 +17,27 @@ def cost_fun1(df: pd.DataFrame):
     summed_col = -df['Controller1-0.time-based_0-dump'].sum()
     # summed_col = df['H2_controller-0.time-based_0-dump'].sum()
     return summed_col
+
+def cost_fun2(df: pd.DataFrame):
+    """
+    Calculates the sum of the dump column times the variable price.
+
+    Inputs:
+        df: pd.df
+            ouput dataframe 
+    Returns:
+        cost: float
+            the stotal cost of the specified time period
+    """
+    dump = df['Controller1-0.time-based_0-dump']
+    
+    price_short = price_df['Price Shortage']
+    price_surplus = price_df['Price Surplus']
+    cost = pd.Series(np.where(dump > 0, dump * price_surplus, -dump*price_short))
+    tot_cost = cost.sum()
+ 
+    # summed_col = df['H2_controller-0.time-based_0-dump'].sum()
+    return tot_cost
 
 def cost_fun_presentation(df: pd.DataFrame, x):
     """
