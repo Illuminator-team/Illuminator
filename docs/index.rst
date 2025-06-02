@@ -33,6 +33,7 @@ Illuminator builts on `Mosaik. <https://mosaik.offis.de/>`_ and supports both st
 
    user/config-file.md
    user/simulations.md
+   user/connections.md
    references/models.rst
 
 .. toctree::
