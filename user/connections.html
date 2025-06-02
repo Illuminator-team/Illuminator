@@ -135,7 +135,7 @@
 </section>
 <section id="splits-merges">
 <h2>Splits &amp; Merges<a class="headerlink" href="#splits-merges" title="Link to this heading"></a></h2>
-<p>If two different connections are defined with the same <code class="docutils literal notranslate"><span class="pre">input</span></code> destination, we have a connection merge. Similarly, two connections with the same <code class="docutils literal notranslate"><span class="pre">output</span></code> or <code class="docutils literal notranslate"><span class="pre">state</span></code> source, we are dealing with a connection merge.</p>
+<p>If two different connections are defined with the same <code class="docutils literal notranslate"><span class="pre">input</span></code> destination, we have a connection merge. Similarly, if we have two connections with the same <code class="docutils literal notranslate"><span class="pre">output</span></code> or <code class="docutils literal notranslate"><span class="pre">state</span></code> source, we are dealing with a connection split.</p>
 <p>Different split and merge rules apply to <strong>physical</strong> connections and <strong>data</strong> connections:</p>
 <ul class="simple">
 <li><p><strong>Physical Split</strong>: A physical connection split is not currently allowed by the Illuminator. An error will be thrown in such a case. Future implementations might add additional logic for such cases.</p></li>
