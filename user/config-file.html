@@ -64,10 +64,12 @@
 <p class="caption" role="heading"><span class="caption-text">User's Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation Configuration File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-yaml-file-fields">Simulation yaml file fields</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulations.html">Running Simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connections.html">Connections</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references/models.html">Illuminator Models</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer's Documentation</span></p>
@@ -122,52 +124,17 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">connections</span></code>: defines how the models in the <code class="docutils literal notranslate"><span class="pre">models</span></code> section must be connected for a particular simulation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">monitor</span></code>: defines which inputs, outputs, and states of a particular model must be monitored and logged during simulation.</p></li>
 </ul>
-<section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
-<p>The following is an example to explain the basic format of a configuration file.
-A description of each keyword and their default values can be found in the table below.</p>
-<p>Optinal keywords can be ommitted, in those cases the defaults will be used.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scenario</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WindTest&quot;</span><span class="w"> </span><span class="c1"># in mosaik so called world</span>
-<span class="w">  </span><span class="nt">start_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 start time of the simulation</span>
-<span class="w">  </span><span class="nt">end_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">01:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 end time of the simulation </span>
-<span class="w">  </span><span class="nt">time_resolution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">900</span><span class="w"> </span><span class="c1"># time step in seconds (optional). Defaults to 15 minutes (900 s)</span>
-<span class="nt">models</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of models for the energy network</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB</span><span class="w"> </span><span class="c1"># name for the model (must be unique)</span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSV</span><span class="w"> </span><span class="c1"># type of the model registered in the Illuminator</span>
-<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span><span class="w"> </span><span class="c1"># a CSV model must have a start time and a file as its parameters</span>
-<span class="w">    </span><span class="nt">start</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 start time of the simulation</span>
-<span class="w">    </span><span class="nt">file_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./examples/wind_test.csv&#39;</span><span class="w"> </span><span class="c1"># path to the file with the data</span>
-<span class="w">    </span><span class="nt">delimiter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;,&#39;</span>
-<span class="w">    </span><span class="nt">date_format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;YYYY-MM-DD</span><span class="nv"> </span><span class="s">HH:mm:ss&#39;</span>
-
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1</span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind</span><span class="w"> </span><span class="c1"># models can reuse the same type</span>
-<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">p_rated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">73548</span><span class="w">  </span><span class="c1"># Rated power output (kW) of the wind turbine at the rated wind speed and above.</span>
-<span class="w">    </span><span class="nt">u_rated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">  </span><span class="c1"># Rated wind speed (m/s) where the wind turbine reaches its maximum power output.</span>
-<span class="w">    </span><span class="nt">u_cutin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">  </span><span class="c1"># Cut-in wind speed (m/s) below which the wind turbine does not generate power.</span>
-<span class="w">    </span><span class="nt">u_cutout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.</span>
-<span class="w">    </span><span class="nt">cp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.40</span><span class="w">  </span><span class="c1"># Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.</span>
-<span class="w">    </span><span class="nt">diameter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w">  </span><span class="c1"># Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.</span>
-<span class="w">    </span><span class="nt">output_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;power&#39;</span><span class="w">  </span><span class="c1"># Output type of the wind generation, either &#39;power&#39; (kW) or &#39;energy&#39; (kWh).</span>
-<span class="w">  </span><span class="nt">inputs</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">u</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Wind speed (m/s) at a specific height used to calculate the wind power generation.</span>
-<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">wind_gen</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).</span>
-<span class="w">    </span><span class="nt">u</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).</span>
-
-<span class="nt">connections</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.u</span>
-<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.u</span>
-
-<span class="nt">monitor</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./out_Wind.csv&#39;</span>
-<span class="w">  </span><span class="nt">items</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.wind_gen</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.u</span>
-</pre></div>
+<div align="center">
+    <img align="center" src="../_static/img/hierarchy.png" width="400">
 </div>
+<p><em>Hierarchy of Illuminator scenario space. Scenarios include models, models include attributes, attributes consist of inputs, outputs, states and parameters.</em></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are familiar with mosaik, you are probably familiar with its attributes. Illuminator Attributes are not related to mosaik attributes, the Illuminator User Documentation keeps the connection to mosaik as opaque as possible.</p>
+</div>
+<section id="simulation-yaml-file-fields">
+<h2>Simulation yaml file fields<a class="headerlink" href="#simulation-yaml-file-fields" title="Link to this heading"></a></h2>
+<p>A description of each keyword and their default values can be found in the table below.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Keyword</p></th>
@@ -289,6 +256,58 @@ A description of each keyword and their default values can be found in the table
 </tr>
 </tbody>
 </table>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<p>The following is an example to explain the basic format of a configuration file.</p>
+<p>Optinal keywords can be ommitted, in those cases the defaults will be used.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">scenario</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WindTest&quot;</span><span class="w"> </span><span class="c1"># in mosaik so called world</span>
+<span class="w">  </span><span class="nt">start_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 start time of the simulation</span>
+<span class="w">  </span><span class="nt">end_time</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">01:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 end time of the simulation </span>
+<span class="w">  </span><span class="nt">time_resolution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">900</span><span class="w"> </span><span class="c1"># time step in seconds (optional). Defaults to 15 minutes (900 s)</span>
+<span class="nt">models</span><span class="p">:</span><span class="w"> </span><span class="c1"># list of models for the energy network</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB</span><span class="w"> </span><span class="c1"># name for the model (must be unique)</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSV</span><span class="w"> </span><span class="c1"># type of the model registered in the Illuminator</span>
+<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span><span class="w"> </span><span class="c1"># a CSV model must have a start time and a file as its parameters</span>
+<span class="w">    </span><span class="nt">start</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2012-01-01</span><span class="nv"> </span><span class="s">00:00:00&#39;</span><span class="w"> </span><span class="c1"># ISO 8601 start time of the simulation</span>
+<span class="w">    </span><span class="nt">file_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./examples/wind_test.csv&#39;</span><span class="w"> </span><span class="c1"># path to the file with the data</span>
+<span class="w">    </span><span class="nt">delimiter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;,&#39;</span>
+<span class="w">    </span><span class="nt">date_format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;YYYY-MM-DD</span><span class="nv"> </span><span class="s">HH:mm:ss&#39;</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind</span><span class="w"> </span><span class="c1"># models can reuse the same type</span>
+<span class="w">  </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">p_rated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">73548</span><span class="w">  </span><span class="c1"># Rated power output (kW) of the wind turbine at the rated wind speed and above.</span>
+<span class="w">    </span><span class="nt">u_rated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">  </span><span class="c1"># Rated wind speed (m/s) where the wind turbine reaches its maximum power output.</span>
+<span class="w">    </span><span class="nt">u_cutin</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">  </span><span class="c1"># Cut-in wind speed (m/s) below which the wind turbine does not generate power.</span>
+<span class="w">    </span><span class="nt">u_cutout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span><span class="w">  </span><span class="c1"># Cut-out wind speed (m/s) above which the wind turbine stops generating power to prevent damage.</span>
+<span class="w">    </span><span class="nt">cp</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.40</span><span class="w">  </span><span class="c1"># Coefficient of performance of the wind turbine, typically around 0.40 and never more than 0.59.</span>
+<span class="w">    </span><span class="nt">diameter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w">  </span><span class="c1"># Diameter of the wind turbine rotor (m), used in calculating the swept area for wind power production.</span>
+<span class="w">    </span><span class="nt">output_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;power&#39;</span><span class="w">  </span><span class="c1"># Output type of the wind generation, either &#39;power&#39; (kW) or &#39;energy&#39; (kWh).</span>
+<span class="w">  </span><span class="nt">inputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">u</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Wind speed (m/s) at a specific height used to calculate the wind power generation.</span>
+<span class="w">  </span><span class="nt">outputs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">wind_gen</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).</span>
+<span class="w">    </span><span class="nt">u</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">  </span><span class="c1"># Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).</span>
+
+<span class="nt">connections</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CSVB.u</span>
+<span class="w">  </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.u</span>
+
+<span class="nt">monitor</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./out_Wind.csv&#39;</span>
+<span class="w">  </span><span class="nt">items</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.wind_gen</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wind1.u</span>
+</pre></div>
+</div>
+<p>The layout is more clearly presented below. We connect the example yaml to the hierarchy we previously introduced.</p>
+<div align="center">
+    <img align="center" src="../_static/img/hierarchy_yaml.png" width="800">
+</div>
+<p><em>Correlation between introduced scenario hierarchy and example yaml file, the file is also structured mostly hierarchically.</em></p>
+<p>To see more on Illuminator connections, and understand the difference between data and physical connections, consult the <a class="reference external" href="https://illuminator-team.github.io/Illuminator/user/connections.html">Connections</a> documentation page.</p>
 </section>
 </section>
 

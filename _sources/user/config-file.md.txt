@@ -9,13 +9,50 @@ A *simulation file* has four main sections:
 - `connections`: defines how the models in the `models` section must be connected for a particular simulation.
 - `monitor`: defines which inputs, outputs, and states of a particular model must be monitored and logged during simulation. 
 
+<div align="center">
+    <img align="center" src="../_static/img/hierarchy.png" width="400">
+</div>
+
+*Hierarchy of Illuminator scenario space. Scenarios include models, models include attributes, attributes consist of inputs, outputs, states and parameters.*
+
+:::{note}
+If you are familiar with mosaik, you are probably familiar with its attributes. Illuminator Attributes are not related to mosaik attributes, the Illuminator User Documentation keeps the connection to mosaik as opaque as possible. 
+:::
+
+## Simulation yaml file fields
+
+A description of each keyword and their default values can be found in the table below. 
+
+| Keyword | Description | Optional | Default |
+|---------|-------------|----------|---------|
+| **scenario:** | a set of global values <br>for a simulation. |  |  |
+|`name` | A name for the simulation, internally <br>this name will be asssigned to what <br>the Mosaik World created during runtime. |  |  |
+| `start_time` | start time for the simulation.<br>Must be a timestamp in ISO 8601 format |  |  |
+| `end_time` | end time for the simulation. <br>Must be a timestamp in ISO 8601 format.  |  |  |
+| `time_resolution` | number of seconds between <br>simulation steps | &#9745; | 900 (15 min)
+| **models:** | a list of models for <br>the simulation | |  |
+|  `name` | a name for the model. Must <br>be unique for each simulation |  |   |
+| `type`  | type of model. This must correspond <br>with the name of the model <br>registered in the Illuminator. | |  |
+| `inputs`  | a set of input-names and initial <br>values for the model. The model <br>type determines which names and <br>values are applicable to each model, <br>and they must be declared accordingly. <br>Inputs are optional | | If the value is set to `null`, <br>the default value will be <br>used. See the respective model <br>type for details.|
+| `outputs` | a set of output-names and initial <br>values for the model. Similar to <br>*inputs* valid names and values <br>for each model are determined by <br>the model *type*. See the respective <br>model type for details. | | If the value is set to `null`, <br>the default value will be used. |
+| `parameters`  | a set of name-value pairs for <br>the model. Parameters declared constants <br>for a model during runtime. | &#9745; | If ommited, the default values <br>will be used. See the <br>respective model type for details. |
+| `states` | a set of name-value pairs considered <br>as states for the model. The values modify <br>the internal initial values of a state. | &#9745; | If ommited, the default <br>values will be used. See the <br>respective model type for details. |
+| `triggers` | names of inputs, output or states <br>that are use as triggers for a particular model. <br>Triggers can only be declared by models <br>that implement the *event-based paradigm*. <br>See the respective model type to know if <br>it accepts triggers. |  &#9745; | |
+| `connect` | to declare in which client a model runs <br>when using a Raspberry Pi cluster. | &#9745;  | |
+| `ip` | Ip of the client manchine that will run <br>the model. Only IP version 4 format. |  |   |
+| `port` | TCP port to use to connect to the <br>client machine| &#9745;   |   |
+| **connections:** |  how models connect to each other. |  |  |
+| `from`  | origin of the connection declared as <br>`<model-name>.<output-name>`. Input names <br>use here must also appear as *inputs* in<br>the models section.   |   |  |
+| `to` | destination of the connection declared as <br>`<model-name>.<input-name>`. Output names <br>use here must also appear as *outputs* in <br>the models section. |   | 
+| **monitor:**  | 
+| `file` | path to a CSV file to store results of <br>the simulation. File will be created if <br>necessary. |  &#9745; | a `out.csv` file saved to <br>the current directory |
+|`items` | a list of which inputs, outputs or states <br>of models that most be monitored during <br>runtime. Items must be declared as <br>`<model-name>.<name>`, where *name* is an <br>input, output or stated clared in the <br>*models* section. No duplicated values <br>are allowed  |  |   |
+
 ## Example 
 
 The following is an example to explain the basic format of a configuration file. 
-A description of each keyword and their default values can be found in the table below. 
 
 Optinal keywords can be ommitted, in those cases the defaults will be used. 
-
 
 ```yaml
 scenario:
@@ -59,29 +96,12 @@ monitor:
   - Wind1.u
 ```
 
+The layout is more clearly presented below. We connect the example yaml to the hierarchy we previously introduced. 
 
-| Keyword | Description | Optional | Default |
-|---------|-------------|----------|---------|
-| **scenario:** | a set of global values <br>for a simulation. |  |  |
-|`name` | A name for the simulation, internally <br>this name will be asssigned to what <br>the Mosaik World created during runtime. |  |  |
-| `start_time` | start time for the simulation.<br>Must be a timestamp in ISO 8601 format |  |  |
-| `end_time` | end time for the simulation. <br>Must be a timestamp in ISO 8601 format.  |  |  |
-| `time_resolution` | number of seconds between <br>simulation steps | &#9745; | 900 (15 min)
-| **models:** | a list of models for <br>the simulation | |  |
-|  `name` | a name for the model. Must <br>be unique for each simulation |  |   |
-| `type`  | type of model. This must correspond <br>with the name of the model <br>registered in the Illuminator. | |  |
-| `inputs`  | a set of input-names and initial <br>values for the model. The model <br>type determines which names and <br>values are applicable to each model, <br>and they must be declared accordingly. <br>Inputs are optional | | If the value is set to `null`, <br>the default value will be <br>used. See the respective model <br>type for details.|
-| `outputs` | a set of output-names and initial <br>values for the model. Similar to <br>*inputs* valid names and values <br>for each model are determined by <br>the model *type*. See the respective <br>model type for details. | | If the value is set to `null`, <br>the default value will be used. |
-| `parameters`  | a set of name-value pairs for <br>the model. Parameters declared constants <br>for a model during runtime. | &#9745; | If ommited, the default values <br>will be used. See the <br>respective model type for details. |
-| `states` | a set of name-value pairs considered <br>as states for the model. The values modify <br>the internal initial values of a state. | &#9745; | If ommited, the default <br>values will be used. See the <br>respective model type for details. |
-| `triggers` | names of inputs, output or states <br>that are use as triggers for a particular model. <br>Triggers can only be declared by models <br>that implement the *event-based paradigm*. <br>See the respective model type to know if <br>it accepts triggers. |  &#9745; | |
-| `connect` | to declare in which client a model runs <br>when using a Raspberry Pi cluster. | &#9745;  | |
-| `ip` | Ip of the client manchine that will run <br>the model. Only IP version 4 format. |  |   |
-| `port` | TCP port to use to connect to the <br>client machine| &#9745;   |   |
-| **connections:** |  how models connect to each other. |  |  |
-| `from`  | origin of the connection declared as <br>`<model-name>.<output-name>`. Input names <br>use here must also appear as *inputs* in<br>the models section.   |   |  |
-| `to` | destination of the connection declared as <br>`<model-name>.<input-name>`. Output names <br>use here must also appear as *outputs* in <br>the models section. |   | 
-| **monitor:**  | 
-| `file` | path to a CSV file to store results of <br>the simulation. File will be created if <br>necessary. |  &#9745; | a `out.csv` file saved to <br>the current directory |
-|`items` | a list of which inputs, outputs or states <br>of models that most be monitored during <br>runtime. Items must be declared as <br>`<model-name>.<name>`, where *name* is an <br>input, output or stated clared in the <br>*models* section. No duplicated values <br>are allowed  |  |   |
+<div align="center">
+    <img align="center" src="../_static/img/hierarchy_yaml.png" width="800">
+</div>
 
+*Correlation between introduced scenario hierarchy and example yaml file, the file is also structured mostly hierarchically.*
+
+To see more on Illuminator connections, and understand the difference between data and physical connections, consult the [Connections](https://illuminator-team.github.io/Illuminator/user/connections.html) documentation page.
