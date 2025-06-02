@@ -258,8 +258,14 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             raise ValueError(f"Multiple models found with name '{from_model}'.")
 
         # retrieve the first model from the models list whose name matches from_model (assumes 1 model per Simulator).
-        from_model_config = next((m for m in models if m['name'] == from_model))
-        to_model_config = next((m for m in models if m['name'] == to_model))
+        try:
+            from_model_config = next(m for m in models if m['name'] == from_model)
+        except StopIteration:
+            raise ValueError(f"Model with name '{from_model}' not found in models list.")
+        try:
+            to_model_config = next(m for m in models if m['name'] == to_model)
+        except StopIteration:
+            raise ValueError(f"Model with name '{to_model}' not found in models list.")
         time_shifted = connection['time_shifted']
             
         # check if the connection is a physical split
