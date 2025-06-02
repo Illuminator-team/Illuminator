@@ -60,6 +60,11 @@ class H2Valve(ModelConstructor):
         """
         super().__init__(**kwargs)
         self.valve_eff = self.parameters['valve_eff']
+        self.inputs['h2_in'] = self.inputs.get('h2_in', 0)  # Default to 0 if not provided
+        self.inputs['ratio1'] = self.inputs.get('ratio1', 33)
+        self.inputs['ratio2'] = self.inputs.get('ratio2', 33)
+        self.inputs['ratio3'] = self.inputs.get('ratio3', 34)
+
         # self.max_flow = self.parameters['max_flow']
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -76,12 +81,23 @@ class H2Valve(ModelConstructor):
             Maximum time step size for the simulation.
         """
         input_data = self.unpack_inputs(inputs)
+        self.h2_in = input_data.get('h2_in', 0) # Default to 0 if not provided
+        self.ratio1 = input_data.get('ratio1', self.inputs['ratio1'])
+        self.ratio2 = input_data.get('ratio2', self.inputs['ratio2'])
+        self.ratio3 = input_data.get('ratio3', self.inputs['ratio3'])
+    
+        # Ensure the ratios sum to 100%
+        total_ratio = self.ratio1 + self.ratio2 + self.ratio3
+        if total_ratio != 100:
+            raise ValueError(f"Ratios must sum to 100%, but got {total_ratio}%. Please adjust the ratios accordingly.")
+
+
         self.time = time
         # print(f"DEBUG: This is input data: {input_data}")
-        results = self.calc_flow(h2_in=input_data['h2_in'], 
-                                 ratio1=input_data['ratio1'],
-                                 ratio2=input_data['ratio2'],
-                                 ratio3=input_data['ratio3']
+        results = self.calc_flow(h2_in=self.h2_in, 
+                                 ratio1=self.ratio1,
+                                 ratio2=self.ratio2,
+                                 ratio3=self.ratio3
                                  )
         self.set_outputs(results)
 
