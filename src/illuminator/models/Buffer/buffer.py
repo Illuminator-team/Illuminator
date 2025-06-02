@@ -73,6 +73,8 @@ class H2Buffer(ModelConstructor):
         self.h2_capacity_tot = self._model.parameters.get('h2_capacity_tot')
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
+        self.h2_in = self._model.inputs.get('h2_in', 0)  # Initialize h2_in to 0 if not provided
+        self.desired_out = self._model.inputs.get('desired_out', 0)  # Initialize desired_out to 0 if not provided
         # self.h2_charge_cap = self._model.states.get('available_h2')
         # self.h2_discharge_cap = self._model.states.get('free_capacity')
         self.cap_calc()
@@ -101,10 +103,12 @@ class H2Buffer(ModelConstructor):
             Next simulation time step
         """
         input_data = self.unpack_inputs(inputs)
+        self.h2_in = input_data.get('h2_in', 0) # Default to 0 if not provided
+        self.desired_out = input_data.get('desired_out', self.desired_out)
 
         # current_time = time * self.time_resolution
         # print(f'Buffertime: {current_time}')
-        results = self.operation(input_data['h2_in'], input_data['desired_out'])
+        results = self.operation(self.h2_in, self.desired_out)
 
         self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in']})
         self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': self.h2_discharge_cap, 'free_capacity': self.h2_charge_cap})
