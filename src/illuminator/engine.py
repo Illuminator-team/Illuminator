@@ -1,7 +1,7 @@
 """
 API for buildiing simulations with Illuminator. It
 serves as a wrapper for the Mosaik API.
-By: M. Rom & M. Garcia Alvarez
+By: M. Rom, M. Garcia Alvarez, J. Groen and D. Georgiadi
 """
 
 import math
