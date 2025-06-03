@@ -56,6 +56,8 @@ class H2Joint(ModelConstructor):
         """
         super().__init__(**kwargs)
         self.joint_eff = self.parameters['joint_eff']
+        self.h2_in_1 = self.inputs.get('h2_in_1', 0)
+        self.h2_in_2 = self.inputs.get('h2_in_2', 0)
         # self.max_flow = self.parameters['max_flow']
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -72,10 +74,12 @@ class H2Joint(ModelConstructor):
             Maximum time step size for the simulation.
         """
         input_data = self.unpack_inputs(inputs)
+        self.h2_in_1 = input_data.get('h2_in_1', self.h2_in_1)
+        self.h2_in_2 = input_data.get('h2_in_2', self.h2_in_2)
         self.time = time
         # print(f"DEBUG: input data in joint: {input_data}")
-        result = self.calc_flow(h2_in_1=input_data['h2_in_1'],
-                                h2_in_2=input_data['h2_in_2']
+        result = self.calc_flow(h2_in_1=self.h2_in_1,
+                                h2_in_2=self.h2_in_2
                             )
         self.set_outputs(result)
 
