@@ -42,7 +42,8 @@ class H2Buffer(ModelConstructor):
             'desired_out': 0   # demanded hydrogen output flow [kg/timestep]
             }
     outputs={'h2_out': 0,       # flow out of the H2 buffer [kg/timestep]
-             'actual_h2_in': 0  # The input that is processed in the buffer [kg/timestep]
+             'actual_h2_in': 0,  # The input that is processed in the buffer [kg/timestep]
+             'overflow': 0  # Overflow of the buffer [kg/timestep]
              }
     states={ 'soc': 0,          # state of charge after operation in a timestep [%]
              'flag': 0,         # flag inidicating buffer status (1=fully charged, -1=full discharged, 0=available for control) [-]
@@ -75,9 +76,10 @@ class H2Buffer(ModelConstructor):
         self.flag = self._model.states.get('flag')
         self.h2_in = self._model.inputs.get('h2_in', 0)  # Initialize h2_in to 0 if not provided
         self.desired_out = self._model.inputs.get('desired_out', 0)  # Initialize desired_out to 0 if not provided
+
         # self.h2_charge_cap = self._model.states.get('available_h2')
         # self.h2_discharge_cap = self._model.states.get('free_capacity')
-        self.cap_calc()
+        self.cap_calc()  # calculates self.charge_cap and self.discharge_cap based on the current state of charge
 
     def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:
         """
@@ -110,7 +112,7 @@ class H2Buffer(ModelConstructor):
         # print(f'Buffertime: {current_time}')
         results = self.operation(self.h2_in, self.desired_out)
 
-        self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in']})
+        self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in'], 'overflow': results['overflow']})
         self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': self.h2_discharge_cap, 'free_capacity': self.h2_charge_cap})
 
         return time + self._model.time_step_size
@@ -134,33 +136,39 @@ class H2Buffer(ModelConstructor):
         # print(f'DEBUG: This is desireed_out as viewed from operation: {desired_out}')
         h2_out = 0  # initialize to 0 
         h2_in = min(h2_in, self.max_h2) # limit the input by the maximum output
+        overflow = 0  # initialize overflow to 0
+
         # print(f'DEBUG: This is h2_in as viewed from operation: {h2_in}')
         desired_out = min(desired_out, self.max_h2) # limit the output by the maximum output
         net_h2 = h2_in - desired_out
         # print(f'DEBUG: This is net_h2 as viewed from operation: {net_h2} (in = {h2_in}, des_out={desired_out})')
+
+        # CHARGING
         if net_h2 > 0:
-            if net_h2 > self.h2_charge_cap:
+            if net_h2 > self.h2_charge_cap:  # if the buffer cannot take all the input
                 h2_in = self.h2_charge_cap
+                overflow = net_h2 - h2_in  # calculate overflow
                 self.soc = self.h2_soc_max
                 self.flag = 1
-            else:
+
+            else:  # if the buffer can take all the input
                 h2_in = net_h2
                 self.soc = self.soc + (h2_in * (self.h2_charge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
             h2_out = desired_out
+        
+        # DISCHARGING
         elif net_h2 < 0:
-            if abs(net_h2) > self.h2_discharge_cap:
-                # print(f'DEBUG: abs(net_h2) > self.h2_discharge_cap')
-                h2_out = self.h2_discharge_cap
-                # print(f'DEBUG: soc = {self.soc}, discharge_cap = {self.h2_discharge_cap}')
+            if abs(net_h2) > self.h2_discharge_cap:  # if the buffer cannot discharge all the desired output:
+                h2_out = self.h2_discharge_cap + h2_in  # output is the maximum discharge capacity plus the input
                 self.soc = self.h2_soc_min
                 self.flag = -1
-            else:
-                # print("This case:\n")
+            else: # if the buffer can discharge all the desired output
                 h2_out = desired_out
-                # print(f'h2_out={h2_out}\nsoc before: {self.soc}\ndischarhe eff={self.h2_discharge_eff}\ncap={self.h2_capacity_tot}')
                 self.soc = self.soc - (-net_h2 / (self.h2_discharge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
+        
+        # NO NET FLOW
         else:
             if desired_out > 0:
                 h2_out = h2_in
@@ -168,7 +176,8 @@ class H2Buffer(ModelConstructor):
         # print(f'DEBUG: This is h2_out as viewed from operation: {h2_out}\n\n')
         self.cap_calc()
         results = {'h2_out': h2_out,
-                   'actual_h2_in': h2_in}
+                   'actual_h2_in': h2_in,
+                   'overflow': overflow}  # include overflow in results
         return results
     
     def cap_calc(self):
