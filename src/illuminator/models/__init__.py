@@ -30,6 +30,7 @@ from .H2controller.H2_controller_v3 import H2Controller
 from .H2controller.H2_controller2 import H2Controller2
 from .Buffer.buffer import H2Buffer
 from .H2controller.H2_controller_example import H2ControllerExample
+from .H2PSA.PSA_v3 import H2PSA
 
 # controllers
 from .Controllers.default_controller.controller_v3 import Controller
@@ -62,6 +63,7 @@ __all__ = [ 'Adder',
             'H2Controller2',
             'H2ControllerExample',
             'H2Buffer',
+            'H2PSA',
             'Controller',
             'Controller_T1',
             'ControllerT3Congestion',
