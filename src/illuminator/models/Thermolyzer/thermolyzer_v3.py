@@ -30,11 +30,11 @@ class Thermolyzer(ModelConstructor):
             'C_CO_2' : 10,          # absorption factor carbondioxide per h2 produced [kg/kg] 
             'C_Eelec_h2': 11.5,     # conversion factor electrical energy to hydrogen mass [kWh/kg]    
             'max_ramp_up' : 60,     # maximum ramp up in power per timestep [kW/timestep]  
-            'max_p_in' : 100        # maximum input power [kW]
+            'max_p_in' : 10000        # maximum input power [kW]
             },
     inputs={
             'biomass_in' : 0,       # biomass input [kg/timestep]
-            'flow2t' : 0            # power input to the thermolyzer [kW]
+            'flow2t' : 2300         # power input to the thermolyzer [kW]
             # 'water_in' : 0        # water input to the thermolzyer [L/timestep]
             },
     outputs={
@@ -80,6 +80,8 @@ class Thermolyzer(ModelConstructor):
         self.C_Eelec_h2 = self._model.parameters.get('C_Eelec_h2')
         self.max_ramp_up = self._model.parameters.get('max_ramp_up')
         self.max_p_in = self._model.parameters.get('max_p_in')
+        self.biomass_in = self._model.inputs.get('biomass_in', 0)  # Initialize biomass input to 0 if not provided
+        self.flow2t = self._model.inputs.get('flow2t', 0)  # Initialize power input to 0 if not provided
         print("DEBUG: THIS IS PARAMTERS:", self._model.parameters)
         
         self.p_in_last = 0  # Indicator of the last power input initialized to be 0 
@@ -112,14 +114,16 @@ class Thermolyzer(ModelConstructor):
         print("inputs (internal): ", self._model.inputs)
         # get input data 
         input_data = self.unpack_inputs(inputs)
+        self.biomass_in = input_data.get('biomass_in', self.biomass_in)  # Default to last value if not provided (most likely the initial value)
+        self.flow2t = input_data.get('flow2t', self.flow2t)  # Default to last value if not provided (most likely the initial value)
         print("input data: ", input_data)
 
         current_time = time * self.time_resolution
         print('from Thermolyzer %%%%%%%%%%%', current_time)
 
         h_flow = self.generate(
-            m_bio=input_data['biomass_in'],
-            flow2t=input_data['flow2t'],
+            m_bio=self.biomass_in,
+            flow2t=self.flow2t,
             max_advance = max_advance
             )
         h_gen = h_flow
