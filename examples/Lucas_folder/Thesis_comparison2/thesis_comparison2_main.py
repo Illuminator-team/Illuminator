@@ -1,11 +1,12 @@
 import sys
 import os
+import pandas as pd
 from pymoo.termination.default import DefaultSingleObjectiveTermination
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Optimization_project')))
 
 from PSO_alg_p import run_pso, run_pso_p
 from GA_alg_p import run_ga, run_ga_p
-from LBFGSB_alg import run_LBFGSB
+from LBFGSB_alg import run_LBFGSB# , run_LBFGSB2
 from cost_fun import *
 import numpy as np
 import os
@@ -20,25 +21,29 @@ source_scenario = './examples/Lucas_folder/Thesis_comparison2/NH_scenario1.yaml'
 output_path = './examples/Lucas_folder/Thesis_comparison2/temp_out/thesis_comparison2.csv'# './examples/h2_system_example/h2_system_example4.csv'
 scenario_temp_path = './examples/Lucas_folder/Thesis_comparison2/temp_scenario'
 
+cost_df = pd.read_csv('examples/Lucas_folder/Thesis_comparison2/data/settlement_prices_2023_TenneT_DTS.csv', skiprows=1)
+
 
 if __name__ == "__main__":
     ## Define the decision variables here (model, paramter)
     dec_vars = [
-        ('Battery1', 'max_energy')
+        # ('Battery1', 'max_energy')
+        ('Controller1', 'upper_price'),
+        ('Controller1', 'lower_price')
     ]
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = "GA_P" # 'LBFGSB' #
+    alg = 'LBFGSB' #"GA_P" # 
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
-    cost_fun = optimal_buffer_size
+    cost_fun = cost_fun2
     
 
     ## set lower and upper bounds for decision variables
-    xl = np.array([100])
-    xu = np.array([600])
+    xl = np.array([cost_df['Price_Surplus'].min(), cost_df['Price_Shortage'].min()])
+    xu = np.array([cost_df['Price_Surplus'].max(), cost_df['Price_Shortage'].max()])
 
     ## FOR PSO
     ## Determine termination criterium (FOR PSO)
@@ -47,7 +52,7 @@ if __name__ == "__main__":
                                                     xtol=1e-3,         # Tolerance in decision variables
                                                     ftol=1e-3,         # Tolerance in objective function
                                                     period=5,          # Number of generations to check for convergence
-                                                    n_max_gen=3     # Max generations
+                                                    n_max_gen=10     # Max generations
                                                     )
 
     ## FOR LBFGSB
@@ -95,6 +100,22 @@ if __name__ == "__main__":
             
         case 'LBFGSB':
             result = run_LBFGSB(scenario=source_scenario,
+                                scenario_temp_path=scenario_temp_path,
+                                output_path=output_path,
+                                dec_vars_map=dec_vars,
+                                cost_fun=cost_fun,
+                                xl=xl,
+                                xu=xu,
+                                x0=x0,
+                                epsilons=epsilons
+                                        )
+            params = {}
+            for i , (name, param) in enumerate(dec_vars):
+                params[param] = result.x[i] 
+            cost = result.fun
+
+        case 'LBFGSB2':
+            result = run_LBFGSB2(scenario=source_scenario,
                                 scenario_temp_path=scenario_temp_path,
                                 output_path=output_path,
                                 dec_vars_map=dec_vars,

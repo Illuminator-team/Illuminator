@@ -3,6 +3,8 @@ from sim_wrapper import eval_sim
 import os
 from scipy.optimize import minimize
 from multiprocessing import Pool
+import random
+random.seed(42)  # For reproducibility
 import csv
 
 ## NOTE to self:    right now the simulation of a new x is evaluated twice, 
@@ -114,24 +116,6 @@ def FD_alg(x, *args):
     logger.log_grad(gradient)
     return gradient
     
-    # def FD_task(i):
-    #     x_plus = x.copy()
-    #     x_plus[i] += epsilons[i]
-    #     f_plus = eval_sim(original_scenario=scenario,
-    #                 scenario_temp_path=scenario_temp_path,
-    #                 output_path=output_path,
-    #                 dec_vars_map=dec_vars_map,
-    #                 x=x,
-    #                 cost_fun=cost_fun,
-    #                 n_cores=n_cores
-    #                 )
-    #     return (i , f_plus)
-    
-    # with Pool(min(n_cores, len(x))) as pool:
-    #     result = pool.map(FD_task, range(len(x)))
-    # # pool.close()
-    # # pool.join()
-    # return gradient(f, result, epsilons)
 
 
 def run_LBFGSB(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, x0, epsilons):
@@ -156,3 +140,39 @@ def run_LBFGSB(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun
                                )
 
     return result
+
+
+
+# def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, x0, epsilons):
+
+#     x0_list = []
+#     x0_u = np.linspace()
+#     for core in range(n_cores):
+#         x0_list.append(np.array())
+
+#     for i in range(len(xl)):
+        
+#     x0_list = np.linspace()
+#     logger = LBFGSB_logger(LBFGSB_log_file, LBFGSB_grad_log_file)
+#     problem = SimulationProblem(scenario=scenario,
+#                             scenario_temp_path=scenario_temp_path,
+#                             output_path=output_path,
+#                             dec_vars_map=dec_vars_map,
+#                             cost_fun=cost_fun,
+#                             xl=xl,
+#                             xu=xu,
+#                             logger=logger)
+
+#     pool = Pool(processes=n_cores)
+
+#     result = minimize(fun=problem,
+#                       x0=x0,
+#                       args=(epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger),
+#                       jac=FD_alg,
+#                       bounds=list(zip(xl, xu)),
+#                       method="L-BFGS-B",
+#                       options={"maxiter": 20,
+#                                "disp": True}
+#                                )
+
+#     return result

@@ -2,7 +2,7 @@ scenario:
   name: "Neighborhood_sencario1" # in mosaik so called world
   start_time: '2007-01-01 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2007-12-31 23:45:00' # duration in seconds 
+  end_time: '2007-01-07 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -21,6 +21,12 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
 ### https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption
 
+- name: CSV_cost
+  type: CSV
+  parameters:
+    file_path: './examples/Lucas_folder/Thesis_comparison2/data/settlement_prices_2023_TenneT_DTS.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
 ## -- All PV CSVs --
 - name: CSV_pv1
   type: CSV
@@ -338,7 +344,7 @@ models:
   parameters:
     max_p: 500  # maximum charging power limit (kW)
     min_p: -500  # maximum discharging power limit (kW)
-    max_energy: 1000  # maximum energy storage capacity of the battery (kWh)
+    max_energy: 100  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -360,12 +366,16 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 500  # Maximum power flow to/from the battery (kW)
+    upper_price: 0
+    lower_price: 0
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
     load_dem: 0  # Electrical load demand
     soc: 0  # State of charge of the battery
     load_EV: 0  # Electrical vehicle load demand
+    shortage_price: 0
+    surplus_price: 0
   outputs:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
@@ -525,6 +535,14 @@ connections:
   to: Battery1.flow2b
   time_shifted: True
 
+## -- Cost connections
+- from: CSV_cost.Price_Shortage
+  to: Controller1.shortage_price
+
+- from: CSV_cost.Price_Surplus
+  to: Controller1.surplus_price
+
+
 monitor:
   file: './examples/Lucas_folder/Thesis_comparison2/out_CSV.csv'
   items:
@@ -557,4 +575,9 @@ monitor:
     - Controller1.flow2b
     - Controller1.res_load
     - Controller1.dump
+
+    - CSV_cost.Price_Surplus
+    - CSV_cost.Price_Shortage
+
+ 
      

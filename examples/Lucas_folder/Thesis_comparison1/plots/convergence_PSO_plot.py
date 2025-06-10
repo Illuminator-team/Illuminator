@@ -4,7 +4,9 @@ import numpy as np
 import ast 
 # Load the CSV file into a DataFrame
 file_name = './examples/Lucas_folder/Thesis_comparison1/data/PSO_live_log_n9g30.csv'
-file_name = './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g30.csv'
+# file_name = './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g30.csv'
+# file_name = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log1.csv'
+
 df = pd.read_csv(file_name)
 
 # Convert strings to floats
@@ -67,3 +69,31 @@ plt.grid(True)
 plt.tight_layout()
 
 plt.show()
+
+# LBFGSB plots
+
+# # --- Plot 1: Fitness vs Solution (Search Space) ---
+# df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
+# plt.figure(figsize=(8, 5))
+# plt.scatter(df['solution'], df['fitness_log'], alpha=0.6, s=20, color='purple')
+# plt.title('Search Space (Log-Scaled Fitness)')
+# plt.xlabel('Solution')
+# plt.ylabel('Log(Fitness)')
+# plt.grid(True)
+# plt.tight_layout()
+
+
+# # --- Plot 3: Particle trajectory ---
+# plt.figure(figsize=(8, 5))
+
+# num_iter = len(df['solution'])
+# plt.plot(df['solution'])
+# plt.xticks(ticks=np.arange(num_iter), labels=np.arange(1, num_iter + 1))
+# plt.title('Trajectory Plot')
+# plt.xlabel('Iteration')
+# plt.ylabel('Solution')
+# # plt.legend()
+# plt.grid(True)
+# plt.tight_layout()
+
+# plt.show()
