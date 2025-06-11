@@ -34,17 +34,18 @@ class Thermolyzer(ModelConstructor):
             },
     inputs={
             'biomass_in' : 0,       # biomass input [kg/timestep]
-            'flow2t' : 2300         # power input to the thermolyzer [kW]
+            # 'flow2t' : 2300         # power input to the thermolyzer [kW]
+            'desired_out': 30,      # desired output flow of the thermolyzer [kg/h]
             # 'water_in' : 0        # water input to the thermolzyer [L/timestep]
             },
     outputs={
             'h_gen' : 0,            # hydrogen generation [kg/timestep]
+            'power_consumption' : 0, # power consumption of the thermolyzer [kWh]
             'CO2_out' : 0           # CO2 output [kg/timestep]
             },
     states={}
 
     # other attributes
-    time_step_size=1
     time=None
     hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
     mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
@@ -81,9 +82,9 @@ class Thermolyzer(ModelConstructor):
         self.max_ramp_up = self._model.parameters.get('max_ramp_up')
         self.max_p_in = self._model.parameters.get('max_p_in')
         self.biomass_in = self._model.inputs.get('biomass_in', 0)  # Initialize biomass input to 0 if not provided
-        self.flow2t = self._model.inputs.get('flow2t', 0)  # Initialize power input to 0 if not provided
-        print("DEBUG: THIS IS PARAMTERS:", self._model.parameters)
-        
+        # self.flow2t = self._model.inputs.get('flow2t', 0)  # Initialize power input to 0 if not provided
+        self.desired_out = self._model.inputs.get('desired_out', 0)  # Initialize desired output to 0 if not provided
+
         self.p_in_last = 0  # Indicator of the last power input initialized to be 0 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -115,24 +116,34 @@ class Thermolyzer(ModelConstructor):
         # get input data 
         input_data = self.unpack_inputs(inputs)
         self.biomass_in = input_data.get('biomass_in', self.biomass_in)  # Default to last value if not provided (most likely the initial value)
-        self.flow2t = input_data.get('flow2t', self.flow2t)  # Default to last value if not provided (most likely the initial value)
+        # self.flow2t = input_data.get('flow2t', self.flow2t)  # Default to last value if not provided (most likely the initial value)
+        self.desired_out = input_data.get('desired_out', self.desired_out)  # Default to last value if not provided (most likely the initial value)
         print("input data: ", input_data)
 
         current_time = time * self.time_resolution
         print('from Thermolyzer %%%%%%%%%%%', current_time)
 
-        h_flow = self.generate(
+        # h_flow = self.generate(
+        #     m_bio=self.biomass_in,
+        #     flow2t=self.flow2t,
+        #     max_advance = max_advance
+        #     )
+        h_gen, power_consumption = self.generate_setpoint(
             m_bio=self.biomass_in,
-            flow2t=self.flow2t,
+            desired_out=self.desired_out,
             max_advance = max_advance
             )
-        h_gen = h_flow
+
+
         CO2_out = -h_gen * self.C_CO_2
-        self.set_outputs({'h_gen': h_gen})
-        self.set_outputs({'CO2_out': CO2_out})
-        print("outputs:", self.outputs)
-        return time + self._model.time_step_size
-    
+
+        self.set_outputs({'h_gen': h_gen,
+                          'power_consumption': power_consumption,
+                          'CO2_out': CO2_out})
+
+        return time + self.time_step_size
+
+
     def ramp_lim(self, p_in: float, max_advance: int) -> float:
         """
         Limits the thermolyzer input power based on ramp rate constraints.
@@ -143,8 +154,6 @@ class Thermolyzer(ModelConstructor):
         ----------
         p_in : float
             Desired power input to the thermolyzer [kW]
-        max_advance : int
-            Maximum time step size in seconds
 
         Returns
         -------
@@ -204,3 +213,56 @@ class Thermolyzer(ModelConstructor):
         print("DEBUG:\n h_prod_p:", h_prod_p, "\n h_prod_m:", h_prod_m)
         h_out = min(h_prod_p, h_prod_m)
         return h_out
+
+
+    def generate_setpoint(self, m_bio: float, desired_out: float, max_advance: int = 900) -> float:
+        """
+        Generate hydrogen based on biomass and power input.
+
+        This method calculates the hydrogen production based on the available biomass and 
+        electrical power input, considering the efficiency and ramp rate constraints.
+
+        Parameters
+        ----------
+        m_bio : float
+            Biomass input in kg/timestep
+        flow2t : float
+            Power input to the thermolyzer in kW
+        max_advance : int, optional
+            Maximum time step size in seconds (default 900)
+
+        Returns
+        -------
+        float
+            Hydrogen production in kg/timestep
+        """
+        # TODO: add water dependency once the conversion factor is known
+        # restrict the input power to be maximally max_p_in
+
+        efficiency = self.eff / 100
+
+        # Calculate the required power to produce the desired amount of hydrogen
+        power_needed = self.C_Eelec_h2 * desired_out * 1/efficiency # [kW] = [kWh/kg] * [kg/h] * 1/[%]
+
+        # Calculate the maximum power input based on ramp limits
+        power_in = min(power_needed, self.max_p_in)  # [kW]
+
+        # restrict input power with ramp limits
+        power_in = self.ramp_lim(power_in, max_advance)  # [kW]
+        
+        # take efficiency into account
+        power_in = power_in * efficiency  # [kW] = [kW] * [%]
+
+        # the production of hyrdogen is dependent on both the available biomass mass and the input power. Therfor:
+        # calculate potential generation of h2 for both dependencies
+        h_prod_p = power_in * 1/self.C_Eelec_h2 * (self.time_resolution*self.time_step_size/3600) # [kg/timestep] = [kW] * [kg/kWh] * ([s/timestep] / [s/h])
+
+        # Calculate the hydrogen production based on biomass
+        h_prod_m = m_bio / self.C_bio_h2  # [kg/timestep]
+        
+        # take potential limitation of the biomass into account
+        h_out = min(h_prod_p, h_prod_m)
+
+        power_consumption = self.C_Eelec_h2 * h_out  # [kWh/timestep] = [kWh/kg] * [kg/timestep]
+
+        return h_out, power_consumption
