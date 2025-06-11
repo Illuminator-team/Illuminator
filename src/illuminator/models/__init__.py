@@ -22,6 +22,7 @@ from .ElectricVehicle.EV import EV
 from .Battery.battery_v3 import Battery
 
 # Hydrogen models
+from .Electrolyzer.electrolyzer_v3 import Electrolyzer
 from .Thermolyzer.thermolyzer_v3 import Thermolyzer
 from .Compressor.compressor_v3 import Compressor
 from .H2demand.h2demand_v3 import H2demand
@@ -58,7 +59,8 @@ __all__ = [ 'Adder',
             'LoadEV',
             'LoadHeatpump',
             'EV',
-            'Battery', 
+            'Battery',
+            'Electrolyzer', 
             'Thermolyzer',
             'Compressor',
             'H2demand',
