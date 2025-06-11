@@ -34,8 +34,10 @@ class H2Buffer(ModelConstructor):
                 'h2_soc_max': 100,          # Maximum state of charge of the hydrogen buffer before charging stops [%]
                 'h2_charge_eff': 100,       # Charge efficiency of the H2 buffer [%]
                 'h2_discharge_eff': 100,    # Discharge efficiency of the H2 buffer [%]
-                'max_h2': 10,               # maximal flow (?) [kg/timestep]
-                'min_h2': 10,               # minimal flow (?) [kg/timestep]
+                'max_flow_rate_in': 10,               # maximal flow in [kg/h]
+                'min_flow_rate_in': 0,               # minimal flow in [kg/h]
+                'max_flow_rate_out': 10,               # maximal flow out [kg/h]
+                'min_flow_rate_out': 0,               # minimal flow out [kg/h]
                 'h2_capacity_tot': 100      # total capacity of the hydrogen buffer [kg]
                 }
     inputs={'h2_in': 0,            # input to H2 buffer [kg/timestep]
@@ -69,17 +71,16 @@ class H2Buffer(ModelConstructor):
         self.h2_soc_max = self._model.parameters.get('h2_soc_max')
         self.h2_charge_eff = self._model.parameters.get('h2_charge_eff')/100
         self.h2_discharge_eff = self._model.parameters.get('h2_discharge_eff')/100
-        self.max_h2 = self._model.parameters.get('max_h2')
-        self.min_h2 = self._model.parameters.get('min_h2')
+        self.max_flow_rate_in = self._model.parameters.get('max_flow_rate_in')
+        self.min_flow_rate_in = self._model.parameters.get('min_flow_rate_in')
+        self.max_flow_rate_out = self._model.parameters.get('max_flow_rate_out')
+        self.min_flow_rate_out = self._model.parameters.get('min_flow_rate_out')
         self.h2_capacity_tot = self._model.parameters.get('h2_capacity_tot')
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
         self.h2_in = self._model.inputs.get('h2_in', 0)  # Initialize h2_in to 0 if not provided
         self.desired_out = self._model.inputs.get('desired_out', 0)  # Initialize desired_out to 0 if not provided
 
-        # self.h2_charge_cap = self._model.states.get('available_h2')
-        # self.h2_discharge_cap = self._model.states.get('free_capacity')
-        self.cap_calc()  # calculates self.charge_cap and self.discharge_cap based on the current state of charge
 
     def step(self, time: int, inputs: dict=None, max_advance: int = 900) -> None:
         """
@@ -112,10 +113,37 @@ class H2Buffer(ModelConstructor):
         # print(f'Buffertime: {current_time}')
         results = self.operation(self.h2_in, self.desired_out)
 
-        self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in'], 'overflow': results['overflow']})
-        self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': self.h2_discharge_cap, 'free_capacity': self.h2_charge_cap})
+        h2_discharge_cap, h2_charge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
 
-        return time + self._model.time_step_size
+        self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in'], 'overflow': results['overflow']})
+        self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': h2_discharge_cap, 'free_capacity': h2_charge_cap})
+
+        return time + self.time_step_size  # Return the next simulation time step
+    
+    def limit_input_flow(self, h2_in: float) -> float:
+        """
+        Limits the input flow to the buffer based on the maximum and minimum flow rates.
+
+        Parameters
+        ----------
+        h2_in : float
+            Input flow to the buffer [kg/timestep]
+
+        Returns
+        -------
+        float
+            Limited input flow [kg/timestep]
+        """
+        # h2_in = min(h2_in, self.max_flow_rate_in) # limit the input by the maximum output
+        # h2_in = max(h2_in, self.min_flow_rate_in) # limit the input by the minimum output
+        min_flow_rate_in = self.min_flow_rate_in * self.time_step_size*self.time_resolution/3600  # Convert from kg/h to kg/timestep
+        max_flow_rate_in = self.max_flow_rate_in * self.time_step_size*self.time_resolution/3600  # Convert from kg/h to kg/timestep
+        if h2_in < min_flow_rate_in:
+            raise ValueError(f"H2Buffer error: Input flow {h2_in} is below the minimum flow rate {min_flow_rate_in}.")
+        elif h2_in > max_flow_rate_in:
+            raise ValueError(f"H2Buffer error: Input flow {h2_in} exceeds the maximum flow rate {max_flow_rate_in}.")
+        
+        return h2_in
     
     def operation(self, h2_in:float, desired_out:float) -> dict:
         """
@@ -134,19 +162,26 @@ class H2Buffer(ModelConstructor):
             Collection of parameters and their respective values
         """
         # print(f'DEBUG: This is desireed_out as viewed from operation: {desired_out}')
+        h_per_step =  self.time_step_size*self.time_resolution/3600
         h2_out = 0  # initialize to 0 
-        h2_in = min(h2_in, self.max_h2) # limit the input by the maximum output
+        h2_in = self.limit_input_flow(h2_in)  # limit the input flow to the maximum input flow
         overflow = 0  # initialize overflow to 0
 
         # print(f'DEBUG: This is h2_in as viewed from operation: {h2_in}')
-        desired_out = min(desired_out, self.max_h2) # limit the output by the maximum output
+        desired_out = min(desired_out, self.max_flow_rate_out*h_per_step) # limit the output by the maximum output
+        if desired_out > 0:
+            desired_out = max(desired_out, self.min_flow_rate_out*h_per_step) # limit the output by the minimum output
+
         net_h2 = h2_in - desired_out
         # print(f'DEBUG: This is net_h2 as viewed from operation: {net_h2} (in = {h2_in}, des_out={desired_out})')
 
+        # calculate remaining charge capacity and discharge capacity based on the current state of charge
+        h2_charge_cap, h2_discharge_cap = self.cap_calc()
+
         # CHARGING
         if net_h2 > 0:
-            if net_h2 > self.h2_charge_cap:  # if the buffer cannot take all the input
-                h2_in = self.h2_charge_cap
+            if net_h2 > h2_charge_cap:  # if the buffer cannot take all the input
+                h2_in = h2_charge_cap
                 overflow = net_h2 - h2_in  # calculate overflow
                 self.soc = self.h2_soc_max
                 self.flag = 1
@@ -155,12 +190,12 @@ class H2Buffer(ModelConstructor):
                 h2_in = net_h2
                 self.soc = self.soc + (h2_in * (self.h2_charge_eff))/self.h2_capacity_tot * 100
                 self.flag = 0
-            h2_out = desired_out
+            h2_out = desired_out  # we can output the demand because we are net charging (net = in-out)
         
         # DISCHARGING
         elif net_h2 < 0:
-            if abs(net_h2) > self.h2_discharge_cap:  # if the buffer cannot discharge all the desired output:
-                h2_out = self.h2_discharge_cap + h2_in  # output is the maximum discharge capacity plus the input
+            if abs(net_h2) > h2_discharge_cap:  # if the buffer cannot discharge all the desired output:
+                h2_out = h2_discharge_cap + h2_in  # output is the maximum discharge capacity plus the input
                 self.soc = self.h2_soc_min
                 self.flag = -1
             else: # if the buffer can discharge all the desired output
@@ -172,9 +207,7 @@ class H2Buffer(ModelConstructor):
         else:
             if desired_out > 0:
                 h2_out = h2_in
-        # print(f'DEBUG: This is soc as viewed from operation: {self.soc}')   
-        # print(f'DEBUG: This is h2_out as viewed from operation: {h2_out}\n\n')
-        self.cap_calc()
+        
         results = {'h2_out': h2_out,
                    'actual_h2_in': h2_in,
                    'overflow': overflow}  # include overflow in results
@@ -198,9 +231,11 @@ class H2Buffer(ModelConstructor):
         """
         h2_charge_soc = (self.h2_soc_max - self.soc) / (self.h2_charge_eff) 
         # print(f"\nDEBUG: \n THIS IS SOC: {self.soc} \n THIS IS h2_soc_max: {self.h2_soc_max} \n THIS IS discharge eff: {self.h2_charge_eff}\nTHIS IS h2_charge_soc in cap_calc: {h2_charge_soc}\n")
-        self.h2_charge_cap = h2_charge_soc / 100 * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
+        h2_charge_cap = h2_charge_soc / 100 * self.h2_capacity_tot    # amount of H2 that can be charged (from external pov)
         h2_discharge_soc = (self.soc - self.h2_soc_min) * (self.h2_discharge_eff)
-        self.h2_discharge_cap = h2_discharge_soc / 100 * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
+        h2_discharge_cap = h2_discharge_soc / 100 * self.h2_capacity_tot  # amount of H2 that can be discharged (from external pov)
+
+        return h2_charge_cap, h2_discharge_cap
     
 
         
