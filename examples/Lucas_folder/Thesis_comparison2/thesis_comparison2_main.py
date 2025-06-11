@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'O
 
 from PSO_alg_p import run_pso, run_pso_p
 from GA_alg_p import run_ga, run_ga_p
-from LBFGSB_alg import run_LBFGSB# , run_LBFGSB2
+from LBFGSB_alg import run_LBFGSB, run_LBFGSB2
 from cost_fun import *
 import numpy as np
 import os
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB' #"GA_P" # 
+    alg = 'LBFGSB2' #"GA_P" # 
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
@@ -49,15 +49,15 @@ if __name__ == "__main__":
     ## Determine termination criterium (FOR PSO)
     # termination = ("n_gen", 10)
     termination = DefaultSingleObjectiveTermination(
-                                                    xtol=1e-3,         # Tolerance in decision variables
-                                                    ftol=1e-3,         # Tolerance in objective function
+                                                    xtol=1e-6,         # Tolerance in decision variables
+                                                    ftol=1e-6,         # Tolerance in objective function
                                                     period=5,          # Number of generations to check for convergence
                                                     n_max_gen=10     # Max generations
                                                     )
 
     ## FOR LBFGSB
     ## Determine initial guess x0 and epsilons
-    epsilons = [1e5] # [1e-5, 1e-5]
+    epsilons = [1e-2, 1e-2]
     x0 = (xl + xu)/2
 
 
@@ -122,7 +122,6 @@ if __name__ == "__main__":
                                 cost_fun=cost_fun,
                                 xl=xl,
                                 xu=xu,
-                                x0=x0,
                                 epsilons=epsilons
                                         )
             params = {}

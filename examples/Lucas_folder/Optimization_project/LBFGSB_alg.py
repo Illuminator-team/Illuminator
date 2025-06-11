@@ -15,6 +15,8 @@ n_cores =  os.cpu_count() - 3
 
 LBFGSB_log_file = "./examples/Lucas_folder/Optimization_project/LBFGSB_live_log.csv"
 LBFGSB_grad_log_file = "./examples/Lucas_folder/Optimization_project/LBFGSB_grad_live_log.csv"
+LBFGSB_log_file_p = "./examples/Lucas_folder/Optimization_project/LBFGSB_p/LBFGSB_live_log"
+LBFGSB_grad_log_file_p = "./examples/Lucas_folder/Optimization_project/LBFGSB_p/LBFGSB_grad_live_log"
 
 class LBFGSB_logger:
     def __init__(self, logfile, grad_logfile):
@@ -136,43 +138,100 @@ def run_LBFGSB(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun
                       bounds=list(zip(xl, xu)),
                       method="L-BFGS-B",
                       options={"maxiter": 20,
+                               "disp": True,
+                               "ftol": 1e-6}
+                               )
+
+    return result
+
+## Parallelized LBFGSB
+class FiniteDifference2:
+    def __init__(self, x, epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun):
+        self.x = x
+        self.epsilons = epsilons
+        self.scenario = scenario
+        self.scenario_temp_path = scenario_temp_path
+        self.output_path = output_path
+        self.dec_vars_map = dec_vars_map
+        self.cost_fun = cost_fun
+
+    def simulate(self, i):
+        x_plus = self.x.copy()
+        x_plus[i] += self.epsilons[i]
+        f_plus = eval_sim(
+        original_scenario=self.scenario,
+        scenario_temp_path=self.scenario_temp_path,
+        output_path=self.output_path,
+        dec_vars_map=self.dec_vars_map,
+        x=x_plus,
+        cost_fun=self.cost_fun,
+        n_cores=n_cores
+        )
+        return f_plus
+    
+    def compute_gradient(self, f):
+        gradient = np.zeros(len(self.x))
+        for i in range(len(self.x)):
+            f_plus = self.simulate(i)
+            print(f'DEBUG THIS IS f_plus in compute_gradient: {f_plus}')
+            gradient[i] = (f_plus - f) / self.epsilons[i]
+        return gradient
+    
+def FD_alg2(x, *args):
+    epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger = args
+    f = eval_sim(original_scenario=scenario,
+            scenario_temp_path=scenario_temp_path,
+            output_path=output_path,
+            dec_vars_map=dec_vars_map,
+            x=x,
+            cost_fun=cost_fun,
+            n_cores=n_cores
+            )
+    fd = FiniteDifference2(x, epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun)
+    gradient = fd.compute_gradient(f)
+    logger.log_grad(gradient)
+    print(f"DEBUG: Gradient: {gradient} of type {type(gradient)}")
+    return gradient
+
+def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons):
+    logger = LBFGSB_logger(f'{LBFGSB_log_file_p}_{os.getpid()}.csv', f'{LBFGSB_grad_log_file_p}_{os.getpid()}.csv')
+    problem = SimulationProblem(scenario=scenario,
+                            scenario_temp_path=scenario_temp_path,
+                            output_path=output_path,
+                            dec_vars_map=dec_vars_map,
+                            cost_fun=cost_fun,
+                            xl=xl,
+                            xu=xu,
+                            logger=logger)
+    print(f"DEBUG: x0 shape: {x0.shape}, x0: {x0}")
+    result = minimize(fun=problem,
+                      x0=x0,
+                      args=(epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger),
+                      jac=FD_alg2,
+                      bounds=list(zip(xl, xu)),
+                      method="L-BFGS-B",
+                      options={"maxiter": 20,
                                "disp": True}
                                )
 
     return result
 
+def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons):
 
+    x0_matrix = np.zeros((n_cores, len(dec_vars_map)))
 
-# def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, x0, epsilons):
+    for var in range(len(dec_vars_map)):
+        x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_cores)
+    
+    args_list = [
+        (np.ravel(x0_matrix[i, :]), scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons)
+        for i in range(n_cores)
+    ]
 
-#     x0_list = []
-#     x0_u = np.linspace()
-#     for core in range(n_cores):
-#         x0_list.append(np.array())
+    with Pool(processes=n_cores) as pool:
+        results = pool.starmap(run_single_LBFGSB, args_list)
 
-#     for i in range(len(xl)):
-        
-#     x0_list = np.linspace()
-#     logger = LBFGSB_logger(LBFGSB_log_file, LBFGSB_grad_log_file)
-#     problem = SimulationProblem(scenario=scenario,
-#                             scenario_temp_path=scenario_temp_path,
-#                             output_path=output_path,
-#                             dec_vars_map=dec_vars_map,
-#                             cost_fun=cost_fun,
-#                             xl=xl,
-#                             xu=xu,
-#                             logger=logger)
+    # Find best result
+    best_result = min(results, key=lambda res: res.fun)
 
-#     pool = Pool(processes=n_cores)
-
-#     result = minimize(fun=problem,
-#                       x0=x0,
-#                       args=(epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger),
-#                       jac=FD_alg,
-#                       bounds=list(zip(xl, xu)),
-#                       method="L-BFGS-B",
-#                       options={"maxiter": 20,
-#                                "disp": True}
-#                                )
-
-#     return result
+    return best_result
