@@ -20,6 +20,10 @@ from .ElectricVehicle.EV import EV
 
 from .Battery.battery_v3 import Battery
 
+from .Electrolyser.electrolyser_v3_model import Electrolyzer 
+from .Fuelcell.fuelcell_model_v3 import Fuelcell
+from .H2storage.h2storage_v3 import H2Storage
+
 from .Controllers.default_controller.controller_v3 import Controller
 from .Controllers.controller_T1.controller_T1_v3 import Controller_T1
 from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import ControllerT3Congestion
@@ -41,6 +45,8 @@ __all__ = [ 'Adder',
             'LoadHeatpump',
             'EV',
             'Battery', 
+            'Electrolyzer',
+            'Fuelcell',
             'Controller',
             'Controller_T1',
             'ControllerT3Congestion',
