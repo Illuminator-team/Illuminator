@@ -28,8 +28,8 @@ class Controller(ModelConstructor):
     control(wind_gen, pv_gen, load_dem, soc, h2_soc)
         Manages power flows based on generation, demand and storage states.
     """
-    parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
-                'soc_max': 100,  # Maximum state of charge of the battery before charging stops
+    parameters={'soc_min': 20,  # Minimum state of charge of the battery before discharging stops
+                'soc_max': 50,  # Maximum state of charge of the battery before charging stops
                 'h2_soc_min': 0,  # Minimum state of charge of the hydrogen storage before discharging stops
                 'h2_soc_max': 100,  # Maximum state of charge of the hydrogen storage before charging stops
                 'fc_eff': 100  # Efficiency of the fuel cell
@@ -96,11 +96,13 @@ class Controller(ModelConstructor):
         self.time = time
 
         results = self.control(
-            wind_gen=input_data['wind_gen'],
+            # wind_gen=input_data['wind_gen'],
+            wind_gen=input_data.get('wind_gen',0),
             pv_gen=input_data['pv_gen'],
             load_dem=input_data['load_dem'],
             soc=input_data['soc'],
             h2_soc=input_data.get('h2_soc', 0)
+            # h2_soc=input_data['h2_soc']
             )
 
         self.set_outputs(results)
@@ -110,6 +112,10 @@ class Controller(ModelConstructor):
 
 
     def control(self, wind_gen:float, pv_gen:float, load_dem:float, soc:int, h2_soc:int) -> dict:
+        self.flow_b = 0
+        self.flow_e = 0
+        self.dump = 0
+        self.h_out = 0
         """
         Checks the state of power flow based on wind and solar energy generation compared to demand,
         and manages power distribution between battery and hydrogen storage systems.
@@ -143,31 +149,40 @@ class Controller(ModelConstructor):
             if soc > self.soc_min:  # checking if soc is above minimum. It can be == to soc_max as well.
                 self.flow_b = flow
                 self.flow_e = 0
+                self.dump = 0
                 self.h_out = 0
 
             elif soc <= self.soc_min:
                 self.flow_b = 0
+                self.dump = flow
+                self.flow_e = 0 
                 q = 39.4
                 self.h_out = (flow / q) / self.fc_eff
 
                 print('Battery Discharged')
 
-
         elif flow > 0:  # means we have over generation and we want to utilize it for charging battery and storing hydrogen
-            if soc < self.soc_max:
+            soc_max_tol = self.soc_max - 1
+            if soc >= soc_max_tol:
+                self.flow_b = 0
+                self.flow_e = flow
+                self.dump = 0
+                self.h_out = 0 
+            elif soc < soc_max_tol - 1:
                 self.flow_b = flow
                 self.flow_e = 0
+                self.dump = 0
                 self.h_out = 0
-            elif soc == self.soc_max:
-                self.flow_b = 0
-                if h2_soc < self.h2_soc_max:
-                    self.flow_e = flow
-                    self.dump = 0
-                    self.h_out = 0
-                elif h2_soc == self.h2_soc_max:
-                    self.flow_e = 0
-                    self.dump = flow
-                    self.h_out = 0
-
+                # if h2_soc < self.h2_soc_max:
+                #     self.flow_e = flow
+                #     self.dump = 0
+                #     self.h_out = 0
+                # elif h2_soc == self.h2_soc_max:
+                #     self.flow_e = 0
+                #     self.dump = flow
+                #     self.h_out = 0
+        print(f"[Controller] flow={flow}, soc={soc}, soc_max={self.soc_max}")
+        
         re_params = {'flow2b': self.flow_b, 'flow2e': self.flow_e, 'dump': self.dump, 'h2_out':self.h_out}
         return re_params
+
