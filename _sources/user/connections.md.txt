@@ -22,7 +22,7 @@ The Illuminator supports two types of connections:
 
 ## Splits & Merges
 
-If two different connections are defined with the same `input` destination, we have a connection merge. Similarly, two connections with the same `output` or `state` source, we are dealing with a connection merge.
+If two different connections are defined with the same `input` destination, we have a connection merge. Similarly, if we have two connections with the same `output` or `state` source, we are dealing with a connection split.
 
 Different split and merge rules apply to **physical** connections and **data** connections:
 
