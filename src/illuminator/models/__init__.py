@@ -16,11 +16,15 @@ from .Load.load_v3 import Load
 from .Load.LoadEV.load_EV_v3 import LoadEV
 from .Load.LoadHeatpump.load_heatpump_v3 import LoadHeatpump
 
+from .ElectricVehicle.EV import EV
+
 from .Battery.battery_v3 import Battery
 
 from .Controllers.default_controller.controller_v3 import Controller
 from .Controllers.controller_T1.controller_T1_v3 import Controller_T1
 from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import ControllerT3Congestion
+from .Controllers.controller_ev.controller_EV import ControllerEV
+from .Controllers.controller_ev.controller_EV_price import ControllerEVprice
 
 from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
 from .Agents.operators.operator_v3 import Operator_Market
@@ -35,10 +39,13 @@ __all__ = [ 'Adder',
             'Load',
             'LoadEV',
             'LoadHeatpump',
+            'EV',
             'Battery', 
             'Controller',
             'Controller_T1',
             'ControllerT3Congestion',
+            'ControllerEV',	
+            'ControllerEVprice',
             'GenerationCompanyAgent',
             'Operator_Market',
             'JusticeAgent'
