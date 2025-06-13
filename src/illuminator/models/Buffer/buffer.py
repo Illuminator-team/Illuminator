@@ -41,7 +41,7 @@ class H2Buffer(ModelConstructor):
                 'h2_capacity_tot': 100      # total capacity of the hydrogen buffer [kg]
                 }
     inputs={'h2_in': 0,            # input to H2 buffer [kg/timestep]
-            'desired_out': 0   # demanded hydrogen output flow [kg/timestep]
+            'desired_out': 0   # demanded hydrogen output flow [kg/h]
             }
     outputs={'h2_out': 0,       # flow out of the H2 buffer [kg/timestep]
              'actual_h2_in': 0,  # The input that is processed in the buffer [kg/timestep]
@@ -168,6 +168,7 @@ class H2Buffer(ModelConstructor):
         overflow = 0  # initialize overflow to 0
 
         # print(f'DEBUG: This is h2_in as viewed from operation: {h2_in}')
+        desired_out = desired_out * h_per_step  # convert from kg/h to kg/timestep
         desired_out = min(desired_out, self.max_flow_rate_out*h_per_step) # limit the output by the maximum output
         if desired_out > 0:
             desired_out = max(desired_out, self.min_flow_rate_out*h_per_step) # limit the output by the minimum output
