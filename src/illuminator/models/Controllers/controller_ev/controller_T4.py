@@ -46,9 +46,7 @@ class Controller_T4(ModelConstructor):
     """
     parameters={'soc_min': 0,  # Minimum state of charge of the battery before discharging stops
                 'soc_max': 100,  # Maximum state of charge of the battery before charging stops
-                'max_p': 100,  # Maximum power to/from the battery
-                'upper_price': 0, # price from which feeding into the grid becomes profittable
-                'lower_price' : 0 # price from which getting power from the grid becomes costly
+                'max_p': 100  # Maximum power to/from the battery
                 }
     inputs={'wind_gen': 0,  # Wind power generation
             'pv_gen': 0,  # Solar power generation
@@ -82,8 +80,7 @@ class Controller_T4(ModelConstructor):
         self.soc_min = self.parameters['soc_min']  # Minumum state of charge of the battery before discharging stops (%)
         self.soc_max = self.parameters['soc_max']  # Maximum state of charge of the battery before charging stops (%)
         self.max_p = self.parameters['max_p']  # Maximum power to/from the battery [kW]
-        self.upper_price = self.parameters['upper_price']  # Price from which feeding into the grid becomes profitable
-        self.lower_price = self.parameters['lower_price']  # Price from which getting power from the grid becomes costly
+
 
         self.flow_b = 0  # Internal state representing the power flow to/from battery
         self.dump = 0  # Internal state representing excess power
@@ -118,16 +115,14 @@ class Controller_T4(ModelConstructor):
             pv_gen=input_data['pv_gen'],
             load_dem=input_data['load_dem'],
             soc=input_data['soc'],
-            load_EV=input_data['load_EV'],
-            shortage_price = input_data['shortage_price'],
-            surplus_price = input_data['surplus_price'])
+            load_EV=input_data['load_EV'])
             
         self.set_outputs(results)
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
 
-    def control(self, pv_gen, load_dem, soc, load_EV, shortage_price, surplus_price):
+    def control(self, pv_gen, load_dem, soc=None, load_EV=None, load_HP=None, flag_warning = None):
         """
         Controls power flows based on generation, demand and storage states.
 
@@ -151,26 +146,32 @@ class Controller_T4(ModelConstructor):
 
         self.res_load = load_dem - pv_gen # + load_EV  # kW
 
-        if self.res_load > 0: # demand not satisfied -> discharge battery if possible
+        if self.res_load > 0:
+            # demand not satisfied -> discharge battery if possible
             if soc > self.soc_min:  # checking if soc is above minimum
+                # print('Discharge Battery')
                 max_discharge = (soc - self.soc_min) / 100 * self.max_p
+                # print(f'max discharge: {max_discharge}')
+                # print(f'res load: {self.res_load}')
                 self.flow_b = -min(self.res_load, max_discharge)
-            if shortage_price < self.lower_price:
-                self.flow_b = 0 # Do bot discharge but get power from the grid instead if price < price_lower (cheap)
+                # print('Flow Bat: ' + str(self.flow_b))
+                # self.soc_b = self.soc_b + self.flow_b soc is not updated in controller
 
-        elif self.res_load < 0: # excess generation
-            if surplus_price > self.upper_price:
-                self.flow2b = 0 # do not charge but feed back into grid if price > price_upper (expensive)
-            # if soc < self.soc_max :
-            else:
+        elif self.res_load < 0:
+            if soc < self.soc_max:
+                # print('Charge Battery')
                 max_flow2b = ((self.soc_max - soc) / 100) * self.max_p  # Energy flow in kW
                 self.flow_b = min((-self.res_load), max_flow2b)
+                # print('Flow Bat: ' + str(self.flow_b))
+                # print('Excess generation that cannot be stored: ' + str(-self.res_load - self.flow_b))
 
-        else: # net zero
+        else:
+            # print('No Residual Load, RES production exactly covers demand')
             self.flow_b = 0
+            self.dump = 0
+            # demand_res = residual_load
 
-
-        self.dump = -(self.res_load + self.flow_b) # + load_EV
+        self.dump = -(self.res_load + load_EV + self.flow_b)
 
         re_params = {'flow2b': self.flow_b, 'res_load': self.res_load, 'dump': self.dump}
 
