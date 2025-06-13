@@ -109,12 +109,12 @@ models:
 
 ## -- Controller --
 - name: Controller1
-  type: ControllerThesisNB # models can reuse the same type
+  type: Controller_T4 # models can reuse the same type
   parameters:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 500  # Maximum power flow to/from the battery (kW)
-    
+
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation
