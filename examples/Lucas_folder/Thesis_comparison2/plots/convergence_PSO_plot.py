@@ -11,28 +11,30 @@ import glob
 PSO_file_name = './examples/Lucas_folder/Thesis_comparison2/data/PSO_live_log_1w01_01_n9g10.csv'
 GA_file_name = './examples/Lucas_folder/Thesis_comparison2/data/GA_live_log_1w01_01_n9_g10.csv'
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_live_log_1w01_01_n9_g10.csv'
-LBFGSB2_folder = './examples/Lucas_folder/Optimization_project/LBFGSB_p/'
+LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
+# LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/test_multiple_instances'
 
 
-df = pd.read_csv(PSO_file_name)
-df['fitness'] = df['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
-df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
+
+# df = pd.read_csv(PSO_file_name)
+# df['fitness'] = df['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
+# df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
 
 
-# -- Convergence Data --
-best_fitness_per_gen = df.groupby('generation')['fitness'].min()
-global_best_fitness = best_fitness_per_gen.cummin()
+# # -- Convergence Data --
+# best_fitness_per_gen = df.groupby('generation')['fitness'].min()
+# global_best_fitness = best_fitness_per_gen.cummin()
 
-pop_size = 9
-num_gens = int(len(df) / pop_size)
+# pop_size = 9
+# num_gens = int(len(df) / pop_size)
 
-# Create 3D trajectory matrix: (particles, generations, variables)
-particle_traject_matrix = np.zeros((pop_size, num_gens, 2))
+# # Create 3D trajectory matrix: (particles, generations, variables)
+# particle_traject_matrix = np.zeros((pop_size, num_gens, 2))
 
-for row_ix in range(pop_size):
-    indices = np.arange(row_ix, len(df), pop_size)
-    for j, idx in enumerate(indices):
-        particle_traject_matrix[row_ix, j, :] = df['solution'].iloc[idx]
+# for row_ix in range(pop_size):
+#     indices = np.arange(row_ix, len(df), pop_size)
+#     for j, idx in enumerate(indices):
+#         particle_traject_matrix[row_ix, j, :] = df['solution'].iloc[idx]
 
 # ## PSO plots ##
 # # --- Plot 1: Search Space colored by fitness ---
@@ -64,6 +66,17 @@ for row_ix in range(pop_size):
 # # Add colorbar
 # fig.colorbar(sc, ax=ax, label='Fitness')
 
+# plt.tight_layout()
+# # --- Plot 1c: Search Space x2 ---
+# df['x2'] = df['solution'].apply(lambda x: x[1])
+# # df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
+# plt.figure(figsize=(8, 6))
+# sc = plt.scatter(df['x1'], df['fitness'], c=df['fitness'], cmap='viridis', alpha=0.7)
+# plt.colorbar(sc, label='Fitness')
+# plt.xlabel('x2')
+# plt.ylabel('fitness')
+# plt.title('PSO: Search Space Exploration x2')
+# plt.grid(True)
 # plt.tight_layout()
 
 # # --- Plot 2: Convergence over generations ---
@@ -241,38 +254,102 @@ log_files = glob.glob(os.path.join(LBFGSB2_folder, "LBFGSB_live_log_*.csv"))
 
 markers = itertools.cycle(('o', 's', '^', 'v', 'D', 'P', '*', 'X', 'H'))
 
-plt.figure(figsize=(8, 5))
+# # --- Search Space Plot ---
+# plt.figure(figsize=(8, 5))
 
+# for log_file, marker in zip(log_files, markers):
+#     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    
+#     plt.scatter(df["x1"], df["x2"], c=df["fitness"], cmap='viridis', alpha=0.6,
+#                 marker=marker, label=os.path.basename(log_file))
+
+# plt.colorbar(label='Fitness')
+# plt.xlabel('x1')
+# plt.ylabel('x2')
+# plt.title('L-BFGS-B: Search Space Exploration (Parallel)')
+# plt.grid(True)
+# plt.legend(fontsize='x-small', loc='best')
+# plt.tight_layout()
+
+# # --- Search space plot x1 ---
+# plt.figure(figsize=(8, 5))
+# for log_file, marker in zip(log_files, markers):
+#     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    
+#     plt.scatter(df["x1"], df["fitness"], c=df["fitness"], cmap='viridis', alpha=0.6,
+#                 marker=marker, label=os.path.basename(log_file))
+
+# plt.colorbar(label='Fitness')
+# plt.xlabel('x1')
+# plt.ylabel('fitness')
+# plt.title('L-BFGS-B: Search Space Exploration x1 (Parallel)')
+# plt.grid(True)
+# plt.legend(fontsize='x-small', loc='best')
+# plt.tight_layout()
+
+# # --- Search space plot x2 ---
+# plt.figure(figsize=(8, 5))
+# for log_file, marker in zip(log_files, markers):
+#     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    
+#     plt.scatter(df["x2"], df["fitness"], c=df["fitness"], cmap='viridis', alpha=0.6,
+#                 marker=marker, label=os.path.basename(log_file))
+
+# plt.colorbar(label='Fitness')
+# plt.xlabel('x2')
+# plt.ylabel('fitness')
+# plt.title('L-BFGS-B: Search Space Exploration x2 (Parallel)')
+# plt.grid(True)
+# plt.legend(fontsize='x-small', loc='best')
+# plt.tight_layout()
+
+# --- Solutions plot 1 ---
+plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
     
-    plt.scatter(df["x1"], df["x2"], c=df["fitness"], cmap='viridis', alpha=0.6,
+    plt.scatter(df["iter"], df["x1"], c=df["fitness"], cmap='viridis', alpha=0.6,
                 marker=marker, label=os.path.basename(log_file))
-
 plt.colorbar(label='Fitness')
-plt.xlabel('x1')
+plt.xlabel('iter')
+plt.ylabel('x1')
+plt.title('L-BFGS-B: Solutions x1 (Parallel)')
+plt.grid(True)
+plt.legend(fontsize='x-small', loc='best')
+plt.tight_layout()
+
+# # --- Solutions plot 2 ---
+plt.figure(figsize=(8,5))
+for log_file, marker in zip(log_files, markers):
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    
+    plt.scatter(df["iter"], df["x2"], c=df["fitness"], cmap='viridis', alpha=0.6,
+                marker=marker, label=os.path.basename(log_file))
+plt.colorbar(label='Fitness')
+plt.xlabel('iter')
 plt.ylabel('x2')
-plt.title('L-BFGS-B: Search Space Exploration (Parallel)')
+plt.title('L-BFGS-B: Solutions x2 (Parallel)')
 plt.grid(True)
 plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
 
+# # --- Convergence Plot ---
+# plt.figure(figsize=(8, 5))
 
-# --- Convergence Plot ---
-plt.figure(figsize=(8, 5))
+# for log_file in log_files:
+#     df = pd.read_csv(log_file, skiprows=1 ,names=["iter", "fitness", "x1", "x2"])
 
-for log_file in log_files:
-    df = pd.read_csv(log_file, skiprows=1 ,names=["iter", "fitness", "x1", "x2"])
-
-    # df.columns = ['fitness'] + [f'x{i+1}' for i in range(len(df.columns) - 1)]
-    plt.plot(df['iter'], df['fitness'], label=os.path.basename(log_file))
-
-plt.xlabel('Iteration')
-plt.ylabel('Fitness')
-plt.title('L-BFGS-B: Convergence Plot (Parallel)')
-plt.grid(True)
-plt.legend(fontsize='x-small', loc='best')
-plt.tight_layout()
+#     # df.columns = ['fitness'] + [f'x{i+1}' for i in range(len(df.columns) - 1)]
+#     plt.plot(df['iter'], df['fitness'], label=os.path.basename(log_file))
+#     plt.scatter(df['iter'].iloc[0], df['fitness'].iloc[0],
+#                     color='red', edgecolor='black', s=10, zorder=5)
+    
+# plt.xlabel('Iteration')
+# plt.ylabel('Fitness')
+# plt.title('L-BFGS-B: Convergence Plot (Parallel)')
+# plt.grid(True)
+# plt.legend(fontsize='x-small', loc='best')
+# plt.tight_layout()
 
 plt.show()
 

@@ -52,18 +52,34 @@ class SimulationProblem:
         self.cost_fun = cost_fun
         self.scenario_temp_path = scenario_temp_path
         self.logger = logger
-        
+
+        self.last_x = None
+        self.last_f = None
+
+
     def __call__(self, x, *args, **kwds):
-        f = eval_sim(original_scenario=self.scenario,
-            scenario_temp_path=self.scenario_temp_path,
-            output_path=self.output_path,
-            dec_vars_map=self.dec_vars_map,
-            x=x,
-            cost_fun=self.cost_fun,
-            n_cores=n_cores
-            )
-        self.logger.log(x, f)
-        return f
+        if self.last_x is None or not np.allclose(x, self.last_x):
+            self.last_f = eval_sim(original_scenario=self.scenario,
+                scenario_temp_path=self.scenario_temp_path,
+                output_path=self.output_path,
+                dec_vars_map=self.dec_vars_map,
+                x=x,
+                cost_fun=self.cost_fun,
+                n_cores=n_cores
+                )
+            self.last_x = x.copy()
+            self.logger.log(x, self.last_f)
+        return self.last_f
+        # f = eval_sim(original_scenario=self.scenario,
+        #     scenario_temp_path=self.scenario_temp_path,
+        #     output_path=self.output_path,
+        #     dec_vars_map=self.dec_vars_map,
+        #     x=x,
+        #     cost_fun=self.cost_fun,
+        #     n_cores=n_cores
+        #     )
+        # self.logger.log(x, f)
+        # return f
         
 class FiniteDifference:
     def __init__(self, x, epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun):
@@ -104,16 +120,13 @@ class FiniteDifference:
 #     return gradient
 
 def FD_alg(x, *args):
-    epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger = args
-    f = eval_sim(original_scenario=scenario,
-            scenario_temp_path=scenario_temp_path,
-            output_path=output_path,
-            dec_vars_map=dec_vars_map,
-            x=x,
-            cost_fun=cost_fun,
-            n_cores=n_cores
-            )
-    fd = FiniteDifference(x, epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun)
+    epsilons, problem, logger = args
+    if problem.last_x is not None and np.allclose(problem.last_x, x):
+        f = problem(x)
+    else:
+        f = problem.last_f
+    fd = FiniteDifference(x, epsilons, problem.scenario, problem.scenario_temp_path,
+                          problem.output_path, problem.dec_vars_map, problem.cost_fun)
     gradient = fd.compute_gradient(f)
     logger.log_grad(gradient)
     return gradient
@@ -133,7 +146,7 @@ def run_LBFGSB(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun
 
     result = minimize(fun=problem,
                       x0=x0,
-                      args=(epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger),
+                      args=(epsilons, problem, logger),
                       jac=FD_alg,
                       bounds=list(zip(xl, xu)),
                       method="L-BFGS-B",
@@ -173,24 +186,19 @@ class FiniteDifference2:
         gradient = np.zeros(len(self.x))
         for i in range(len(self.x)):
             f_plus = self.simulate(i)
-            print(f'DEBUG THIS IS f_plus in compute_gradient: {f_plus}')
             gradient[i] = (f_plus - f) / self.epsilons[i]
         return gradient
     
 def FD_alg2(x, *args):
-    epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger = args
-    f = eval_sim(original_scenario=scenario,
-            scenario_temp_path=scenario_temp_path,
-            output_path=output_path,
-            dec_vars_map=dec_vars_map,
-            x=x,
-            cost_fun=cost_fun,
-            n_cores=n_cores
-            )
-    fd = FiniteDifference2(x, epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun)
+    epsilons, problem, logger = args
+    if problem.last_x is not None and np.allclose(problem.last_x, x):
+        f = problem(x)
+    else:
+        f = problem.last_f
+    fd = FiniteDifference2(x, epsilons,problem.scenario, problem.scenario_temp_path,
+                           problem.output_path, problem.dec_vars_map, problem.cost_fun)
     gradient = fd.compute_gradient(f)
     logger.log_grad(gradient)
-    print(f"DEBUG: Gradient: {gradient} of type {type(gradient)}")
     return gradient
 
 def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons):
@@ -203,10 +211,9 @@ def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_ma
                             xl=xl,
                             xu=xu,
                             logger=logger)
-    print(f"DEBUG: x0 shape: {x0.shape}, x0: {x0}")
     result = minimize(fun=problem,
                       x0=x0,
-                      args=(epsilons, scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, logger),
+                      args=(epsilons, problem, logger),
                       jac=FD_alg2,
                       bounds=list(zip(xl, xu)),
                       method="L-BFGS-B",
@@ -218,14 +225,16 @@ def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_ma
 
 def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons):
 
-    x0_matrix = np.zeros((n_cores, len(dec_vars_map)))
+    n_instances = n_cores
+    x0_matrix = np.zeros((n_instances, len(dec_vars_map)))
 
     for var in range(len(dec_vars_map)):
-        x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_cores)
-    
+        x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_instances)
+        # x0_matrix[:, var] = (xu[var] + xl[var]) / 2
+    print(x0_matrix)
     args_list = [
         (np.ravel(x0_matrix[i, :]), scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons)
-        for i in range(n_cores)
+        for i in range(n_instances)
     ]
 
     with Pool(processes=n_cores) as pool:

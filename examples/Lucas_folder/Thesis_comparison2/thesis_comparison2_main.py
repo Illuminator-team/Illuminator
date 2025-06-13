@@ -34,7 +34,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB2' #"GA_P" # 
+    alg = 'LBFGSB' #"GA_P" # 'LBFGSB2' #
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     ## FOR LBFGSB
     ## Determine initial guess x0 and epsilons
-    epsilons = [1e-2, 1e-2]
+    epsilons = [1e-1, 1e-1]
     x0 = (xl + xu)/2
 
 
