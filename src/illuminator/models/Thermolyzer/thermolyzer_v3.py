@@ -110,18 +110,14 @@ class Thermolyzer(ModelConstructor):
         int
             Next simulation time step
         """
-        print("\nThermolyzer:")
-        print("inputs (passed): ", inputs)
-        print("inputs (internal): ", self._model.inputs)
+
         # get input data 
         input_data = self.unpack_inputs(inputs)
         self.biomass_in = input_data.get('biomass_in', self.biomass_in)  # Default to last value if not provided (most likely the initial value)
         # self.flow2t = input_data.get('flow2t', self.flow2t)  # Default to last value if not provided (most likely the initial value)
         self.desired_out = input_data.get('desired_out', self.desired_out)  # Default to last value if not provided (most likely the initial value)
-        print("input data: ", input_data)
 
         current_time = time * self.time_resolution
-        print('from Thermolyzer %%%%%%%%%%%', current_time)
 
         # h_flow = self.generate(
         #     m_bio=self.biomass_in,
@@ -165,13 +161,10 @@ class Thermolyzer(ModelConstructor):
         p_change = p_in - self.p_in_last
         if abs(p_change) > self.max_ramp_up:
             if p_change > 0:
-                print("DEBUG: p_change > 0")
                 power_in = self.p_in_last + self.max_ramp_up
             else:
-                print("DEBUG: p_change < 0")
                 power_in = self.p_in_last - self.max_ramp_up
         else:
-            print("DEBUG: p_change = max_ramp_up")
             power_in = p_in
         self.p_in_last = power_in
         return power_in
@@ -210,7 +203,6 @@ class Thermolyzer(ModelConstructor):
         # calculate potential generation of h2 for both dependencies
         h_prod_p = power_in / self.C_Eelec_h2 / 3600 * self.time_resolution     # [kg/timestep]
         h_prod_m = m_bio / self.C_bio_h2                                        # [kg/timestep]
-        print("DEBUG:\n h_prod_p:", h_prod_p, "\n h_prod_m:", h_prod_m)
         h_out = min(h_prod_p, h_prod_m)
         return h_out
 
