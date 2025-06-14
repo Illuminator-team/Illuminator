@@ -3,6 +3,24 @@ import numpy as np
 
 price_df = pd.read_csv('examples/Lucas_folder/Thesis_comparison2/data/settlement_prices_2023_TenneT_DTS.csv', skiprows=1)
 
+# df = pd.read_csv('./examples/Lucas_folder/Thesis_comparison2/out_CSV.csv')
+
+# dump = df['Controller1-0.time-based_0-dump']
+
+# price_short = price_df['Price_Shortage'][:len(dump)]
+# price_surplus = price_df['Price_Surplus'][:len(dump)]
+# cost = pd.Series(np.where(dump > 0, dump * -price_surplus, -dump*price_short))
+# tot_cost = cost.sum()
+
+# print(f'length of price_short: {len(price_short)}')
+# print(f'head of price_short: {price_short.head()}')
+# print(f'length of price_surplus: {len(price_surplus)}')
+# print(f'head of price_surplus: {price_surplus.head()}')
+# print(f'length of dump: {len(dump)}')
+# print(f'tot_cost: {tot_cost}')
+
+
+
 def cost_fun1(df: pd.DataFrame):
     """
     Calculates the sum of the dump column.
@@ -36,7 +54,6 @@ def cost_fun2(df: pd.DataFrame):
     cost = pd.Series(np.where(dump > 0, dump * -price_surplus, -dump*price_short))
     tot_cost = cost.sum()
  
-    # summed_col = df['H2_controller-0.time-based_0-dump'].sum()
     return tot_cost
 
 def cost_fun_presentation(df: pd.DataFrame, x):

@@ -7,9 +7,6 @@ import random
 random.seed(42)  # For reproducibility
 import csv
 
-## NOTE to self:    right now the simulation of a new x is evaluated twice, 
-#                   once for the objective function itself and once for the jacobian 
-#                   ficing this would improve run time by: 1sim time * # steps required
 
 n_cores =  os.cpu_count() - 3
 
@@ -150,7 +147,7 @@ def run_LBFGSB(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun
                       jac=FD_alg,
                       bounds=list(zip(xl, xu)),
                       method="L-BFGS-B",
-                      options={"maxiter": 20,
+                      options={"maxiter": 3,
                                "disp": True,
                                "ftol": 1e-6}
                                )
@@ -224,7 +221,7 @@ def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_ma
     return result
 
 def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fun, xl, xu, epsilons):
-
+    
     n_instances = n_cores
     x0_matrix = np.zeros((n_instances, len(dec_vars_map)))
 

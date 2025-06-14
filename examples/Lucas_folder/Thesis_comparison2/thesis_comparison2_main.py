@@ -34,7 +34,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB' #"GA_P" # 'LBFGSB2' #
+    alg = 'LBFGSB2' #'LBFGSB' # "GA_P" #
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
@@ -42,8 +42,10 @@ if __name__ == "__main__":
     
 
     ## set lower and upper bounds for decision variables
-    xl = np.array([cost_df['Price_Surplus'].min(), cost_df['Price_Shortage'].min()])
-    xu = np.array([cost_df['Price_Surplus'].max(), cost_df['Price_Shortage'].max()])
+    # xl = np.array([cost_df['Price_Surplus'].min(), cost_df['Price_Shortage'].min()])
+    # xu = np.array([cost_df['Price_Surplus'].max(), cost_df['Price_Shortage'].max()])
+    xl = np.array([0.3, 0])
+    xu = np.array([0.6, 0.17])
 
     ## FOR PSO
     ## Determine termination criterium (FOR PSO)

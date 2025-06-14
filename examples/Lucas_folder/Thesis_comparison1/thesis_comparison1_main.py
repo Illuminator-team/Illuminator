@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'O
 
 from PSO_alg_p import run_pso, run_pso_p
 from GA_alg_p import run_ga, run_ga_p
-from LBFGSB_alg import run_LBFGSB
+from LBFGSB_alg import run_LBFGSB, run_LBFGSB2
 from cost_fun import *
 import numpy as np
 import os
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB' #"GA_P" # 
+    alg = 'LBFGSB2' #"GA_P" # 
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
@@ -108,6 +108,22 @@ if __name__ == "__main__":
             for i , (name, param) in enumerate(dec_vars):
                 params[param] = result.x[i] 
             cost = result.fun
+
+        case 'LBFGSB2':
+            result = run_LBFGSB2(scenario=source_scenario,
+                                scenario_temp_path=scenario_temp_path,
+                                output_path=output_path,
+                                dec_vars_map=dec_vars,
+                                cost_fun=cost_fun,
+                                xl=xl,
+                                xu=xu,
+                                epsilons=epsilons
+                                        )
+            params = {}
+            for i , (name, param) in enumerate(dec_vars):
+                params[param] = result.x[i] 
+            cost = result.fun
+
         case 'GA':
             result = run_ga(scenario=source_scenario,
                         scenario_temp_path=scenario_temp_path,
