@@ -3,11 +3,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
+label_font_size = 18
+tick_font_size = 14
+linewidth = 2
+marker_size = 30
+
 # Generate timestamps: every 15 minutes for one month
 start_time = datetime(2025, 4, 1)
 end_time = datetime(2025, 5, 1)  # One full month
 timestamps = pd.date_range(start=start_time, end=end_time, freq='15min')[:-1]
 
+#Plotting params
+linewidth = 2
+label_font_size = 18
+tick_font_size = 14
 # Generate synthetic hydrogen demand (kg) for each 15-minute interval
 demand = []
 for ts in timestamps:
@@ -94,13 +103,16 @@ print(f"Production saved to {production_file_name}")
 df_demand = pd.read_csv(demand_file_name, header=1, names=["Time", "demand"], parse_dates=["Time"])
 df_production = pd.read_csv(production_file_name, header=1, names=["Time", "production"], parse_dates=["Time"])
 
-plt.figure(figsize=(14, 6))
-plt.plot(df_demand['Time'], df_demand['demand'], label='Demand (kg)', color='blue', linewidth=1)
-plt.plot(df_production['Time'], df_production['production'], label='Production (kg)', color='orange', linewidth=1)
-plt.title("Hydrogen Demand and Electrolyzer Production (15-min Intervals Over 1 Month)")
-plt.xlabel("Time")
-plt.ylabel("Hydrogen (kg)")
+plt.figure(figsize=(8, 5))
+plt.plot(df_demand['Time'], df_demand['demand'], label='Demand', color='blue', linewidth=linewidth)
+plt.plot(df_production['Time'], df_production['production'], label='Production', color='orange', linewidth=linewidth)
+# plt.title("Hydrogen Demand and Electrolyzer Production (15-min Intervals Over 1 Month)")
+plt.xlabel("Time", fontsize=label_font_size)
+plt.ylabel("Hydrogen [kg]", fontsize=label_font_size)
+plt.xlim(df_demand['Time'].min(), df_demand['Time'].max())
+plt.xticks(fontsize=tick_font_size)
+plt.yticks(fontsize=tick_font_size)
 plt.grid(True)
-plt.legend()
+plt.legend(fontsize=tick_font_size)
 plt.tight_layout()
 plt.show()

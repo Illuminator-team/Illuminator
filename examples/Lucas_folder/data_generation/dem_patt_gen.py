@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 
+
+
 np.random.seed(42)
 days = 30       # days
 resolution = 15 # min

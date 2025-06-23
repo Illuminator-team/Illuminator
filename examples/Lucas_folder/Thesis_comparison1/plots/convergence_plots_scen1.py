@@ -14,12 +14,14 @@ GA_file_name =  './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_live_log_1w01_01_n9_g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
 LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB2_pop9'
+plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario1'
+figs = []
+
 
 label_font_size = 18
 tick_font_size = 14
 linewidth = 2
 marker_size = 30
-
 
 
 
@@ -57,10 +59,10 @@ num_generations = particle_traject_matrix.shape[1]
 
 # --- 1: Fitness per Solution (Search Space) ---
 
-plt.figure(figsize=(8, 5))
+fig1_1 = plt.figure(figsize=(8, 5))
 plt.scatter(df['solution'], df['fitness_log'], alpha=0.6, s=marker_size, color='purple')
 # plt.title('Search Space (Log-Scaled Fitness)')
-plt.xlabel('Solution', fontsize=label_font_size)
+plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
 plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
 plt.xlim(100, 600)
 plt.ylim(2.5, 5.6)
@@ -68,10 +70,10 @@ plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True)
 plt.tight_layout()
-
+figs.append((fig1_1, 'PSO_scenario1_SearchSpace.png'))
 
 # --- 2: Global best fitness per Generation ---
-plt.figure(figsize=(8, 5))
+fig1_2 = plt.figure(figsize=(8, 5))
 plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=linewidth)
 # plt.title('PSO Convergence Plot')
 plt.xlim(1, num_generations +0.5)
@@ -82,10 +84,10 @@ plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True)
 plt.tight_layout()
-
+figs.append((fig1_2, 'PSO_scenario1_global_fitness_per_gen.png'))
 
 # --- 3: Particle trajectory ---
-plt.figure(figsize=(8, 5))
+fig1_3 = plt.figure(figsize=(8, 5))
 for particle in range(pop_size):
     plt.plot((particle_traject_matrix[particle][:]), label=f'particle {particle+1}', linewidth=linewidth)
 plt.xticks(ticks=np.arange(num_generations), labels=np.arange(1, num_generations + 1), fontsize=tick_font_size)
@@ -97,11 +99,11 @@ plt.ylabel('Buffer size [Kg]', fontsize=label_font_size)
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-
-print(particle_fitness_matrix)
+figs.append((fig1_3, 'PSO_scenario1_particle_trajcectory_solution.png'))
+# print(particle_fitness_matrix)
 
 # 4: Fitness per iteration
-plt.figure(figsize=(8, 5))
+fig1_4 = plt.figure(figsize=(8, 5))
 for particle in range(pop_size):
     plt.plot((particle_fitness_matrix[particle][:]), label=f'particle {particle+1}', linewidth=linewidth)
     plt.scatter(0, df['fitness_log'].iloc[particle], 
@@ -122,7 +124,7 @@ plt.xlim(0, num_generations -0.5)
 plt.ylim(2.5, 5.6)
 plt.grid(True, zorder=1)
 plt.tight_layout()
-
+figs.append((fig1_4, 'PSO_scenario1_particle_trajcectory_fitness.png'))
 
 
 
@@ -158,10 +160,10 @@ print('num generations =', num_generations)
 
 # --- 1: Fitness per Solution (Search Space) ---
 df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
-plt.figure(figsize=(8, 5))
+fig2_1 = plt.figure(figsize=(8, 5))
 plt.scatter(df['solution'], df['fitness_log'], alpha=0.6, s=marker_size, color='purple')
 # plt.title('Search Space (Log-Scaled Fitness)')
-plt.xlabel('Solution', fontsize=label_font_size)
+plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
 plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
@@ -169,10 +171,11 @@ plt.xlim(100, 600)
 plt.ylim(2.5, 5.6)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig2_1, 'GA_scenario1_SearchSpace.png'))
 
 
 # --- 2: Global best fitness per Generation ---
-plt.figure(figsize=(8, 5))
+fig2_2 = plt.figure(figsize=(8, 5))
 plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=linewidth)
 
 
@@ -186,10 +189,10 @@ plt.ylim(410, 480)
 # plt.legend()
 plt.grid(True)
 plt.tight_layout()
-
+figs.append((fig2_2, 'GA_scenario1_global_fitness_per_gen.png'))
 # --- 3: Particle trajectory (solution per iteration) ---
 
-plt.figure(figsize=(8, 5))
+fig2_3 = plt.figure(figsize=(8, 5))
 
 for particle in range(pop_size):
     generations = np.arange(num_generations)
@@ -209,11 +212,11 @@ plt.xticks(fontsize=tick_font_size)
 # plt.legend()
 plt.grid(True, zorder=1)
 plt.tight_layout()
-
+figs.append((fig2_3, 'GA_scenario1_particle_trajcectory_solution.png'))
 
 # --- 4: Fitness per iteration ---
 df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
-plt.figure(figsize=(8, 5))
+fig2_4 = plt.figure(figsize=(8, 5))
 plt.scatter(df['generation'], df['fitness_log'], alpha=0.6, s=marker_size, color='blue', zorder=5, clip_on=False)
 ax = plt.gca()
 for spine in ax.spines.values():
@@ -227,7 +230,7 @@ plt.xlim(1, num_generations + 0.5)
 plt.ylim(2.5, 5.6)
 plt.grid(True, zorder=1)
 plt.tight_layout()
-
+figs.append((fig2_4, 'GA_scenario1_particle_trajcectory_fitness.png'))
 # plt.show()
 
 ## LBFGSB plots ##
@@ -302,7 +305,7 @@ print(num_iterations)
 markers = itertools.cycle(('o', 's', '^', 'v', 'D', 'P', '*', 'X', 'H'))
 
 # --- 1: Search space plot ---
-plt.figure(figsize=(8, 5))
+fig3_1 = plt.figure(figsize=(8, 5))
 for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "buffer_size"])
     
@@ -327,10 +330,11 @@ plt.yticks(fontsize=tick_font_size)
 # plt.title('L-BFGS-B: Search Space Exploration (Parallel)')
 plt.grid(True, zorder=1)
 plt.tight_layout()
+figs.append((fig3_1, 'LBFGSB2_scenario1_SearchSpace.png'))
 
 
 # --- 3: Particle trajectory (solution per iteration) ---
-plt.figure(figsize=(8,5))
+fig3_3a = plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "buffer_size"])
     
@@ -347,10 +351,11 @@ plt.xlim(1, num_iterations +0.5)
 # plt.ylim(410, 480)
 plt.grid(True, zorder=1)
 plt.tight_layout()
+figs.append((fig3_3a, 'LBFGSB2_scenario1_particle_trajcectory_solution1.png'))
 
 
 # --- 3b: Particle trajectory (solution per iteration) (incl. fitness colorbar) ---
-plt.figure(figsize=(8, 5))
+fig3_3b = plt.figure(figsize=(8, 5))
 
 all_fitness = []
 all_buffer_sizes = []
@@ -411,10 +416,10 @@ plt.xlim(1, num_iterations +0.5)
 # plt.title('L-BFGS-B: Solutions (Parallel)')
 plt.grid(True, zorder=1)
 plt.tight_layout()
-
+figs.append((fig3_3b, 'LBFGSB2_scenario1_particle_trajcectory_solution2.png'))
 
 # --- 2: Global best fitness per Generation ---
-plt.figure(figsize=(8, 5))
+fig3_2 = plt.figure(figsize=(8, 5))
 plt.plot(merged_df['iter'], merged_df['min_fitness'], label='Best per generation', color='orange', linewidth=linewidth)
 plt.xlabel('Iteration', fontsize=label_font_size)
 plt.ylabel('Global best fitness', fontsize=label_font_size)
@@ -428,10 +433,11 @@ plt.ylim(410, 480)
 # plt.legend()
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig3_2, 'LBFGSB2_scenario1_global_fitness_per_gen.png'))
 
 
 # 4: Fitness per iteration
-plt.figure(figsize=(8, 5))
+fig3_4 = plt.figure(figsize=(8, 5))
 
 for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "buffer_size"])
@@ -459,5 +465,15 @@ plt.ylim(2.5, 5.6)
 # plt.title('L-BFGS-B: Convergence Plot (Parallel)')
 plt.grid(True, zorder=1)
 plt.tight_layout()
+figs.append((fig3_4, 'LBFGSB2_scenario1_particle_trajcectory_fitness.png'))
+
 plt.show()
 
+save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
+if save_all:
+    os.makedirs(plot_saving_dir, exist_ok=True)
+
+    for fig, ffilename in figs:
+        path = os.path.join(plot_saving_dir, ffilename)
+        fig.savefig(path, dpi=300)
+        print(f"Saved {fig} as {ffilename}")

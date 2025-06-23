@@ -1,6 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+#Plotting params
+label_font_size = 18
+tick_font_size = 14
+linewidth = 2
+marker_size = 30
+
 df_loads = pd.read_csv('C:/Users/31633/Python_projects/Illuminator/examples/Lucas_folder/Thesis_comparison2/data/household_power_consumption_15min_complete.csv', header=1)
 # Convert 'date' column to datetime (ensure correct day/month ordering)
 
@@ -88,6 +94,22 @@ fig.autofmt_xdate()  # rotates x-axis labels if they're datetime
 ax1.grid(True)
 fig.tight_layout()
 
+tick_every = 96  # adjust this based on your frequency
+xticks = df_sim_out['date'][::tick_every]
+
+fi_2 = plt.figure(figsize=(8, 6))
+plt.plot(df_sim_out['date'], pv_tot, label='Solar generation', linewidth=linewidth)
+plt.plot(df_sim_out['date'], load_dem_tot,label='Total demand', linewidth=linewidth)
+plt.xlabel('Time', fontsize=label_font_size)
+plt.ylabel('Power [kW]', fontsize=label_font_size)
+plt.xticks(ticks=xticks, fontsize=tick_font_size)
+plt.yticks(fontsize=tick_font_size)
+plt.xlim(0, 7*4*24-1)
+# plt.ylim(-2, 2)
+plt.legend()
+# plt.title('PSO: Search Space Exploration')
+# plt.grid(True)
+plt.tight_layout()
 plt.show()
 
 

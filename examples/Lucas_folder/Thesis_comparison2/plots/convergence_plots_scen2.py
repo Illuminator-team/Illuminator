@@ -13,6 +13,8 @@ GA_file_name = './examples/Lucas_folder/Thesis_comparison2/data/GA_live_log_1w01
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_live_log_1w01_01_n9_g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
 LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/multiple_instances_LBFGSB2w01_01_eps_1e1'
+plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario2'
+figs = []
 
 label_font_size = 18
 tick_font_size = 14
@@ -45,7 +47,7 @@ df['x1'] = df['solution'].apply(lambda x: x[0])
 df['x2'] = df['solution'].apply(lambda x: x[1])
 print(df.loc[df["fitness"].idxmin()])
 # df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
-plt.figure(figsize=(8, 6))
+fig1_1a = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
@@ -58,10 +60,11 @@ plt.ylim(-2, 2)
 # plt.title('PSO: Search Space Exploration')
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig1_1a, 'PSO_scenario2_SearchSpace_x1x2.png'))
 
 # --- Plot 1b: Search Space in 3d ---
-fig = plt.figure(figsize=(8, 5))
-ax = fig.add_subplot(111, projection='3d')
+fig1_1b = plt.figure(figsize=(8, 5))
+ax = fig1_1b.add_subplot(111, projection='3d')
 
 # Plot 3D scatter
 sc = ax.scatter(df['x1'], df['x2'], df['fitness'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
@@ -79,11 +82,11 @@ plt.yticks(fontsize=tick_font_size)
 cbar = plt.colorbar(sc)
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.tight_layout()
-
+figs.append((fig1_1b, 'PSO_scenario2_SearchSpace_3d.png'))
 
 # --- Plot 1c: Search Space x1 ---
 df['x1'] = df['solution'].apply(lambda x: x[0])
-plt.figure(figsize=(8, 6))
+fig1_1c = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
@@ -95,10 +98,11 @@ plt.yticks(fontsize=tick_font_size)
 plt.xlim(-2, 2)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig1_1c, 'PSO_scenario2_SearchSpace_x1.png'))
 
 # --- Plot 1d: Search Space x2 ---
 df['x2'] = df['solution'].apply(lambda x: x[1])
-plt.figure(figsize=(8, 6))
+fig1_1d = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
@@ -110,9 +114,10 @@ plt.yticks(fontsize=tick_font_size)
 plt.xlim(-2, 2)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig1_1d, 'PSO_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence over generations ---
-plt.figure(figsize=(8, 5))
+fig1_2 = plt.figure(figsize=(8, 5))
 plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=2)
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
@@ -127,9 +132,10 @@ plt.yticks(fontsize=tick_font_size)
 plt.ylim(bottom=-240)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig1_2, 'PSO_scenario2_global_fitness_per_gen.png'))
 
 # --- Plot 3a: Particle trajectories x1 ---
-plt.figure(figsize=(8, 5))
+fig1_3a = plt.figure(figsize=(8, 5))
 for i in range(pop_size):
     plt.plot(particle_traject_matrix[i, :, 0], label=f'Particle {i+1}', linewidth=linewidth)
 plt.xlabel('Generation', fontsize=label_font_size)
@@ -139,9 +145,10 @@ plt.xlim(0, num_gens - 0.5)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True)
 plt.legend()
+figs.append((fig1_3a, 'PSO_scenario2_particle_trajcectory_solutionx1.png'))
 
 # --- Plot 3b: Particle trajectories x2 ---
-plt.figure(figsize=(8, 5))
+fig1_3b = plt.figure(figsize=(8, 5))
 for i in range(pop_size):
     plt.plot(particle_traject_matrix[i, :, 1], label=f'Particle {i+1}', linewidth=linewidth)
 plt.xlabel('Generation', fontsize=label_font_size)
@@ -151,6 +158,7 @@ plt.xticks(ticks=np.arange(num_gens), labels=np.arange(1, num_gens+1), fontsize=
 plt.xlim(0, num_gens - 0.5)
 plt.grid(True)
 plt.legend()
+figs.append((fig1_3b, 'PSO_scenario2_particle_trajcectory_solutionx2.png'))
 # plt.show()
 
 # --- Plot 3: Particle trajectory for x1 and x2 ---
@@ -205,7 +213,7 @@ for row_ix in range(pop_size):
 df['x1'] = df['solution'].apply(lambda x: x[0])
 df['x2'] = df['solution'].apply(lambda x: x[1])
 # df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
-plt.figure(figsize=(8, 6))
+fig2_1a = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
@@ -218,10 +226,12 @@ plt.ylim(-2, 2)
 # plt.title('GA: Search Space Exploration')
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig2_1a, 'GA_scenario2_SearchSpace_x1x2.png'))
+
 
 # --- Plot 1b: Search Space in 3d ---
-fig = plt.figure(figsize=(8, 5))
-ax = fig.add_subplot(111, projection='3d')
+fig2_1b = plt.figure(figsize=(8, 5))
+ax = fig2_1b.add_subplot(111, projection='3d')
 
 # Plot 3D scatter
 sc = ax.scatter(df['x1'], df['x2'], df['fitness'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
@@ -239,10 +249,11 @@ plt.yticks(fontsize=tick_font_size)
 cbar = plt.colorbar(sc)
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.tight_layout()
+figs.append((fig2_1b, 'GA_scenario2_SearchSpace_3d.png'))
 
 # --- Plot 1c: Search Space x1 ---
 df['x1'] = df['solution'].apply(lambda x: x[0])
-plt.figure(figsize=(8, 6))
+fig2_1c = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
@@ -254,10 +265,11 @@ plt.yticks(fontsize=tick_font_size)
 plt.xlim(-2, 2)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig2_1c, 'GA_scenario2_SearchSpace_x1.png'))
 
 # --- Plot 1d: Search Space x2 ---
 df['x2'] = df['solution'].apply(lambda x: x[1])
-plt.figure(figsize=(8, 6))
+fig2_1d = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
@@ -269,9 +281,10 @@ plt.yticks(fontsize=tick_font_size)
 plt.xlim(-2, 2)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig2_1d, 'GA_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence over generations ---
-plt.figure(figsize=(8, 5))
+fig2_2 = plt.figure(figsize=(8, 5))
 plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=linewidth)
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=linewidth)
 # plt.title('GA Convergence Plot')
@@ -283,6 +296,7 @@ plt.yticks(fontsize=tick_font_size)
 plt.xlim(1, num_gens + 0.5)
 plt.grid(True)
 plt.tight_layout()
+figs.append((fig2_2, 'GA_scenario2_global_fitness_per_gen.png'))
 
 # # --- Plot 3: Particle trajectory for x1 and x2 ---
 # # Plot x1
@@ -307,7 +321,7 @@ plt.tight_layout()
 # axes[1].set_ylabel('x2 Value')
 # axes[1].grid(True)
 # --- Plot 3a: Particle trajectories x1 ---
-plt.figure(figsize=(8, 5))
+fig2_3a = plt.figure(figsize=(8, 5))
 for i in range(pop_size):
     generations = range(particle_traject_matrix.shape[1])
     x1_vals = particle_traject_matrix[i, :, 0]
@@ -321,9 +335,10 @@ plt.xticks(ticks=np.arange(num_gens), labels=np.arange(1, num_gens+1), fontsize=
 plt.xlim(0, num_gens - 0.5)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True, zorder=1)
+figs.append((fig2_3a, 'GA_scenario2_particle_trajcectory_solutionx1.png'))
 
 # --- Plot 3b: Particle trajectories x2 ---
-plt.figure(figsize=(8, 5))
+fig2_3b = plt.figure(figsize=(8, 5))
 for i in range(pop_size):
     generations = range(particle_traject_matrix.shape[1])
     x2_vals = particle_traject_matrix[i, :, 1]
@@ -337,6 +352,7 @@ plt.xticks(ticks=np.arange(num_gens), labels=np.arange(1, num_gens+1), fontsize=
 plt.xlim(0, num_gens - 0.5)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True, zorder=1)
+figs.append((fig2_3b, 'GA_scenario2_particle_trajcectory_solutionx2.png'))
 
 
 # # --- Plot 3b: Particle trajectories x2 ---
@@ -426,7 +442,7 @@ num_iterations = len(merged_df['iter'])
 markers = itertools.cycle(('o', 's', '^', 'v', 'D', 'P', '*', 'X', 'H'))
 
 # --- Plot 1: Search Space Plot ---
-plt.figure(figsize=(8, 5))
+fig3_1a = plt.figure(figsize=(8, 5))
 
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
@@ -448,6 +464,7 @@ plt.ylim(-2, 2.5)
 plt.grid(True)
 # plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
+figs.append((fig3_1a, 'LBFGSB2_scenario2_SearchSpace_x1x2.png'))
 # plt.figure(figsize=(8, 5))
 
 # # sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
@@ -474,8 +491,8 @@ vmax = np.max(all_fitness)
 norm = Normalize(vmin=vmin, vmax=vmax)
 
 # Plotting
-fig = plt.figure(figsize=(8, 5))
-ax = fig.add_subplot(111, projection='3d')
+fig3_1b = plt.figure(figsize=(8, 5))
+ax = fig3_1b.add_subplot(111, projection='3d')
 
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
@@ -498,9 +515,10 @@ cbar = plt.colorbar(sc)
 cbar.set_label('Fitness', fontsize=label_font_size)
 
 plt.tight_layout()
+figs.append((fig3_1b, 'LBFGSB2_scenario2_SearchSpace_3d.png'))
 
 # --- Plot 1c: Search space plot x1 ---
-plt.figure(figsize=(8, 5))
+fig3_1c = plt.figure(figsize=(8, 5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
     
@@ -518,9 +536,10 @@ plt.xlim(-2, 2.5)
 plt.grid(True)
 # plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
+figs.append((fig3_1c, 'LBFGSB2_scenario2_SearchSpace_x1.png'))
 
 # --- Plot 1d: Search space plot x2 ---
-plt.figure(figsize=(8, 5))
+fig3_1d = plt.figure(figsize=(8, 5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
     
@@ -538,9 +557,10 @@ plt.xlim(-2, 2.5)
 plt.grid(True)
 # plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
+figs.append((fig3_1d, 'LBFGSB2_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence Plot ---
-plt.figure(figsize=(8, 5))
+fig3_2 = plt.figure(figsize=(8, 5))
 
 for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
@@ -568,10 +588,10 @@ plt.xlim(1, num_iterations + 0.5)
 plt.grid(True, zorder=1)
 plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
-
+figs.append((fig3_2, 'LBFGSB2_scenario2_global_fitness_per_gen.png'))
 
 # --- Plot 3a: Particle trajectory x1 ---
-plt.figure(figsize=(8,5))
+fig3_3a = plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
     
@@ -595,9 +615,10 @@ plt.ylim(-2, 2.5)
 plt.grid(True, zorder=1)
 # plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
+figs.append((fig3_3a, 'LBFGSB2_scenario2_particle_trajcectory_solutionx1.png'))
 
 # --- Plot 3b: Particle trajectory x2 ---
-plt.figure(figsize=(8,5))
+fig3_3b = plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
     
@@ -621,6 +642,7 @@ plt.ylim(-2, 2.5)
 plt.grid(True, zorder=1)
 # plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
+figs.append((fig3_3b, 'LBFGSB2_scenario2_particle_trajcectory_solutionx2.png'))
 
 # # --- Plot 3a: Particle trajectory x1 ---
 # plt.figure(figsize=(8,5))
@@ -688,3 +710,11 @@ plt.tight_layout()
 
 plt.show()
 
+save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
+if save_all:
+    os.makedirs(plot_saving_dir, exist_ok=True)
+
+    for fig, ffilename in figs:
+        path = os.path.join(plot_saving_dir, ffilename)
+        fig.savefig(path, dpi=300)
+        print(f"Saved {fig} as {ffilename}")

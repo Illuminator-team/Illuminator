@@ -4,8 +4,9 @@ import os
 from scipy.optimize import minimize
 from multiprocessing import Pool
 import random
-random.seed(42)  # For reproducibility
+random.seed(1)  # For reproducibility
 import csv
+import datetime
 
 
 n_cores =  os.cpu_count() - 3
@@ -22,7 +23,7 @@ class LBFGSB_logger:
         self.iter = 0
         with open(self.logfile, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["iter", "fitness", "solution"])
+            writer.writerow(["iter", "fitness","timestep", "solution"])
 
         with open(self.grad_logfile, mode='w', newline='') as file:
             writer = csv.writer(file)
@@ -30,9 +31,10 @@ class LBFGSB_logger:
 
     def log(self, x, f):
         self.iter += 1
+        current_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
         with open(self.logfile, mode='a', newline = '') as file:
             writer = csv.writer(file)
-            writer.writerow([self.iter, f]+ list(x))
+            writer.writerow([self.iter, f, current_time] + list(x))
 
     def log_grad(self, grad):
         with open(self.grad_logfile, mode='a', newline = '') as file:
@@ -214,7 +216,7 @@ def run_single_LBFGSB(x0, scenario, scenario_temp_path, output_path, dec_vars_ma
                       jac=FD_alg2,
                       bounds=list(zip(xl, xu)),
                       method="L-BFGS-B",
-                      options={"maxiter": 20,
+                      options={"maxiter": 100,
                                "disp": True}
                                )
 
@@ -226,7 +228,9 @@ def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fu
     x0_matrix = np.zeros((n_instances, len(dec_vars_map)))
 
     for var in range(len(dec_vars_map)):
-        x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_instances)
+        # x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_instances)
+        x0_matrix[:, var] = np.random.uniform(low=xl[var], high=xu[var], size=n_instances)
+
         # x0_matrix[:, var] = (xu[var] + xl[var]) / 2
     print(x0_matrix)
     args_list = [
