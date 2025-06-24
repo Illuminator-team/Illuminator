@@ -34,7 +34,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB2'     # 'LBFGSB2' #'LBFGSB' # "GA_P" #
+    alg = 'LBFGSB2' # 'GA_P'     # 'LBFGSB' # "GA_P" #
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1

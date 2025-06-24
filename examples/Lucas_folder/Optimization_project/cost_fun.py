@@ -51,9 +51,9 @@ def cost_fun2(df: pd.DataFrame):
     
     price_short = price_df['Price_Shortage'][:len(dump)]
     price_surplus = price_df['Price_Surplus'][:len(dump)]
-    cost = pd.Series(np.where(dump > 0, dump * -price_surplus, -dump*price_short))
+    cost = pd.Series(np.where(dump > 0, (dump * -price_surplus)*0.25, (-dump*price_short)*0.25))
     tot_cost = cost.sum()
- 
+    
     return tot_cost
 
 def cost_fun_presentation(df: pd.DataFrame, x):
