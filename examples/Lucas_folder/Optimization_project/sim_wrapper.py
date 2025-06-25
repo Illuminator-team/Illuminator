@@ -31,8 +31,8 @@ def eval_sim(original_scenario: str, scenario_temp_path: str, output_path: str, 
     # print(f"DEBUG: A NEW PROCESS STARTED FOR SCENARIO {scenario}")
     # print("Function called so many times: ", eval_sim.call_count)
     df = read_csv_out(output_path)
-    result = cost_fun(df)
-    # result = cost_fun(df, x)
+    # result = cost_fun(df)
+    result = cost_fun(df, x)
     # print(f"DEBUG: CSV read with result = {result}")
     return result
 
