@@ -7,12 +7,12 @@ import ast
 import os
 import glob
 # Load the CSV file into a DataFrame
-# PSO_file_name = './examples/Lucas_folder/Thesis_comparison2/data/PSO_live_log_1d01_01_n9g10.csv'
-PSO_file_name = './examples/Lucas_folder/Thesis_comparison2/data/PSO_live_log_1w01_01_n9g10.csv'
-GA_file_name = './examples/Lucas_folder/Thesis_comparison2/data/GA_live_log_1w01_01_n9_g10.csv'
+
+PSO_file_name = './examples/Lucas_folder/Thesis_comparison2/data/PSO_live_log_1w01_01_n9g100_seed42.csv'
+GA_file_name = './examples/Lucas_folder/Thesis_comparison2/data/GA_live_log_1w01_01_n9g100_seed1.csv'
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_live_log_1w01_01_n9_g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
-LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/multiple_instances_LBFGSB2w01_01_eps_1e1'
+LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_p_1w_n9_g100_seed_no'
 plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario2'
 figs = []
 
@@ -22,33 +22,33 @@ linewidth = 2
 marker_size = 30
 
 ## PSO plots ##
-df = pd.read_csv(PSO_file_name)
-df['fitness'] = df['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
-df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
+df_pso = pd.read_csv(PSO_file_name)
+df_pso['fitness'] = df_pso['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
+df_pso['solution'] = df_pso['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
 
 
 # -- Convergence Data --
-best_fitness_per_gen = df.groupby('generation')['fitness'].min()
+best_fitness_per_gen = df_pso.groupby('generation')['fitness'].min()
 global_best_fitness = best_fitness_per_gen.cummin()
 
 pop_size = 9
-num_gens = int(len(df) / pop_size)
+num_gens = int(len(df_pso) / pop_size)
 
 # Create 3D trajectory matrix: (particles, generations, variables)
 particle_traject_matrix = np.zeros((pop_size, num_gens, 2))
 
 for row_ix in range(pop_size):
-    indices = np.arange(row_ix, len(df), pop_size)
+    indices = np.arange(row_ix, len(df_pso), pop_size)
     for j, idx in enumerate(indices):
-        particle_traject_matrix[row_ix, j, :] = df['solution'].iloc[idx]
+        particle_traject_matrix[row_ix, j, :] = df_pso['solution'].iloc[idx]
 
 # --- Plot 1: Search Space colored by fitness ---
-df['x1'] = df['solution'].apply(lambda x: x[0])
-df['x2'] = df['solution'].apply(lambda x: x[1])
-print(df.loc[df["fitness"].idxmin()])
-# df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
+df_pso['x1'] = df_pso['solution'].apply(lambda x: x[0])
+df_pso['x2'] = df_pso['solution'].apply(lambda x: x[1])
+print(df_pso.loc[df_pso["fitness"].idxmin()])
+# df_pso['fitness_log'] = np.log10(df_pso['fitness'] + 1e-8)
 fig1_1a = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
+sc = plt.scatter(df_pso['x1'], df_pso['x2'], c=df_pso['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -67,7 +67,7 @@ fig1_1b = plt.figure(figsize=(8, 5))
 ax = fig1_1b.add_subplot(111, projection='3d')
 
 # Plot 3D scatter
-sc = ax.scatter(df['x1'], df['x2'], df['fitness'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
+sc = ax.scatter(df_pso['x1'], df_pso['x2'], df_pso['fitness'], c=df_pso['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 
 # Label axes
 ax.set_xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -85,9 +85,9 @@ plt.tight_layout()
 figs.append((fig1_1b, 'PSO_scenario2_SearchSpace_3d.png'))
 
 # --- Plot 1c: Search Space x1 ---
-df['x1'] = df['solution'].apply(lambda x: x[0])
+df_pso['x1'] = df_pso['solution'].apply(lambda x: x[0])
 fig1_1c = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
+sc = plt.scatter(df_pso['x1'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c=df_pso['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -101,9 +101,9 @@ plt.tight_layout()
 figs.append((fig1_1c, 'PSO_scenario2_SearchSpace_x1.png'))
 
 # --- Plot 1d: Search Space x2 ---
-df['x2'] = df['solution'].apply(lambda x: x[1])
+df_pso['x2'] = df_pso['solution'].apply(lambda x: x[1])
 fig1_1d = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
+sc = plt.scatter(df_pso['x1'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c=df_pso['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -189,32 +189,32 @@ figs.append((fig1_3b, 'PSO_scenario2_particle_trajcectory_solutionx2.png'))
 
 ## GA plots ##
 
-df = pd.read_csv(GA_file_name)
-df['fitness'] = df['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
-df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
+df_ga = pd.read_csv(GA_file_name)
+df_ga['fitness'] = df_ga['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
+df_ga['solution'] = df_ga['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
 
 
 # -- Convergence Data --
-best_fitness_per_gen = df.groupby('generation')['fitness'].min()
+best_fitness_per_gen = df_ga.groupby('generation')['fitness'].min()
 global_best_fitness = best_fitness_per_gen.cummin()
 
 pop_size = 9
-num_gens = int(len(df) / pop_size)
+num_gens = int(len(df_ga) / pop_size)
 
 # Create 3D trajectory matrix: (particles, generations, variables)
 particle_traject_matrix = np.zeros((pop_size, num_gens, 2))
 
 for row_ix in range(pop_size):
-    indices = np.arange(row_ix, len(df), pop_size)
+    indices = np.arange(row_ix, len(df_ga), pop_size)
     for j, idx in enumerate(indices):
-        particle_traject_matrix[row_ix, j, :] = df['solution'].iloc[idx]
+        particle_traject_matrix[row_ix, j, :] = df_ga['solution'].iloc[idx]
 
 # --- Plot 1: Search Space colored by fitness ---
-df['x1'] = df['solution'].apply(lambda x: x[0])
-df['x2'] = df['solution'].apply(lambda x: x[1])
-# df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
+df_ga['x1'] = df_ga['solution'].apply(lambda x: x[0])
+df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
+# df_ga['fitness_log'] = np.log10(df_ga['fitness'] + 1e-8)
 fig2_1a = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
+sc = plt.scatter(df_ga['x1'], df_ga['x2'], c=df_ga['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -234,7 +234,7 @@ fig2_1b = plt.figure(figsize=(8, 5))
 ax = fig2_1b.add_subplot(111, projection='3d')
 
 # Plot 3D scatter
-sc = ax.scatter(df['x1'], df['x2'], df['fitness'], c=df['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
+sc = ax.scatter(df_ga['x1'], df_ga['x2'], df_ga['fitness'], c=df_ga['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 
 # Label axesv
 ax.set_xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -252,9 +252,9 @@ plt.tight_layout()
 figs.append((fig2_1b, 'GA_scenario2_SearchSpace_3d.png'))
 
 # --- Plot 1c: Search Space x1 ---
-df['x1'] = df['solution'].apply(lambda x: x[0])
+df_ga['x1'] = df_ga['solution'].apply(lambda x: x[0])
 fig2_1c = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
+sc = plt.scatter(df_ga['x1'], df_ga['fitness'], alpha=0.7, s=marker_size) #, c=df_ga['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -268,9 +268,9 @@ plt.tight_layout()
 figs.append((fig2_1c, 'GA_scenario2_SearchSpace_x1.png'))
 
 # --- Plot 1d: Search Space x2 ---
-df['x2'] = df['solution'].apply(lambda x: x[1])
+df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
 fig2_1d = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df['x1'], df['fitness'], alpha=0.7, s=marker_size) #, c=df['fitness'], cmap='viridis')
+sc = plt.scatter(df_ga['x1'], df_ga['fitness'], alpha=0.7, s=marker_size) #, c=df_ga['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -372,21 +372,21 @@ figs.append((fig2_3b, 'GA_scenario2_particle_trajcectory_solutionx2.png'))
 
 ## LBFGSB plots ##
 
-# df = pd.read_csv(LBFGSB_file_name)
+# df_ga = pd.read_csv(LBFGSB_file_name)
 
-# # print(df['solution'].head())
+# # print(df_ga['solution'].head())
 
-# df['fitness'] = df['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
-# df['solution'] = df['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
+# df_ga['fitness'] = df_ga['fitness'].apply(lambda x: ast.literal_eval(x)[0])  # still a float
+# df_ga['solution'] = df_ga['solution'].apply(lambda x: ast.literal_eval(x))   # now a list like (x1, x2)
 
-# df['x1'] = df['solution'].apply(lambda x: x[0])
-# df['x2'] = df['solution'].apply(lambda x: x[1])
+# df_ga['x1'] = df_ga['solution'].apply(lambda x: x[0])
+# df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
 
 # # --- Plot 1: Fitness vs Solution (Search Space) ---
-# # df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
+# # df_ga['fitness_log'] = np.log10(df_ga['fitness'] + 1e-8)
 # plt.figure(figsize=(8, 5))
 
-# sc = plt.scatter(df['x1'], df['x2'], c=df['fitness'], cmap='viridis', alpha=0.7)
+# sc = plt.scatter(df_ga['x1'], df_ga['x2'], c=df_ga['fitness'], cmap='viridis', alpha=0.7)
 # plt.colorbar(sc, label='Fitness')
 # plt.xlabel('x1')
 # plt.ylabel('x2')
@@ -398,8 +398,8 @@ figs.append((fig2_3b, 'GA_scenario2_particle_trajcectory_solutionx2.png'))
 # # --- Plot 2: Convergence ---
 # plt.figure(figsize=(8, 5))
 
-# num_iter = len(df['fitness'])
-# plt.plot(df['fitness'])
+# num_iter = len(df_ga['fitness'])
+# plt.plot(df_ga['fitness'])
 # plt.xticks(ticks=np.arange(num_iter), labels=np.arange(1, num_iter + 1))
 # plt.title('Convergence Plot')
 # plt.xlabel('Iteration')
@@ -434,8 +434,11 @@ for file in log_files:
 merged_df = dfs[0]
 for df in dfs[1:]:
     merged_df = pd.merge(merged_df, df, on='iter', how='outer')
+df_lbfgsb = merged_df.copy()
 merged_df['min_fitness'] = merged_df.drop(columns='iter').min(axis=1).cummin()
 
+
+print(df_lbfgsb.head())
 num_iterations = len(merged_df['iter'])
 
 
@@ -708,7 +711,162 @@ figs.append((fig3_3b, 'LBFGSB2_scenario2_particle_trajcectory_solutionx2.png'))
 #     spine.set_zorder(1)
 # ax.patch.set_zorder(0)
 
-plt.show()
+# plt.show()
+
+# save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
+# if save_all:
+#     os.makedirs(plot_saving_dir, exist_ok=True)
+
+#     for fig, ffilename in figs:
+#         path = os.path.join(plot_saving_dir, ffilename)
+#         fig.savefig(path, dpi=300)
+#         print(f"Saved {fig} as {ffilename}")
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
+import ast
+
+
+def tidy_population_df(df, algorithm_name):
+    df = df.copy()
+
+    # Only evaluate if the value is a string
+    def parse_solution(val):
+        if isinstance(val, str):
+            return ast.literal_eval(val)
+        return val  # already a list
+
+    df['solution'] = df['solution'].apply(parse_solution)
+    df['fitness'] = df['fitness'].apply(lambda x: x[0] if isinstance(x, list) else x)
+
+    return pd.DataFrame({
+        'generation': df['generation'],
+        'x0': [sol[0] for sol in df['solution']],
+        'x1': [sol[1] for sol in df['solution']],
+        'fitness': df['fitness'],
+        'algorithm': algorithm_name
+    })
+
+
+### -----------------------------------------
+### 3. Convert L-BFGS-B to tidy format
+### -----------------------------------------
+
+def load_lbfgsb_folder(log_files):
+    all_rows = []
+    
+    for filename in log_files:
+        if not filename.endswith(".csv"):
+            continue  # skip non-csv files
+        df = pd.read_csv(filename, skiprows=1, names=['iter', 'fitness', 'x0', 'x1'])
+        for _, row in df.iterrows():
+            all_rows.append({
+                'generation': row['iter'],
+                'x0': row.iloc[2],  # first solution value
+                'x1': row.iloc[3],  # second solution value
+                'fitness': row['fitness'],
+                'algorithm': 'L-BFGS-B'
+            })
+
+    return pd.DataFrame(all_rows)
+
+# ---------- Step 3: Sample ~7 Evenly Spaced Generations ----------
+def filter_by_iterations(df, selected_iterations):
+    """
+    Filters the DataFrame for the specified iterations (generations).
+    """
+    return df[df['generation'].isin(selected_iterations)]
+
+def plot_iterations_grid(df, selected_iterations, n_cols=None, figsize=(16, 10), cmap='viridis'):
+    algorithms = df['algorithm'].unique()
+    n_rows = len(algorithms)
+    n_cols = n_cols if n_cols else len(selected_iterations)
+
+    # Global axis limits
+    # x_min, x_max = df['x0'].min(), df['x0'].max()
+    # y_min, y_max = df['x1'].min(), df['x1'].max()
+    x_min, x_max = -2, 2
+    y_min, y_max = -2 ,2
+
+    # Set up the main grid
+    fig_matrix, axes = plt.subplots(n_rows, n_cols, figsize=figsize, sharex=True, sharey=True,
+                             gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+
+    # Ensure axes is 2D
+    if n_rows == 1:
+        axes = np.expand_dims(axes, axis=0)
+    if n_cols == 1:
+        axes = np.expand_dims(axes, axis=1)
+
+    # Normalize colorbar range globally
+    norm = plt.Normalize(df['fitness'].min(), df['fitness'].max())
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+
+    for i, algo in enumerate(algorithms):
+        df_algo = df[df['algorithm'] == algo]
+        for j, gen in enumerate(selected_iterations):
+            ax = axes[i, j]
+            df_plot = df_algo[df_algo['generation'] == gen]
+
+            sc = ax.scatter(df_plot['x0'], df_plot['x1'], c=df_plot['fitness'], cmap=cmap, norm=norm)
+
+            ax.set_xlim(x_min, x_max)
+            ax.set_ylim(x_min, y_max)
+            
+            # Titles on top row
+            if i == 0:
+                ax.set_title(f"Iter {gen}", fontsize=10)
+
+            # Y-axis labels on leftmost column
+            if j == 0:
+                ax.set_yticks(ticks=np.linspace(y_min, y_max, 3), labels=np.linspace(y_min, y_max, 3).astype(int), fontsize=10)
+                # ax.tick_params(axis='y', labelsize=8)
+            # else:
+            #     ax.set_yticklabels([])
+            
+            if j == n_cols-1:
+                ax.yaxis.set_label_position("right")
+                ax.set_ylabel(algo, fontsize=10)
+
+            # X-axis labels on bottom row
+            if i == n_rows - 1:
+                # ax.set_xlabel("x0", fontsize=10)
+                ax.set_xticks(ticks=np.linspace(x_min, x_max, 3), labels=np.linspace(x_min, x_max, 3).astype(int), fontsize=10)
+                # ticks=np.arange(num_gens +1), labels=np.arange(0, num_gens+1), fontsize=tick_font_size)
+                # ax.tick_params(axis='x', labelsize=8)
+            else:
+                ax.set_xticklabels([])
+
+    # Add a single colorbar to the right
+    cbar_ax = fig_matrix.add_axes([0.92, 0.15, 0.015, 0.7])
+    cbar = fig_matrix.colorbar(sm, cax=cbar_ax)
+    cbar.set_label("Fitness", fontsize=10)
+
+    # Add common x and y labels for the whole figure
+    fig_matrix.text(0.5, 0.04, "Upper threshold [€/kWh]", ha='center', fontsize=label_font_size)
+    fig_matrix.text(0.04, 0.5, "Lower threshold [€/kWh]", va='center', rotation='vertical', fontsize=label_font_size)
+
+    plt.tight_layout(rect=[0.05, 0.05, 0.9, 0.95])
+    figs.append((fig_matrix, 'matrix_plot_all_algs.png'))
+    plt.show()
+
+
+df_pso_tidy = tidy_population_df(df_pso, 'PSO')
+df_ga_tidy = tidy_population_df(df_ga, 'GA')
+df_lbfgsb_tidy = load_lbfgsb_folder(log_files)
+
+df_all = pd.concat([df_pso_tidy, df_ga_tidy, df_lbfgsb_tidy], ignore_index=True)
+
+selected_iterations = [1, 5, 10, 15, 19, 20, 45]
+df_sampled = filter_by_iterations(df_all, selected_iterations)
+
+plot_iterations_grid(df_sampled, selected_iterations)
+
 
 save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
 if save_all:
@@ -718,3 +876,4 @@ if save_all:
         path = os.path.join(plot_saving_dir, ffilename)
         fig.savefig(path, dpi=300)
         print(f"Saved {fig} as {ffilename}")
+# plt.show()
