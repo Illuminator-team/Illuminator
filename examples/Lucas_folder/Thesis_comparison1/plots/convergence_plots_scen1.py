@@ -310,7 +310,7 @@ for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "buffer_size"])
     
     plt.scatter(df["buffer_size"], np.log10(df["fitness"]) + 1e-8, alpha=0.6,
-                label=f'Instance starting point {df["buffer_size"][0]}',s=marker_size,  zorder=5, clip_on=False) # os.path.basename(log_file))
+                label=f'Instance starting point {df["buffer_size"][0]}',s=marker_size,  zorder=5, clip_on=False, color='purple') # os.path.basename(log_file))
 
 ax = plt.gca()
 for spine in ax.spines.values():
@@ -319,7 +319,7 @@ for spine in ax.spines.values():
 handles, labels = plt.gca().get_legend_handles_labels()
 sorted_handles_labels = sorted(zip(labels, handles), key=lambda x: x[0])  # sort by label
 sorted_labels, sorted_handles = zip(*sorted_handles_labels)
-plt.legend(sorted_handles, sorted_labels, fontsize='x-small', loc='best')
+# plt.legend(sorted_handles, sorted_labels, fontsize='x-small', loc='best')
 
 plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
 plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)

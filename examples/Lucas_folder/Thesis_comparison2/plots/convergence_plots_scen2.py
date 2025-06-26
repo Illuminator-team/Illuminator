@@ -49,7 +49,7 @@ print(df_pso.loc[df_pso["fitness"].idxmin()])
 # df_pso['fitness_log'] = np.log10(df_pso['fitness'] + 1e-8)
 fig1_1a = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df_pso['x1'], df_pso['x2'], c=df_pso['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
-cbar = plt.colorbar()
+cbar = plt.colorbar(sc)
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -103,7 +103,7 @@ figs.append((fig1_1c, 'PSO_scenario2_SearchSpace_x1.png'))
 # --- Plot 1d: Search Space x2 ---
 df_pso['x2'] = df_pso['solution'].apply(lambda x: x[1])
 fig1_1d = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df_pso['x1'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c=df_pso['fitness'], cmap='viridis')
+sc = plt.scatter(df_pso['x2'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c=df_pso['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -129,7 +129,7 @@ plt.xlim(1, num_gens + 0.5)
 
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
-plt.ylim(bottom=-240)
+plt.ylim(bottom=-65)
 plt.grid(True)
 plt.tight_layout()
 figs.append((fig1_2, 'PSO_scenario2_global_fitness_per_gen.png'))
@@ -215,7 +215,7 @@ df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
 # df_ga['fitness_log'] = np.log10(df_ga['fitness'] + 1e-8)
 fig2_1a = plt.figure(figsize=(8, 6))
 sc = plt.scatter(df_ga['x1'], df_ga['x2'], c=df_ga['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
-cbar = plt.colorbar()
+cbar = plt.colorbar(sc)
 cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -228,6 +228,24 @@ plt.grid(True)
 plt.tight_layout()
 figs.append((fig2_1a, 'GA_scenario2_SearchSpace_x1x2.png'))
 
+# --- Plot 1: Search Space colored by fitness ---
+df_pso['x1'] = df_pso['solution'].apply(lambda x: x[0])
+df_pso['x2'] = df_pso['solution'].apply(lambda x: x[1])
+print(df_pso.loc[df_pso["fitness"].idxmin()])
+# df_pso['fitness_log'] = np.log10(df_pso['fitness'] + 1e-8)
+fig1_1a = plt.figure(figsize=(8, 6))
+sc = plt.scatter(df_pso['x1'], df_pso['x2'], c=df_pso['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
+cbar = plt.colorbar(sc)
+cbar.set_label('Fitness', fontsize=label_font_size)
+plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
+plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
+plt.xticks(fontsize=tick_font_size)
+plt.yticks(fontsize=tick_font_size)
+plt.xlim(-2, 2)
+plt.ylim(-2, 2)
+# plt.title('PSO: Search Space Exploration')
+plt.grid(True)
+plt.tight_layout()
 
 # --- Plot 1b: Search Space in 3d ---
 fig2_1b = plt.figure(figsize=(8, 5))
@@ -291,7 +309,12 @@ plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best pe
 plt.xlabel('Generation', fontsize=label_font_size)
 plt.ylabel('Fitness', fontsize=label_font_size)
 # plt.legend()
-plt.xticks(fontsize=tick_font_size)
+num_gens_ga = int(len(df_ga) / pop_size)
+ticks = np.arange(num_gens_ga + 1)
+label_interval=1
+tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
+plt.xticks(ticks=ticks, labels=tick_labels, fontsize=tick_font_size)
+plt.ylim(bottom=-65)
 plt.yticks(fontsize=tick_font_size)
 plt.xlim(1, num_gens + 0.5)
 plt.grid(True)
@@ -420,10 +443,11 @@ from matplotlib.colors import Normalize
 
 log_files = glob.glob(os.path.join(LBFGSB2_folder, "LBFGSB_live_log_*.csv"))
 
+
 dfs = []
 
 for file in log_files:
-    df = pd.read_csv(file, skiprows=1, names=['iter', 'fitness', 'x1', 'x2'], usecols=['iter', 'fitness'])
+    df = pd.read_csv(file, skiprows=1, names=['iter', 'fitness', 'timestep', 'x1', 'x2'], usecols=['iter', 'fitness'])
 
     run_label = os.path.basename(file)
     df = df.rename(columns={'fitness': run_label})
@@ -443,20 +467,29 @@ num_iterations = len(merged_df['iter'])
 
 
 markers = itertools.cycle(('o', 's', '^', 'v', 'D', 'P', '*', 'X', 'H'))
+all_fitness = []
+
+for log_file in log_files:
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
+    all_fitness.extend(df["fitness"].values)
+
+vmin = np.min(all_fitness)
+vmax = np.max(all_fitness)
+norm = Normalize(vmin=vmin, vmax=vmax)
 
 # --- Plot 1: Search Space Plot ---
 fig3_1a = plt.figure(figsize=(8, 5))
 
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
     
-    plt.scatter(df["x1"], df["x2"], c=df["fitness"], cmap='viridis', alpha=0.7,
+    plt.scatter(df["x1"], df["x2"], c=df["fitness"], cmap='viridis', norm=norm, alpha=0.7,
                 s=marker_size, label=os.path.basename(log_file)) #, marker=marker,)
 
 cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
 cbar.ax.yaxis.offsetText.set_visible(False)
-cbar.ax.tick_params(labelsize=tick_font_size)
+# cbar.ax.tick_params(labelsize=tick_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
@@ -483,22 +516,14 @@ figs.append((fig3_1a, 'LBFGSB2_scenario2_SearchSpace_x1x2.png'))
 # plt.tight_layout()
 
 # --- Plot 1b: 3d search space
-all_fitness = []
 
-for log_file in log_files:
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
-    all_fitness.extend(df["fitness"].values)
-
-vmin = np.min(all_fitness)
-vmax = np.max(all_fitness)
-norm = Normalize(vmin=vmin, vmax=vmax)
 
 # Plotting
 fig3_1b = plt.figure(figsize=(8, 5))
 ax = fig3_1b.add_subplot(111, projection='3d')
 
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness",'timestep', "x1", "x2"])
 
     sc = ax.scatter(
         df["x1"], df["x2"], df['fitness'],
@@ -523,10 +548,10 @@ figs.append((fig3_1b, 'LBFGSB2_scenario2_SearchSpace_3d.png'))
 # --- Plot 1c: Search space plot x1 ---
 fig3_1c = plt.figure(figsize=(8, 5))
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
     
     plt.scatter(df["x1"], df["fitness"], alpha=0.7,
-                label=os.path.basename(log_file), s=marker_size, color='blue') #,c=df["fitness"], cmap='viridis', marker=marker, 
+                label=os.path.basename(log_file), s=marker_size, color='#1f77b4') #,c=df["fitness"], cmap='viridis', marker=marker, 
 
 # plt.colorbar(label='Fitness')
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
@@ -544,10 +569,10 @@ figs.append((fig3_1c, 'LBFGSB2_scenario2_SearchSpace_x1.png'))
 # --- Plot 1d: Search space plot x2 ---
 fig3_1d = plt.figure(figsize=(8, 5))
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
     
     plt.scatter(df["x2"], df["fitness"], alpha=0.7,
-                label=os.path.basename(log_file), s=marker_size, color='blue') #,c=df["fitness"], cmap='viridis', marker=marker, 
+                label=os.path.basename(log_file), s=marker_size, color='#1f77b4') #,c=df["fitness"], cmap='viridis', marker=marker, 
 
 # plt.colorbar(label='Fitness')
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -566,7 +591,7 @@ figs.append((fig3_1d, 'LBFGSB2_scenario2_SearchSpace_x2.png'))
 fig3_2 = plt.figure(figsize=(8, 5))
 
 for log_file in log_files:
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
 
     if df.empty:
         print(f"Warning: {log_file} is empty or has no data rows.")
@@ -596,7 +621,7 @@ figs.append((fig3_2, 'LBFGSB2_scenario2_global_fitness_per_gen.png'))
 # --- Plot 3a: Particle trajectory x1 ---
 fig3_3a = plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
     
     plt.plot(df["iter"], df["x1"], label=os.path.basename(log_file), linewidth=linewidth)
     plt.scatter(df['iter'].iloc[0], df['x1'].iloc[0],
@@ -623,7 +648,7 @@ figs.append((fig3_3a, 'LBFGSB2_scenario2_particle_trajcectory_solutionx1.png'))
 # --- Plot 3b: Particle trajectory x2 ---
 fig3_3b = plt.figure(figsize=(8,5))
 for log_file, marker in zip(log_files, markers):
-    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", "x1", "x2"])
+    df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
     
     plt.plot(df["iter"], df["x2"], label=os.path.basename(log_file), linewidth=linewidth)
     plt.scatter(df['iter'].iloc[0], df['x2'].iloc[0],
@@ -762,15 +787,16 @@ def load_lbfgsb_folder(log_files):
     for filename in log_files:
         if not filename.endswith(".csv"):
             continue  # skip non-csv files
-        df = pd.read_csv(filename, skiprows=1, names=['iter', 'fitness', 'x0', 'x1'])
+        df = pd.read_csv(filename, skiprows=1, names=["iter", "fitness", 'timestep', "x0", "x1"])
         for _, row in df.iterrows():
             all_rows.append({
                 'generation': row['iter'],
-                'x0': row.iloc[2],  # first solution value
-                'x1': row.iloc[3],  # second solution value
+                'x0': row['x0'],  # first solution value
+                'x1': row['x1'],  # second solution value
                 'fitness': row['fitness'],
                 'algorithm': 'L-BFGS-B'
             })
+
 
     return pd.DataFrame(all_rows)
 
@@ -855,10 +881,10 @@ def plot_iterations_grid(df, selected_iterations, n_cols=None, figsize=(16, 10),
     figs.append((fig_matrix, 'matrix_plot_all_algs.png'))
     plt.show()
 
-
 df_pso_tidy = tidy_population_df(df_pso, 'PSO')
 df_ga_tidy = tidy_population_df(df_ga, 'GA')
 df_lbfgsb_tidy = load_lbfgsb_folder(log_files)
+
 
 df_all = pd.concat([df_pso_tidy, df_ga_tidy, df_lbfgsb_tidy], ignore_index=True)
 
