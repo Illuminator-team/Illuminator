@@ -28,8 +28,8 @@ df_pso['solution'] = df_pso['solution'].apply(lambda x: ast.literal_eval(x))   #
 
 
 # -- Convergence Data --
-best_fitness_per_gen = df_pso.groupby('generation')['fitness'].min()
-global_best_fitness = best_fitness_per_gen.cummin()
+best_fitness_per_gen_pso = df_pso.groupby('generation')['fitness'].min()
+global_best_fitness_pso = best_fitness_per_gen_pso.cummin()
 
 pop_size = 9
 num_gens = int(len(df_pso) / pop_size)
@@ -118,7 +118,7 @@ figs.append((fig1_1d, 'PSO_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence over generations ---
 fig1_2 = plt.figure(figsize=(8, 5))
-plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=2)
+plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label='Best per generation', color='orange', linewidth=2)
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
@@ -195,8 +195,8 @@ df_ga['solution'] = df_ga['solution'].apply(lambda x: ast.literal_eval(x))   # n
 
 
 # -- Convergence Data --
-best_fitness_per_gen = df_ga.groupby('generation')['fitness'].min()
-global_best_fitness = best_fitness_per_gen.cummin()
+best_fitness_per_gen_ga = df_ga.groupby('generation')['fitness'].min()
+global_best_fitness_ga = best_fitness_per_gen_ga.cummin()
 
 pop_size = 9
 num_gens = int(len(df_ga) / pop_size)
@@ -303,7 +303,7 @@ figs.append((fig2_1d, 'GA_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence over generations ---
 fig2_2 = plt.figure(figsize=(8, 5))
-plt.plot(best_fitness_per_gen.index, best_fitness_per_gen.values, label='Best per generation', color='orange', linewidth=linewidth)
+plt.plot(best_fitness_per_gen_ga.index, best_fitness_per_gen_ga.values, label='Best per generation', color='orange', linewidth=linewidth)
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=linewidth)
 # plt.title('GA Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
@@ -587,7 +587,7 @@ plt.grid(True)
 plt.tight_layout()
 figs.append((fig3_1d, 'LBFGSB2_scenario2_SearchSpace_x2.png'))
 
-# --- Plot 2: Convergence Plot ---
+# --- Plot 2a: Convergence Plot individual curves---
 fig3_2 = plt.figure(figsize=(8, 5))
 
 for log_file in log_files:
@@ -617,6 +617,23 @@ plt.grid(True, zorder=1)
 plt.legend(fontsize='x-small', loc='best')
 plt.tight_layout()
 figs.append((fig3_2, 'LBFGSB2_scenario2_global_fitness_per_gen.png'))
+
+# --- Plot 2b: Convergence Plot general---
+fig3_2b = plt.figure(figsize=(8, 5))
+plt.plot(merged_df['iter'], merged_df['min_fitness'], label='Best per generation', color='orange', linewidth=linewidth)
+plt.xlabel('Iteration', fontsize=label_font_size)
+plt.ylabel('Global best fitness', fontsize=label_font_size)
+ticks = np.arange(num_iterations + 1)
+label_interval = 5 
+tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
+plt.xticks(ticks=ticks, labels=tick_labels, fontsize=tick_font_size)
+plt.yticks(fontsize=tick_font_size)
+plt.xlim(1, num_iterations +0.5)
+# plt.ylim(415, 445)
+# plt.legend()
+plt.grid(True)
+plt.tight_layout()
+figs.append((fig3_2b, 'LBFGSB2_scenario2_global_fitness_per_gen_general.png'))
 
 # --- Plot 3a: Particle trajectory x1 ---
 fig3_3a = plt.figure(figsize=(8,5))
@@ -890,6 +907,29 @@ df_all = pd.concat([df_pso_tidy, df_ga_tidy, df_lbfgsb_tidy], ignore_index=True)
 
 selected_iterations = [1, 5, 10, 15, 19, 20, 45]
 df_sampled = filter_by_iterations(df_all, selected_iterations)
+
+fig_all_convergence = plt.figure(figsize=(8, 5))
+
+plt.plot(best_fitness_per_gen_pso, label='Convergence PSO', linewidth=linewidth)
+plt.plot(range(1, 1 + len(merged_df['min_fitness'])), 
+         merged_df['min_fitness'], 
+         label='Convergence parallel L-BFGS-B', 
+         linewidth=linewidth)
+plt.plot(best_fitness_per_gen_ga, label='Convergence GA', linewidth=linewidth, linestyle='dashed', color='red')
+plt.xlabel('Iteration', fontsize=label_font_size)
+plt.ylabel('Global best fitness', fontsize=label_font_size)
+ticks = np.arange(num_iterations + 1)
+label_interval = 5 
+tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
+plt.xticks(ticks=ticks, labels=tick_labels, fontsize=tick_font_size)
+plt.yticks(fontsize=tick_font_size)
+plt.xlim(1, num_iterations +0.5)
+# plt.ylim(415, 465)
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+
+figs.append((fig_all_convergence, 'global_fitness_per_gen_all_algs_scen2.png'))
 
 plot_iterations_grid(df_sampled, selected_iterations)
 

@@ -16,29 +16,33 @@ import math
 start = time.time()
 ## Specify scenario and output path
 
-source_scenario = './examples/Lucas_folder/Thesis_comparison1/thesis_comparison_hydrogen_monthly.yaml' # './examples/Tutorial1/Tutorial_1.yaml'# "./examples/h2_system_example/h2_system_4.yaml"
-output_path = './examples/Lucas_folder/Thesis_comparison1/temp_out/thesis_comparison1.csv'# './examples/h2_system_example/h2_system_example4.csv'
-scenario_temp_path = './examples/Lucas_folder/Thesis_comparison1/temp_scenario'
+source_scenario = './examples/Lucas_folder/Thesis_comparison3/EV_scenario1.yaml'
+output_path = './examples/Lucas_folder/Thesis_comparison3/temp_out/EV_single_day_out.csv'
+scenario_temp_path = './examples/Lucas_folder/Thesis_comparison3/temp_scenario'
 
 
 if __name__ == "__main__":
     ## Define the decision variables here (model, paramter)
     dec_vars = [
-        ('H2Buffer1', 'h2_capacity_tot')
+        ('EV1', 'start_charge'),
+        ('EV2', 'start_charge'),
+        ('EV3', 'start_charge'),
+        ('EV4', 'start_charge'),
+        ('EV5', 'start_charge')
     ]
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB2' # 'GA_P' #"GA_P" # 
+    alg = 'PSO_P' # 'GA_P' #"GA_P" # 
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
-    cost_fun = optimal_buffer_size
+    cost_fun = cost_fun1
     
 
     ## set lower and upper bounds for decision variables
-    xl = np.array([100])
-    xu = np.array([600])
+    xl = np.array([32, 0, 0, 52, 0])
+    xu = np.array([43, 73, 73, 67, 73])
 
     ## FOR PSO
     ## Determine termination criterium (FOR PSO)

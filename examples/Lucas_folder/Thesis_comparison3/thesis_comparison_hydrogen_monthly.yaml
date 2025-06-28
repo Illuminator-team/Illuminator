@@ -1,0 +1,126 @@
+scenario:
+  name: "thesis_comparison_hydrogen" # in mosaik so called world
+  start_time: '2025-04-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2025-04-30 23:45:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+
+models: 
+- name: CSVdemand
+  type: CSV
+  parameters:
+    file_path: "./examples/Lucas_folder/Thesis_comparison1/h2_gas_station_monthly_demand.csv"
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSVprod
+  type: CSV
+  parameters:
+    file_path: "./examples/Lucas_folder/Thesis_comparison1/h2_production_monthly.csv"
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: H2_controller
+  type: H2ControllerExample
+  parameters:
+    dummy: 0
+  inputs:
+    demand: 0
+    h2_out: 0
+    buffer_available_h2: 0
+    buffer_free_capacity: 0
+  outputs:
+    dump: 0
+  states:
+    buffer_in: 0
+    desired_out: 0
+
+- name: H2Buffer1
+  type: H2Buffer
+  parameters: 
+    h2_soc_min: 0
+    h2_soc_max: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    max_h2: 20
+    min_h2: 0
+    h2_capacity_tot: 100
+  inputs:
+    h2_in: 0
+    desired_out: 0
+  outputs:
+    h2_out: 0
+    actual_h2_in: 0
+  states:
+    soc: 50
+    flag: 0
+    available_h2: 0
+    free_capacity: 0 
+
+- name: compressor1
+  type: Compressor
+  parameters:
+    p_in: 30
+    p_out: 500
+    T_amb: 293.15
+    compressor_eff: 100
+    max_power_in: 100
+  inputs:
+    flow2c: 0
+  outputs:
+    flow_from_c: 0
+  states:
+    volume_flow_out: 0
+    power_req: 0
+
+- name: H2demand
+  type: H2demand
+  parameters:
+    units: 1
+  inputs:
+    demand: 0
+  states:
+    tot_dem: 0
+
+connections:
+
+- from: CSVdemand.demand
+  to: H2demand.demand
+
+- from: H2demand.tot_dem
+  to: H2_controller.demand
+
+- from: CSVprod.production
+  to: H2_controller.h2_out
+
+- from: H2Buffer1.available_h2
+  to: H2_controller.buffer_available_h2
+  time_shifted: True
+- from: H2Buffer1.free_capacity
+  to: H2_controller.buffer_free_capacity 
+  time_shifted: True
+- from: H2_controller.buffer_in
+  to: H2Buffer1.h2_in
+  # time_shifted: True
+- from: H2_controller.desired_out
+  to: H2Buffer1.desired_out
+  # time_shifted: True
+
+# TODO: This is test and may be solved differently:
+
+- from: H2Buffer1.h2_out
+  to: compressor1.flow2c
+
+
+
+
+
+monitor:
+  file: './examples/Lucas_folder/Thesis_comparison1/ouput_CSV.csv'
+  items:
+    - H2demand.tot_dem
+    - CSVprod.production
+    - H2_controller.dump
+    - H2Buffer1.soc
+    - H2Buffer1.h2_out
+
