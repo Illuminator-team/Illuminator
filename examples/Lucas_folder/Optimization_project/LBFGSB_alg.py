@@ -228,8 +228,8 @@ def run_LBFGSB2(scenario, scenario_temp_path, output_path, dec_vars_map, cost_fu
     x0_matrix = np.zeros((n_instances, len(dec_vars_map)))
 
     for var in range(len(dec_vars_map)):
-        # x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_instances)
-        x0_matrix[:, var] = np.random.uniform(low=xl[var], high=xu[var], size=n_instances)
+        x0_matrix[:, var] = np.linspace(xl[var], xu[var], n_instances)
+        # x0_matrix[:, var] = np.random.uniform(low=xl[var], high=xu[var], size=n_instances)
 
         # x0_matrix[:, var] = (xu[var] + xl[var]) / 2
     print(x0_matrix)

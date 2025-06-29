@@ -42,7 +42,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 32        
+    start_charge: 33.54807648485447         
   inputs:
     load_in: 0   
     presence: 0                
@@ -59,7 +59,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 32        
+    start_charge: 10.91090839417826          
   inputs:
     load_in: 0   
     presence: 0                
@@ -76,7 +76,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 32        
+    start_charge: 72.99887388913602        
   inputs:
     load_in: 0   
     presence: 0                
@@ -93,7 +93,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 32        
+    start_charge: 52.032833756555796         
   inputs:
     load_in: 0   
     presence: 0                
@@ -110,7 +110,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 32        
+    start_charge: 48.92174852751861        
   inputs:
     load_in: 0   
     presence: 0                
@@ -303,4 +303,4 @@ monitor:
     - CSV_EV_presence.ev3
     - CSV_EV_presence.ev4
     - CSV_EV_presence.ev5
-    # - Battery1.soc
+    - Battery1.soc
