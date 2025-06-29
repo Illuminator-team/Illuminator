@@ -15,7 +15,7 @@ PSO_file_name = './examples/Lucas_folder/Thesis_comparison1/data/PSO_live_log_n9
 GA_file_name = './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g100_seed1.csv'
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log_1w01_01_n9g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
-LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log_n9g100_seed_33'
+LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log_n9g100_seed_42_b'
 plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario1'
 figs = []
 
@@ -434,7 +434,7 @@ tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
 plt.xticks(ticks=ticks, labels=tick_labels, fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlim(1, num_iterations +0.5)
-plt.ylim(415, 445)
+plt.ylim(415, 470)
 # plt.legend()
 plt.grid(True)
 plt.tight_layout()
@@ -492,27 +492,24 @@ figs.append((fig3_4, 'LBFGSB2_scenario1_particle_trajcectory_fitness.png'))
 # plt.grid(True)
 # plt.tight_layout()
 fig_all_convergence, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(8, 5))
-
+# linewidth = linewidth *1.5
+# tick_font_size=tick_font_size*1.5
+# label_font_size =label_font_size*1.5
 # Plot data on both axes
 iters = np.arange(1, num_iterations + 1)
-ax1.plot(best_fitness_per_gen_pso, label='Convergence PSO', linewidth=linewidth)
-ax1.plot(range(1, 1 + len(merged_df['min_fitness'])), 
-         merged_df['min_fitness'], 
+ax1.plot(np.arange(1, len(best_fitness_per_gen_pso) + 1), best_fitness_per_gen_pso, label='Convergence PSO', linewidth=linewidth)
+ax1.plot(iters[:len(merged_df['min_fitness'])], merged_df['min_fitness'], 
          label='Convergence parallel L-BFGS-B', 
          linewidth=linewidth)
-ax1.plot(best_fitness_per_gen_ga, label='Convergence GA', linewidth=linewidth, linestyle='dashed', color='red')
+ax1.plot(np.arange(1, len(best_fitness_per_gen_ga) + 1), best_fitness_per_gen_ga, label='Convergence GA', linewidth=linewidth, linestyle='dashed', color='red')
 
 ax2.plot(best_fitness_per_gen_pso, linewidth=linewidth)
-ax2.plot(range(1, 1 + len(merged_df['min_fitness'])), 
-         merged_df['min_fitness'], 
+ax2.plot(iters[:len(merged_df['min_fitness'])], merged_df['min_fitness'],
          linewidth=linewidth)
 ax2.plot(best_fitness_per_gen_ga, linewidth=linewidth, linestyle='dashed', color='red')
 ax1.grid(True)
 ax2.grid(True)
 
-# Set x-axis limits for the two axes to create a visual break
-ax1.set_xlim(1, 15)
-ax2.set_xlim(52, num_iterations + 0.5)
 
 # Set consistent labels and ticks
 ax1.set_ylabel('Global best fitness', fontsize=label_font_size)
@@ -522,7 +519,7 @@ fig_all_convergence.text(0.535, 0.02, 'Iteration', ha='center', fontsize=label_f
 ax1.tick_params(axis='both', labelsize=tick_font_size)
 ax2.tick_params(axis='both', labelsize=tick_font_size)
 
-ax1.set_ylim(415, 465)
+ax1.set_ylim(415, 470)
 
 # Hide spines between plots
 ax1.spines['right'].set_visible(False)
@@ -533,9 +530,11 @@ ax2.yaxis.tick_right()
 ax2.tick_params(axis='y', right=False)  # turn off right-side ticks
 # ax2.yaxis.set_ticks([])  # removes all ticks
 # Remove the last x-tick on ax1
-ticks_ax1 = ax1.get_xticks()
-ax1.set_xticks(ticks_ax1[:-1])  # drop last tick
 
+
+# Set x-axis limits for the two axes to create a visual break
+ax1.set_xlim(1, 17)
+ax2.set_xlim(25, num_iterations + 0.5)
 # Remove the first x-tick on ax2
 ticks_ax2 = ax2.get_xticks()
 ax2.set_xticks(ticks_ax2[1:])   # drop first tick
@@ -553,8 +552,8 @@ ax2.plot((-d, +d), (-d, +d), **kwargs)
 # Final layout
 fig_all_convergence.legend(
     loc='upper right',
-    bbox_to_anchor=(0.97, 0.97),   # stick to upper right of axes
-    fontsize=label_font_size
+    bbox_to_anchor=(0.96, 0.95),   # stick to upper right of axes
+    fontsize=label_font_size/2
 )
 fig_all_convergence.tight_layout()
 fig_all_convergence.subplots_adjust(wspace=0.05)  # Reduce space between plots

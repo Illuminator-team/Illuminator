@@ -4,7 +4,7 @@ import os
 from scipy.optimize import minimize
 from multiprocessing import Pool
 import random
-np.random.seed(42)  # For reproducibility
+np.random.seed(1)  # For reproducibility
 import csv
 import datetime
 
