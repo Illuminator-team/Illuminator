@@ -118,7 +118,7 @@ figs.append((fig1_1d, 'PSO_scenario2_SearchSpace_x2.png'))
 
 # --- Plot 2: Convergence over generations ---
 fig1_2 = plt.figure(figsize=(8, 5))
-plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label='Best per generation', color='orange', linewidth=2)
+plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label='Best per generation', color='orange', linewidth=linewidth)
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
