@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     ## FOR LBFGSB
     ## Determine initial guess x0 and epsilons
-    epsilons = [1] *5 # [1e-5, 1e-5]
+    epsilons = [10] *5 # [1e-5, 1e-5]
     x0 = (xl + xu)/2
 
 

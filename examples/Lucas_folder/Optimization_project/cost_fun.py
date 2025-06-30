@@ -32,9 +32,11 @@ def cost_fun1(df: pd.DataFrame):
         sum: float
             the sum of a dataframe column
     """
-    summed_col = -df['Controller1-0.time-based_0-dump'].sum()
+    
+    # summed_col = -df['Controller1-0.time-based_0-dump'].sum()
     # summed_col = df['H2_controller-0.time-based_0-dump'].sum()
-    return summed_col
+    # return summed_col
+    return (df['Controller1-0.time-based_0-dump'].abs()).max()
 
 def cost_fun2(df: pd.DataFrame):
     """

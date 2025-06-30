@@ -1,8 +1,8 @@
 scenario:
   name: "Tutorial 1" # in mosaik so called world
-  start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
+  start_time: '2012-07-01 00:00:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-01-01 23:45:00' # duration in seconds 
+  end_time: '2012-07-01 23:45:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
@@ -42,7 +42,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 33.54807648485447         
+    start_charge: 40.347594823061954         
   inputs:
     load_in: 0   
     presence: 0                
@@ -59,7 +59,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 10.91090839417826          
+    start_charge: 48.31811451384894          
   inputs:
     load_in: 0   
     presence: 0                
@@ -76,7 +76,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 72.99887388913602        
+    start_charge: 40.323903748333535           
   inputs:
     load_in: 0   
     presence: 0                
@@ -93,7 +93,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 52.032833756555796         
+    start_charge: 58.68658574450001          
   inputs:
     load_in: 0   
     presence: 0                
@@ -110,7 +110,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 48.92174852751861        
+    start_charge: 31.722297820474928        
   inputs:
     load_in: 0   
     presence: 0                
@@ -124,7 +124,7 @@ models:
 - name: Load1
   type: Load
   parameters:
-    houses: 1  # number of houses that determine the total load demand
+    houses: 0  # number of houses that determine the total load demand
     output_type: 'energy'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
@@ -146,7 +146,7 @@ models:
 - name: PV1
   type: PV # models can reuse the same type
   parameters:
-    m_area: 4  # m2
+    m_area: 240  # m2
     NOCT: 44  # Celcius
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
@@ -189,9 +189,9 @@ models:
 - name: Battery1
   type: Battery # models can reuse the same type
   parameters:
-    max_p: 0.8  # maximum chkWrging power limit (kW)
-    min_p: -0.8  # maximum discharging power limit (kW)
-    max_energy: 10  # maximum energy storage capacity of the battery (kWh)
+    max_p: 0  # maximum chkWrging power limit (kW)
+    min_p: 0  # maximum discharging power limit (kW)
+    max_energy: 50  # maximum energy storage capacity of the battery (kWh)
     charge_efficiency: 90  # efficiency of charging the battery (%)
     discharge_efficiency: 90  # efficiency of discharging the battery (%)
     soc_min: 10  # minimum allowable state of charge for the battery (%)
@@ -203,7 +203,7 @@ models:
     p_in: 0  # input power to the battery (kW)
   states:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
-    soc: 10  # state of charge of the battery (%)
+    soc: 50  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
 
 - name: Controller1
@@ -290,14 +290,24 @@ monitor:
   items:
     #- CSV_pv.G_Gh
     # - Controller1.dump
-    # - PV1.pv_gen
-    # - Wind1.wind_gen
+    - PV1.pv_gen
+    - Wind1.wind_gen
     # - Load1.load_dem
 
     - Controller1.flow2b
     - Controller1.res_load
     - Controller1.dump
+    - EV1.demand
+    - EV2.demand
+    - EV3.demand
+    - EV4.demand
+    - EV5.demand
     - EV1.soc
+    - EV2.soc
+    - EV3.soc
+    - EV4.soc
+    - EV5.soc
+
     - CSV_EV_presence.ev1
     - CSV_EV_presence.ev2
     - CSV_EV_presence.ev3

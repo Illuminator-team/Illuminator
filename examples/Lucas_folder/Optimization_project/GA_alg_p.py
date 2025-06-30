@@ -92,7 +92,7 @@ def run_ga_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cos
                     algorithm,
                     callback=GALogger(GA_log_file),
                     termination=termination,
-                    seed=42,
+                    seed=1,
                     verbose=True,
                     )
     pool.close()

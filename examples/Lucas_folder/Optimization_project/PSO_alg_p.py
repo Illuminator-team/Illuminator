@@ -99,7 +99,7 @@ def run_pso_p(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, co
                     algorithm,
                     callback=PSOLogger(PSO_log_file),
                     termination=termination,
-                    seed=33,
+                    seed=1,
                     verbose=True,
                     )
     pool.close()
