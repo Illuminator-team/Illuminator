@@ -19,7 +19,9 @@ from .Load.LoadHeatpump.load_heatpump_v3 import LoadHeatpump
 from .Battery.battery_v3 import Battery
 
 # Hydrogen models
+from .Buffer.buffer import H2Buffer
 from .Electrolyzer.electrolyzer_v3 import Electrolyzer
+from .Electrolyzer.ZZE_v3 import ZZE
 from .Thermolyzer.thermolyzer_v3 import Thermolyzer
 from .Compressor.compressor_v3 import Compressor
 from .H2demand.h2demand_v3 import H2demand
@@ -29,7 +31,6 @@ from .H2valve.h2valve_v3 import H2Valve
 from .H2_joint.H2_joint_v3 import H2Joint
 from .H2controller.H2_controller_v3 import H2Controller
 from .H2controller.H2_controller2 import H2Controller2
-from .Buffer.buffer import H2Buffer
 from .H2controller.H2_controller_example import H2ControllerExample
 from .H2PSA.PSA_v3 import H2PSA
 
