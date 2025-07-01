@@ -288,7 +288,7 @@ figs.append((fig2_1c, 'GA_scenario2_SearchSpace_x1.png'))
 # --- Plot 1d: Search Space x2 ---
 df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
 fig2_1d = plt.figure(figsize=(8, 6))
-sc = plt.scatter(df_ga['x1'], df_ga['fitness'], alpha=0.7, s=marker_size) #, c=df_ga['fitness'], cmap='viridis')
+sc = plt.scatter(df_ga['x2'], df_ga['fitness'], alpha=0.7, s=marker_size) #, c=df_ga['fitness'], cmap='viridis')
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
@@ -454,13 +454,13 @@ for file in log_files:
     
     dfs.append(df)
 
-
+print('dfs:\n', dfs)
 merged_df = dfs[0]
 for df in dfs[1:]:
     merged_df = pd.merge(merged_df, df, on='iter', how='outer')
 df_lbfgsb = merged_df.copy()
 merged_df['min_fitness'] = merged_df.drop(columns='iter').min(axis=1).cummin()
-
+print('merged_df:\n', merged_df)
 
 print(df_lbfgsb.head())
 num_iterations = len(merged_df['iter'])
