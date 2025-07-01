@@ -165,7 +165,7 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './examples/Tutorial4/out_CSV.csv'
+  file: './examples/Tutorial4/out_Tutorial4.csv'
   #file: './out_CSV.csv'
   items:
     - PV1.pv_gen

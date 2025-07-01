@@ -8,7 +8,7 @@ models: # list of models for the energy network
   type: CSV # name of the model registered in the Illuminator
   parameters: # a CSV model must have a start time and a file as parameters
     start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-    file_path: './examples/wind_test.csv' # path to the file with the data
+    file_path: './examples/example_wind/wind_sample.csv' # path to the file with the data
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
@@ -26,14 +26,16 @@ models: # list of models for the energy network
     u: 0  # Wind speed (m/s) at a specific height used to calculate the wind power generation.
   outputs:
     wind_gen: 0  # Generated wind power output (kW) or energy (kWh) based on the chosen output type (power or energy).
-    u: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
+    u: 0 
+  states:
+    u60: 0  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
 
 connections:
 - from: CSVB.u
   to: Wind1.u
 
 monitor:
-  file: './out_Wind.csv'
+  file: './examples/example_wind/out_Wind.csv'
   items:
   - Wind1.wind_gen
-  - Wind1.u
+  - Wind1.u60

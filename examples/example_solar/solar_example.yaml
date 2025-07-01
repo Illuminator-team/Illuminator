@@ -11,7 +11,7 @@ models: # list of models for the energy network
   type: CSV # name of the model registered in the Illuminator
   parameters: # a CSV model must have a start time and a file as parameters
     start: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-    file_path: './examples/solar-sample.csv' # path to the file with the data
+    file_path: './examples/example_solar/solar_sample.csv' # path to the file with the data
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
   
@@ -59,7 +59,7 @@ connections:
 
 
 monitor:
-  file: './out.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
+  file: './examples/example_solar/out_Solar.csv' # optional with default, path to the results file for the scenario. This should be optional  # a list of models, its inputs, output and states to be monitored and logged
   items:
   - CSVB.G_Gh
   - PV1.pv_gen

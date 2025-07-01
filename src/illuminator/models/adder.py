@@ -23,9 +23,10 @@ class Adder(ModelConstructor):
     parameters={"param1": "addition", "testParam": "testJort"}
     inputs={"in1": 10, "in2": 20}
     outputs={"out1": 0}
-    states={"out1": 0}
+    states={"out1": 0} #TODO: states can no longer be duplicates of outputs...
     time_step_size=900
     time=None
+
 
     # Any other value defined not in model.py can be used internally in the Custom Model class
 
