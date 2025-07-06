@@ -42,7 +42,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 40.347594823061954         
+    start_charge: 39.92331832933552 #34.85085604209498        
   inputs:
     load_in: 0   
     presence: 0                
@@ -59,7 +59,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 48.31811451384894          
+    start_charge: 30.601494555272446 #30.97107326991109         
   inputs:
     load_in: 0   
     presence: 0                
@@ -76,7 +76,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 40.323903748333535           
+    start_charge: 14.461408703196152 #42.952456908970596            
   inputs:
     load_in: 0   
     presence: 0                
@@ -93,7 +93,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 58.68658574450001          
+    start_charge: 54.547231307768605 #54.46570488357368           
   inputs:
     load_in: 0   
     presence: 0                
@@ -110,7 +110,7 @@ models:
     max_power: 11             
     battery_cap: 60           
     fast: False              
-    start_charge: 31.722297820474928        
+    start_charge: 60.92767404850822 #51.78872653157382        
   inputs:
     load_in: 0   
     presence: 0                

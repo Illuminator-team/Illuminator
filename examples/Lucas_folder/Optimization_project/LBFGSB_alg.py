@@ -8,7 +8,6 @@ np.random.seed(1)  # For reproducibility
 import csv
 import datetime
 
-
 n_cores =  os.cpu_count() - 3
 
 LBFGSB_log_file = "./examples/Lucas_folder/Optimization_project/LBFGSB_live_log.csv"

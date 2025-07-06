@@ -366,8 +366,8 @@ models:
     soc_min: 10  # Minimum state of charge of the battery before discharging stops
     soc_max: 90  # Maximum state of charge of the battery before charging stops
     max_p: 500  # Maximum power flow to/from the battery (kW)
-    upper_price: 0.3
-    lower_price: 0.08
+    upper_price: 0.6068557812753559 #0.11741934769363806
+    lower_price: 0.33294151911547987 #0.11098973710079757 
   inputs:
     wind_gen: 0  # Wind power generation
     pv_gen: 0  # Solar power generation

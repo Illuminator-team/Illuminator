@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 import os
+import math
 
 plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario3'
 figs = []
@@ -66,51 +67,110 @@ second_linewidth=.5
 # # plt.show()
 
 output_file = 'examples/Lucas_folder/Optimization_project/EV_single_day/out.csv'
+output_file_opt = 'examples/Lucas_folder/Optimization_project/EV_single_day/out_opt.csv'
 
 # Load your data
 output_data = pd.read_csv(output_file)
+output_opt_data = pd.read_csv(output_file_opt)
+# output_data_opt = pd.read_csv(output_file_opt)
 
 # Create main figure and first axis (left y-axis for powers)
 
-fig, ax1 = plt.subplots(figsize=(8, 5))
+# fig, ax1 = plt.subplots(figsize=(8, 5))
 
 
-ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev1'], alpha=0.2, label='EV Presence 1', color='blue')
-ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev2'], alpha=0.2, label='EV Presence 2', color='orange')
-ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev3'], alpha=0.2, label='EV Presence 3', color='green')
-ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev4'], alpha=0.2, label='EV Presence 4', color='purple')
-ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev5'], alpha=0.2, label='EV Presence 5', color='brown')
-ax1.plot(output_data['EV1-0.time-based_0-demand'], alpha=1, label='EV demand 1', color='blue')
-ax1.plot(output_data['EV2-0.time-based_0-demand'], alpha=1, label='EV demand 2', color='orange')
-ax1.plot(output_data['EV3-0.time-based_0-demand'], alpha=1, label='EV demand 3', color='green')
-ax1.plot(output_data['EV4-0.time-based_0-demand'], alpha=1, label='EV demand 4', color='purple')
-ax1.plot(output_data['EV5-0.time-based_0-demand'], alpha=1, label='EV demand 5', color='brown')
+# # ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev1'], alpha=0.2, label='EV Presence 1', color='blue')
+# # ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev2'], alpha=0.2, label='EV Presence 2', color='orange')
+# # ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev3'], alpha=0.2, label='EV Presence 3', color='green')
+# # ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev4'], alpha=0.2, label='EV Presence 4', color='purple')
+# # ax1.plot(output_data['CSV_EV_presence-0.time-based_0-ev5'], alpha=0.2, label='EV Presence 5', color='brown')
+# # ax1.plot(output_data['EV1-0.time-based_0-demand'], alpha=1, label='EV demand 1', color='blue')
+# # ax1.plot(output_data['EV2-0.time-based_0-demand'], alpha=1, label='EV demand 2', color='orange')
+# # ax1.plot(output_data['EV3-0.time-based_0-demand'], alpha=1, label='EV demand 3', color='green')
+# # ax1.plot(output_data['EV4-0.time-based_0-demand'], alpha=1, label='EV demand 4', color='purple')
+# # ax1.plot(output_data['EV5-0.time-based_0-demand'], alpha=1, label='EV demand 5', color='brown')
 
 
-# ax1.plot(output_data['PV1-0.time-based_0-pv_gen'] + output_data['Wind1-0.time-based_0-wind_gen'], alpha=1, label='PV + Wind Generation', color='orange')
-ax1.plot(output_data['Controller1-0.time-based_0-dump'], label='Controller Dump', color='red')
+# ax1.plot(output_data['PV1-0.time-based_0-pv_gen'] + output_data['Wind1-0.time-based_0-wind_gen'], alpha=1, label='RES Generation', color='orange')
+# ax1.plot(output_data['Controller1-0.time-based_0-dump'], label='Grid Power', color='red', linewidth=linewidth)
+# ax1.set_ylabel('Power-related values', fontsize=label_font_size)
+# ax1.set_xlabel('Time', fontsize=label_font_size)
+# plt.xticks(fontsize=tick_font_size)
+# plt.yticks(fontsize=tick_font_size)
+# # x_positions = [48.92174852751861, 52.032833756555796, 72.99887388913602, 10.91090839417826, 33.54807648485447]
+# # for x in x_positions:
+# #     ax1.axvline(x=x, color='gray', linestyle='--', alpha=0.5)
+# # Create second y-axis (right side) for SOC
+# ax2 = ax1.twinx()
+# # ax2.plot(output_data['Battery1-0.time-based_0-soc'], label='Battery1 SOC', color='green')
+# ax2.set_ylabel('SOC')
+# plt.yticks(fontsize=tick_font_size)
+# ax2.plot(output_data['EV1-0.time-based_0-soc'], alpha=0.2, label='EV soc 1')
+# ax2.plot(output_data['EV2-0.time-based_0-soc'], alpha=0.2, label='EV soc 2')
+# ax2.plot(output_data['EV3-0.time-based_0-soc'], alpha=0.2, label='EV soc 3')
+# ax2.plot(output_data['EV4-0.time-based_0-soc'], alpha=0.2, label='EV soc 4')
+# ax2.plot(output_data['EV5-0.time-based_0-soc'], alpha=0.2, label='EV soc 5')
+# # Combine legends from both axes
+# lines1, labels1 = ax1.get_legend_handles_labels()
+# lines2, labels2 = ax2.get_legend_handles_labels()
+# ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+# plt.tight_layout()
 
-ax1.set_ylabel('Power-related values')
-ax1.set_xlabel('Time')
+timesteps = [39.92331832933552, 30.601494555272446, 14.461408703196152, 54.547231307768605, 60.92767404850822]
+timesteps_opt = [34.85085604209498, 30.97107326991109, 42.952456908970596, 54.46570488357368, 51.78872653157382]
 
-# x_positions = [48.92174852751861, 52.032833756555796, 72.99887388913602, 10.91090839417826, 33.54807648485447]
-# for x in x_positions:
-#     ax1.axvline(x=x, color='gray', linestyle='--', alpha=0.5)
-# Create second y-axis (right side) for SOC
-ax2 = ax1.twinx()
-# ax2.plot(output_data['Battery1-0.time-based_0-soc'], label='Battery1 SOC', color='green')
-ax2.set_ylabel('SOC')
+timesteps = [math.ceil(x) for x in timesteps]
 
-ax2.plot(output_data['EV1-0.time-based_0-soc'], alpha=0.2, label='EV soc 1')
-ax2.plot(output_data['EV2-0.time-based_0-soc'], alpha=0.2, label='EV soc 2')
-ax2.plot(output_data['EV3-0.time-based_0-soc'], alpha=0.2, label='EV soc 3')
-ax2.plot(output_data['EV4-0.time-based_0-soc'], alpha=0.2, label='EV soc 4')
-ax2.plot(output_data['EV5-0.time-based_0-soc'], alpha=0.2, label='EV soc 5')
-# Combine legends from both axes
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+timesteps_opt = [math.ceil(x) for x in timesteps_opt]
+
+width = 5.5 * 4
+
+# Define 5 distinct colors
+colors = plt.cm.tab10.colors[:5]  # First 5 from 'tab10' colormap
+
+
+
+fig_compare, axs = plt.subplots(3, figsize=(10, 6), sharex=True)
+
+# Plot 1: RES generation and grid power
+axs[0].plot(output_data['PV1-0.time-based_0-pv_gen'] + output_data['Wind1-0.time-based_0-wind_gen'],
+            alpha=1, label='RES Generation', color='orange')
+axs[0].plot(output_data['Controller1-0.time-based_0-dump'],
+            label='Grid Power Unoptimized', color='red', linestyle='dashed', linewidth=linewidth)
+axs[0].plot(output_opt_data['Controller1-0.time-based_0-dump'],
+            label='Grid Power Optimized', color='green', linewidth=linewidth)
+
+axs[0].set_xlim(0, 96)
+axs[0].tick_params(axis='x', labelbottom=False)  # Hide x-axis labels here
+axs[0].tick_params(axis='y', labelsize=tick_font_size)
+axs[0].set_ylabel('Power [kW]', fontsize=label_font_size)
+axs[0].legend()
+
+# Plot 2: Unoptimized schedule (no y-ticks or x-ticks)
+for i, x_start in enumerate(timesteps):
+    axs[1].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+axs[1].set_title('Unoptimized Schedule')
+axs[1].set_yticks([])
+axs[1].tick_params(axis='x', labelbottom=False)
+axs[1].legend(fontsize=tick_font_size)
+
+# Plot 3: Optimized schedule
+for i, x_start in enumerate(timesteps_opt):
+    axs[2].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+axs[2].set_title('Optimized Schedule')
+axs[2].set_xlabel('Timestep', fontsize=label_font_size)
+axs[2].set_yticks([])
+axs[2].tick_params(axis='x', labelsize=tick_font_size)
+
+# Optional: Shared legend (if legends overlap too much)
+# handles, labels = axs[0].get_legend_handles_labels()
+# fig_compare.legend(handles, labels, loc='upper center', ncol=3)
+
 plt.tight_layout()
+# plt.show()
+
+
+figs.append((fig_compare, 'optimized_schedule_plot_scen3.png'))
 
 
 
@@ -147,7 +207,7 @@ ax.set_xlabel('Time step index', fontsize=label_font_size)
 
 ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.0))
 ax.grid(axis='x', linestyle=':', alpha=0.5)
-
+ax.set_xlim(0, 96)
 plt.xticks(fontsize=tick_font_size)
 plt.tight_layout()
 

@@ -44,7 +44,7 @@ models:
     h2_discharge_eff: 100
     max_h2: 20
     min_h2: 0
-    h2_capacity_tot: 100
+    h2_capacity_tot: 500 #419.908
   inputs:
     h2_in: 0
     desired_out: 0
@@ -110,8 +110,6 @@ connections:
 
 - from: H2Buffer1.h2_out
   to: compressor1.flow2c
-
-
 
 
 

@@ -515,7 +515,7 @@ ax2.grid(True)
 ax1.set_ylabel('Global best fitness', fontsize=label_font_size)
 # ax2.set_xlabel('Iteration', fontsize=label_font_size)
 # ax1.set_xlabel('Iteration', fontsize=label_font_size)
-fig_all_convergence.text(0.535, 0.02, 'Iteration', ha='center', fontsize=label_font_size)
+fig_all_convergence.text(0.5, 0.02, 'Iteration', ha='center', fontsize=label_font_size)
 ax1.tick_params(axis='both', labelsize=tick_font_size)
 ax2.tick_params(axis='both', labelsize=tick_font_size)
 
