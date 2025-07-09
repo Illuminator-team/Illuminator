@@ -87,7 +87,9 @@ class CSV(ModelConstructor):
         super().__init__(**kwargs)
         self.delimiter = self._model.parameters.get('delimiter')
         self.date_format = self._model.parameters.get('date_format')
-        self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format)
+        self.tzinfo = self._model.parameters.get('tzinfo', 'Europe/Amsterdam')  # Default timezone is Europe/Amsterdam
+        self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format, tzinfo=self.tzinfo)  # Convert start date to Arrow object with timezone 
+        self.expected_date = self.start_date  # The date we expect to read from the CSV file at first is the start date
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
@@ -163,9 +165,11 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
-        expected_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)  # start date  +  number of calls * iterations per call * time per iteration, aka time per call
-        if date != expected_date:
-            raise IndexError(f'Wrong date "{date}", expected "{expected_date}"')
+        if date != self.expected_date:
+            raise IndexError(f'Wrong date "{date}", expected "{self.expected_date}"')
+
+        # Update expected date for the next step
+        self.expected_date = self.expected_date.shift(seconds=self.time_step_size * self.time_resolution)  # expected date is the start date + number of calls * iterations per call * time per iteration, aka time per call
 
         # Put data into the cache for get_data() calls
         self.cache = {}
@@ -243,7 +247,7 @@ class CSV(ModelConstructor):
         """
         try:
             self.next_row = next(self.datafile).strip().split(self.delimiter)
-            self.next_row[0] = arrow.get(self.next_row[0], self.date_format)
+            self.next_row[0] = arrow.get(self.next_row[0], self.date_format, tzinfo=self.tzinfo)  # Convert the first column to an Arrow object
         except StopIteration:
             self.next_row = None
 
