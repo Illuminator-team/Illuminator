@@ -1,6 +1,7 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
-from illuminator.models import Electrolyzer
-from illuminator.models import H2Buffer
+from numpy import inf
+# from illuminator.models import Electrolyzer
+# from illuminator.models import H2Buffer
 
 class ZZE(ModelConstructor):
     parameters={
@@ -63,42 +64,146 @@ class ZZE(ModelConstructor):
             Additional keyword arguments to initialize the joint model,
             including joint efficiency.
         """
-        super().__init__(**kwargs)    
-        
-        
+        super().__init__(**kwargs)
+        ## common part
+        self.setpoint = self._model.inputs.get('setpoint', 0)  # Initialize desired_out to 0 if not provided
+
+        ## Electrolyzer part
+        self.hhv =  286.6                # higher heating value of hydrogen [kJ/mol]
+        self.mmh2 = 2.02                 # molar mass hydrogen (H2) [gram/mol]
+        self.p_in_last = 0               # the initial power is initialised to 0 [kW]
+        self.e_eff = self._model.parameters.get('e_eff') # electrolyzer efficiency [%]
+        self.max_p_in = self._model.parameters.get('max_p_in')  # maximum input power [kW] set to infinity to allow for any input power
+        self.max_p_ramp_rate = self._model.parameters.get('max_p_in', inf)  # maximum ramp up rate [kW/s]
+
+        self.max_p_out = self._model.parameters.get('max_p_out', inf)  # maximum output power [kW] set to infinity to allow for any output power
+        self.max_flow_rate_out = self._model.parameters.get('max_flow_rate_out', inf)
+        self.max_flow_rate_out = min(self.max_flow_rate_out, self.kw_to_kg_per_h(self.max_p_out))  # determine the limiting factor
+
+        ## Buffer part
+        self.h2_soc_min = self._model.parameters.get('h2_soc_min')
+        self.h2_soc_max = self._model.parameters.get('h2_soc_max')
+        self.h2_charge_eff = 1
+        self.h2_discharge_eff = 1
+        self.max_flow_rate_in = self._model.parameters.get('max_flow_rate_in', inf)
+        self.min_flow_rate_in = self._model.parameters.get('min_flow_rate_in', 0)  # Default to 0 if not provided
+        self.min_flow_rate_out = self._model.parameters.get('min_flow_rate_out', 0)  # Default to 0 if not provided
+        self.h2_capacity_tot = self.kwh_to_kg(self._model.parameters.get('h2_capacity_tot'))
+        self.soc = self._model.states.get('soc')    # total hydrogen capacity [kg]
+        self.flag = self._model.states.get('flag')
+        self.available_h2 = 0  # amount of hydrogen that is available for the output [kg/timestep]
+        self.free_capacity = 0
 
 
     def step(self, time, inputs, max_advance=1) -> None:
         # get input data 
         input_data = self.unpack_inputs(inputs)
-        # flow2e = input_data.get('flow2e', self.flow2e)  # Default to 0 if not provided
-        desired_out = input_data.get('desired_out', self.desired_out)  # Default to 0 if not provided
+        
+        # how much hydrogen to charge or discharge (positive = charge, negative = discharge)
+        setpoint = input_data.get('setpoint', self.setpoint)  # Default to 0 if not provided
 
-        # calculate generation provided the desired input power [kg/s] 
-        # h_flow, residual_power = self.generate(flow2e=flow2e)
-        h_flow, power_consumption = self.generate_setpoint(desired_out=desired_out)
+        # If setpoint is set to charge
+        if setpoint > 0:
+            h_flow, power_consumption = self.generate_setpoint(desired_out=setpoint) # calculate generation provided the desired input power [kg/s] 
+            buffer_results = self.buffer_operation(h2_in=h_flow, desired_out=0)
 
-        input_data = self.unpack_inputs(inputs)
-        self.h2_in = input_data.get('h2_in', 0) # Default to 0 if not provided
-        self.desired_out = input_data.get('desired_out', self.desired_out)
-
-        # current_time = time * self.time_resolution
-        # print(f'Buffertime: {current_time}')
-        results = self.operation(self.h2_in, self.desired_out)
+        # If setpoint is set to discharge
+        elif setpoint < 0:
+            buffer_results = self.buffer_operation(h2_in=0, desired_out=abs(setpoint))
+            power_consumption = 0  # no power consumption when discharging
+        
+        
+        #TODO slow loss of hydrogen due to leakage, no charging or discharging ###
 
         h2_discharge_cap, h2_charge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
 
-        self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in'], 'overflow': results['overflow']})
-        self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': h2_discharge_cap, 'free_capacity': h2_charge_cap})
-
+        self.set_states({
+            'soc': self.soc,
+            'flag': self.flag,
+            'available_h2': self.kg_to_kwh(h2_discharge_cap),
+            'free_capacity': self.kg_to_kwh(h2_charge_cap)
+            })
 
         self.set_outputs({
-            'h_gen': h_flow, 
-            'power_consumption': power_consumption
-        })
-        
+            'power_consumption': power_consumption,  # power consumption of the electrolyzer [kW]
+            'h2_out': buffer_results['h2_out'],
+            'overflow': buffer_results['overflow']
+            })
+
         return time + self._model.time_step_size
+
+
+    def kwh_to_kg(self, kwh):
+        """
+        Converts kWh to kg of hydrogen produced.
+
+        ...
+
+        Parameters
+        ----------
+        kwh : float
+            Energy in kWh
+
+        Returns
+        -------
+        kg : float
+            Hydrogen produced in kg
+        """
+        energy_density = (self.hhv / self.mmh2) * 1000  # [kJ/kg] = ([kJ/mol] * [mol/g]) * 1000
+        kg = (kwh * 3600) * 1/energy_density  # [kg] = (kJh/s * s/h) * [kg/kJ]
+        return kg
     
+
+    def kg_to_kwh(self, kg):
+        """
+        Converts kg of hydrogen produced to kWh.
+
+        ...
+
+        Parameters
+        ----------
+        kg : float
+            Hydrogen produced in kg
+
+        Returns
+        -------
+        kwh : float
+            Energy in kWh
+        """
+        energy_density = (self.hhv / self.mmh2) * 1000
+        kwh = kg * energy_density / 3600
+        return kwh
+    
+
+    def kw_to_kg_per_h(self, power_kw: float) -> float:
+        """
+        Calculate hydrogen production rate (kg/h) from a given power (kW).
+
+        Parameters
+        ----------
+        power_kw : float
+            Electrical power in kilowatts.
+
+        Returns
+        -------
+        kg_per_h : float
+            Hydrogen production rate in kilograms per hour.
+        """
+        # convert molar mass to kg/mol
+        mmh2_kg_per_mol = self.mmh2 / 1000.0
+
+        # energy density in kJ per kg of H₂
+        energy_density_kj_per_kg = self.hhv / mmh2_kg_per_mol
+
+        # total energy per hour in kJ: (kW = kJ/s) × 3600 s/h
+        kj_per_h = power_kw * 3600.0
+
+        # mass flow = energy flow ÷ energy density
+        kg_per_h = kj_per_h / energy_density_kj_per_kg
+
+        return kg_per_h
+
+
     def ramp_lim(self, flow2e):
 
         """
@@ -170,55 +275,6 @@ class ZZE(ModelConstructor):
         residual_power = flow2e - power_in  # residual power that is not used for H2 production [kW]
 
         return h_out, residual_power
-
-    def kwh_to_kg(self, kwh):
-        """
-        Converts kWh to kg of hydrogen produced.
-
-        ...
-
-        Parameters
-        ----------
-        kwh : float
-            Energy in kWh
-
-        Returns
-        -------
-        kg : float
-            Hydrogen produced in kg
-        """
-        energy_density = (self.hhv / self.mmh2) * 1000  # [kJ/kg] = ([kJ/mol] * [mol/g]) * 1000
-        kg = (kwh * 3600) * 1/energy_density  # [kg] = (kJh/s * s/h) * [kg/kJ]
-        return kg
-    
-
-    def kw_to_kg_per_h(self, power_kw: float) -> float:
-        """
-        Calculate hydrogen production rate (kg/h) from a given power (kW).
-
-        Parameters
-        ----------
-        power_kw : float
-            Electrical power in kilowatts.
-
-        Returns
-        -------
-        kg_per_h : float
-            Hydrogen production rate in kilograms per hour.
-        """
-        # convert molar mass to kg/mol
-        mmh2_kg_per_mol = self.mmh2 / 1000.0
-
-        # energy density in kJ per kg of H₂
-        energy_density_kj_per_kg = self.hhv / mmh2_kg_per_mol
-
-        # total energy per hour in kJ: (kW = kJ/s) × 3600 s/h
-        kj_per_h = power_kw * 3600.0
-
-        # mass flow = energy flow ÷ energy density
-        kg_per_h = kj_per_h / energy_density_kj_per_kg
-
-        return kg_per_h
 
 
     def generate_setpoint(self, desired_out):
