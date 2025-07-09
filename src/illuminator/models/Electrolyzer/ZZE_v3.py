@@ -112,6 +112,10 @@ class ZZE(ModelConstructor):
             buffer_results = self.buffer_operation(h2_in=0, desired_out=abs(setpoint))
             power_consumption = 0  # no power consumption when discharging
         
+        else:  # not charging nor discharging
+            power_consumption = 0  # no power consumption when not charging or discharging
+            buffer_results = {'h2_out': 0, 'overflow': 0}  # no hydrogen produced or overflow when not charging or discharging
+        
         
         #TODO slow loss of hydrogen due to leakage, no charging or discharging ###
 
