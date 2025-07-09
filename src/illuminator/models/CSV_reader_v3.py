@@ -210,9 +210,11 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
-        self.expected_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)  # start date  +  number of calls * iterations per call * time per iteration, aka time per call
         if date != self.expected_date:
             raise IndexError(f'Wrong date "{date}", expected "{self.expected_date}"')
+
+        # Update expected date for the next step
+        self.expected_date = self.expected_date.shift(seconds=self.time_step_size * self.time_resolution)  # expected date is the start date + number of calls * iterations per call * time per iteration, aka time per call
 
         # Put data into the cache for get_data() calls
         self.cache = {}
@@ -241,6 +243,7 @@ class CSV(ModelConstructor):
         """
         try:
             self.next_row = next(self.datafile).strip().split(self.delimiter)
+            self.next_row[0] = arrow.get(self.next_row[0], self.date_format, tzinfo=self.tzinfo)  # Convert the first column to an Arrow object
             self.next_row[0] = arrow.get(self.next_row[0], self.date_format, tzinfo=self.tzinfo)  # Convert the first column to an Arrow object
         except StopIteration:
             self.next_row = None
