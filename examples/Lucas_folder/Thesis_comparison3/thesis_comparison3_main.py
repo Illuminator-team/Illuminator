@@ -33,7 +33,7 @@ if __name__ == "__main__":
     n_var = len(dec_vars)
 
     ## Define the algorithm used (possible entries are PSO, PSO_P, GA,SA or ABC)
-    alg = 'LBFGSB2' # 'GA_P' #"GA_P" # 
+    alg = 'GA_P' # 'GA_P' #"GA_P" # 
 
     ## Determine which cost function from cost_fun.py to use
     # cost_fun = cost_fun1
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     termination = DefaultSingleObjectiveTermination(
                                                     xtol=1e-3,         # Tolerance in decision variables
                                                     ftol=1e-3,         # Tolerance in objective function
-                                                    period=5,          # Number of generations to check for convergence
+                                                    period=20,          # Number of generations to check for convergence
                                                     n_max_gen=100      # Max generations
                                                     )
 

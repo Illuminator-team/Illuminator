@@ -174,12 +174,12 @@ figs.append((fig_compare, 'optimized_schedule_plot_scen3.png'))
 
 
 
-fig_presence, ax = plt.subplots(figsize=(10, 5))  # Larger height for visibility
+fig_presence, ax = plt.subplots(figsize=(8, 4))  # Larger height for visibility
 
 evs = [1, 2, 3, 4, 5]
 colors = plt.cm.tab10(range(len(evs)))  # Distinct color for each EV
 
-for i, ev in enumerate(evs):
+for i, ev in enumerate(evs[::-1]):
     col = f'CSV_EV_presence-0.time-based_0-ev{ev}'
     # Shift each presence series by index `i` to separate vertically
     y_vals = output_data[col] + i*4
@@ -205,7 +205,7 @@ ax.set_xlabel('Time step index', fontsize=label_font_size)
 # ax.set_xlim(0, len(output_data))
 # ax.set_ylim(-0.5, len(evs) + 0.5)
 
-ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.0))
+ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1.0), reverse=True)
 ax.grid(axis='x', linestyle=':', alpha=0.5)
 ax.set_xlim(0, 96)
 plt.xticks(fontsize=tick_font_size)

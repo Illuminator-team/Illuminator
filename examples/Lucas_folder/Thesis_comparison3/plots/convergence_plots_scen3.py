@@ -14,7 +14,7 @@ import glob
 PSO_file_name = './examples/Lucas_folder/Thesis_comparison3/data/PSO_live_log_n9g100_seed1b.csv'
 GA_file_name =  './examples/Lucas_folder/Thesis_comparison3/data/GA_live_log_n9g100_seed33b.csv'
 LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison3/data/LBFGSB_p_1d_n9_g100_seed_42_b'
-plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario3'
+plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario3/square'
 figs = []
 
 
@@ -45,7 +45,8 @@ df_pso = df_pso.drop(columns='solution_tuple')
 df_pso['fitness_sort'] = df_pso['fitness'] #.apply(lambda x: ast.literal_eval(x)[0])
 df_pso_sorted = df_pso.sort_values(by='fitness')
 df_pso_desceding = df_pso.sort_values(by='fitness', ascending=False)
-
+# print('df_pso', df_pso)
+# print('df_pso_sorted', df_pso_sorted)   
 # df_pso_sorted = df_pso_sorted.drop(columns=['fitness'])
 # df_pso_desceding = df_pso_desceding.drop(columns=['fitness'])
 
@@ -59,13 +60,13 @@ df_pso_desceding['fitness_numeric'] = df_pso_desceding['fitness'] # .apply(lambd
 min_c = df_pso_sorted['fitness_numeric'].min()
 max_c = df_pso_sorted['fitness_numeric'].max()
 norm = mcolors.Normalize(vmin=min_c, vmax=max_c)
-cmap = cm.Greens_r  # You can also try 'plasma', 'inferno', 'coolwarm', etc.
+cmap = cm.plasma  # You can also try 'plasma', 'inferno', 'coolwarm', etc.
 
 
 
 # --- 1: Fitness per Solution (Search Space) ---
 
-fig1_1 = plt.figure(figsize=(8, 5))
+fig1_1 = plt.figure(figsize=(6, 6))
 x_vals = range(5)
 
 for i, (_, row) in enumerate(df_pso_desceding.iterrows()):
@@ -77,15 +78,15 @@ for i, (_, row) in enumerate(df_pso_desceding.iterrows()):
 # Add colorbar
 sm = cm.ScalarMappable(cmap=cmap, norm=norm)
 sm.set_array([])  # Required for colorbar
-cbar = plt.colorbar(sm)
-cbar.set_label("Fitness [kW]", fontsize=label_font_size)
+# cbar = plt.colorbar(sm)
+# cbar.set_label("Fitness [kW]", fontsize=label_font_size)
 
 # Labels and layout
 # plt.xlabel('EV Index', fontsize=label_font_size)
 ev_labels = [f'EV{i+1}' for i in range(len(x_vals))]
 plt.xticks(ticks=x_vals, labels=ev_labels, fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
-plt.ylabel(r'$\tau^0$', fontsize=label_font_size)
+plt.ylabel(r'Starting timestep $\tau^0$', fontsize=label_font_size)
 plt.grid(True)
 plt.tight_layout()
 figs.append((fig1_1, 'PSO_scenario3_SearchSpace.png'))
@@ -96,7 +97,7 @@ plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label=
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel('Fitness [kW]', fontsize=label_font_size)
+plt.ylabel('Cost [kW]', fontsize=label_font_size)
 # plt.legend()
 plt.xticks(ticks=np.arange(num_gens +1), labels=np.arange(0, num_gens+1), fontsize=tick_font_size)
 plt.xlim(1, num_gens + 0.5)
@@ -144,13 +145,13 @@ df_ga_desceding['fitness_numeric'] = df_ga_desceding['fitness'] # .apply(lambda 
 min_c = df_ga_sorted['fitness_numeric'].min()
 max_c = df_ga_sorted['fitness_numeric'].max()
 norm = mcolors.Normalize(vmin=min_c, vmax=max_c)
-cmap = cm.Greens_r  # You can also try 'plasma', 'inferno', 'coolwarm', etc.
+cmap = cm.plasma  # You can also try 'plasma', 'inferno', 'coolwarm', etc.
 
 
 
 # --- 1: Fitness per Solution (Search Space) ---
 
-fig1_1 = plt.figure(figsize=(8, 5))
+fig1_1 = plt.figure(figsize=(7.4, 6))
 x_vals = range(5)
 
 for i, (_, row) in enumerate(df_ga_desceding.iterrows()):
@@ -163,14 +164,14 @@ for i, (_, row) in enumerate(df_ga_desceding.iterrows()):
 sm = cm.ScalarMappable(cmap=cmap, norm=norm)
 sm.set_array([])  # Required for colorbar
 cbar = plt.colorbar(sm)
-cbar.set_label("Fitness [kW]", fontsize=label_font_size)
+cbar.set_label("Cost [kW]", fontsize=label_font_size)
 
 # Labels and layout
 # plt.xlabel('EV Index', fontsize=label_font_size)
 ev_labels = [f'EV{i+1}' for i in range(len(x_vals))]
 plt.xticks(ticks=x_vals, labels=ev_labels, fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
-plt.ylabel(r'$\tau^0$', fontsize=label_font_size)
+plt.ylabel(r'Starting timestep $\tau^0$', fontsize=label_font_size)
 plt.grid(True)
 plt.tight_layout()
 figs.append((fig1_1, 'GA_scenario3_SearchSpace.png'))
@@ -181,7 +182,7 @@ plt.plot(best_fitness_per_gen_ga.index, best_fitness_per_gen_ga.values, label='B
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel('Fitness [kW]', fontsize=label_font_size)
+plt.ylabel('Cost [kW]', fontsize=label_font_size)
 # plt.legend()
 plt.xticks(ticks=np.arange(num_gens +1), labels=np.arange(0, num_gens+1), fontsize=tick_font_size)
 plt.xlim(1, num_gens + 0.5)
@@ -263,10 +264,10 @@ best_fitness_per_gen_lbfgs = merged_df[fitness_columns].min(axis=1).cummin()
 vmin = np.min(min_fitness)
 vmax = np.max(max_fitness)
 # print(vmin, vmax)
-norm = Normalize(vmin=vmin, vmax=vmax)
+# norm = Normalize(vmin=vmin, vmax=vmax)
 
 # --- Plot 1: Search Space Plot ---
-fig3_1 = plt.figure(figsize=(8, 5))
+fig3_1 = plt.figure(figsize=(6, 6))
 
 for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=['iter', 'fitness', 'timestep', 'ev1', 'ev2', 'ev3', 'ev4', 'ev5'])
@@ -283,15 +284,15 @@ for log_file in log_files:
 # Add colorbar
 sm = cm.ScalarMappable(cmap=cmap, norm=norm)
 sm.set_array([])  # Required for colorbar
-cbar = plt.colorbar(sm)
-cbar.set_label("Fitness [kW]", fontsize=label_font_size)
+# cbar = plt.colorbar(sm)
+# cbar.set_label("Cost [kW]", fontsize=label_font_size)
 
 # Labels and layout
 # plt.xlabel('EV Index', fontsize=label_font_size)
 ev_labels = [f'EV{i+1}' for i in range(len(x_vals))]
 plt.xticks(ticks=x_vals, labels=ev_labels, fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
-plt.ylabel(r'$\tau^0$', fontsize=label_font_size)
+plt.ylabel(r'Starting timestep $\tau^0$', fontsize=label_font_size)
 plt.grid(True)
 plt.tight_layout()
 figs.append((fig3_1, 'LBFGSB_scenario3_SearchSpace.png'))
@@ -303,7 +304,7 @@ fig3_2 = plt.figure(figsize=(8, 5))
 # print(merged_df)
 plt.plot(merged_df['iter'], best_fitness_per_gen_lbfgs, label='Best per generation', color='orange', linewidth=linewidth)
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel('Global best fitness [kW]', fontsize=label_font_size)
+plt.ylabel('Global best cost [kW]', fontsize=label_font_size)
 ticks = np.arange(num_iterations + 1)
 label_interval = 5 
 tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
@@ -328,7 +329,7 @@ plt.plot(range(1, 1 + len(merged_df['min_fitness'])),
          linewidth=linewidth)
 plt.plot(best_fitness_per_gen_ga, label='Convergence GA', linewidth=linewidth, linestyle='dashed', color='red')
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel('Global best fitness [kW]', fontsize=label_font_size)
+plt.ylabel('Global best cost [kW]', fontsize=label_font_size)
 ticks = np.arange(largest_n_iterations + 1)
 label_interval = 5 
 tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
@@ -342,14 +343,102 @@ plt.tight_layout()
 figs.append((fig_all_convergence, 'global_fitness_per_gen_all_algs_scen3.png'))
 
 
+df_all = pd.concat([df_pso_sorted, df_ga_sorted], ignore_index=True)
+
+# Step 2: Get top 5 unique fitness values
+top5_fitnesses = df_all['fitness'].drop_duplicates().nsmallest(5)
+
+# Step 3: Filter only those rows
+df_top5_all = df_all[df_all['fitness'].isin(top5_fitnesses)]
+
+# Step 4: Assign distinct colors to each unique fitness
+unique_fitnesses = sorted(df_top5_all['fitness'].unique())
+colors_map = {
+    fitness: color for fitness, color in zip(
+        unique_fitnesses,
+        ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple']
+    )
+}
+# --- Plotting ---
+fig_best = plt.figure(figsize=(6, 6))
+x_vals = np.arange(5) 
+
+plotted_fitness = set()
+df_top5_all = df_top5_all.sort_values(by='fitness', ascending=False)
+for _, row in df_top5_all.iterrows():
+    evs = row['solution']
+    fitness = row['fitness']
+    color = colors_map[fitness]
+
+    label = f'Fitness: {fitness:.2f}' if fitness not in plotted_fitness else None
+    plotted_fitness.add(fitness)
+
+    plt.plot(x_vals, evs, color=color, marker='o', linewidth=linewidth, label=label)
+    
+
+plt.xticks(ticks=x_vals, labels=[f'EV{i+1}' for i in x_vals], fontsize=tick_font_size)
+plt.yticks(fontsize=12)
+plt.ylabel(r'Starting timestep $\tau^0$', fontsize=label_font_size)
+plt.grid(True)
+plt.legend(title='Top 5 Fitnesses', fontsize=tick_font_size, title_fontsize=tick_font_size, reverse=True)
+plt.tight_layout()
+
+top5_pso_fitnesses = df_pso_sorted['fitness'].drop_duplicates().nsmallest(5)
+top5_ga_fitnesses = df_ga_sorted['fitness'].drop_duplicates().nsmallest(5)
+
+# Step 2: Combine top entries
+df_pso_top5 = df_pso_sorted[df_pso_sorted['fitness'].isin(top5_pso_fitnesses)].copy()
+df_ga_top5 = df_ga_sorted[df_ga_sorted['fitness'].isin(top5_ga_fitnesses)].copy()
+
+# Step 3: Label algorithms
+df_pso_top5['algorithm'] = 'PSO'
+df_ga_top5['algorithm'] = 'GA'
+
+df_combined = pd.concat([df_pso_top5, df_ga_top5], ignore_index=True)
+
+# Step 4: Get unique fitnesses (sorted) for assigning colors
+unique_fitnesses = sorted(df_combined['fitness'].unique())
+cmap = cm.get_cmap('tab10') if len(unique_fitnesses) <= 10 else cm.get_cmap('tab20')
+fitness_to_color = {fit: cmap(i % cmap.N) for i, fit in enumerate(unique_fitnesses)}
+
+# Step 5: Define line styles
+linestyle_map = {'PSO': 'solid', 'GA': 'dashed'}
+
+# Step 6: Plot
+fig = plt.figure(figsize=(6, 6))
+x_vals = np.arange(5)
+plotted_fitnesses = set()
+
+for _, row in df_combined.iterrows():
+    evs = row['solution']
+    fitness = row['fitness']
+    algo = row['algorithm']
+    color = fitness_to_color[fitness]
+    linestyle = linestyle_map[algo]
+
+    label = None
+    if fitness not in plotted_fitnesses:
+        label = f'Fitness: {fitness:.2f}'
+        plotted_fitnesses.add(fitness)
+
+    plt.plot(x_vals, evs, color=color, linestyle=linestyle, marker='o', linewidth=1.5, label=label)
+
+# Axis & labels
+plt.xticks(ticks=x_vals, labels=[f'EV{i+1}' for i in x_vals], fontsize=12)
+plt.yticks(fontsize=12)
+plt.ylabel(r'Starting timestep $\tau^0$', fontsize=14)
+plt.grid(True)
+plt.legend(title='Unique Fitness Values', fontsize=10, title_fontsize=11)
+plt.tight_layout()
+
 plt.show()
 
 
-save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
-if save_all:
-    os.makedirs(plot_saving_dir, exist_ok=True)
+# save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
+# if save_all:
+#     os.makedirs(plot_saving_dir, exist_ok=True)
 
-    for fig, ffilename in figs:
-        path = os.path.join(plot_saving_dir, ffilename)
-        fig.savefig(path, dpi=300)
-        print(f"Saved {fig} as {ffilename}")
+#     for fig, ffilename in figs:
+#         path = os.path.join(plot_saving_dir, ffilename)
+#         fig.savefig(path, dpi=300)
+#         print(f"Saved {fig} as {ffilename}")

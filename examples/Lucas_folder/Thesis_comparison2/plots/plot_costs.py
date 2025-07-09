@@ -130,6 +130,14 @@ axs[2].tick_params(axis='x', labelsize=tick_font_size)
 axs[2].set_title('Energy Cost Over Time')
 fig2.tight_layout()
 figs.append((fig2, 'optimized_NH.png'))
+
+plt.figure(figsize=(8, 5))
+plt.plot(price_short, label='Shortage Price', color='orange')
+plt.plot(price_surplus, label='Surplus Price', color='blue')
+# plt.plot(grid_use, label='Grid Usage', color='red')
+plt.legend()
+plt.grid(True)
+
 plt.show()
 
 save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'
@@ -140,13 +148,7 @@ if save_all:
         path = os.path.join(plot_saving_dir, ffilename)
         fig.savefig(path, dpi=300)
         print(f"Saved {fig} as {ffilename}")
-# plt.figure(figsize=(8, 5))
-# plt.plot(price_short, label='Shortage Price', color='orange')
-# plt.plot(price_surplus, label='Surplus Price', color='blue')
-# plt.plot(grid_use, label='Grid Usage', color='red')
-# plt.legend()
-# plt.grid(True)
-# plt.show()
+
 
 
 # error_data = pd.read_csv("C:/Users/31633/Downloads/individual+household+electric+power+consumption/household_power_consumption - Copy.csv")

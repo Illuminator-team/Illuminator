@@ -13,7 +13,7 @@ GA_file_name = './examples/Lucas_folder/Thesis_comparison2/data/GA_live_log_1w01
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_live_log_1w01_01_n9_g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
 LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGSB_p_1w_n9_g100_seed_no'
-plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario2'
+plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario2/square'
 figs = []
 
 label_font_size = 18
@@ -47,10 +47,11 @@ df_pso['x1'] = df_pso['solution'].apply(lambda x: x[0])
 df_pso['x2'] = df_pso['solution'].apply(lambda x: x[1])
 print(df_pso.loc[df_pso["fitness"].idxmin()])
 # df_pso['fitness_log'] = np.log10(df_pso['fitness'] + 1e-8)
-fig1_1a = plt.figure(figsize=(8, 6))
+# fig1_1a = plt.figure(figsize=(8, 6))
+fig1_1a = plt.figure(figsize=(6, 6))
 sc = plt.scatter(df_pso['x1'], df_pso['x2'], c=df_pso['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
-cbar = plt.colorbar(sc)
-cbar.set_label('Fitness', fontsize=label_font_size)
+# cbar = plt.colorbar(sc)
+# cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
@@ -72,7 +73,8 @@ sc = ax.scatter(df_pso['x1'], df_pso['x2'], df_pso['fitness'], c=df_pso['fitness
 # Label axes
 ax.set_xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 ax.set_ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
-ax.set_zlabel('Fitness', fontsize=label_font_size)
+# ax.set_zlabel('Fitness', fontsize=label_font_size)
+ax.set_zlabel('Cost', fontsize=label_font_size)
 ax.set_xlim(-2, 2)
 ax.set_ylim(-2, 2)
 # ax.set_title('PSO: Search Space Exploration in 3D')
@@ -80,7 +82,9 @@ plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 # Add colorbar
 cbar = plt.colorbar(sc)
-cbar.set_label('Fitness', fontsize=label_font_size)
+# cbar.set_label('Fitness', fontsize=label_font_size)
+cbar.set_label('Cost', fontsize=label_font_size)
+
 plt.tight_layout()
 figs.append((fig1_1b, 'PSO_scenario2_SearchSpace_3d.png'))
 
@@ -91,7 +95,8 @@ sc = plt.scatter(df_pso['x1'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
-plt.ylabel('Fitness' , fontsize=label_font_size)
+# plt.ylabel('Fitness' , fontsize=label_font_size)
+plt.ylabel('Cost' , fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 # plt.title('PSO: Search Space Exploration x2')
@@ -107,7 +112,8 @@ sc = plt.scatter(df_pso['x2'], df_pso['fitness'], alpha=0.7, s=marker_size) #, c
 # cbar = plt.colorbar(sc)
 # cbar.set_label('Fitness', fontsize=label_font_size)
 plt.xlabel('Lower threshold [€/kWh]', fontsize=label_font_size)
-plt.ylabel('Fitness' , fontsize=label_font_size)
+# plt.ylabel('Fitness' , fontsize=label_font_size)
+plt.ylabel('Cost' , fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 # plt.title('PSO: Search Space Exploration x2')
@@ -122,7 +128,8 @@ plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label=
 # plt.plot(global_best_fitness.index, global_best_fitness.values, label='Global best so far', color='blue', linestyle='--', linewidth=2)
 # plt.title('PSO Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel('Fitness', fontsize=label_font_size)
+# plt.ylabel('Fitness', fontsize=label_font_size)
+plt.ylabel('Cost' , fontsize=label_font_size)
 # plt.legend()
 plt.xticks(ticks=np.arange(num_gens +1), labels=np.arange(0, num_gens+1), fontsize=tick_font_size)
 plt.xlim(1, num_gens + 0.5)
@@ -213,10 +220,12 @@ for row_ix in range(pop_size):
 df_ga['x1'] = df_ga['solution'].apply(lambda x: x[0])
 df_ga['x2'] = df_ga['solution'].apply(lambda x: x[1])
 # df_ga['fitness_log'] = np.log10(df_ga['fitness'] + 1e-8)
-fig2_1a = plt.figure(figsize=(8, 6))
+# fig2_1a = plt.figure(figsize=(8, 6))
+fig2_1a = plt.figure(figsize=(7, 6))
 sc = plt.scatter(df_ga['x1'], df_ga['x2'], c=df_ga['fitness'], cmap='viridis', alpha=0.7, s=marker_size)
 cbar = plt.colorbar(sc)
-cbar.set_label('Fitness', fontsize=label_font_size)
+# cbar.set_label('Fitness', fontsize=label_font_size)
+cbar.set_label('Cost', fontsize=label_font_size)
 plt.xlabel('Upper threshold [€/kWh]', fontsize=label_font_size)
 plt.ylabel('Lower threshold [€/kWh]', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
@@ -478,7 +487,8 @@ vmax = np.max(all_fitness)
 norm = Normalize(vmin=vmin, vmax=vmax)
 
 # --- Plot 1: Search Space Plot ---
-fig3_1a = plt.figure(figsize=(8, 5))
+# fig3_1a = plt.figure(figsize=(8, 5))
+fig3_1a = plt.figure(figsize=(6, 6))
 
 for log_file, marker in zip(log_files, markers):
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "x1", "x2"])
@@ -486,7 +496,7 @@ for log_file, marker in zip(log_files, markers):
     plt.scatter(df["x1"], df["x2"], c=df["fitness"], cmap='viridis', norm=norm, alpha=0.7,
                 s=marker_size, label=os.path.basename(log_file)) #, marker=marker,)
 
-cbar = plt.colorbar()
+# cbar = plt.colorbar()
 cbar.set_label('Fitness', fontsize=label_font_size)
 cbar.ax.yaxis.offsetText.set_visible(False)
 # cbar.ax.tick_params(labelsize=tick_font_size)
@@ -622,7 +632,8 @@ figs.append((fig3_2, 'LBFGSB2_scenario2_global_fitness_per_gen.png'))
 fig3_2b = plt.figure(figsize=(8, 5))
 plt.plot(merged_df['iter'], merged_df['min_fitness'], label='Best per generation', color='orange', linewidth=linewidth)
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel('Global best fitness', fontsize=label_font_size)
+# plt.ylabel('Global best fitness', fontsize=label_font_size)
+plt.ylabel('Global best cost', fontsize=label_font_size)
 ticks = np.arange(num_iterations + 1)
 label_interval = 5 
 tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
@@ -888,7 +899,9 @@ def plot_iterations_grid(df, selected_iterations, n_cols=None, figsize=(16, 10),
     # Add a single colorbar to the right
     cbar_ax = fig_matrix.add_axes([0.92, 0.15, 0.015, 0.7])
     cbar = fig_matrix.colorbar(sm, cax=cbar_ax)
-    cbar.set_label("Fitness", fontsize=10)
+    # cbar.set_label("Fitness", fontsize=10)
+    cbar.set_label("Cost", fontsize=10)
+
 
     # Add common x and y labels for the whole figure
     fig_matrix.text(0.5, 0.04, "Upper threshold [€/kWh]", ha='center', fontsize=label_font_size)
@@ -917,7 +930,8 @@ plt.plot(range(1, 1 + len(merged_df['min_fitness'])),
          linewidth=linewidth)
 plt.plot(best_fitness_per_gen_ga, label='Convergence GA', linewidth=linewidth, linestyle='dashed', color='red')
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel('Global best fitness', fontsize=label_font_size)
+# plt.ylabel('Global best fitness', fontsize=label_font_size)
+plt.ylabel('Global best cost', fontsize=label_font_size)
 ticks = np.arange(num_iterations + 1)
 label_interval = 5 
 tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]

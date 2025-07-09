@@ -16,7 +16,7 @@ GA_file_name = './examples/Lucas_folder/Thesis_comparison1/data/GA_live_log_n9g1
 LBFGSB_file_name = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log_1w01_01_n9g10.csv'
 # LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison2/data/LBFGS2_1w01_01_eps_1e1'
 LBFGSB2_folder = './examples/Lucas_folder/Thesis_comparison1/data/LBFGSB_live_log_n9g100_seed_42_b'
-plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario1'
+plot_saving_dir = 'C:/Users/31633/Dropbox/My PC (DESKTOP-84P3QQD)/Documents/Master_thesis/Thesis_figures/Results/Scenario1/square'
 figs = []
 
 
@@ -61,11 +61,13 @@ num_generations = particle_traject_matrix.shape[1]
 
 # --- 1: Fitness per Solution (Search Space) ---
 
-fig1_1 = plt.figure(figsize=(8, 5))
+# fig1_1 = plt.figure(figsize=(8, 5))
+fig1_1 = plt.figure(figsize=(6, 6))
 plt.scatter(df['solution'], df['fitness_log'], alpha=0.6, s=marker_size, color='purple')
 # plt.title('Search Space (Log-Scaled Fitness)')
 plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xlim(100, 600)
 plt.ylim(2.5, 5.6)
 plt.xticks(fontsize=tick_font_size)
@@ -81,7 +83,8 @@ plt.plot(best_fitness_per_gen_pso.index, best_fitness_per_gen_pso.values, label=
 plt.xlim(1, num_generations +0.5)
 plt.ylim(415, 445)
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel('Global best fitness', fontsize=label_font_size)
+# plt.ylabel('Global best fitness', fontsize=label_font_size)
+plt.ylabel('Global best cost', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.grid(True)
@@ -121,7 +124,8 @@ plt.legend(sorted_handles, sorted_labels, fontsize='x-small', loc='best')
 plt.xticks(ticks=np.arange(num_generations), labels=np.arange(1, num_generations + 1), fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xlim(0, num_generations -0.5)
 plt.ylim(2.5, 5.6)
 plt.grid(True, zorder=1)
@@ -162,11 +166,13 @@ num_generations = particle_traject_matrix.shape[1]
 
 # --- 1: Fitness per Solution (Search Space) ---
 df['fitness_log'] = np.log10(df['fitness'] + 1e-8)
-fig2_1 = plt.figure(figsize=(8, 5))
+# fig2_1 = plt.figure(figsize=(8, 5))
+fig2_1 = plt.figure(figsize=(6, 6))
 plt.scatter(df['solution'], df['fitness_log'], alpha=0.6, clip_on=False, s=marker_size, color='purple')
 # plt.title('Search Space (Log-Scaled Fitness)')
 plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xticks(fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlim(100, 600)
@@ -183,7 +189,8 @@ plt.plot(best_fitness_per_gen_ga.index, best_fitness_per_gen_ga.values, label='B
 
 # plt.title('GA Convergence Plot')
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel('Global best fitness', fontsize=label_font_size)
+# plt.ylabel('Global best fitness', fontsize=label_font_size)
+plt.ylabel('Global best cost', fontsize=label_font_size)
 plt.xticks(ticks=np.arange(num_generations+1), labels=np.arange(0, num_generations+1), fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlim(1, num_generations +0.5)
@@ -225,7 +232,8 @@ for spine in ax.spines.values():
     spine.set_zorder(2)
 # plt.title('Search Space (Log-Scaled Fitness)')
 plt.xlabel('Generation', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xticks(ticks=np.arange(num_generations+1), labels=np.arange(0, num_generations +1), fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlim(1, num_generations + 0.5)
@@ -308,7 +316,8 @@ num_iterations = len(merged_df['iter'])
 markers = itertools.cycle(('o', 's', '^', 'v', 'D', 'P', '*', 'X', 'H'))
 
 # --- 1: Search space plot ---
-fig3_1 = plt.figure(figsize=(8, 5))
+# fig3_1 = plt.figure(figsize=(8, 5))
+fig3_1 = plt.figure(figsize=(6, 6))
 for log_file in log_files:
     df = pd.read_csv(log_file, skiprows=1, names=["iter", "fitness", 'timestep', "buffer_size"])
     # print(df)
@@ -325,7 +334,8 @@ sorted_labels, sorted_handles = zip(*sorted_handles_labels)
 # plt.legend(sorted_handles, sorted_labels, fontsize='x-small', loc='best')
 
 plt.xlabel('Buffer size [kg]', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xlim(100, 600)
 plt.ylim(2.5, 5.6)
 plt.xticks(fontsize=tick_font_size)
@@ -427,7 +437,8 @@ figs.append((fig3_3b, 'LBFGSB2_scenario1_particle_trajcectory_solution2.png'))
 fig3_2b = plt.figure(figsize=(8, 5))
 plt.plot(merged_df['iter'], merged_df['min_fitness'], label='Best per generation', color='orange', linewidth=linewidth)
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel('Global best fitness', fontsize=label_font_size)
+# plt.ylabel('Global best fitness', fontsize=label_font_size)
+plt.ylabel('Global best cost', fontsize=label_font_size)
 ticks = np.arange(num_iterations + 1)
 label_interval = 5 
 tick_labels = [str(i) if i % label_interval == 0 else '' for i in ticks]
@@ -464,7 +475,8 @@ plt.legend(sorted_handles, sorted_labels, fontsize='x-small', loc='best')
 plt.xticks(ticks=ticks, labels=tick_labels, fontsize=tick_font_size)
 plt.yticks(fontsize=tick_font_size)
 plt.xlabel('Iteration', fontsize=label_font_size)
-plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+# plt.ylabel(r'$\log_{10}$(Fitness)', fontsize=label_font_size)
+plt.ylabel(r'$\log_{10}$(Cost)', fontsize=label_font_size)
 plt.xlim(1, num_iterations + 0.5)
 plt.ylim(2.5, 5.6)
 # plt.title('L-BFGS-B: Convergence Plot (Parallel)')
@@ -491,7 +503,8 @@ figs.append((fig3_4, 'LBFGSB2_scenario1_particle_trajcectory_fitness.png'))
 # plt.legend()
 # plt.grid(True)
 # plt.tight_layout()
-fig_all_convergence, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(8, 5))
+from matplotlib.ticker import MaxNLocator
+fig_all_convergence, (ax1, ax2) = plt.subplots(1, 2, sharey=True, figsize=(10, 5))
 # linewidth = linewidth *1.5
 # tick_font_size=tick_font_size*1.5
 # label_font_size =label_font_size*1.5
@@ -512,10 +525,11 @@ ax2.grid(True)
 
 
 # Set consistent labels and ticks
-ax1.set_ylabel('Global best fitness', fontsize=label_font_size)
-# ax2.set_xlabel('Iteration', fontsize=label_font_size)
+# ax1.set_ylabel('Global best fitness', fontsize=label_font_size)
+ax1.set_ylabel('Global best cost', fontsize=label_font_size)
+# ax2.set_xlabel('Iteration', fontsize=label_font_size) 
 # ax1.set_xlabel('Iteration', fontsize=label_font_size)
-fig_all_convergence.text(0.5, 0.02, 'Iteration', ha='center', fontsize=label_font_size)
+fig_all_convergence.text(0.545, 0.00, 'Iteration', ha='center', fontsize=label_font_size)
 ax1.tick_params(axis='both', labelsize=tick_font_size)
 ax2.tick_params(axis='both', labelsize=tick_font_size)
 
@@ -534,6 +548,7 @@ ax2.tick_params(axis='y', right=False)  # turn off right-side ticks
 
 # Set x-axis limits for the two axes to create a visual break
 ax1.set_xlim(1, 17)
+ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
 ax2.set_xlim(25, num_iterations + 0.5)
 # Remove the first x-tick on ax2
 ticks_ax2 = ax2.get_xticks()
