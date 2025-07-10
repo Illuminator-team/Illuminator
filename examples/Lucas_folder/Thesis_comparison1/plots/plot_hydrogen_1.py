@@ -28,22 +28,27 @@ temp = df['CSVprod-0.time-based_0-production'] - df['H2demand-0.time-based_0-tot
 fig1, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
 
 # --- Subplot 1: Demand and Production ---
-ax1.plot(df['date'], df['H2demand-0.time-based_0-tot_dem'], label='Demand (kg)', color='blue', linewidth=linewidth)
-ax1.plot(df['date'], df['CSVprod-0.time-based_0-production'], label='Production (kg)', color='orange', linewidth=linewidth)
+ax1.plot(df['date'], df['H2demand-0.time-based_0-tot_dem'], label='Demand [kg]', color='blue', linewidth=linewidth)
+ax1.plot(df['date'], df['CSVprod-0.time-based_0-production'], label='Production [kg]', color='orange', linewidth=linewidth)
 
-ax1.set_ylabel("Hydrogen (kg)", fontsize=label_font_size)
+ax1.set_ylabel("Hydrogen [kg]", fontsize=label_font_size)
 ax1.tick_params(axis='y', labelsize=tick_font_size)
 # ax1.set_title("Hydrogen Demand and Production")
 ax1.legend(loc='upper left')
 ax1.grid(True)
 
 # --- Subplot 2: SoC only ---
-ax2.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC (%)', color='black', linewidth=linewidth, linestyle='--')
-ax2.set_ylabel("Buffer SOC (%)", fontsize=label_font_size)
+ax2.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC [%]', color='black', linewidth=linewidth)
+ax2.set_ylabel("Buffer SOC [%]", fontsize=label_font_size)
 ax2.set_ylim(0, 100)  # Set y-axis limits for SOC
 # ax2.set_title("Buffer State of Charge (SoC)")
 # ax2.legend(loc='upper left')
-ax2.set_xlabel("Date")
+start = pd.to_datetime("2025-04-01")
+end = pd.to_datetime("2025-04-30")
+ax2.set_xlim(left=pd.to_datetime("2025-04-01"), right=pd.to_datetime("2025-05-01"))
+ax2.set_xlabel("Date", fontsize=label_font_size)
+tick_dates = pd.date_range(start, end, freq="5D")
+ax2.set_xticks(tick_dates, tick_dates.strftime('%Y-%m-%d'), rotation=45, ha='right', fontsize=tick_font_size)
 ax2.tick_params(axis='x', rotation=45, labelsize=tick_font_size)
 ax2.tick_params(axis='y', labelsize=tick_font_size)
 ax2.grid(True)
@@ -52,6 +57,27 @@ plt.tight_layout()
 figs.append((fig1, 'unoptimized_h.png'))
 
 
+fig_unop_single = plt.figure(figsize=(10, 5))
+plt.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC [%]', color='black', linewidth=linewidth)
+plt.ylabel("Buffer SOC [%]", fontsize=label_font_size)
+plt.ylim(0, 100)  # Set y-axis limits for SOC
+start = pd.to_datetime("2025-04-01")
+end = pd.to_datetime("2025-04-30")
+plt.xlim(left=pd.to_datetime("2025-04-01"), right=pd.to_datetime("2025-05-01"))
+# Extend limits by 0.5 day on each side
+
+
+# Define tick locations (e.g. every 5 days) and labels
+tick_dates = pd.date_range(start, end, freq="5D")
+plt.xticks(tick_dates, tick_dates.strftime('%Y-%m-%d'), rotation=45, ha='right', fontsize=tick_font_size)
+
+plt.xlabel("Date", fontsize=label_font_size)
+plt.tick_params(axis='x', rotation=45, labelsize=tick_font_size)
+plt.tick_params(axis='y', labelsize=tick_font_size)
+plt.grid(True)
+# Final layout
+plt.tight_layout()
+figs.append((fig_unop_single, 'unoptimized_h_single.png'))
 
 file_name = './examples/Lucas_folder/Thesis_comparison1/ouput_CSV_opt.csv'
 df = pd.read_csv(file_name)
@@ -70,22 +96,27 @@ temp = df['CSVprod-0.time-based_0-production'] - df['H2demand-0.time-based_0-tot
 fig2, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
 
 # --- Subplot 1: Demand and Production ---
-ax1.plot(df['date'], df['H2demand-0.time-based_0-tot_dem'], label='Demand (kg)', color='blue', linewidth=linewidth)
-ax1.plot(df['date'], df['CSVprod-0.time-based_0-production'], label='Production (kg)', color='orange', linewidth=linewidth)
+ax1.plot(df['date'], df['H2demand-0.time-based_0-tot_dem'], label='Demand [kg]', color='blue', linewidth=linewidth)
+ax1.plot(df['date'], df['CSVprod-0.time-based_0-production'], label='Production [kg]', color='orange', linewidth=linewidth)
 
-ax1.set_ylabel("Hydrogen (kg)", fontsize=label_font_size)
+ax1.set_ylabel("Hydrogen [kg]", fontsize=label_font_size)
 ax1.tick_params(axis='y', labelsize=tick_font_size)
 # ax1.set_title("Hydrogen Demand and Production")
 ax1.legend(loc='upper left')
 ax1.grid(True)
 
 # --- Subplot 2: SoC only ---
-ax2.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC (%)', color='black', linewidth=linewidth, linestyle='--')
-ax2.set_ylabel("Buffer SOC (%)", fontsize=label_font_size)
+ax2.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC [%]', color='black', linewidth=linewidth)
+ax2.set_ylabel("Buffer SOC [%]", fontsize=label_font_size)
 ax2.set_ylim(0, 100)  # Set y-axis limits for SOC
 # ax2.set_title("Buffer State of Charge (SoC)")
 # ax2.legend(loc='upper left')
-ax2.set_xlabel("Date")
+start = pd.to_datetime("2025-04-01")
+end = pd.to_datetime("2025-04-30")
+ax2.set_xlim(left=pd.to_datetime("2025-04-01"), right=pd.to_datetime("2025-05-01"))
+ax2.set_xlabel("Date", fontsize=label_font_size)
+tick_dates = pd.date_range(start, end, freq="5D")
+ax2.set_xticks(tick_dates, tick_dates.strftime('%Y-%m-%d'), rotation=45, ha='right', fontsize=tick_font_size)
 ax2.tick_params(axis='x', rotation=45, labelsize=tick_font_size)
 ax2.tick_params(axis='y', labelsize=tick_font_size)
 ax2.grid(True)
@@ -93,6 +124,27 @@ ax2.grid(True)
 plt.tight_layout()
 figs.append((fig2, 'optimized_h.png'))
 
+fig_op_single = plt.figure(figsize=(10, 5))
+plt.plot(df['date'], df['H2Buffer1-0.time-based_0-soc'], label='Buffer SOC (%)', color='black', linewidth=linewidth)
+plt.ylabel("Buffer SOC [%]", fontsize=label_font_size)
+plt.ylim(0, 100)  # Set y-axis limits for SOC
+start = pd.to_datetime("2025-04-01")
+end = pd.to_datetime("2025-04-30")
+plt.xlim(left=pd.to_datetime("2025-04-01"), right=pd.to_datetime("2025-05-01"))
+# Extend limits by 0.5 day on each side
+
+
+# Define tick locations (e.g. every 5 days) and labels
+tick_dates = pd.date_range(start, end, freq="5D")
+plt.xticks(tick_dates, tick_dates.strftime('%Y-%m-%d'), rotation=45, ha='right', fontsize=tick_font_size)
+
+plt.xlabel("Date", fontsize=label_font_size)
+plt.tick_params(axis='x', rotation=45, labelsize=tick_font_size)
+plt.tick_params(axis='y', labelsize=tick_font_size)
+plt.grid(True)
+# Final layout
+plt.tight_layout()
+figs.append((fig_op_single, 'optimized_h_single.png'))
 
 
 plt.show()

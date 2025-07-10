@@ -15,7 +15,7 @@ figs = []
 
 label_font_size = 18
 tick_font_size = 14
-linewidth = 2
+linewidth = 2•
 marker_size = 30
 
 

@@ -140,6 +140,7 @@ axs[0].plot(output_data['Controller1-0.time-based_0-dump'],
 axs[0].plot(output_opt_data['Controller1-0.time-based_0-dump'],
             label='Grid Power Optimized', color='green', linewidth=linewidth)
 
+axs[0].set_title('Power Flows')
 axs[0].set_xlim(0, 96)
 axs[0].tick_params(axis='x', labelbottom=False)  # Hide x-axis labels here
 axs[0].tick_params(axis='y', labelsize=tick_font_size)
