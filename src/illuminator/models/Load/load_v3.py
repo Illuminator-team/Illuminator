@@ -37,6 +37,8 @@ class Load(ModelConstructor):
     inputs={'load': 0}  # incoming energy or power demand per house kW
     outputs={'load_dem': 0,  # total energy or power consumption for all houses (kWh) over the time step
              'consumption': 0,  # Current energy or power consumption based on the number of houses and input load (kWh)
+             'load_signal': 0,
+             'load_battery': 0 
              }
     states={'time': None,
             'forecast': None
@@ -111,10 +113,15 @@ class Load(ModelConstructor):
         output_type = self._model.parameters.get('output_type')
         deltaTime = self.time_resolution * self.time_step_size / 60 / 60  # in case of 15 min interval, deltaTime = 0.25 h
 
-        if output_type == 'energy':
-            self.consumption = houses * load # kWh
-        elif output_type == 'power':
-            self.consumption = houses * load / deltaTime # kW
+        if output_type == 'power':
+            self.consumption = houses * load # kW
+        elif output_type == 'energy':
+            self.consumption = houses * load * deltaTime # kW
 
-        re_params = {'load_dem': self.consumption}
+        # re_params = {'load_dem': self.consumption}
+        re_params = {
+                'load_dem': self.consumption,
+                'load_signal': self.consumption,
+                'load_battery': self.consumption
+         }
         return re_params
