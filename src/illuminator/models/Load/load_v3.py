@@ -38,6 +38,8 @@ class Load(ModelConstructor):
     inputs={'load': 0}  # incoming energy or power demand per house kW
     outputs={'load_dem': 0,  # total energy or power consumption for all houses (kWh) over the time step
              'consumption': 0,  # Current energy or power consumption based on the number of houses and input load (kWh)
+             'load_signal': 0,
+             'load_battery': 0 
              }
     states={'time': None,
             'forecast': None
@@ -128,5 +130,10 @@ class Load(ModelConstructor):
             elif self.output_type == 'energy':
                 self.consumption = self.houses * load # kWh
 
-        re_params = {'load_dem': self.consumption}
+        # re_params = {'load_dem': self.consumption}
+        re_params = {
+                'load_dem': self.consumption,
+                'load_signal': self.consumption,
+                'load_battery': self.consumption
+         }
         return re_params

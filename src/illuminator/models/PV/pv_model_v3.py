@@ -66,7 +66,7 @@ class PV(ModelConstructor):
         "m_area": 0,  # Module area of the PV panel in m².
         "NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
         "m_efficiency_stc": 0,  # Module efficiency under standard test conditions (STC).
-        "G_NOCT": 0,  # Nominal Operating Cell Temperature of the PV panel in °C.
+        "G_NOCT": 0,  # irradiance at Nominal Operating Cell Temperature of the PV panel in °C.
         "P_STC": 0,  # Power output of the module under STC (W).
         "peak_power": 0,  # Peak power output of the module (W).
         "m_tilt": 0,
@@ -87,7 +87,9 @@ class PV(ModelConstructor):
     outputs={
         "pv_gen": 0,  # Generated PV power output (kW) or energy (kWh) based on the chosen output type (power or energy).
         "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
+        # "g_aoi": 0,  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
+        "pv_signal": 0,
+        "pv_battery": 0 
         }
     states={'pv_gen': 0}
     time_step_size=1
@@ -120,7 +122,7 @@ class PV(ModelConstructor):
         self.hs = 0
         self.FF = 0
         self.Az = 0
-        self.sun_az = 0
+        # self.sun_az = 0
         self.svf = 0
         self.g_aoi = 0
 
@@ -155,7 +157,13 @@ class PV(ModelConstructor):
 
         results = self.output()
 
-        self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        # self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        self.set_outputs({
+            'pv_gen': np.round(results['pv_gen'], 3),
+            'total_irr': np.round(results['total_irr'], 3),
+            'pv_signal': np.round(results['pv_signal'], 3),
+            'pv_battery': np.round(results['pv_battery'], 3)
+    })
 
         return time + self._model.time_step_size
 
@@ -173,7 +181,7 @@ class PV(ModelConstructor):
         sun_azimuth : float
             Sun azimuth angle in degrees, indicating the sun's position in the horizontal plane.
         """
-        sun_azimuth = self.sun_az
+        sun_azimuth = self.Az
         return sun_azimuth
 
     def sun_elevation(self):
@@ -190,7 +198,7 @@ class PV(ModelConstructor):
             Solar elevation angle in degrees, indicating the height of the sun in the sky.
         """
         sun_elevation = self.hs
-        sun_elevation = self.hs
+        # sun_elevation = self.hs
         return sun_elevation
 
     def aoi(self):
@@ -217,8 +225,8 @@ class PV(ModelConstructor):
             Cosine of the angle of incidence (AOI) as a fraction
         """
         cos_aoi = np.array(np.cos(np.radians(90 - self.m_tilt)) * np.cos(np.radians(self.sun_elevation())) * np.cos(
-            np.radians(self.m_az - self.sun_azimuth())) + np.sin(np.radians(90 - self.m_tilt)) * np.sin(
-            self.sun_elevation()))
+            np.radians(self.m_az - self.sun_azimuth())) + np.sin(np.radians(90 - self.m_tilt)) * np.sin(np.radians(
+            self.sun_elevation())))
         if cos_aoi < 0:
             cos_aoi = 0
         return cos_aoi
@@ -243,8 +251,8 @@ class PV(ModelConstructor):
         """
         self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
         g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
-        self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
-        g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
+        # self.svf = np.array((1 + np.cos(np.radians(self.m_tilt))) / 2)
+        # g_diff = self.svf * self.G_Dh  # global diffused irradiance #W/m2
         return g_diff
 
     def reflected_irr(self) -> float:
@@ -287,7 +295,7 @@ class PV(ModelConstructor):
             Direct beam irradiance on tilted surface in W/m²
         """
         g_dir = self.G_Bn * self.aoi()
-        g_dir = self.G_Bn * self.aoi()
+        # g_dir = self.G_Bn * self.aoi()
         return g_dir
 
     def total_irr(self) -> float:
@@ -333,8 +341,8 @@ class PV(ModelConstructor):
         """
         m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
             np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
-        m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
-            np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
+        # m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
+        #     np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
 
         efficiency = self.m_efficiency_stc * (1 + (-0.0035 * (m_temp - 25)))
         return efficiency
@@ -394,4 +402,13 @@ class PV(ModelConstructor):
             p_ac = ((total_m_area * self.total_irr() *
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
-        return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
+        # #WITHOUT TEMP AND WINDEFFECT
+        # if self.output_type == 'energy':
+        #     p_ac = (total_m_area * self.total_irr() *
+        #             inv_eff * mppt_eff * losses) / 1000 * self.time_resolution * self.time_step_size / 60 / 60  # time_res is the simulation time step in seconds, time_step_size is the number of simulation steps per step call
+        # elif self.output_type == 'power':
+        #     p_ac = ((total_m_area * self.total_irr() *
+        #             inv_eff * mppt_eff * losses) ) / 1000  # kW
+
+
+        return {'pv_gen': p_ac, 'total_irr': self.g_aoi, 'pv_signal': p_ac, 'pv_battery': p_ac}
