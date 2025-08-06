@@ -35,19 +35,23 @@ battery_power = -battery_power
 fig_power_flows = plt.figure(figsize=(10, 5))
 
 plt.plot(battery_power, label='Battery power', linewidth=linewidth, color='green')
-xticks = list(range(0, len(df)+4, 4))  # one tick every hour
-xlabels = [str(h) for h in range(len(xticks))]  
+# xticks = list(range(0, len(df)+4, 4))  # one tick every hour
+# xlabels = [str(h) for h in range(len(xticks))]  
+xticks = list(range(0, len(df) + 1, 4))
+if xticks[-1] > len(df):  # remove overshoot
+    xticks = xticks[:-1]
+xlabels = [str(i) for i in range(len(xticks))]
 plt.xticks(ticks=xticks, labels=xlabels)
 plt.xlabel('Hour', fontsize=label_font_size)
 plt.tick_params(axis='x', labelsize=tick_font_size)
 plt.ylabel('Power [kW]', fontsize=label_font_size)
 plt.tick_params(axis='y', labelsize=tick_font_size)
-plt.gca().set_xlim(left=0)
+plt.gca().set_xlim(left=0, right=len(df))
 plt.ylim([0, 2])
 # plt.gca().set_ylim(bottom=0)
 # plt.plot(pv, label='pv')
 # plt.plot(wind, label='wind')
-
+plt.grid(True)
 plt.plot(pv+wind, label='RES generation', linewidth=linewidth, color='orange')	
 plt.plot(demand, label='Demand', linewidth=linewidth, color='blue')
 
@@ -57,7 +61,8 @@ figs.append((fig_power_flows, 'examplesim_power.png'))
 
 
 fig_soc_plot = plt.figure(figsize=(10, 5))
-plt.gca().set_xlim(left=0)
+
+plt.gca().set_xlim(left=0, right=len(df))
 plt.ylim([40, 100])
 plt.xticks(ticks=xticks, labels=xlabels)
 plt.xlabel('Hour', fontsize=label_font_size)
@@ -66,6 +71,7 @@ plt.ylabel('SoC [%]', fontsize=label_font_size)
 plt.tick_params(axis='y', labelsize=tick_font_size)
 plt.plot(soc, label='Battery SoC', linewidth=linewidth, color='black')
 figs.append((fig_soc_plot, 'examplesim_soc.png'))
+plt.grid(True)
 plt.show()
 
 save_all = input(f"Save all plots to {plot_saving_dir}? (y/n)").strip().lower() == 'y'

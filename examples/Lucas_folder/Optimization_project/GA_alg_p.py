@@ -112,13 +112,13 @@ def run_ga(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost_
                                 xl=xl,
                                 xu=xu,
                                 runner=None)
-    algorithm = GA(pop_size=3)
+    algorithm = GA(pop_size=9)
 
     result = minimize(problem,
                       algorithm,
                       callback=GALogger(GA_log_file),
                       termination=termination,
-                      seed=42,
+                      seed=1,
                       verbose=True)
     return result
 

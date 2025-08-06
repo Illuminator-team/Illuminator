@@ -127,6 +127,7 @@ width = 5.5 * 4
 
 # Define 5 distinct colors
 colors = plt.cm.tab10.colors[:5]  # First 5 from 'tab10' colormap
+colors = colors[::-1]
 
 
 
@@ -148,21 +149,45 @@ axs[0].set_ylabel('Power [kW]', fontsize=label_font_size)
 axs[0].legend()
 
 # Plot 2: Unoptimized schedule (no y-ticks or x-ticks)
+# for i, x_start in enumerate(timesteps):
+#     axs[1].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+# axs[1].set_title('Unoptimized Schedule')
+# axs[1].set_yticks([])
+# axs[1].tick_params(axis='x', labelbottom=False)
+# axs[1].legend(fontsize=tick_font_size)
+num_evs = len(timesteps)
+ev_height = 0.8  # height of each bar
+ev_spacing = 1.0  # vertical spacing
+ev_y_positions = [(num_evs - 1 - i) * ev_spacing for i in range(num_evs)]
+
 for i, x_start in enumerate(timesteps):
-    axs[1].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+    axs[1].barh(y=ev_y_positions[i], width=width, left=x_start, height=ev_height,
+                color=colors[i], alpha=0.6, label=f'EV{i+1}')
 axs[1].set_title('Unoptimized Schedule')
-axs[1].set_yticks([])
+axs[1].set_yticks(ev_y_positions)
+axs[1].set_yticklabels([f'EV{i+1}' for i in range(len(timesteps))], fontsize=tick_font_size)
 axs[1].tick_params(axis='x', labelbottom=False)
-axs[1].legend(fontsize=tick_font_size)
+axs[1].grid(axis='x', linestyle='--', alpha=0.4)
+axs[1].legend().remove()  # remove legend if labels are already shown on y-axis
+
 
 # Plot 3: Optimized schedule
+# for i, x_start in enumerate(timesteps_opt):
+#     axs[2].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+# axs[2].set_title('Optimized Schedule')
+# axs[2].set_xlabel('Timestep', fontsize=label_font_size)
+# axs[2].set_yticks([])
+# axs[2].tick_params(axis='x', labelsize=tick_font_size)
 for i, x_start in enumerate(timesteps_opt):
-    axs[2].axvspan(x_start, x_start + width, color=colors[i], alpha=0.4, label=f'EV{i+1}')
+    axs[2].barh(y=ev_y_positions[i], width=width, left=x_start, height=ev_height,
+                color=colors[i], alpha=0.6, label=f'EV{i+1}')
 axs[2].set_title('Optimized Schedule')
 axs[2].set_xlabel('Timestep', fontsize=label_font_size)
-axs[2].set_yticks([])
+axs[2].set_yticks(ev_y_positions)
+axs[2].set_yticklabels([f'EV{i+1}' for i in range(num_evs)], fontsize=tick_font_size)
 axs[2].tick_params(axis='x', labelsize=tick_font_size)
-
+axs[2].grid(axis='x', linestyle='--', alpha=0.4)
+axs[2].legend().remove()
 # Optional: Shared legend (if legends overlap too much)
 # handles, labels = axs[0].get_legend_handles_labels()
 # fig_compare.legend(handles, labels, loc='upper center', ncol=3)

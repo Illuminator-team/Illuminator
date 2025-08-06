@@ -119,7 +119,7 @@ def run_pso(scenario, scenario_temp_path, output_path, dec_vars_map, n_var, cost
                                 xl=xl,
                                 xu=xu,
                                 runner=None)
-    algorithm = PSO(pop_size=3,
+    algorithm = PSO(pop_size=9,
                     w=0.9,
                     c1=2.0,
                     c2=2.0,
