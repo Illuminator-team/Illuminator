@@ -58,6 +58,7 @@ models:
   type: Load
   parameters:
     houses: 10  # number of houses that determine the total load demand
+    input_type: 'power'  # type of input for consumption calculation ('energy' or 'power')
     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
