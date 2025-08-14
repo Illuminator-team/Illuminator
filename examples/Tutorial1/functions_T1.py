@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import matplotlib.dates as mdates
 import numpy as np
+from IPython.display import HTML, display
 
 # Function to plot Load profile of a specific day to visualize results
 def plot_load_profile(load_df, day_of_year, number_houses, outputtype = 'power'):
@@ -59,12 +60,12 @@ def summarize_results(outputfile, battery_active):
     result_pd_df.index = pd.to_datetime(result_pd_df.index)
     day_of_year = result_pd_df.index[0].day
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(result_pd_df.index, result_pd_df['Controller1-0.time-based_0-res_load'],
+    ax.plot(result_pd_df.index, result_pd_df['Controller1.res_load'],
             color='blue', linestyle='-', marker='o', markersize=4, linewidth=2, label='Residual Load (kW) ')
-    ax.plot(result_pd_df.index, result_pd_df['Load1-0.time-based_0-load_dem'],
+    ax.plot(result_pd_df.index, result_pd_df['Load1.load_dem'],
             color='red', linestyle='-', marker='o', markersize=4, linewidth=2, label='Load Demand (kW)')
     if battery_active == True:
-        ax.plot(result_pd_df.index, -result_pd_df['Controller1-0.time-based_0-dump'],
+        ax.plot(result_pd_df.index, -result_pd_df['Controller1.dump'],
                 color='green', linestyle='-', marker='o', markersize=4, linewidth=2, label='Power from Grid (kW)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=1))  # Show every hour
@@ -85,20 +86,20 @@ def summarize_results(outputfile, battery_active):
 
     results_hourly = result_pd_df.resample('H').sum()
 
-    results_hourly = results_hourly.rename(columns={'Controller1-0.time-based_0-res_load': 'Residual Load (kW)',
-                                                    'Controller1-0.time-based_0-dump': 'Power to Grid (kW)',
-                                                    'PV1-0.time-based_0-pv_gen': 'PV Generation (kW)',
-                                                    'Wind1-0.time-based_0-wind_gen': 'Wind Generation (kW)',
-                                                    'Load1-0.time-based_0-load_dem': 'Load Demand (kW)'})
+    results_hourly = results_hourly.rename(columns={'Controller1.res_load': 'Residual Load (kW)',
+                                                    'Controller1.dump': 'Power to Grid (kW)',
+                                                    'PV1.pv_gen': 'PV Generation (kW)',
+                                                    'Wind1.wind_gen': 'Wind Generation (kW)',
+                                                    'Load1.load_dem': 'Load Demand (kW)'})
 
     results_hourly['Date'] = results_hourly.index.date
     results_hourly['Time'] = results_hourly.index.time
 
     if battery_active == True:
-        results_hourly = results_hourly.rename(columns={'Controller1-0.time-based_0-flow2b': 'Power to Battery (kW)',
-                                                        'Battery1-0.time-based_0-p_out': 'Output Power Battery (kW)',
-                                                        'Battery1-0.time-based_0-soc': 'Battery SOC (%)', })
-        hourly_soc = result_pd_df['Battery1-0.time-based_0-soc'].iloc[::4]
+        results_hourly = results_hourly.rename(columns={'Controller1.flow2b': 'Power to Battery (kW)',
+                                                        'Battery1.p_out': 'Output Power Battery (kW)',
+                                                        'Battery1.soc': 'Battery SOC (%)', })
+        hourly_soc = result_pd_df['Battery1.soc'].iloc[::4]
         results_hourly['Battery SOC (%)'] = hourly_soc
         results_hourly.drop(columns={'Output Power Battery (kW)'}, inplace=True)
 
@@ -116,18 +117,25 @@ def summarize_results(outputfile, battery_active):
     results_hourly = results_hourly.reset_index(drop=True)
     pd.options.display.float_format = '{:.2f}'.format
 
-    styled_df = (results_hourly.style.set_properties(**{
-        'background-color': '#f9f9f9',
-        'border-color': 'black',
-        'border-width': '1px',
-        'border-style': 'solid',
-        'color': 'black',
-        'font-family': 'Arial',
-        'text-align': 'center'
-    })
-                 .format(lambda x: f'{x:g}' if isinstance(x, float) else x)
-                 .set_caption("Hourly Simulation results"))
-    display(styled_df)
+    # Display the DataFrame as an HTML table
+    formatted_df = results_hourly.applymap(
+    lambda x: f'{x:g}' if isinstance(x, float) else x
+    )
+    html_table = f"<h3>Hourly Simulation results</h3>{formatted_df.to_html(index=True)}"
+    display(HTML(html_table))
+
+    # styled_df = (results_hourly.style.set_properties(**{
+    #     'background-color': '#f9f9f9',
+    #     'border-color': 'black',
+    #     'border-width': '1px',
+    #     'border-style': 'solid',
+    #     'color': 'black',
+    #     'font-family': 'Arial',
+    #     'text-align': 'center'
+    # })
+    #              .format(lambda x: f'{x:g}' if isinstance(x, float) else x)
+    #              .set_caption("Hourly Simulation results"))
+    # display(styled_df)
 
     return
 
@@ -135,7 +143,7 @@ def plot_soc(outputfile, soc_min= 10, soc_max= 90):
     fig, ax = plt.subplots(figsize=(10, 6))
     result_pd_df = pd.read_csv(outputfile, index_col=0)
     result_pd_df.index = pd.to_datetime(result_pd_df.index)
-    ax.plot(result_pd_df.index, result_pd_df['Battery1-0.time-based_0-soc'],
+    ax.plot(result_pd_df.index, result_pd_df['Battery1.soc'],
             color='mediumslateblue', linestyle='-', marker='o', markersize=4, linewidth=2)
     ax.hlines(y=soc_min, xmin=min(result_pd_df.index), xmax=max(result_pd_df.index), color='grey', linestyles='--', label = 'Minimum')
     ax.hlines(y=soc_max, xmin=min(result_pd_df.index), xmax=max(result_pd_df.index), color='grey', linestyles='--', label = 'Maximum')
