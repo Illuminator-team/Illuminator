@@ -107,7 +107,6 @@ class CSV(ModelConstructor):
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
-        self.story_mode = self._model.parameters.get('story_mode', False)
         self.cache = {}
         
         # Open the CSV file for reading
@@ -191,8 +190,6 @@ class CSV(ModelConstructor):
         int
             The next simulation time.
         """
-        self.time += 1  # keep track of the number of calls to step IN THIS FILE
-
         input_data = self.unpack_inputs(inputs)
         if 'file_index' in input_data:
             self.change_file(file_index=input_data['file_index'])
