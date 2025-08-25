@@ -17,15 +17,16 @@ class CSV(ModelConstructor):
         Format of the date/time column in the CSV file
     delimiter : str
         Column delimiter character in the CSV file (default ',')
-    datafile : str
-        Path to the CSV file to read from
+    datafile : str / list
+        [list of] Path to the CSV file to read from
     send_row : bool
         If True, sends the entire row as a dictionary under the key 'row'. If False, sends individual columns as separate states.
     
 
     Inputs
     ----------
-    None
+    file_index : int (optional)
+        If multiple files are provided, this input selects which file to read from.
 
     Outputs
     ----------
@@ -48,7 +49,10 @@ class CSV(ModelConstructor):
     # states={}
     # time_step_size=1
     # time=None
-
+    
+    def skip_header(self):
+        next(self.datafile).strip() # Skip header line
+        return
 
     def __init__(self, **kwargs) -> None:
         """
@@ -73,14 +77,19 @@ class CSV(ModelConstructor):
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
-        self.story_mode = self._model.parameters.get('story_mode', False)
         self.cache = {}
         
         # Open the CSV file for reading
+        if type(self.file_path) is list:
+            self.file_paths = self.file_path
+        else:
+            self.file_paths = [self.file_path]
+        
+        self.file_path = self.file_paths[self._model.inputs.get('file_index', 0)]
         self.datafile = open(self.file_path, 'r', encoding='utf-8')
         #self.modelname = 'CSV'
 
-        next(self.datafile).strip() # Skip header line
+        self.skip_header()
         # Get attribute names and strip optional comments
         self.columns = next(self.datafile).strip().split(self.delimiter)
         if self.send_row:
@@ -121,6 +130,21 @@ class CSV(ModelConstructor):
         return meta
 
 
+    def change_file(self, file_index) -> None:
+        """
+        Change the CSV file being read based on the 'file_index' input.
+        """
+        if file_index < 0 or file_index >= len(self.file_paths):
+            raise IndexError(f'file_index {file_index} out of range for available files.')
+        if self.file_paths[file_index] != self.file_path:
+            # Close current file and open new one
+            self.datafile.close()
+            self.file_path = self.file_paths[file_index]
+            self.datafile = open(self.file_path, 'r', encoding='utf-8')
+            self.skip_header()
+            self._read_next_row()
+
+
     def step(self, time, inputs, max_advance=900) -> None:
         """
         Perform one step of the simulation.
@@ -139,6 +163,10 @@ class CSV(ModelConstructor):
         int
             The next simulation time.
         """
+        input_data = self.unpack_inputs(inputs)
+        if 'file_index' in input_data:
+            self.change_file(file_index=input_data['file_index'])
+
         data = self.next_row
         # print("NEW CSV DATA: ", data)
         if data is None:
