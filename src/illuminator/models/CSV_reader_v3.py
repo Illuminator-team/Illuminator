@@ -107,6 +107,7 @@ class CSV(ModelConstructor):
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
+        self.story_mode = self._model.parameters.get('story_mode', False)
         self.cache = {}
         
         # Open the CSV file for reading
