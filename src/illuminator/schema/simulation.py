@@ -42,11 +42,11 @@ def load_config_file(config_file: str, json:bool=False) -> dict | str:
         with open(config_file, 'r', encoding='utf-8') as _file:
             yaml = YAML(typ='safe')
             data = yaml.load(_file)
-    except FileNotFoundError as e:
-        raise FileNotFoundError(f"Config file '{config_file}' was not found.") from e
-    
-    try:
         valid_data = schema.validate(data)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Error: The file {config_file} was not found.")
+    except PermissionError:
+        raise PermissionError(f"Error: You do not have permission to read the file {config_file}.")
     except SchemaUnexpectedTypeError as exc:
         raise SchemaUnexpectedTypeError(f"Error while parsing YAML file. \n Are you passing a file written in YAML?: {exc}")
   
