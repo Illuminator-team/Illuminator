@@ -1,11 +1,11 @@
 from illuminator.engine import Simulation
 
 # initialize simulation according to tutorial1 yaml
-CONFIG_FILE = 'Illuminator/examples/Tutorial1/Tutorial_1.yaml'
+CONFIG_FILE = 'examples/Tutorial1/Tutorial_1.yaml'
 simulation = Simulation(CONFIG_FILE)
-simulation.set_model_param(model_name='CSVload', parameter='file_path', value='Illuminator/examples/Tutorial1/load_data.txt')
-simulation.set_model_param(model_name='CSV_pv', parameter='file_path', value='Illuminator/examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt')
-simulation.set_model_param(model_name='CSV_wind', parameter='file_path', value='Illuminator/examples/Tutorial1/winddata_NL.txt')
+simulation.set_model_param(model_name='CSVload', parameter='file_path', value='examples/Tutorial1/load_data.txt')
+simulation.set_model_param(model_name='CSV_pv', parameter='file_path', value='examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt')
+simulation.set_model_param(model_name='CSV_wind', parameter='file_path', value='examples/Tutorial1/winddata_NL.txt')
 
 # set capacity of PV1 to 2400 W
 simulation.set_model_param(model_name='PV1', parameter='cap', value=2400)
