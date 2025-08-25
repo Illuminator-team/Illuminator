@@ -2,20 +2,6 @@ from illuminator.builder import IlluminatorModel, ModelConstructor
 import arrow
 from illuminator.engine import current_model
 
-# Define the model parameters, inputs, outputs...
-# csv = IlluminatorModel(
-#     parameters={'time_resolution': None,
-#                 'start': None,
-#                 'date_format': None,
-#                 'delimiter': ',',
-#                 'datafile': None,             
-#                 },
-#     inputs={},
-#     outputs={'next_row'},
-#     states={'next_row'},
-#     time_step_size=1,
-#     time=None
-# )
 
 # construct the model
 class CSV(ModelConstructor):
@@ -33,6 +19,9 @@ class CSV(ModelConstructor):
         Column delimiter character in the CSV file (default ',')
     datafile : str
         Path to the CSV file to read from
+    send_row : bool
+        If True, sends the entire row as a dictionary under the key 'row'. If False, sends individual columns as separate states.
+    
 
     Inputs
     ----------
@@ -40,33 +29,26 @@ class CSV(ModelConstructor):
 
     Outputs
     ----------
-    next_row : dict
-        The data from the current row, with column names as keys
+    None
 
     States
     ----------
-    None
+    next_row : dict (optional, if send_row is True)
+        The next row of data read from the CSV file.
+    <column_name> : float (for each column in the CSV file, if send_row is False)
+        The value of each column in the current row.
     """
 
-    parameters={'date_format': '',
-                'delimiter': ',',
-                'datafile': '',             
-                }
-    inputs={}
-    outputs={'next_row': ''}
-    states={}
-    time_step_size=1
-    time=None
+    # parameters={'date_format': '',
+    #             'delimiter': ',',
+    #             'datafile': '',             
+    #             }
+    # inputs={'next_row': '',}
+    # outputs={}
+    # states={}
+    # time_step_size=1
+    # time=None
 
-    # start_date = None
-    # date_format = None
-    # delimiter = None
-    # datafile = None
-    # next_row = None
-    # modelname = None
-    # attrs = None
-    # #self.eids = []
-    # cache = None
 
     def __init__(self, **kwargs) -> None:
         """
@@ -93,6 +75,7 @@ class CSV(ModelConstructor):
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
+        self.story_mode = self._model.parameters.get('story_mode', False)
         self.cache = {}
         
         # Open the CSV file for reading
@@ -190,56 +173,7 @@ class CSV(ModelConstructor):
             return time + self.time_step_size  # int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
         else:
             return max_advance
-        
 
-    # def get_data(self, outputs:dict) -> dict:
-    #     """
-    #     Return the data for the requested attributes in `outputs`
-        
-    #     ...
-
-    #     Parameters
-    #     ----------
-    #     outputs : dict 
-    #         Maps entity IDs to lists of attribute names whose values are requested::
-
-    #         {
-    #             'eid_1': ['attr_1', 'attr_2', ...],
-    #             ...
-    #         }
-
-    #     Returns
-    #     -------
-    #     data : dict
-    #         The return value is a dict of dicts mapping entity IDs and attribute names to their values::
-
-    #         {
-    #             'eid_1: {
-    #                 'attr_1': 'val_1',
-    #                 'attr_2': 'val_2',
-    #                 ...
-    #             },
-    #             ...
-    #             'time': output_time (for event-based sims, optional)
-    #         }
-
-    #     See Also
-    #     --------
-    #     Time-based simulators have set an entry for all requested attributes, whereas for event-based and hybrid simulators this is optional (e.g.
-    #     if there's no new event). Event-based and hybrid simulators can optionally set a timing of their non-persistent output attributes via a *time* entry, which is valid
-    #     for all given (non-persistent) attributes. If not given, it defaults to the current time of the step. Thus only one output time is possible
-    #     per step. For further output times the simulator has to schedule another self-step (via the step's return value).
-    #     """
-    #     data = {}
-    #     for eid, attrs in outputs.items():
-    #         if eid not in self.model_entities:
-    #             raise ValueError('Unknown entity ID "%s"' % eid)
-
-    #         data[eid] = {}
-    #         for attr in attrs:
-    #             data[eid][attr] = self.cache[attr]
-
-        return data
 
     def _read_next_row(self) -> None:
         """
