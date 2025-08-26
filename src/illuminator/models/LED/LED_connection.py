@@ -1,4 +1,4 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
 import mosaik_api_v3 as mosaik_api
 import serial
 import time
