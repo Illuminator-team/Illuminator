@@ -1,6 +1,8 @@
 from numpy import log, pi
 from illuminator.builder import IlluminatorModel, ModelConstructor
 import mosaik_api_v3 as mosaik_api
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # construct the model
 class Wind(ModelConstructor):
@@ -65,6 +67,8 @@ class Wind(ModelConstructor):
     states={'u60': 10,  # Wind speeds adjusted for 60m height using logarithmic wind profile equations.
             'u25': 0,  # Wind speeds adjusted for 25m height using logarithmic wind profile equations.
             'wind_genState': 0
+            'u25': 0,  # Wind speeds adjusted for 25m height using logarithmic wind profile equations.
+            'wind_genState': 0
             }
 
     # define other attributes
@@ -75,6 +79,7 @@ class Wind(ModelConstructor):
     u25 = 0  # Wind speeds adjusted for different heights (e.g., 60m and 25m) using logarithmic wind profile equations.
 
 
+    def init(self, *args, **kwargs) -> None:
     def init(self, *args, **kwargs) -> None:
         """
         Initialize the Wind model with the provided parameters.
@@ -94,6 +99,7 @@ class Wind(ModelConstructor):
         self.cp = self.parameters['cp']
         self.diameter = self.parameters['diameter']
         self.output_type = self.parameters['output_type']
+        return result
         return result
 
 
@@ -116,6 +122,7 @@ class Wind(ModelConstructor):
         results = self.generation(u=input_data['u'])
 
         self.set_outputs(results)
+        self.set_states({'u60': self.u60, 'wind_genState': results['wind_gen']})
         self.set_states({'u60': self.u60, 'wind_genState': results['wind_gen']})
 
         # return the time of the next step (time untill current information is valid)
@@ -202,6 +209,10 @@ class Wind(ModelConstructor):
         else:
             re_params = self.production(u)
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Wind(), 'Wind Simulator')
 
 
 if __name__ == '__main__':
