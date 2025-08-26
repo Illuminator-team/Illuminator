@@ -54,6 +54,34 @@ class CSV(ModelConstructor):
         next(self.datafile).strip() # Skip header line
         return
 
+
+    def go_to_start_date(self) -> None:
+        if self.start_date < self.next_row[0]:
+            raise ValueError('Start date "%s" not in CSV file.' %
+                             self.start_date.format(self.date_format))
+        
+        while self.start_date > self.next_row[0]:
+            self._read_next_row()
+            if self.next_row is None:
+                raise ValueError('Start date "%s" not in CSV file.' %
+                                 self.start_date.format(self.date_format))
+        
+        return
+    
+
+    def go_to_expected_date(self) -> None:
+        if self.expected_date < self.next_row[0]:
+            raise ValueError('Start date "%s" not in CSV file.' %
+                             self.expected_date.format(self.date_format))
+
+        while self.expected_date > self.next_row[0]:
+            self._read_next_row()
+            if self.next_row is None:
+                raise ValueError('Start date "%s" not in CSV file.' %
+                                 self.expected_date.format(self.date_format))
+        return
+
+
     def __init__(self, **kwargs) -> None:
         """
         Initializes the CSV reader model with the provided parameters.
@@ -113,14 +141,7 @@ class CSV(ModelConstructor):
         super().__init__(**kwargs)  # re-initialise the outputs now that new outputs are configured 
 
         self._read_next_row()
-        if self.start_date < self.next_row[0]:
-            raise ValueError('Start date "%s" not in CSV file.' %
-                             self.start_date.format(self.date_format))
-        while self.start_date > self.next_row[0]:
-            self._read_next_row()
-            if self.next_row is None:
-                raise ValueError('Start date "%s" not in CSV file.' %
-                                 self.start_date.format(self.date_format))
+        self.go_to_start_date()
     
     # 
     # run super().init(self, sid, time_resolution=1, **sim_params)
@@ -144,7 +165,11 @@ class CSV(ModelConstructor):
             self.file_path = self.file_paths[file_index]
             self.datafile = open(self.file_path, 'r', encoding='utf-8')
             self.skip_header()
+            self.next_row = next(self.datafile)  # skip the column header
             self._read_next_row()
+            self.go_to_expected_date()
+            self._read_next_row()  # take one more step to be on the new time row
+        return
 
 
     def step(self, time, inputs, max_advance=900) -> None:
@@ -165,6 +190,8 @@ class CSV(ModelConstructor):
         int
             The next simulation time.
         """
+        self.time += 1  # keep track of the number of calls to step IN THIS FILE
+
         input_data = self.unpack_inputs(inputs)
         if 'file_index' in input_data:
             self.change_file(file_index=input_data['file_index'])
@@ -176,11 +203,9 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
+        self.expected_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)  # start date  +  number of calls * iterations per call * time per iteration, aka time per call
         if date != self.expected_date:
             raise IndexError(f'Wrong date "{date}", expected "{self.expected_date}"')
-
-        # Update expected date for the next step
-        self.expected_date = self.expected_date.shift(seconds=self.time_step_size * self.time_resolution)  # expected date is the start date + number of calls * iterations per call * time per iteration, aka time per call
 
         # Put data into the cache for get_data() calls
         self.cache = {}
