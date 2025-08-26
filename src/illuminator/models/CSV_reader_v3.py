@@ -190,6 +190,8 @@ class CSV(ModelConstructor):
         int
             The next simulation time.
         """
+        self.time += 1  # keep track of the number of calls to step IN THIS FILE
+
         input_data = self.unpack_inputs(inputs)
         if 'file_index' in input_data:
             self.change_file(file_index=input_data['file_index'])
