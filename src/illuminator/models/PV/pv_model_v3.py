@@ -1,6 +1,6 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
-import numpy as np
+from illuminator.builder import ModelConstructor
 import mosaik_api_v3 as mosaik_api
+import numpy as np
 
 # construct the model
 class PV(ModelConstructor):
@@ -95,7 +95,7 @@ class PV(ModelConstructor):
     time_step_size=1
     time=None
 
-    def init(self, *args, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         """
         Initialize the PV model with the provided parameters.
 
@@ -104,7 +104,7 @@ class PV(ModelConstructor):
         kwargs : dict
             Additional keyword arguments to initialize the model.
         """
-        result = super().init(*args, **kwargs)
+        super().__init__(**kwargs)
         self.cap = self._model.parameters.get('cap')
         self.output_type = self._model.parameters.get('output_type')
         self.NOCT = self._model.parameters.get('NOCT')
@@ -125,7 +125,6 @@ class PV(ModelConstructor):
         self.sun_az = 0
         self.svf = 0
         self.g_aoi = 0
-        return result
 
 
     def step(self, time: int, inputs:dict=None, max_advance:int=900) -> None:
@@ -158,8 +157,8 @@ class PV(ModelConstructor):
 
         results = self.output()
 
-        self.set_outputs({'pv_gen': results['pv_gen']})
-        self.set_states({'pv_genState': results['pv_gen']})
+        self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        self.set_states({'pv_genState': np.round(results['pv_gen'], 3)})
 
         return time + self._model.time_step_size
 
@@ -399,6 +398,7 @@ class PV(ModelConstructor):
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
+    
 
-if __name__ == '__main__':
-    mosaik_api.start_simulation(PV(), 'PV Simulator')
+    if __name__ == '__main__':
+        mosaik_api.start_simulation(PV(), 'PV Simulator')

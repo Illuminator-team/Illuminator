@@ -34,7 +34,7 @@ class LED_connection(ModelConstructor):
     time=None
 
 
-    def init(self, *args, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         """
         Initialize Load model with given parameters.
 
@@ -47,7 +47,7 @@ class LED_connection(ModelConstructor):
         -------
         None
         """
-        result = super().init(*args, **kwargs)
+        super().__init__(**kwargs)
         self.min_speed = self.parameters.get('min_speed')
         self.max_speed = self.parameters.get('max_speed')
         self.direction = self.parameters.get('direction')
