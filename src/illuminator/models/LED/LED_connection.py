@@ -28,7 +28,7 @@ class LED_connection(ModelConstructor):
     inputs={'speed': 0}  # speed for the connection
     outputs={
              }
-    states={
+    states={'connections': {}  # Dictionary holding the state of each physical connection (e.g., id's etc.)
             }
     time_step_size=1
     time=None
@@ -51,7 +51,6 @@ class LED_connection(ModelConstructor):
         self.min_speed = self.parameters.get('min_speed')
         self.max_speed = self.parameters.get('max_speed')
         self.direction = self.parameters.get('direction')
-        return result
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
