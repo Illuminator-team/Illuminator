@@ -93,13 +93,14 @@ class LED_connection(ModelConstructor):
             direction = 1 - direction
             speed *=-1
 
-        self.send_led_animation(speed, direction)
+        id = self.send_led_animation(speed, direction)
+        self.set_states({'connections', [id]})
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
     
 
-    def send_led_animation(self, speed, direction) -> None:
+    def send_led_animation(self, speed, direction) -> str:
         device = '/dev/ttyACM0'
         ser = serial.Serial(device, timeout=5)
         line = ''
@@ -122,9 +123,20 @@ class LED_connection(ModelConstructor):
 
         print(f"speed: {speed}%, Sending {delay}{colour}1")
         ser.write(f"{delay}{colour}{direction}\n".encode('utf-8'))
+
+        time.sleep(0.5)
+
+        # Try to receive a response after sending
+        if ser.in_waiting > 0:
+            id = ser.readline().decode('utf-8').strip()
+            print(f"received ID: {id}" if id else "nothing received")
+        else:
+            print("nothing received")
+
+        ser.close()
         time.sleep(3)
 
-        return
+        return id
 
 
 if __name__ == '__main__':
