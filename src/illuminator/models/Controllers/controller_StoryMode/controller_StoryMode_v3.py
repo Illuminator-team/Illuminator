@@ -22,27 +22,17 @@ class Controller_StoryMode(ModelConstructor):
     
     Inputs
     ----------
-    wind_gen : float
-        Wind power generation (kW)
-    pv_gen : float
-        Solar power generation (kW)
-    load_dem : float
-        Electrical load demand (kW)
-    soc : float
-        State of charge of the battery (%)
+    physical_connections : list
+        List of physical connections with ID's of the LED strips
 
     Outputs
     ----------
-    flow2b : float 
-        Power flow to/from battery (kW, positive for charging, negative for discharging)
-    res_load : float
-        Residual load after renewable generation (kW)
-    dump : float
-        Excess power that cannot be stored or used (kW)
+    None
     
     States
     ----------
-    None
+    file_index_Load : int
+        Index to select which load file to read from in the CSV model
         
     """
     parameters={}
