@@ -176,7 +176,11 @@ models:
     flow2bState: 0  # Power flow to/from battery (positive for charging, negative for discharging)
 
 - name: Controller_story
-  type: controller
+  type: Controller_StoryMode
+  inputs:
+    physical_connections: []  # List of physical connections with ID's of the LED strips
+  states:
+    file_index_Load: 0  # Index to select which load file to read from in the CSV model
 
 
 connections:
@@ -203,6 +207,9 @@ connections:
   to: Controller1.pv_gen
 - from: PV1.pv_genState
   to: PV_LED.speed
+
+- from: PV_LED.connections
+  to: Controller_story.physical_connections
 
 - from: CSV_wind.u
   to: Wind1.u
