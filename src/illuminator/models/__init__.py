@@ -25,6 +25,7 @@ from .Controllers.controller_T1.controller_T1_v3 import Controller_T1
 from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import ControllerT3Congestion
 from .Controllers.controller_ev.controller_EV import ControllerEV
 from .Controllers.controller_ev.controller_T4 import Controller_T4
+from .Controllers.controller_StoryMode.controller_StoryMode_v3 import Controller_StoryMode
 
 from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
 from .Agents.operators.operator_v3 import Operator_Market
@@ -48,6 +49,7 @@ __all__ = [ 'Adder',
             'ControllerT3Congestion',
             'ControllerEV',	
             'Controller_T4',
+            'Controller_StoryMode',
             'GenerationCompanyAgent',
             'Operator_Market',
             'JusticeAgent',
