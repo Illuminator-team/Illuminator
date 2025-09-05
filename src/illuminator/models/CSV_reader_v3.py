@@ -2,20 +2,6 @@ from illuminator.builder import IlluminatorModel, ModelConstructor
 import arrow
 from illuminator.engine import current_model
 
-# Define the model parameters, inputs, outputs...
-# csv = IlluminatorModel(
-#     parameters={'time_resolution': None,
-#                 'start': None,
-#                 'date_format': None,
-#                 'delimiter': ',',
-#                 'datafile': None,             
-#                 },
-#     inputs={},
-#     outputs={'next_row'},
-#     states={'next_row'},
-#     time_step_size=1,
-#     time=None
-# )
 
 # construct the model
 class CSV(ModelConstructor):
@@ -31,42 +17,70 @@ class CSV(ModelConstructor):
         Format of the date/time column in the CSV file
     delimiter : str
         Column delimiter character in the CSV file (default ',')
-    datafile : str
-        Path to the CSV file to read from
+    datafile : str / list
+        [list of] Path to the CSV file to read from
+    send_row : bool
+        If True, sends the entire row as a dictionary under the key 'row'. If False, sends individual columns as separate states.
+    
 
     Inputs
     ----------
-    None
+    file_index : int (optional)
+        If multiple files are provided, this input selects which file to read from.
 
     Outputs
     ----------
-    next_row : dict
-        The data from the current row, with column names as keys
+    None
 
     States
     ----------
-    None
+    next_row : dict (optional, if send_row is True)
+        The next row of data read from the CSV file.
+    <column_name> : float (for each column in the CSV file, if send_row is False)
+        The value of each column in the current row.
     """
 
-    parameters={'date_format': '',
-                'delimiter': ',',
-                'datafile': '',             
-                }
-    inputs={}
-    outputs={'next_row': ''}
-    states={}
-    time_step_size=1
-    time=None
+    # parameters={'date_format': '',
+    #             'delimiter': ',',
+    #             'datafile': '',             
+    #             }
+    # inputs={'next_row': '',}
+    # outputs={}
+    # states={}
+    # time_step_size=1
+    # time=None
+    
+    def skip_header(self):
+        next(self.datafile).strip() # Skip header line
+        return
 
-    # start_date = None
-    # date_format = None
-    # delimiter = None
-    # datafile = None
-    # next_row = None
-    # modelname = None
-    # attrs = None
-    # #self.eids = []
-    # cache = None
+
+    def go_to_start_date(self) -> None:
+        if self.start_date < self.next_row[0]:
+            raise ValueError('Start date "%s" not in CSV file.' %
+                             self.start_date.format(self.date_format))
+        
+        while self.start_date > self.next_row[0]:
+            self._read_next_row()
+            if self.next_row is None:
+                raise ValueError('Start date "%s" not in CSV file.' %
+                                 self.start_date.format(self.date_format))
+        
+        return
+    
+
+    def go_to_expected_date(self) -> None:
+        if self.expected_date < self.next_row[0]:
+            raise ValueError('Start date "%s" not in CSV file.' %
+                             self.expected_date.format(self.date_format))
+
+        while self.expected_date > self.next_row[0]:
+            self._read_next_row()
+            if self.next_row is None:
+                raise ValueError('Start date "%s" not in CSV file.' %
+                                 self.expected_date.format(self.date_format))
+        return
+
 
     def __init__(self, **kwargs) -> None:
         """
@@ -96,10 +110,16 @@ class CSV(ModelConstructor):
         self.cache = {}
         
         # Open the CSV file for reading
+        if type(self.file_path) is list:
+            self.file_paths = self.file_path
+        else:
+            self.file_paths = [self.file_path]
+        
+        self.file_path = self.file_paths[self._model.inputs.get('file_index', 0)]
         self.datafile = open(self.file_path, 'r', encoding='utf-8')
         #self.modelname = 'CSV'
 
-        next(self.datafile).strip() # Skip header line
+        self.skip_header()
         # Get attribute names and strip optional comments
         self.columns = next(self.datafile).strip().split(self.delimiter)
         if self.send_row:
@@ -121,14 +141,7 @@ class CSV(ModelConstructor):
         super().__init__(**kwargs)  # re-initialise the outputs now that new outputs are configured 
 
         self._read_next_row()
-        if self.start_date < self.next_row[0]:
-            raise ValueError('Start date "%s" not in CSV file.' %
-                             self.start_date.format(self.date_format))
-        while self.start_date > self.next_row[0]:
-            self._read_next_row()
-            if self.next_row is None:
-                raise ValueError('Start date "%s" not in CSV file.' %
-                                 self.start_date.format(self.date_format))
+        self.go_to_start_date()
     
     # 
     # run super().init(self, sid, time_resolution=1, **sim_params)
@@ -138,6 +151,25 @@ class CSV(ModelConstructor):
         # print("check")
         meta = super().init(sid, time_resolution, **sim_params)
         return meta
+
+
+    def change_file(self, file_index) -> None:
+        """
+        Change the CSV file being read based on the 'file_index' input.
+        """
+        if file_index < 0 or file_index >= len(self.file_paths):
+            raise IndexError(f'file_index {file_index} out of range for available files.')
+        if self.file_paths[file_index] != self.file_path:
+            # Close current file and open new one
+            self.datafile.close()
+            self.file_path = self.file_paths[file_index]
+            self.datafile = open(self.file_path, 'r', encoding='utf-8')
+            self.skip_header()
+            self.next_row = next(self.datafile)  # skip the column header
+            self._read_next_row()
+            self.go_to_expected_date()
+            self._read_next_row()  # take one more step to be on the new time row
+        return
 
 
     def step(self, time, inputs, max_advance=900) -> None:
@@ -158,6 +190,12 @@ class CSV(ModelConstructor):
         int
             The next simulation time.
         """
+        self.time += 1  # keep track of the number of calls to step IN THIS FILE
+
+        input_data = self.unpack_inputs(inputs)
+        if 'file_index' in input_data:
+            self.change_file(file_index=input_data['file_index'])
+
         data = self.next_row
         # print("NEW CSV DATA: ", data)
         if data is None:
@@ -165,11 +203,9 @@ class CSV(ModelConstructor):
 
         # Check date
         date = data[0]
+        self.expected_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)  # start date  +  number of calls * iterations per call * time per iteration, aka time per call
         if date != self.expected_date:
             raise IndexError(f'Wrong date "{date}", expected "{self.expected_date}"')
-
-        # Update expected date for the next step
-        self.expected_date = self.expected_date.shift(seconds=self.time_step_size * self.time_resolution)  # expected date is the start date + number of calls * iterations per call * time per iteration, aka time per call
 
         # Put data into the cache for get_data() calls
         self.cache = {}
@@ -190,56 +226,7 @@ class CSV(ModelConstructor):
             return time + self.time_step_size  # int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
         else:
             return max_advance
-        
 
-    # def get_data(self, outputs:dict) -> dict:
-    #     """
-    #     Return the data for the requested attributes in `outputs`
-        
-    #     ...
-
-    #     Parameters
-    #     ----------
-    #     outputs : dict 
-    #         Maps entity IDs to lists of attribute names whose values are requested::
-
-    #         {
-    #             'eid_1': ['attr_1', 'attr_2', ...],
-    #             ...
-    #         }
-
-    #     Returns
-    #     -------
-    #     data : dict
-    #         The return value is a dict of dicts mapping entity IDs and attribute names to their values::
-
-    #         {
-    #             'eid_1: {
-    #                 'attr_1': 'val_1',
-    #                 'attr_2': 'val_2',
-    #                 ...
-    #             },
-    #             ...
-    #             'time': output_time (for event-based sims, optional)
-    #         }
-
-    #     See Also
-    #     --------
-    #     Time-based simulators have set an entry for all requested attributes, whereas for event-based and hybrid simulators this is optional (e.g.
-    #     if there's no new event). Event-based and hybrid simulators can optionally set a timing of their non-persistent output attributes via a *time* entry, which is valid
-    #     for all given (non-persistent) attributes. If not given, it defaults to the current time of the step. Thus only one output time is possible
-    #     per step. For further output times the simulator has to schedule another self-step (via the step's return value).
-    #     """
-    #     data = {}
-    #     for eid, attrs in outputs.items():
-    #         if eid not in self.model_entities:
-    #             raise ValueError('Unknown entity ID "%s"' % eid)
-
-    #         data[eid] = {}
-    #         for attr in attrs:
-    #             data[eid][attr] = self.cache[attr]
-
-        return data
 
     def _read_next_row(self) -> None:
         """
