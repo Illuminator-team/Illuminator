@@ -101,7 +101,9 @@ class CSV(ModelConstructor):
         super().__init__(**kwargs)
         self.delimiter = self._model.parameters.get('delimiter')
         self.date_format = self._model.parameters.get('date_format')
-        self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format)
+        self.tzinfo = self._model.parameters.get('tzinfo', 'Europe/Amsterdam')  # Default timezone is Europe/Amsterdam
+        self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format, tzinfo=self.tzinfo)  # Convert start date to Arrow object with timezone 
+        self.expected_date = self.start_date  # The date we expect to read from the CSV file at first is the start date
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
         self.send_row = self._model.parameters.get('send_row', False)
@@ -232,7 +234,7 @@ class CSV(ModelConstructor):
         """
         try:
             self.next_row = next(self.datafile).strip().split(self.delimiter)
-            self.next_row[0] = arrow.get(self.next_row[0], self.date_format)
+            self.next_row[0] = arrow.get(self.next_row[0], self.date_format, tzinfo=self.tzinfo)  # Convert the first column to an Arrow object
         except StopIteration:
             self.next_row = None
 
