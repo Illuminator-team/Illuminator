@@ -93,8 +93,12 @@ class LED_connection(ModelConstructor):
             direction = 1 - direction
             speed *=-1
 
-        id = self.send_led_animation(speed, direction)
-        self.set_states({'connections', [id]})
+        try:
+            id = self.send_led_animation(speed, direction)
+        except:
+            id = 1
+
+        self.set_states({'connections': [id]})
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
