@@ -322,14 +322,16 @@ class ModelConstructor(ABC, Simulator):
                 raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as output")
 
 
-    def unpack_inputs(self, inputs):
+    def unpack_inputs(self, inputs, return_sources=False):
         """
         Unpacks input values from connected simulators and processes them based on their message origin.
 
         Parameters
         ----------
         inputs : dict
-            Dictionary containing input values from connected simulators with their message origins
+            Dictionary containing input values from connected simulators with their message origin
+        return_sources : bool, optional
+            If True, returns the sorurces of state messages along with their values. Defaults to False
             
         Returns
         -------
@@ -350,6 +352,10 @@ class ModelConstructor(ABC, Simulator):
                 # if the attribute is coming from a connection with an output
                 if messages[0]['message_origin'] == 'output':
                     data[attr] = sum(message['value'] for message in messages)
+                    if return_sources:
+                        data[attr] = {'value': data[attr]
+                                        , 'sources': [source for source in sources.keys()]
+                                        }
                 
                 # if the attribute is coming from a connection with a state
                 elif messages[0]['message_origin'] == 'state':
@@ -357,6 +363,11 @@ class ModelConstructor(ABC, Simulator):
                         data[attr] = [message['value'] for message in messages]
                     else:
                         data[attr] = messages[0]['value']
+
+                    if return_sources:
+                        data[attr] = {'value': data[attr]
+                                        , 'sources': [source for source in sources.keys()]
+                                        }
 
                 # if not coming from output nor from state
                 else:
