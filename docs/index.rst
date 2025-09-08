@@ -6,10 +6,9 @@
 Illuminator documentation
 =========================
 
+.. include:: frontpage.md
+   :parser: myst_parser.sphinx_
 
-TThe Illuminator is a user-friendly development kit for simulating integrated energy systems.
-It supports the design of energy systems, the testing of advanced energy management concepts, and the demonstration of challenges posed by the energy transition.
-Illuminator builts on `Mosaik. <https://mosaik.offis.de/>`_ and supports both stand-alone simulations and distributed computing.
 
 .. toctree::
    :maxdepth: 2

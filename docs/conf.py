@@ -35,7 +35,14 @@ extensions = ["myst_parser",
               "sphinx.ext.napoleon",
               "sphinx_copybutton",
               "nbsphinx",
+              "sphinxcontrib.mermaid",
               ]
+
+myst_fence_as_directive = {"mermaid"}
+
+# Usa una versione recente di Mermaid che supporta le nuove shape/attributi (es. lean-r, animazioni)
+mermaid_version = "11.6.0"
+mermaid_init_js = "mermaid.initialize({startOnLoad:true});"
 
 napoleon_custom_sections = [
     ('Inputs', 'params_style'),
