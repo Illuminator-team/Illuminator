@@ -189,16 +189,9 @@ class ModelConstructor(ABC, Simulator):
         # TODO: from engine.py, time_resolution is never passed. hint: check engine self.start call
 
         print(f"running extra init")
-        print(f"sim_params: {sim_params}")
         # This is the standard Mosaik init method signature
         self.sid = sid
         self.time_resolution = time_resolution
-
-        #self.parameters = sim_params
-        # self.inputs = model_vals.get('inputs', self.inputs)
-        # self.outputs = model_vals.get('outputs', self.outputs)
-        # self.states = model_vals.get('states', self.states)
-        # self.time_step_size = model_vals.get('time_step_size', self.time_step_size)
 
         # This bit of code is unused.
         # Assuming sim_params is structured as {'sim_params': {model_name: model_data}}
@@ -206,24 +199,9 @@ class ModelConstructor(ABC, Simulator):
         if len(sim_params) != 1:
             raise ValueError("Expected sim_params to contain exactly one model.")
 
-    
         # # Extract the model_name and model_data
-        self.model_name, self.model_data = next(iter(sim_params.items()))
+        # self.model_name, self.model_data = next(iter(sim_params.items()))
         # self.model = self.load_model_class(self.model_data['model_path'], self.model_data['model_type'])
-
-        # TODO UNTANGLE PARAMETERS AND _MODEL.PARAMETERS AND THE STUFF SET IN __INIT__
-        self._model.parameters = self.model_data.get('parameters', self.parameters)
-        self._model.inputs = self.model_data.get('inputs', self.inputs)
-        self._model.outputs = self.model_data.get('outputs', self.outputs)
-        self._model.states = self.model_data.get('states', self.states)
-        self._model.time_step_size = self.model_data.get('time_step_size', self.time_step_size)
-
-        self.parameters = self.model_data.get('parameters', self.parameters)
-        self.inputs = self.model_data.get('inputs', self.inputs)
-        self.outputs = self.model_data.get('outputs', self.outputs)
-        self.states = self.model_data.get('states', self.states)
-        self.time_step_size = self.model_data.get('time_step_size', self.time_step_size)
-
         return self._model.simulator_meta
     
     def create(self, num:int, model:str, **model_params) -> List[dict]: # This change is mandatory. It MUST contain num and model as parameters otherwise it receives an incorrect number of parameters
@@ -344,14 +322,16 @@ class ModelConstructor(ABC, Simulator):
                 raise RuntimeError(f"simulator {self.sid} does not have '{attr}' as output")
 
 
-    def unpack_inputs(self, inputs):
+    def unpack_inputs(self, inputs, return_sources=False):
         """
         Unpacks input values from connected simulators and processes them based on their message origin.
 
         Parameters
         ----------
         inputs : dict
-            Dictionary containing input values from connected simulators with their message origins
+            Dictionary containing input values from connected simulators with their message origin
+        return_sources : bool, optional
+            If True, returns the sorurces of state messages along with their values. Defaults to False
             
         Returns
         -------
@@ -372,6 +352,10 @@ class ModelConstructor(ABC, Simulator):
                 # if the attribute is coming from a connection with an output
                 if messages[0]['message_origin'] == 'output':
                     data[attr] = sum(message['value'] for message in messages)
+                    if return_sources:
+                        data[attr] = {'value': data[attr]
+                                        , 'sources': [source for source in sources.keys()]
+                                        }
                 
                 # if the attribute is coming from a connection with a state
                 elif messages[0]['message_origin'] == 'state':
@@ -379,6 +363,11 @@ class ModelConstructor(ABC, Simulator):
                         data[attr] = [message['value'] for message in messages]
                     else:
                         data[attr] = messages[0]['value']
+
+                    if return_sources:
+                        data[attr] = {'value': data[attr]
+                                        , 'sources': [source for source in sources.keys()]
+                                        }
 
                 # if not coming from output nor from state
                 else:
