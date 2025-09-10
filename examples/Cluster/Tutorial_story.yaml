@@ -105,17 +105,19 @@ models:
   states:
     wind_genState: 0  # Wind power generation state (kW) based on the chosen output type (power or energy).
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
-# - name: Wind_LED
-#   type: LED_connection
-#   connect:
-#     ip: 192.168.27.19 # IP address
-#     port: 5124
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.2  # maximum speed for the LED connection (0-100%)
-#     direction: 1  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
+- name: Wind_LED
+  type: LED_connection
+  # connect:
+  #   ip: 192.168.27.19 # IP address
+  #   port: 5124
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.2  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
 
 
 - name: Battery1
@@ -215,8 +217,10 @@ connections:
   to: Wind1.u
 - from: Wind1.wind_gen
   to: Controller1.wind_gen
-# - from: Wind1.wind_genState
-#   to: Wind_LED.speed
+- from: Wind1.wind_genState
+  to: Wind_LED.speed
+- from: Wind_LED.connections
+  to: Controller_story.physical_connections
 
 - from: Battery1.soc
   to: Controller1.soc
