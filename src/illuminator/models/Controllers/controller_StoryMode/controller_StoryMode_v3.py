@@ -61,8 +61,13 @@ class Controller_StoryMode(ModelConstructor):
         """
         Advances the simulation one time step.
         """
-        input_data = self.unpack_inputs(inputs)  # make input data easily accessible
+        input_data = self.unpack_inputs(inputs, return_sources=True)  # make input data easily accessible
         self.time = time
+
+        connections = self.determine_connectivity(input_data['physical_connections'])
+
+        if ('PV_LED-0.time-based_0', 'Wind_LED-0.time-based_0') in connections or ('Wind_LED-0.time-based_0', 'PV_LED-0.time-based_0') in connections:
+            print("PV and Wind connected")
 
         if time > 40:
             self.file_indeces['file_index_Load'] = 1
@@ -73,3 +78,28 @@ class Controller_StoryMode(ModelConstructor):
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
+
+
+    def determine_connectivity(self, physical_connections):
+        """
+        Determine the connectivity of the LED strips based on the provided physical connections.
+        Each LED strip has an ID. If two models have the same ID, they are connected.
+        This function function determines model-pairs that are connected based on their IDs.
+
+        Parameters
+        ----------
+        physical_connections : dict
+            
+
+        Returns
+        -------
+        list of connections
+        """
+        connections = []
+        for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
+            for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
+                common_ids = list(set(id1) & set(id2))
+                if len(common_ids) > 0 and model1 != model2:
+                    connections.append((model1, model2))
+        return connections
+        
