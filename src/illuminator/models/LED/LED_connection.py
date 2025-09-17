@@ -97,6 +97,7 @@ class LED_connection(ModelConstructor):
             id = self.send_led_animation(speed, direction)
         except:
             id = -1
+
         print ("id: ", id)
          # determine physical connections
         self.set_states({'connections': [id]})
@@ -111,7 +112,7 @@ class LED_connection(ModelConstructor):
         line = ''
 
         if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8').strip()
+            line = ser.read(ser.in_waiting)[-1:].decode('utf-8').strip()
             print(line)
         
         if speed == 0:
@@ -129,7 +130,7 @@ class LED_connection(ModelConstructor):
         print(f"speed: {speed}%, Sending {delay}{colour}1")
         ser.write(f"{delay}{colour}{direction}\n".encode('utf-8'))
 
-        time.sleep(0.5)
+        # time.sleep(0.5)
 
         # Try to receive a response after sending
         if ser.in_waiting > 0:
@@ -139,7 +140,7 @@ class LED_connection(ModelConstructor):
             print("nothing received")
 
         ser.close()
-        time.sleep(3)
+        time.sleep(0.5)
 
         return id
 
