@@ -79,9 +79,6 @@ models:
   
 - name: CSV_wind
   type: CSV
-  connect:
-    ip: 10.89.147.122
-    port: 5124
   parameters:
     file_path: './examples/Cluster/wind-15min.txt'
     delimiter: ','
@@ -109,9 +106,9 @@ models:
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
 - name: Wind_LED
   type: LED_connection
-  # connect:
-  #   ip: 192.168.27.19 # IP address
-  #   port: 5124
+  connect:
+    ip: 10.89.147.122
+    port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
     max_speed: 0.2  # maximum speed for the LED connection (0-100%)
