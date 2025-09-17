@@ -235,6 +235,7 @@ connections:
 
 - from: Controller_story.file_index_Load
   to: CSV_pv.file_path_index
+  time_shifted: True
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
