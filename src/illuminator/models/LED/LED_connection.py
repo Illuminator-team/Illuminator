@@ -112,7 +112,7 @@ class LED_connection(ModelConstructor):
 
         if ser.in_waiting > 0:
             id = ser.read(ser.in_waiting)[-1:].decode('utf-8').strip()
-            print(f"received ID: {id}" if id else "nothing received")
+            print(f"received ID before: {id}" if id else "nothing received")
         
         if speed == 0:
             colour = 'g'
@@ -129,7 +129,7 @@ class LED_connection(ModelConstructor):
         print(f"speed: {speed}%, Sending {delay}{colour}1")
         ser.write(f"{delay}{colour}{direction}\n".encode('utf-8'))
 
-        # time.sleep(0.5)
+        time.sleep(0.5)
 
         # Try to receive a response after sending
         if ser.in_waiting > 0:
