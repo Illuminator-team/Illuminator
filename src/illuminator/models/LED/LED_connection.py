@@ -96,7 +96,7 @@ class LED_connection(ModelConstructor):
         try:
             id = self.send_led_animation(speed, direction)
         except:
-            id = 1
+            id = -1
 
         self.set_states({'connections': [id]})
         # self.set_outputs(results)
