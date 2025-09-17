@@ -69,6 +69,8 @@ class Controller_StoryMode(ModelConstructor):
         if ('PV_LED-0.time-based_0', 'Wind_LED-0.time-based_0') in connections or ('Wind_LED-0.time-based_0', 'PV_LED-0.time-based_0') in connections:
             print("PV and Wind connected")
             self.file_indeces['file_index_Load'] = 1
+        # elif time > 10:
+        #     self.file_indeces['file_index_Load'] = 1
         else:
             print("PV and Wind NOT connected")
             self.file_indeces['file_index_Load'] = 0
@@ -100,6 +102,8 @@ class Controller_StoryMode(ModelConstructor):
                         # remove -1 before comparing
                 set1 = set(id1) - {-1}
                 set2 = set(id2) - {-1}
+                set1 = set(id1) - {'-1'}
+                set2 = set(id2) - {'-1'}
                 common_ids = list(set1 & set2)
                 if len(common_ids) > 0 and model1 != model2:
                     connections.append((model1, model2))
