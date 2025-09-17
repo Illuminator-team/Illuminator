@@ -35,6 +35,8 @@ models:
     file_path: ['./examples/Cluster/pv_zero-15min.txt', './examples/Cluster/pv_summer-15min.txt']
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    file_path_index: 0  # index to select which file to read from the list  
 - name: PV1
   type: PV # models can reuse the same type
   # connect:
@@ -231,6 +233,8 @@ connections:
 # - from: Controller1.flow2bState
 #   to: Bat_LED.speed
 
+- from: Controller_story.file_index_Load
+  to: CSV_pv.file_path_index
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
