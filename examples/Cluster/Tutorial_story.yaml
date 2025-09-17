@@ -35,7 +35,7 @@ models:
     file_path: ['./examples/Cluster/pv_zero-15min.txt', './examples/Cluster/pv_summer-15min.txt']
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
-  states:
+  inputs:
     file_path_index: 0  # index to select which file to read from the list  
 - name: PV1
   type: PV # models can reuse the same type
