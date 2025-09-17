@@ -98,8 +98,12 @@ class Controller_StoryMode(ModelConstructor):
         connections = []
         for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
-                common_ids = list(set(id1) & set(id2))
+                        # remove -1 before comparing
+                set1 = set(id1) - {-1}
+                set2 = set(id2) - {-1}
+                common_ids = list(set1 & set2)
                 if len(common_ids) > 0 and model1 != model2:
                     connections.append((model1, model2))
+        print("\n\nconnections: ", connections, "\n\n")
         return connections
         
