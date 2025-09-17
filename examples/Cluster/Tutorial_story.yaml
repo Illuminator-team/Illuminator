@@ -68,9 +68,6 @@ models:
     pv_genState: 0
 - name: PV_LED
   type: LED_connection
-  connect:
-    ip: 10.89.147.122
-    port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
     max_speed: 0.6  # maximum speed for the LED connection (0-100%)
@@ -82,6 +79,9 @@ models:
   
 - name: CSV_wind
   type: CSV
+  connect:
+    ip: 10.89.147.122
+    port: 5124
   parameters:
     file_path: './examples/Cluster/wind-15min.txt'
     delimiter: ','
