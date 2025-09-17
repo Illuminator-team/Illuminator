@@ -107,11 +107,12 @@ class LED_connection(ModelConstructor):
         else:
             self.id = id
         
+        print("id history: ", id, self.id1, self.id2)
+        print ("sending id: ", self.id)
+        
         self.id2 = self.id1
         self.id1 = id
 
-        print("id history: ", id, self.id1, self.id2)
-        print ("sending id: ", self.id)
          # determine physical connections
         self.set_states({'connections': [self.id]})
         # self.set_outputs(results)
