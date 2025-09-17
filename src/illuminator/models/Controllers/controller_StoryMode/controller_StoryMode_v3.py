@@ -68,10 +68,9 @@ class Controller_StoryMode(ModelConstructor):
 
         if ('PV_LED-0.time-based_0', 'Wind_LED-0.time-based_0') in connections or ('Wind_LED-0.time-based_0', 'PV_LED-0.time-based_0') in connections:
             print("PV and Wind connected")
-
-        if time > 40:
             self.file_indeces['file_index_Load'] = 1
         else:
+            print("PV and Wind NOT connected")
             self.file_indeces['file_index_Load'] = 0
 
         self.set_states(self.file_indeces)

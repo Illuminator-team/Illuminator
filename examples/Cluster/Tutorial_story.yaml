@@ -32,7 +32,7 @@ models:
 - name: CSV_pv
   type: CSV
   parameters:
-    file_path: './examples/Cluster/pv_summer-15min.txt' # pv_data_Rotterdam_NL-15min.txt'
+    file_path: ['./examples/Cluster/pv_zero-15min.txt', './examples/Cluster/pv_summer-15min.txt']
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 - name: PV1
