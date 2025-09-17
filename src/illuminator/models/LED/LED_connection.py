@@ -51,6 +51,9 @@ class LED_connection(ModelConstructor):
         self.min_speed = self.parameters.get('min_speed')
         self.max_speed = self.parameters.get('max_speed')
         self.direction = self.parameters.get('direction')
+        self.id = '-1'
+        self.id1 = '-1'
+        self.id2 = '-1'
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -96,11 +99,20 @@ class LED_connection(ModelConstructor):
         try:
             id = self.send_led_animation(speed, direction)
         except:
-            id = -1
+            id = '-1'
+        
+        if id == '-1':
+            if self.id1 == '-1' and self.id2 == '-1':
+                self.id = '-1'
+        else:
+            self.id = id
+        
+        self.id2 = self.id1
+        self.id1 = id
 
-        print ("id: ", id)
+        print ("id: ", self.id)
          # determine physical connections
-        self.set_states({'connections': [id]})
+        self.set_states({'connections': [self.id]})
         # self.set_outputs(results)
 
         return time + self._model.time_step_size
