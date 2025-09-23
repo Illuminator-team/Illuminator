@@ -50,7 +50,9 @@ class Battery(ModelConstructor):
              }
     states={'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
             'soc': 0,  # updated state of charge after battery operation (%)
-            'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+            'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+            'p_out_state': 0, # power output state (kW)
+            'p_in_state': 0 # power input state (kW)
         }
     time_step_size=1
     time=None
@@ -127,6 +129,7 @@ class Battery(ModelConstructor):
         self.mod = results.pop('mod')
         self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time
         self.set_outputs(results)
+        self.set_states({'p_out_state': results['p_out'], 'p_in_state': results['p_in']})
 
         return time + self._model.time_step_size
 
