@@ -6,7 +6,7 @@ scenario:
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
-- name: CSVload
+- name: CSVload_EWI
   type: CSV
   parameters:
     file_path: './examples/Tutorial1/load_data.txt'
@@ -14,7 +14,7 @@ models:
     date_format: 'YYYY-MM-DD HH:mm:ss'
   states:
     load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
-- name: Load1
+- name: Load_EWI
   type: Load
   # connect:
   #   ip: 145.94.213.75
@@ -24,10 +24,45 @@ models:
     output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
   inputs:
     load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  states:
+    load_dem_state: 0  # total energy or power consumption state for all houses (kWh)
   outputs:
     load_dem: # total energy or power consumption for all houses (kWh) over the time step
     consumption: # Current energy or power consumption based on the number of houses and input load (kWh)
 
+- name: CSVload_house
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial1/load_data.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+  states:
+    load:  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+- name: Load_house
+  type: Load
+  # connect:
+  #   ip: 145.94.213.75
+  #   port: 5123
+  parameters:
+    houses: 7  # number of houses that determine the total load demand
+    output_type: 'power'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  states:
+    load_dem_state: 0  # total energy or power consumption state for all houses (kWh)
+  outputs:
+    load_dem: # total energy or power consumption for all houses (kWh) over the time step
+    consumption: # Current energy or power consumption based on the number of houses and input load (kWh)
+- name: house_LED
+  type: LED_connection
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
 
 - name: CSV_pv
   type: CSV
@@ -106,9 +141,9 @@ models:
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
 - name: Wind_LED
   type: LED_connection
-  connect:
-    ip: 10.89.147.122
-    port: 5124
+  # connect:
+  #   ip: 10.89.147.122
+  #   port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
     max_speed: 0.2  # maximum speed for the LED connection (0-100%)
@@ -141,17 +176,72 @@ models:
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
     soc: 10  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
-# - name: Bat_LED
-#   type: LED_connection
-#   # connect:
-#   #   ip: 145.94.213.75
-#   #   port: 5123
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.09  # maximum speed for the LED connection (0-100%)
-#     direction: 0  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
+    p_out_state: 0 # power output state (kW)
+    p_in_state: 0 # power input state (kW)
+- name: Bat_LED
+  type: LED_connection
+  # connect:
+  #   ip: 145.94.213.75
+  #   port: 5123
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.09  # maximum speed for the LED connection (0-100%)
+    direction: 0  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
+
+
+- name: Grid_EWI
+  type: GridConnection
+  parameters:
+    connection_capacity: 9999999  # kW
+    tolerance_limit: 0.8  # fraction of connection_capacity (threshold for warning flag)
+    critical_limit: 0.9  # fraction of connection_capacity (threshold for critical flag)
+  inputs:
+    power_flow: 0  # Power flow to the grid (kW). Positive for export, negative for import
+  states:
+    flag_warning: 0  # Warning flag (1 if power flow exceeds tolerance limit, else 0)
+    flag_critical: 0  # Critical flag (1 if power flow exceeds critical limit, else 0)
+  outputs:
+    residual: 0  # Power flow to the grid (kW). Positive for export, negative for import
+- name: EWI_LED
+  type: LED_connection
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
+
+
+- name: Grid_Ext
+  type: GridConnection
+  parameters:
+    connection_capacity: 9999999  # kW
+    tolerance_limit: 0.8  # fraction of connection_capacity (threshold for warning flag)
+    critical_limit: 0.9  # fraction of connection_capacity (threshold for critical flag)
+  inputs:
+    power_flow: 0  # Power flow to the grid (kW). Positive for export, negative for import
+  states:
+    flag_warning: 0  # Warning flag (1 if power flow exceeds tolerance limit, else 0)
+    flag_critical: 0  # Critical flag (1 if power flow exceeds critical limit, else 0)
+  outputs:
+    residual: 0  # Power flow to the grid (kW). Positive for export, negative for import
+- name: Ext_LED
+  type: LED_connection
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
+
 
 - name: Controller1
   type: Controller_T1 # models can reuse the same type
@@ -176,6 +266,7 @@ models:
   states:
     flow2bState: 0  # Power flow to/from battery (positive for charging, negative for discharging)
 
+
 - name: Controller_story
   type: Controller_StoryMode
   inputs:
@@ -185,11 +276,26 @@ models:
 
 
 connections:
-- from: CSVload.load
-  to: Load1.load
-- from: Load1.load_dem
+
+# Load EWI
+- from: CSVload_EWI.load
+  to: Load_EWI.load
+- from: Load_EWI.load_dem
+  to: Grid_EWI.power_flow
+- from: Load_EWI.load_dem_state
   to: Controller1.load_dem
 
+# Load House
+- from: CSVload_house.load
+  to: Load_house.load
+- from: Load_house.load_dem
+  to: Grid_Ext.power_flow
+- from: Load_house.load_dem_state
+  to: house_LED.speed
+- from: house_LED.connections
+  to: Controller_story.physical_connections
+
+# PV panels
 - from: CSV_pv.G_Gh # start model, pattern: model_name.output_name/input_name
   to: PV1.G_Gh # end model
 - from: CSV_pv.G_Dh
@@ -205,31 +311,70 @@ connections:
 - from: CSV_pv.Az
   to: PV1.Az
 - from: PV1.pv_gen
+  to: Grid_EWI.power_flow
+- from: PV1.pv_genState
   to: Controller1.pv_gen
 - from: PV1.pv_genState
   to: PV_LED.speed
-
 - from: PV_LED.connections
   to: Controller_story.physical_connections
 
+# Wind turbine
 - from: CSV_wind.u
   to: Wind1.u
 - from: Wind1.wind_gen
+  to: Grid_Ext.power_flow
+- from: Wind1.wind_genState
   to: Controller1.wind_gen
 - from: Wind1.wind_genState
   to: Wind_LED.speed
 - from: Wind_LED.connections
   to: Controller_story.physical_connections
 
+# Battery
+- from: Battery1.p_out
+  to: Grid_EWI.power_flow
+- from: Battery1.p_in
+  to: Grid_EWI.power_flow
 - from: Battery1.soc
   to: Controller1.soc
+- from: Battery1.p_in_state
+  to: Bat_LED.speed
+# - from: Battery1.p_out_state
+#   to: Bat_LED.speed
+- from: Bat_LED.connections
+  to: Controller_story.physical_connections
 
+# Controller Battery
 - from: Controller1.flow2b
   to: Battery1.flow2b
   time_shifted: True
 # - from: Controller1.flow2bState
 #   to: Bat_LED.speed
 
+# Grid EWI
+- from: Grid_EWI.residual
+  to: Grid_Ext.power_flow
+
+# EWI LED
+- from: PV1.pv_genState
+  to: EWI_LED.speed
+# - from: Battery1.p_out_state
+#   to: EWI_LED.speed
+# - from: Battery1.p_in_state
+#   to: EWI_LED.speed
+- from: EWI_LED.connections
+  to: Controller_story.physical_connections
+
+# Grid Ext LED
+- from: Wind1.wind_genState
+  to: Ext_LED.speed
+# - from: Load_house.load_dem_state
+#   to: Ext_LED.speed
+- from: Ext_LED.connections
+  to: Controller_story.physical_connections
+
+# Controller Story
 - from: Controller_story.file_index_Load
   to: CSV_pv.file_index
   time_shifted: True
