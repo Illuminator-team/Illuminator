@@ -16,6 +16,8 @@ from .Load.load_v3 import Load
 from .Load.LoadEV.load_EV_v3 import LoadEV
 from .Load.LoadHeatpump.load_heatpump_v3 import LoadHeatpump
 
+from .ElectricVehicle.EV import EV
+
 from .Battery.battery_v3 import Battery
 
 from .Electrolyser.electrolyser_v3_model import Electrolyzer 
@@ -41,6 +43,7 @@ __all__ = [ 'Adder',
             'Load',
             'LoadEV',
             'LoadHeatpump',
+            'EV',
             'Battery', 
             'Electrolyzer',
             'Fuelcell',
