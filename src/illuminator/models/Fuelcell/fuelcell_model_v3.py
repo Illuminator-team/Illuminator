@@ -170,7 +170,7 @@ class Fuelcell(ModelConstructor):
         'ramp_up_time2': 60, # s from 500 W to 1000 W
         'ramp_down_time': 60, # s from 1.623 kW to 0 W
         'max_p_out': 1.83,      # kW
-        'h2_in': 0.002040276 #kg/min and 22.7 NL/min
+        'h2_in': 0.002040276 #kg/min and 22.7 NL/min at standard conditions
     }
     inputs = {
         'run_fuelcell': 0,   # signal

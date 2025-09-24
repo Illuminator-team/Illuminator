@@ -212,9 +212,10 @@ import datetime
 
 class EMSController(ModelConstructor):
     parameters = {
+        'start_time': '2024-04-01 00:00:00',  # Start time of the simulation
         'soc_min': 20,
         'soc_max': 80,
-        'h2_soc_min': 0,
+        'h2_soc_min': 6,
         'h2_soc_max': 100,
         'el_start_soc': 80,     # Battery SOC to start electrolyzer (%)
         'el_stop_soc': 65,      # Battery SOC to stop electrolyzer (%)
@@ -285,7 +286,8 @@ class EMSController(ModelConstructor):
         today_date = now.date()
 
         # Define summer period (16th March to 14th October)
-        is_winter = not (datetime.date(today_date.year, 3, 16) <= today_date <= datetime.date(today_date.year, 10, 14))
+        # is_winter = not (datetime.date(today_date.year, 3, 16) <= today_date <= datetime.date(today_date.year, 10, 14))
+        is_winter = datetime.date(today_date.year, 1, 2) <= today_date <= datetime.date(today_date.year, 3, 16) #forvalidationSOC
 
         print(f"[{now}] Winter? {is_winter}, Hour: {hour}, Date: {today_date}")
 
@@ -311,7 +313,7 @@ class EMSController(ModelConstructor):
                     
 
             elif self.el_state == 1:
-                if soc < 65 and h2_soc <= self.h2_soc_max and pv<0.5:
+                if (soc < 65) or (h2_soc >= self.h2_soc_max) or (pv < 0.05):
                     self.el_state = 0
                 else:
                     self.el_state = 1
@@ -333,30 +335,47 @@ class EMSController(ModelConstructor):
             elif soc >= 90:
                 self.production_rate = 1.0
 
-        elif soc <= 25:
+        if soc <= 25:
             self.fc_state = 1
-            run_fc = 0 
-            storage_flow = -1
-            run_el = 0
-            compressor_on = 0
+        elif soc >= 90:
+            self.fc_state = 0
 
-        elif is_winter:
+        if is_winter:
             run_el = 0 
-            # if self.fc_state == 0:
-            if hour < 13 and soc < 40:
+            
+            if self.fc_state == 0 and soc <= 25 and h2_soc >= self.h2_soc_min:
                 self.fc_state = 1
-            elif hour == 13 and soc < 50:
-                self.fc_state = 1
-            elif hour == 14 and soc < 60:
-                self.fc_state = 1   
-            elif hour == 15 and soc < 70:
-                self.fc_state = 1
-            elif hour == 16 and soc < 80:
-                self.fc_state = 1
-            elif soc > 90:
+            elif self.fc_state == 1 and soc > 90 and h2_soc >= self.h2_soc_max:
                 self.fc_state = 0
-            else:
-                self.fc_state = 0
+            elif self.fc_state == 0 and h2_soc >= self.h2_soc_min:
+                if hour < 13 and soc < 40:
+                    self.fc_state = 1
+                elif hour == 13 and soc < 50:
+                    self.fc_state = 1
+                elif hour == 14 and soc < 60:
+                    self.fc_state = 1   
+                elif hour == 15 and soc < 70:
+                    self.fc_state = 1
+                elif hour == 16 and soc < 80:
+                    self.fc_state = 1
+        
+        # elif is_winter:
+        #     run_el = 0 
+        #     # if self.fc_state == 0:
+        #     if hour < 13 and soc < 40:
+        #         self.fc_state = 1
+        #     elif hour < 14 and soc < 50:
+        #         self.fc_state = 1
+        #     elif hour < 15 and soc < 60:
+        #         self.fc_state = 1   
+        #     elif hour < 16 and soc < 70:
+        #         self.fc_state = 1
+        #     elif hour < 17 and soc < 80:
+        #         self.fc_state = 1
+        #     elif soc > 90:
+        #         self.fc_state = 0
+        #     else:
+        #         self.fc_state = 0
 
             if self.fc_state == 1 and h2_soc >= self.h2_soc_min and h2_soc <= self.h2_soc_max:
                 run_el = 0

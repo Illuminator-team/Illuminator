@@ -73,6 +73,7 @@ class PV(ModelConstructor):
         'm_az': 0,
         'cap': 0,  # installed capacity
         'output_type': 'power',
+        'number_of_houses': 1,
         'sim_start': 0
         }
     inputs={
@@ -115,6 +116,7 @@ class PV(ModelConstructor):
         self.m_az = self._model.parameters.get('m_az')
         self.m_area = self._model.parameters.get('m_area')
         self.sim_start = self._model.parameters.get('sim_start')
+        self.number_of_houses = self._model.parameters.get('number_of_houses')
         self.G_Gh = 0
         self.G_Dh = 0
         self.G_Bn = 0
@@ -339,13 +341,19 @@ class PV(ModelConstructor):
             Temperature-adjusted module efficiency as a fraction
             Temperature-adjusted module efficiency as a fraction
         """
+      
         m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
-            np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
+            np.divide(9.5, (5.7 + 3.8 * 0.61*self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
+       
+       
         # m_temp = self.Ta + (np.divide(self.total_irr(), self.G_NOCT)) * (self.NOCT - 20) * (
         #     np.divide(9.5, (5.7 + 3.8 * self.FF))) * (1 - (self.m_efficiency_stc / 0.90))
 
-        efficiency = self.m_efficiency_stc * (1 + (-0.0035 * (m_temp - 25)))
+        #It is not module temperature, but cell temperature!!!!
+
+        efficiency = self.m_efficiency_stc * (1 + (-0.0031 * (m_temp - 25)))
         return efficiency
+    #van -0.0035 naar 0.0031 veranderd door specificatie solar paneel
 
     def output(self) -> dict:
         """
@@ -381,10 +389,10 @@ class PV(ModelConstructor):
         inv_eff = 0.96
         mppt_eff = 0.99  # again, can calculate it accurately
         losses = 0.97  # other losses
-        sf = 1.1
+        sf = 1 #was 1.1
 
         # generation calculation
-        num_of_modules = np.ceil(self.cap * sf / self.P_STC)
+        num_of_modules = np.ceil(self.cap*self.number_of_houses * sf / self.P_STC)
 
 
         # [W] again we get this for every time step
@@ -401,14 +409,6 @@ class PV(ModelConstructor):
         elif self.output_type == 'power':
             p_ac = ((total_m_area * self.total_irr() *
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
-
-        # #WITHOUT TEMP AND WINDEFFECT
-        # if self.output_type == 'energy':
-        #     p_ac = (total_m_area * self.total_irr() *
-        #             inv_eff * mppt_eff * losses) / 1000 * self.time_resolution * self.time_step_size / 60 / 60  # time_res is the simulation time step in seconds, time_step_size is the number of simulation steps per step call
-        # elif self.output_type == 'power':
-        #     p_ac = ((total_m_area * self.total_irr() *
-        #             inv_eff * mppt_eff * losses) ) / 1000  # kW
 
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi, 'pv_signal': p_ac, 'pv_battery': p_ac}

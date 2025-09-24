@@ -134,7 +134,8 @@ class GridConnection(ModelConstructor):
         'load_dem': 0,            # kW
         'pv_gen': 0,              # kW
         'flow2b':0,
-        'flow2e_grid': 0,              # kW (electrolyser consumption)
+        'flow2e_grid': 0,
+        'eflow2c': 0,              # kW (electrolyser consumption)
         'p_out_fuelcell_grid': 0       # kW (fuel cell generation)
     }
     outputs = {
@@ -169,9 +170,10 @@ class GridConnection(ModelConstructor):
         pv = input_data['pv_gen']
         flow2b = input_data['flow2b']
         flow2e = input_data['flow2e_grid']
+        flow2c = input_data['eflow2c']  # ecompressor consumption
         fc = input_data['p_out_fuelcell_grid']
 
-        grid_flow = load - pv - flow2e - fc - flow2b
+        grid_flow = load - pv - flow2e - fc - flow2b - flow2c  # 0.235W for Balance of Plant (BoP) added
 
         crit_thres = self.parameters['connection_capacity'] * self.parameters['critical_limit']
         warn_thres = self.parameters['connection_capacity'] * self.parameters['tolerance_limit']

@@ -243,9 +243,9 @@ class H2Storage(ModelConstructor):
         'h2_soc_max': 100,  # %
         'h2_charge_eff': 100,  # %
         'h2_discharge_eff': 100,  # %
-        'max_h2': 10,  # kg/timestep
-        'min_h2': 1,  # kg/timestep
-        'h2_capacity_tot': 2.7  # m3
+        # 'max_h2': 10,  # kg/timestep
+        # 'min_h2': 1,  # kg/timestep
+        'h2_capacity_tot': 48 #kg  #2.7m3
     }
     inputs = {
         'storage_flow': 0,  # [-] 1 = charge, -1 = discharge, 0 = idle
@@ -301,28 +301,28 @@ class H2Storage(ModelConstructor):
         flag = 0
 
         #With capacity in kg
-        # if signal == 1 or phase_step == 2 or phase_step == 3 or phase_step == 4:
-        #     h2_in = flow
-        #     h2_out = 0
-        #     self.h2_soc = self.h2_soc + (h2_in * self.h2_charge_eff / self.h2_capacity_tot) * 100
-        #     mod = 'charge'
-        # elif signal == -1:
-        #     h2_in = 0
-        #     h2_out = h2_flow * (self.time_resolution / 3600)
-        #     self.h2_soc = self.h2_soc - h2_out / self.h2_discharge_eff / self.h2_capacity_tot * 100
-        #     mod = 'discharge'
-
-        #With capacity in m3 and newdensity
         if signal == 1 or phase_step == 2 or phase_step == 3 or phase_step == 4:
             h2_in = flow
             h2_out = 0
-            self.h2_soc = self.h2_soc + (h2_in * self.h2_charge_eff / (new_density_p * self.h2_capacity_tot)) * 100
+            self.h2_soc = self.h2_soc + (h2_in * self.h2_charge_eff / self.h2_capacity_tot)*100
             mod = 'charge'
         elif signal == -1:
             h2_in = 0
             h2_out = h2_flow * (self.time_resolution / 3600)
-            self.h2_soc = self.h2_soc - h2_out / self.h2_discharge_eff / (new_density_p * self.h2_capacity_tot) * 100
+            self.h2_soc = self.h2_soc - h2_out / self.h2_discharge_eff / self.h2_capacity_tot*100
             mod = 'discharge'
+
+        # #With capacity in m3 and newdensity
+        # if signal == 1 or phase_step == 2 or phase_step == 3 or phase_step == 4:
+        #     h2_in = flow
+        #     h2_out = 0
+        #     self.h2_soc = self.h2_soc + (h2_in * self.h2_charge_eff / (new_density_p * self.h2_capacity_tot)) * 100
+        #     mod = 'charge'
+        # elif signal == -1:
+        #     h2_in = 0
+        #     h2_out = h2_flow * (self.time_resolution / 3600)
+        #     self.h2_soc = self.h2_soc - h2_out / self.h2_discharge_eff / (new_density_p * self.h2_capacity_tot) * 100
+        #     mod = 'discharge'
 
 
         elif signal == 0:
