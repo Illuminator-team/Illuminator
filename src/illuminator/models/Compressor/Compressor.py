@@ -16,6 +16,7 @@ class Compressor(ModelConstructor):
     }
     outputs = {
         'eflow2c': 0,  # energy flow to the compressor [kW]
+        'eflow2c_batt': 0,  # energy flow to the compressor from battery [kW]
         'flow_from_c': 0  # hydrogen flow from compressor [kg/timestep]
     }
     states = {
@@ -71,7 +72,8 @@ class Compressor(ModelConstructor):
 
         self.set_outputs({
             'flow_from_c': power_data['output_flow'],
-            'eflow2c': round(power_data['power_req'], 3)
+            'eflow2c': round(power_data['power_req'], 3,),
+            'eflow2c_batt': round(power_data['power_req'], 3)
         })
 
         self.set_states({
@@ -85,7 +87,7 @@ class Compressor(ModelConstructor):
             # exponent = (self.gamma - 1) / self.gamma
             # w_isentropic = (self.gamma / (self.gamma - 1)) * self.R * T_amb * (pr ** exponent - 1)
             # P_isothermal = flow/self.time_resolution*1000/self.mmh2*self.R * T_amb * (p_out / p_in)  # J/mol
-            power_in_kw = flow*(3600/self.time_resolution)*self.nom_compression_energy/(self.compressor_eff / 100)  # kW
+            power_in_kw = -flow*(3600/self.time_resolution)*self.nom_compression_energy/(self.compressor_eff / 100)  # kW
             # w_real = w_isentropic / (self.compressor_eff / 100)
             # P_real = P_isothermal / (self.compressor_eff / 100)  
             # flow_mol_s = (flow * 1000 / self.mmh2) / self.time_resolution

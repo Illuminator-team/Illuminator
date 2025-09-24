@@ -460,6 +460,7 @@ class Battery(ModelConstructor):
         'pv_battery': 0,          # kW
         'load_battery': 0,        # kW
         'flow2e': 0,
+        'eflow2c_batt' : 0, # kW
         'p_out_fuelcell': 0                      # kW
     }
 
@@ -497,6 +498,7 @@ class Battery(ModelConstructor):
             pv=input_data['pv_battery'],
             load=input_data['load_battery'],
             flow2e=input_data['flow2e'],
+            flow2c=input_data['eflow2c_batt'],
             fc=input_data['p_out_fuelcell']
         )
 
@@ -508,7 +510,7 @@ class Battery(ModelConstructor):
 
         return time + self._model.time_step_size
 
-    def output_power(self, pv: float, load: float, flow2e: float, fc: float) -> dict:
+    def output_power(self, pv: float, load: float, flow2e: float, fc: float, flow2c: float) -> dict:
         #Initialize states and output
         soc = self.soc
         flow2b = 0
@@ -517,7 +519,7 @@ class Battery(ModelConstructor):
         dt_h= self.time_resolution / 3600
 
         net_generation = pv + fc  # Total generation
-        net_consumption = load - flow2e  # Total consumption (flow2e is negative when consuming)
+        net_consumption = load - flow2e - flow2c  # Total consumption (flow2e is negative when consuming) #0.235W voor BoP erbij gezet
         battery_power = net_consumption - net_generation  # Positive = discharge, Negative = charge
 
         if battery_power > 0 and soc >= self.soc_min:
@@ -545,7 +547,7 @@ class Battery(ModelConstructor):
             flow2b = max(flow2b, max_power_in)
 
             #Calculate energy input and SOC increment
-            energy_in = -1*flow2b * dt_h * self.charge_eff / self.charge_inv_eff
+            energy_in = -1*flow2b * dt_h * self.charge_eff * self.charge_inv_eff
             soc_increment = (energy_in / self.max_energy) * 100
             soc = soc + soc_increment
             bat_state = 'charging'
