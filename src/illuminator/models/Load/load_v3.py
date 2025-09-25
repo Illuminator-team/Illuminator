@@ -130,10 +130,5 @@ class Load(ModelConstructor):
             elif self.output_type == 'energy':
                 self.consumption = self.houses * load # kWh
 
-        # re_params = {'load_dem': self.consumption}
-        re_params = {
-                'load_dem': self.consumption,
-                'load_signal': self.consumption,
-                'load_battery': self.consumption
-         }
+        re_params = {'load_dem': self.consumption}
         return re_params
