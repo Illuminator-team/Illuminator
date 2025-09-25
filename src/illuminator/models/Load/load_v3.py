@@ -32,6 +32,7 @@ class Load(ModelConstructor):
     """
 
     parameters={'houses': 1,  # number of houses that determine the total load demand
+                'input_type': 'energy',  # type of input for load calculation ('energy' or 'power')
                 'output_type': 'power',  # type of output for consumption calculation ('energy' or 'power')
                 }
     inputs={'load': 0}  # incoming energy or power demand per house kW
@@ -62,6 +63,13 @@ class Load(ModelConstructor):
         """
         super().__init__(**kwargs)
         self.consumption = 0
+        self.houses = self._model.parameters.get('houses', 1)
+        self.input_type = self._model.parameters.get('input_type', 'power')
+        self.output_type = self._model.parameters.get('output_type', 'energy')
+        if self.input_type not in ['power', 'energy']:
+            raise ValueError(f"Invalid input_type: {self.input_type}. Must be 'power' or 'energy'.")
+        if self.output_type not in ['power', 'energy']:
+            raise ValueError(f"Invalid output_type: {self.output_type}. Must be 'power' or 'energy'.")
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:
@@ -109,19 +117,18 @@ class Load(ModelConstructor):
         """
         # incoming load is in kWh at every 15 min interval
         # incoming value of load is in kWh
-        houses = self._model.parameters.get('houses')
-        output_type = self._model.parameters.get('output_type')
         deltaTime = self.time_resolution * self.time_step_size / 60 / 60  # in case of 15 min interval, deltaTime = 0.25 h
 
-        if output_type == 'power':
-            self.consumption = houses * load # kW
-        elif output_type == 'energy':
-            self.consumption = houses * load * deltaTime # kW
+        if self.input_type == 'power':  # input load is in kW
+            if self.output_type == 'power':
+                self.consumption = self.houses * load # kW
+            elif self.output_type == 'energy':
+                self.consumption = self.houses * load * deltaTime  # kw -> kWh
+        elif self.input_type == 'energy':  # input load is in kW
+            if self.output_type == 'power':
+                self.consumption = self.houses * load / deltaTime # kWh -> 
+            elif self.output_type == 'energy':
+                self.consumption = self.houses * load # kWh
 
-        # re_params = {'load_dem': self.consumption}
-        re_params = {
-                'load_dem': self.consumption,
-                'load_signal': self.consumption,
-                'load_battery': self.consumption
-         }
+        re_params = {'load_dem': self.consumption}
         return re_params
