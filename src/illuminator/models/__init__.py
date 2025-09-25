@@ -31,6 +31,8 @@ from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import Cont
 from .Controllers.controller_ev.controller_EV import ControllerEV
 from .Controllers.controller_ev.controller_T4 import Controller_T4
 from .Controllers.default_controller.ControllerEH import EMSController
+from .Controllers.controller_ev.controller_EV import ControllerEV
+from .Controllers.controller_ev.controller_T4 import Controller_T4
 
 from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
 from .Agents.operators.operator_v3 import Operator_Market
