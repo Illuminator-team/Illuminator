@@ -273,6 +273,9 @@ models:
     physical_connections: []  # List of physical connections with ID's of the LED strips
   states:
     file_index_Load: 0  # Index to select which load file to read from in the CSV model
+    EWI_LED_mapping: []
+    Ext_LED_mapping: []
+    house_LED_mapping: []
 
 
 connections:
@@ -378,6 +381,15 @@ connections:
 - from: Controller_story.file_index_Load
   to: CSV_pv.file_index
   time_shifted: True
+# - from: Controller_story.EWI_LED_mapping
+#   to: EWI_LED.mapping
+#   time_shifted: True
+# - from: Controller_story.Ext_LED_mapping
+#   to: Ext_LED.mapping
+#   time_shifted: True
+# - from: Controller_story.house_LED_mapping
+#   to: house_LED.mapping
+#   time_shifted: True
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
