@@ -11,6 +11,12 @@ from pathlib import Path
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
+from illuminator.cli import parallel_scenarios
+from mpi4py import MPI
+import os
+import psutil
+
+
 
 APP_NAME = "illuminator"
 DEFAULT_PORT = 5123
@@ -30,6 +36,22 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
 
     simulation = Simulation(config_file)
     simulation.run()
+
+@scenario_app.command("run_parallel")
+def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path to base scenario configuration file.")] = "config.yaml"):
+    "Runs a simulation scenario using a YAML file."
+
+    cleaned_yaml, removed_items = parallel_scenarios.remove_scenario_parallel_items('input.yaml')
+
+
+    rank = MPI.COMM_WORLD.Get_rank()        # id of the MPI process executing this function
+    comm_size = MPI.COMM_WORLD.Get_size()   # number of MPI processes
+
+    print("Hello from rank ", rank)
+    print("Rank ", rank, " running on CPU core ", psutil.Process(os.getpid()))
+    if (rank == 0):
+        print("Rank Zero: comm_size is ", comm_size)
+
 
 @cluster_app.command("build")
 def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
