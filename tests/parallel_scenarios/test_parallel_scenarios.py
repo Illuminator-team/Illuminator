@@ -31,7 +31,7 @@ def parallel_scenario():
                 'parameters': {
                     'pA': 42,
                     'pB': 'text',
-                    'pC': ["file1.txt, data/file2.txt"]
+                    'pC': ["file1.txt", "data/file2.txt"]
                 },
                 'states': {
                     'sY': True
@@ -111,7 +111,7 @@ def test_remove_fixture_parallel_params(scenario, parallel_scenario, tmp_path):
     expected_removed = [
         ('model1', 'parameter', 'p2', [1, 2, 3] ),
         ('model1', 'state', 's2', [0.1, 0.2] ),
-        ('model2', 'parameter', 'pC', ["file1.txt, data/file2.txt"] ),
+        ('model2', 'parameter', 'pC', ["file1.txt", "data/file2.txt"] ),
     ]
 
      # Assert the removed items match exactly
@@ -160,4 +160,80 @@ def test_remove_file_parallel_params():
             assert key not in clean_model['states'], f"Key '{key}' still present in 'states' of model '{model_name}'"
 
 
+def test_generate_combinations_cartesian():
+    """Test Cartesian product generation (align=False)"""
+    items = [
+        ('model1', 'parameter', 'p2', [1, 2, 3] ),
+        ('model1', 'state', 's2', [0.1, 0.2] ),
+        ('model2', 'parameter', 'pC', ["file1.txt", "data/file2.txt"] ),
+    ]
 
+    # Expected combinations
+    expected_combinations = [
+        {('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+        {('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+        {('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+    ]
+
+    combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=False)
+
+    # Check the amount of combinations
+    assert len(combinations) == len(expected_combinations)
+
+    # Check each expected combination is in the actual combinations
+    for expected in expected_combinations:
+        found = False
+        for actual in combinations:
+            if actual == expected:
+                found = True
+                break
+        assert found, f"Expected combination not found: {expected}"
+
+
+def test_generate_combinations_aligned():
+    """Test aligned generation (align=True)"""
+    items = [
+        ('model1', 'parameter', 'p2', [1, 2] ),
+        ('model1', 'state', 's2', [0.1, 0.2] ),
+        ('model2', 'parameter', 'pC', ["file1.txt", "data/file2.txt"] ),
+    ]
+
+    # Expected combinations
+    expected_combinations = [
+        {('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"}
+    ]
+
+    combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=True)
+
+    # Check the amount of combinations
+    assert len(combinations) == len(expected_combinations)
+
+    # Check each expected combination is in the actual combinations
+    for expected in expected_combinations:
+        found = False
+        for actual in combinations:
+            if actual == expected:
+                found = True
+                break
+        assert found, f"Expected combination not found: {expected}"    
+
+    
+def test_generate_combinations_aligned_raises():
+    """Test that align=True raises ValueError when lists have different lengths"""
+    items = [
+        ('model1', 'parameter', 'p2', [1, 2, 3] ),
+        ('model1', 'state', 's2', [0.1, 0.2] ),
+        ('model2', 'parameter', 'pC', ["file1.txt", "data/file2.txt"] ),
+    ]
+    with pytest.raises(ValueError):
+        parallel_scenarios.generate_combinations_from_removed_items(items, align=True)

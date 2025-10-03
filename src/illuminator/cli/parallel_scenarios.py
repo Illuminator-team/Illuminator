@@ -48,17 +48,29 @@ def remove_scenario_parallel_items(yaml_file_path):
     return yaml_data, removed_items
 
 
-def generate_combinations_from_removed_items(removed_items):
+def generate_combinations_from_removed_items(removed_items, align=False):
     """
-    Generate all combinations of values from removed_items returned by 
-    remove_scenario_parallel_items.
+    Generate all possible combinations of values from removed_items,
+    with optional alignment.
+
+    This function is meant to be used with the `removed_items` list returned
+    by `remove_scenario_parallel_items`, where each removed item represents a
+    parameter or state whose value was a list in the scenaio YAML file.
+
+    - If align=False (default), all combinations are generated using the
+      Cartesian product of the value lists.
+    - If align=True, only "aligned" combinations are generated, where the
+      i-th element of each value list is paired together. All lists must
+      have the same length in this case.
 
     Args:
         removed_items (list of tuples): 
             Each tuple is (model_name, 'parameter' or 'state', key, list_of_values)
+        align (bool, optional): If True, generate only aligned combinations.
+            Defaults to False.
 
     Returns:
-        List[dict]: List of dictionaries representing one full combination each.
+        List[dict]: Each dictionary represents one full combination.
                     Keys are 3-tuples: (model_name, type, key), values are selected item.
     """
     keys = []
@@ -66,8 +78,17 @@ def generate_combinations_from_removed_items(removed_items):
     for model, kind, param_key, values in removed_items:
         keys.append((model, kind, param_key))
         value_lists.append(values)
-    
-    combinations = list(itertools.product(*value_lists))
+
+    if align:
+        # Check all lists have the same length
+        lengths = [len(v) for v in value_lists]
+        if not all(l == lengths[0] for l in lengths):
+            raise ValueError("Multi-value model attributes don't have the same length. Did you mean align = False?")
+        # Take i-th element from each list
+        combinations = zip(*value_lists)
+    else:
+        # Full cartesian product
+        combinations = list(itertools.product(*value_lists))
 
     result = []
     for combo in combinations:
