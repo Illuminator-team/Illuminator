@@ -1,8 +1,9 @@
 from ruamel.yaml import YAML
 from collections.abc import Iterable
+from typing import List, Dict
 import itertools
 
-def remove_scenario_parallel_items(yaml_file_path):
+def remove_scenario_parallel_items(yaml_file_path: str):
     """
     Reads a YAML file, removes parameters or states in models whose values
     are lists or sets, and returns the cleaned YAML data and removed items.
@@ -48,7 +49,7 @@ def remove_scenario_parallel_items(yaml_file_path):
     return yaml_data, removed_items
 
 
-def generate_combinations_from_removed_items(removed_items, align=False):
+def generate_combinations_from_removed_items(removed_items, align = False):
     """
     Generate all possible combinations of values from removed_items,
     with optional alignment.
@@ -72,6 +73,7 @@ def generate_combinations_from_removed_items(removed_items, align=False):
     Returns:
         List[dict]: Each dictionary represents one full combination.
                     Keys are 3-tuples: (model_name, type, key), values are selected item.
+                    Each dict also has 'sim_number' counting from 1.
     """
     keys = []
     value_lists = []
@@ -91,7 +93,46 @@ def generate_combinations_from_removed_items(removed_items, align=False):
         combinations = list(itertools.product(*value_lists))
 
     result = []
+    simnum = 1
     for combo in combinations:
-        result.append(dict(zip(keys, combo)))
+        combo_dict = dict(zip(keys, combo))
+        combo_dict['simulation_number'] = simnum
+        result.append(combo_dict)
+        simnum = simnum + 1
 
     return result
+
+
+def get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> List[dict]:
+    """
+    Distributes a list of simulations among MPI processes.
+
+    If there are more simulations than MPI processes, each process gets a subset of the list.
+    If there are more MPI processes than simulations, only processes with rank less than the number of simulations get a simulation.
+
+    Args:
+        simulation_list (List[dict]): The list of simulations to distribute.
+        rank (int): The rank of the MPI process.
+        comm_size (int): The total number of MPI processes.
+
+    Returns:
+        List[dict]: The subset of the simulation list assigned to the MPI process.
+    """
+    # If we have more simulations than MPI processes
+    if (comm_size <= len(simulation_list)):
+        base_size = len(simulation_list) // comm_size
+        start = rank * base_size
+        end = start + base_size - 1
+        # Each MPI process gets a subset of the list 
+        subset = simulation_list[start:end+1]
+        # Assign leftover elements
+        if(rank < len(simulation_list) % comm_size):
+            i = -1 - rank
+            subset.append(simulation_list[i])
+        return subset
+    else:
+        # if we have more MPI processes than simulations
+        if (rank < len(simulation_list)):
+            return simulation_list[rank]
+        else:
+            return []
