@@ -97,7 +97,7 @@ def generate_combinations_from_removed_items(removed_items, align = False):
     simnum = 1
     for combo in combinations:
         combo_dict = dict(zip(keys, combo))
-        combo_dict['simulation_number'] = simnum
+        combo_dict['simulationID'] = simnum
         result.append(combo_dict)
         simnum = simnum + 1
 
@@ -146,7 +146,7 @@ def generate_scenario(base_config: dict, item_to_add: dict):
 
     # Add item_to_add to the correct model
     for key, value in item_to_add.items():
-        if key == 'simulation_number':
+        if key == 'simulationID':
             continue
         model_name, section, param_or_state = key
 
@@ -166,9 +166,9 @@ def generate_scenario(base_config: dict, item_to_add: dict):
             raise ValueError(f"Model '{model_name}' not found in base_config['models']. combinaion: {item_to_add}")
 
     # Append simulation number to monitor output file
-    simID = item_to_add.get('simulation_number')
+    simID = item_to_add.get('simulationID')
     if simID is None:
-        raise ValueError(f"simulation_number is missing in combination: {item_to_add}")
+        raise ValueError(f"simulationID is missing in combination: {item_to_add}")
     outputfile = base_config.get("monitor", {}).get("file")
     of_base, of_ext = os.path.splitext(outputfile)
     base_config["monitor"]["file"] = f"{of_base}_{simID}{of_ext}"

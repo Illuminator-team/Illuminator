@@ -77,7 +77,7 @@ def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path 
     # 3. run simulation
     for s in subset:
         scenario = parallel_scenarios.generate_scenario(base_config, s)
-        sim_number = s.get("simulation_number")
+        sim_number = s.get("simulationID")
 
         # Serialize scenario into yaml file
         scenariofile =  f"{cf_base}_{sim_number}{cf_ext}"

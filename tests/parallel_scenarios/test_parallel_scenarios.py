@@ -170,18 +170,18 @@ def test_generate_combinations_cartesian():
 
     # Expected combinations
     expected_combinations = [
-        {'simulation_number': 1, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 2, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
-        {'simulation_number': 3, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 4, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
-        {'simulation_number': 5, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 6, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
-        {'simulation_number': 7, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 8, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
-        {'simulation_number': 9, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 10, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
-        {'simulation_number': 11, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 12, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 1, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 2, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 3, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 4, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 5, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 6, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 7, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 8, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 9, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 10, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "data/file2.txt"},
+        {'simulationID': 11, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 12, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
     ]
 
     combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=False)
@@ -209,8 +209,8 @@ def test_generate_combinations_aligned():
 
     # Expected combinations
     expected_combinations = [
-        {'simulation_number': 1, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
-        {'simulation_number': 2, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"}
+        {'simulationID': 1, ('model1','parameter','p2'): 1, ('model1','state','s2'): 0.1, ('model2','parameter','pC'): "file1.txt"},
+        {'simulationID': 2, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"}
     ]
 
     combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=True)
