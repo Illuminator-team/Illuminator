@@ -2,6 +2,7 @@ from ruamel.yaml import YAML
 from collections.abc import Iterable
 from typing import List, Dict
 import itertools
+import os
 
 def remove_scenario_parallel_items(yaml_file_path: str):
     """
@@ -139,20 +140,14 @@ def get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> L
 
 
 def generate_scenario(base_config: dict, item_to_add: dict):
-    # Add simulation number to the top-level scenario dict
-    simulation_number = item_to_add.get('simulation_number')
-    if simulation_number is None:
-        raise ValueError(f"simulation_number is missing in combination: {item_to_add}")
-    #base_config['simulation_number'] = simulation_number
-
     # Remove align_parameters from base_config
     if 'align_parameters' in base_config['scenario']:
         base_config['scenario'].pop('align_parameters')
 
-    # Iterate through models and iten_to_add
+    # Add item_to_add to the correct model
     for key, value in item_to_add.items():
         if key == 'simulation_number':
-            continue  # Already added
+            continue
         model_name, section, param_or_state = key
 
         # Find the correct model
@@ -169,6 +164,17 @@ def generate_scenario(base_config: dict, item_to_add: dict):
 
         if not model_found:
             raise ValueError(f"Model '{model_name}' not found in base_config['models']. combinaion: {item_to_add}")
+
+    # Append simulation number to monitor output file
+    simID = item_to_add.get('simulation_number')
+    if simID is None:
+        raise ValueError(f"simulation_number is missing in combination: {item_to_add}")
+    outputfile = base_config.get("monitor", {}).get("file")
+    of_base, of_ext = os.path.splitext(outputfile)
+    base_config["monitor"]["file"] = f"{of_base}_{simID}{of_ext}"
         
     return base_config
 
+
+#def write_lookup_table(simulation_list: List[dict], filepath: str):
+    

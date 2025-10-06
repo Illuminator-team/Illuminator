@@ -69,8 +69,6 @@ def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path 
 
     # Split the filename and extension
     cf_base, cf_ext = os.path.splitext(config_file)
-    outputfile = base_config.get("monitor", {}).get("file")
-    of_base, of_ext = os.path.splitext(outputfile)
 
     # For each item in the subset:
     # 1. generate scenario
@@ -80,9 +78,6 @@ def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path 
     for s in subset:
         scenario = parallel_scenarios.generate_scenario(base_config, s)
         sim_number = s.get("simulation_number")
-
-        # Append simulation number to monitor output file
-        scenario["monitor"]["file"] = f"{of_base}_{sim_number}{of_ext}"
 
         # Serialize scenario into yaml file
         scenariofile =  f"{cf_base}_{sim_number}{cf_ext}"
