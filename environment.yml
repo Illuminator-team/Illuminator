@@ -1,4 +1,4 @@
-name: illuminator
+name: illuminator-mpi
 channels:
   - conda-forge
   - defaults
@@ -14,5 +14,7 @@ dependencies:
   - setuptools=68.0.0
   - pip:
     - mosaik==3.3.3 
-    - illuminator>=3.0.0-alpha
+    - mpi4py
+    - psutil  # Used for debugging in cli/main.py - Remove before PR merge.
+    #- illuminator>=3.0.0-alpha
     # - mosaik-api==3.0.3 # If mosaik != 3.1.1 then - mosaik-api==3.0.3 is needed

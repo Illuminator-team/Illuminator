@@ -133,6 +133,42 @@ def get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> L
     else:
         # if we have more MPI processes than simulations
         if (rank < len(simulation_list)):
-            return simulation_list[rank]
+            return [simulation_list[rank]]
         else:
             return []
+
+
+def generate_scenario(base_config: dict, item_to_add: dict):
+    # Add simulation number to the top-level scenario dict
+    simulation_number = item_to_add.get('simulation_number')
+    if simulation_number is None:
+        raise ValueError(f"simulation_number is missing in combination: {item_to_add}")
+    #base_config['simulation_number'] = simulation_number
+
+    # Remove align_parameters from base_config
+    if 'align_parameters' in base_config['scenario']:
+        base_config['scenario'].pop('align_parameters')
+
+    # Iterate through models and iten_to_add
+    for key, value in item_to_add.items():
+        if key == 'simulation_number':
+            continue  # Already added
+        model_name, section, param_or_state = key
+
+        # Find the correct model
+        model_found = False
+        for model in base_config['models']:
+            if model['name'] == model_name:
+                model_found = True
+                # Add value under the correct section
+                if section == 'parameter':
+                    model.setdefault('parameters', {})[param_or_state] = value
+                elif section == 'state':
+                    model.setdefault('states', {})[param_or_state] = value
+                break  # Model found, no need to continue
+
+        if not model_found:
+            raise ValueError(f"Model '{model_name}' not found in base_config['models']. combinaion: {item_to_add}")
+        
+    return base_config
+

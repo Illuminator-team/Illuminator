@@ -12,9 +12,10 @@ from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
 from illuminator.cli import parallel_scenarios
+from ruamel.yaml import YAML
 from mpi4py import MPI
 import os
-import psutil
+import psutil # Used for debugging! Remove before PR
 
 
 
@@ -41,17 +42,59 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
 def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path to base scenario configuration file.")] = "config.yaml"):
     "Runs a simulation scenario using a YAML file."
 
-    cleaned_yaml, removed_items = parallel_scenarios.remove_scenario_parallel_items('input.yaml')
-
-
     rank = MPI.COMM_WORLD.Get_rank()        # id of the MPI process executing this function
     comm_size = MPI.COMM_WORLD.Get_size()   # number of MPI processes
-
     print("Hello from rank ", rank)
     print("Rank ", rank, " running on CPU core ", psutil.Process(os.getpid()))
-    if (rank == 0):
+    if rank == 0:
         print("Rank Zero: comm_size is ", comm_size)
 
+    # Load base configuration and remove parallel items
+    base_config, removed_items = parallel_scenarios.remove_scenario_parallel_items(config_file)
+    
+    # Check which type of combination
+    align_parameters = base_config.get("scenario", {}).get("align_parameters")
+    if align_parameters is None:
+        align_parameters = False
+        if rank == 0:
+            print("Warning: 'align_parameters' is missing in 'scenario'. Setting it to False.")
+
+    # Get list of parallel-item combinations:
+    combinations = parallel_scenarios.generate_combinations_from_removed_items(removed_items, align_parameters)
+    if rank == 0:
+        print("Running ", len(combinations), "different scenarios across ", comm_size, " processes." )
+
+    # Get the rank's subset of the list
+    subset = parallel_scenarios.get_list_subset(combinations, rank, comm_size)
+
+    # Split the filename and extension
+    cf_base, cf_ext = os.path.splitext(config_file)
+    outputfile = base_config.get("monitor", {}).get("file")
+    of_base, of_ext = os.path.splitext(outputfile)
+
+    # For each item in the subset:
+    # 1. generate scenario
+    # 3. overwrite monitor output file (temporary)
+    # 2. write scenario to file
+    # 3. run simulation
+    for s in subset:
+        scenario = parallel_scenarios.generate_scenario(base_config, s)
+        sim_number = s.get("simulation_number")
+
+        # Append simulation number to monitor output file
+        scenario["monitor"]["file"] = f"{of_base}_{sim_number}{of_ext}"
+
+        # Serialize scenario into yaml file
+        scenariofile =  f"{cf_base}_{sim_number}{cf_ext}"
+        yaml = YAML()  
+        with open(scenariofile, 'w') as f:
+            yaml.dump(scenario, f)
+        print(f"[Rank {rank}] Wrote scenario {sim_number} to {scenariofile}")
+
+        # Run simulation
+        simulation = Simulation(scenariofile)
+        simulation.run()
+    
 
 @cluster_app.command("build")
 def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
