@@ -1,6 +1,6 @@
 import pytest
 from ruamel.yaml import YAML
-from illuminator.cli import parallel_scenarios
+from illuminator import parallel_scenarios
 
 import os
 

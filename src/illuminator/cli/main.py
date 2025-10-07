@@ -11,7 +11,7 @@ from pathlib import Path
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
-from illuminator.cli import parallel_scenarios
+from illuminator import parallel_scenarios
 from ruamel.yaml import YAML
 from mpi4py import MPI
 import os
