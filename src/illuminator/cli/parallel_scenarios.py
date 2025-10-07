@@ -3,6 +3,7 @@ from collections.abc import Iterable
 from typing import List, Dict
 import itertools
 import os
+import csv
 
 def remove_scenario_parallel_items(yaml_file_path: str):
     """
@@ -176,5 +177,22 @@ def generate_scenario(base_config: dict, item_to_add: dict):
     return base_config
 
 
-#def write_lookup_table(simulation_list: List[dict], filepath: str):
-    
+def write_lookup_table(simulation_list: List[dict], filepath: str):
+    # Collect all keys from the first dictionary
+    all_keys = simulation_list[0].keys()
+
+    # Build column names with 'simulationID' first and then sorted in alphabetical order
+    header_keys = ['simulationID'] + sorted(k for k in all_keys if k != 'simulationID')
+    header_labels = []
+    for key in header_keys:
+        if isinstance(key, tuple):
+            header_labels.append(".".join(key))
+        else:
+            header_labels.append(str(key)) # simulationID
+
+    # Write to CSV file
+    with open(filepath, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(header_labels)
+        for row in simulation_list:
+            writer.writerow([row[k] for k in header_keys])

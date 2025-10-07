@@ -63,6 +63,10 @@ def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path 
     combinations = parallel_scenarios.generate_combinations_from_removed_items(removed_items, align_parameters)
     if rank == 0:
         print("Running ", len(combinations), "different scenarios across ", comm_size, " processes." )
+        # Write lookup table
+        outputdir = os.path.dirname(base_config.get("monitor", {}).get("file"))
+        lookuptablefile = os.path.join(outputdir, "scenariotable.csv")
+        parallel_scenarios.write_lookup_table(combinations, str(lookuptablefile))
 
     # Get the rank's subset of the list
     subset = parallel_scenarios.get_list_subset(combinations, rank, comm_size)
@@ -72,7 +76,6 @@ def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path 
 
     # For each item in the subset:
     # 1. generate scenario
-    # 3. overwrite monitor output file (temporary)
     # 2. write scenario to file
     # 3. run simulation
     for s in subset:
