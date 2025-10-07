@@ -141,6 +141,8 @@ def _generate_combinations_from_removed_items(removed_items, align = False):
         List[dict]: Each dictionary represents one full combination.
                     Keys are 3-tuples: (model_name, type, key), values are selected item.
                     Each dict also has 'sim_number' counting from 1.
+    Raises:
+        ValueError: If `align=True` but the value lists are not all the same length.
     """
     keys = []
     value_lists = []
@@ -206,6 +208,22 @@ def _get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> 
 
 
 def _generate_scenario(base_config: dict, item_to_add: dict):
+    """
+    Generates a complete scenario configuration by injecting a single combination of parameters/states
+    into the base configuration.
+
+    It also updates the output file name to include the simulation ID.
+
+    Args:
+        base_config (dict): The base YAML configuration (as parsed from the scenario file).
+        item_to_add (dict): A dictionary with:
+            - 'simulationID' (int): Unique identifier for the simulation.
+            - (model_name, 'parameter' or 'state', key): Tuple keys indicating where to inject the value
+              into the corresponding model section.
+
+    Returns:
+        dict: A new scenario dictionary with injected parameters/states and updated monitor file name.
+    """
     # Remove align_parameters from base_config
     if 'align_parameters' in base_config['scenario']:
         base_config['scenario'].pop('align_parameters')
@@ -243,6 +261,13 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
 
 
 def _write_lookup_table(simulation_list: List[dict], filepath: str):
+    """
+    Writes a CSV file mapping each simulation ID to the combination of parameter/state values used.
+
+    Args:
+        simulation_list (List[dict]): List of simulation configurations, each with a 'simulationID' and combination values.
+        filepath (str): Path to the output CSV file.
+    """
     # Collect all keys from the first dictionary
     all_keys = simulation_list[0].keys()
 
