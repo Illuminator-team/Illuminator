@@ -105,7 +105,7 @@ def test_remove_fixture_parallel_params(scenario, parallel_scenario, tmp_path):
         yaml.dump(parallel_scenario, f)
     
     # Call the function using the temp file path
-    cleaned_data, removed_items = parallel_scenarios.remove_scenario_parallel_items(str(temp_file))
+    cleaned_data, removed_items = parallel_scenarios._remove_scenario_parallel_items(str(temp_file))
 
     # Assertions on removed_items
     expected_removed = [
@@ -123,7 +123,7 @@ def test_remove_fixture_parallel_params(scenario, parallel_scenario, tmp_path):
 
 def test_remove_file_parallel_params():    
     # Remove lists and ranges
-    cleaned_data, removed_items = parallel_scenarios.remove_scenario_parallel_items('tests/parallel_scenarios/data/parallel1.yaml')
+    cleaned_data, removed_items = parallel_scenarios._remove_scenario_parallel_items('tests/parallel_scenarios/data/parallel1.yaml')
 
     # Assertions on removed_items
     expected_removed = [
@@ -184,7 +184,7 @@ def test_generate_combinations_cartesian():
         {'simulationID': 12, ('model1','parameter','p2'): 3, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"},
     ]
 
-    combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=False)
+    combinations = parallel_scenarios._generate_combinations_from_removed_items(items, align=False)
 
     # Check the amount of combinations
     assert len(combinations) == len(expected_combinations)
@@ -213,7 +213,7 @@ def test_generate_combinations_aligned():
         {'simulationID': 2, ('model1','parameter','p2'): 2, ('model1','state','s2'): 0.2, ('model2','parameter','pC'): "data/file2.txt"}
     ]
 
-    combinations = parallel_scenarios.generate_combinations_from_removed_items(items, align=True)
+    combinations = parallel_scenarios._generate_combinations_from_removed_items(items, align=True)
 
     # Check the amount of combinations
     assert len(combinations) == len(expected_combinations)
@@ -236,4 +236,4 @@ def test_generate_combinations_aligned_raises():
         ('model2', 'parameter', 'pC', ["file1.txt", "data/file2.txt"] ),
     ]
     with pytest.raises(ValueError):
-        parallel_scenarios.generate_combinations_from_removed_items(items, align=True)
+        parallel_scenarios._generate_combinations_from_removed_items(items, align=True)

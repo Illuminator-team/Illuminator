@@ -1,11 +1,76 @@
+from illuminator.engine import Simulation
+
+from mpi4py import MPI
 from ruamel.yaml import YAML
 from collections.abc import Iterable
 from typing import List, Dict
 import itertools
 import os
 import csv
+import psutil # Used for debugging! Remove before PR
 
-def remove_scenario_parallel_items(yaml_file_path: str):
+def run_parallel(simlist: List[Simulation]):
+    # Given a list of Simulations, distribute them among MPI ranks and run them in parallel
+    # This is to be an equivalent of run_parallel_file, except that in this case the simulations are
+    # already set up. Each simulation in the list contains exactly one scenario (no multi-paramters or multi-states)
+    # To be implemented
+    return
+
+
+def run_parallel_file(scenario_file: str):
+    rank = MPI.COMM_WORLD.Get_rank()        # id of the MPI process executing this function
+    comm_size = MPI.COMM_WORLD.Get_size()   # number of MPI processes
+    print("Hello from rank ", rank)
+    print("Rank ", rank, " running on CPU core ", psutil.Process(os.getpid()))
+    if rank == 0:
+        print("Rank Zero: comm_size is ", comm_size)
+
+    # Load base configuration and remove parallel items
+    base_config, removed_items = _remove_scenario_parallel_items(scenario_file)
+    
+    # Check which type of combination
+    align_parameters = base_config.get("scenario", {}).get("align_parameters")
+    if align_parameters is None:
+        align_parameters = False
+        if rank == 0:
+            print("Warning: 'align_parameters' is missing in 'scenario'. Setting it to False.")
+
+    # Get list of parallel-item combinations:
+    combinations = _generate_combinations_from_removed_items(removed_items, align_parameters)
+    if rank == 0:
+        print("Running ", len(combinations), "different scenarios across ", comm_size, " processes." )
+        # Write lookup table
+        outputdir = os.path.dirname(base_config.get("monitor", {}).get("file"))
+        lookuptablefile = os.path.join(outputdir, "scenariotable.csv")
+        _write_lookup_table(combinations, str(lookuptablefile))
+
+    # Get the rank's subset of the list
+    subset = _get_list_subset(combinations, rank, comm_size)
+
+    # Split the filename and extension
+    cf_base, cf_ext = os.path.splitext(scenario_file)
+
+    # For each item in the subset:
+    # 1. generate scenario
+    # 2. write scenario to file
+    # 3. run simulation
+    for s in subset:
+        scenario = _generate_scenario(base_config, s)
+        sim_number = s.get("simulationID")
+
+        # Serialize scenario into yaml file
+        scenariofile =  f"{cf_base}_{sim_number}{cf_ext}"
+        yaml = YAML()  
+        with open(scenariofile, 'w') as f:
+            yaml.dump(scenario, f)
+        print(f"[Rank {rank}] Wrote scenario {sim_number} to {scenariofile}")
+
+        # Run simulation
+        simulation = Simulation(scenariofile)
+        simulation.run()
+
+
+def _remove_scenario_parallel_items(yaml_file_path: str):
     """
     Reads a YAML file, removes parameters or states in models whose values
     are lists or sets, and returns the cleaned YAML data and removed items.
@@ -51,7 +116,7 @@ def remove_scenario_parallel_items(yaml_file_path: str):
     return yaml_data, removed_items
 
 
-def generate_combinations_from_removed_items(removed_items, align = False):
+def _generate_combinations_from_removed_items(removed_items, align = False):
     """
     Generate all possible combinations of values from removed_items,
     with optional alignment.
@@ -105,7 +170,7 @@ def generate_combinations_from_removed_items(removed_items, align = False):
     return result
 
 
-def get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> List[dict]:
+def _get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> List[dict]:
     """
     Distributes a list of simulations among MPI processes.
 
@@ -140,7 +205,7 @@ def get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> L
             return []
 
 
-def generate_scenario(base_config: dict, item_to_add: dict):
+def _generate_scenario(base_config: dict, item_to_add: dict):
     # Remove align_parameters from base_config
     if 'align_parameters' in base_config['scenario']:
         base_config['scenario'].pop('align_parameters')
@@ -177,7 +242,7 @@ def generate_scenario(base_config: dict, item_to_add: dict):
     return base_config
 
 
-def write_lookup_table(simulation_list: List[dict], filepath: str):
+def _write_lookup_table(simulation_list: List[dict], filepath: str):
     # Collect all keys from the first dictionary
     all_keys = simulation_list[0].keys()
 
