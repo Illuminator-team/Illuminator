@@ -1,7 +1,7 @@
 from illuminator.engine import Simulation
 
 # initialize simulation according to tutorial1 yaml
-CONFIG_FILE = 'examples/Cluster/Tutorial_story.yaml'
+CONFIG_FILE = 'examples/Cluster/Tutorial_story_minimal.yaml'
 simulation = Simulation(CONFIG_FILE)
 # simulation.set_model_param(model_name='CSVload', parameter='file_path', value='Illuminator/examples/Tutorial1/load_data.txt')
 # simulation.set_model_param(model_name='CSV_pv', parameter='file_path', value='Illuminator/examples/Tutorial1/pv_data_Rotterdam_NL-15min.txt')
