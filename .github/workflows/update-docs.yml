@@ -1,0 +1,29 @@
+name: Start docs update for website # Name of the whole Action. However when the job runs on github it will take the name of last Commit message.
+
+on: # run ON
+  push: # a PUSH action
+    branches: # on the branch:
+      - main
+  workflow_dispatch: # a MANUAL START action and on ANY branch since its NOT defined.
+
+
+jobs: # The list of jobs to run
+  autorun_workflow: # Name of job (you will actually see this on github when you investigate the job)
+    runs-on: ubuntu-latest # What OS to use when running commands
+    steps:
+      - name: Running workflow #Name of the current set of commands (also visible on github)
+        run: | 
+            curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.WEBSITE_ACTION_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/Illuminator-team/website/actions/workflows/documentation_build.yml/dispatches \
+            -d '{"ref":"main"}'
+# curl -L \ # Run a CURL (Client for URLs)
+# -X POST \ # Type of CURL is POST (send data)
+# -H "Accept: application/vnd.github+json" \ # Header flag: this is github specific
+# -H "Authorization: Bearer {{SECRET_TOKEN}} " \ # Header flag: Add authorization bearer information using our target repository's secret token
+# -H "X-GitHub-Api-Version: 2022-11-28" \ # Header flag: more github specific stuff
+# https://api.github.com/repos/{{TARGET_OWNER_OR_ORG}}/{{TARGET_REPO}}/actions/workflows/{{TARGET_ACTION_YML_FILE}}/dispatches \ # The target repository in which we want to run our action. 
+# -d '{"ref":"main"}' # Data flag: which branch will be used as reference for our action to run on. We have to give this information, otherwise our repository doesnt know which "branch" started the action
