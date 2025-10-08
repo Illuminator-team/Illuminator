@@ -84,10 +84,10 @@ class Controller_StoryMode(ModelConstructor):
             print("EWI and Ext connected")
             print("House and Ext connected")
             story_phase = 1
-            to_house_LED.append({'other_side': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
-            to_EWI_LED.append({'other_side': 'Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
-            to_Ext_LED.append({'other_side': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
-            to_Ext_LED.append({'other_side': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+            to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
+            to_EWI_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'EWI_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
+            to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+            to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
 
             self.file_indeces['file_index_Load'] = 1
 
