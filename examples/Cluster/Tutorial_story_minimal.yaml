@@ -9,7 +9,7 @@ models:
 - name: Load_house
   type: Dummy
   states:
-    state1: 0.99
+    state1: 0.5
   connect:
     ip: 10.197.217.121
     port: 5122
