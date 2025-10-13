@@ -83,14 +83,14 @@ class Controller_StoryMode(ModelConstructor):
         is_connected1, conn_id1 = check_connected('EWI_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
         is_connected2, conn_id2 = check_connected('house_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
         if is_connected1:
-            print("EWI and Ext connected")
+            print(f"EWI and Ext connected, id: {conn_id1}")
             to_EWI_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'EWI_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
             to_Ext_LED.append({'from': 'EWI_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
         
         if is_connected2:
             to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
             to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
-            print("House and Ext connected")
+            print(f"House and Ext connected, id: {conn_id2}")
         
         if is_connected1 and is_connected2:
             story_phase = 1
