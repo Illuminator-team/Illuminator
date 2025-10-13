@@ -242,11 +242,13 @@ class ModelConstructor(ABC, Simulator):
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
+                print("\n\n")
                 print(f"attr: {attr}")
                 print(f"model_instance: {model_instance}")
                 print(f"model_instance.outputs: {model_instance.outputs}")
                 print(f"model_instance.states: {model_instance.states}")
-                
+                print("\n\n")
+
                 if attr in model_instance.outputs:
                     data[eid][attr] = model_instance.outputs[attr]
                 elif attr in model_instance.states:
