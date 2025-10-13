@@ -3,17 +3,55 @@ from illuminator.engine import Simulation
 from mpi4py import MPI
 from ruamel.yaml import YAML
 from collections.abc import Iterable
-from typing import List, Dict
+from typing import List, Dict, Any
 import itertools
 import os
 import csv
 import psutil # Used for debugging! Remove before PR
 
-def run_parallel(simlist: List[Simulation]):
-    # Given a list of Simulations, distribute them among MPI ranks and run them in parallel
-    # This is to be an equivalent of run_parallel_file, except that in this case the simulations are
-    # already set up. Each simulation in the list contains exactly one scenario (no multi-paramters or multi-states)
-    # To be implemented
+def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False):
+    """
+    Distributes and runs a list of Simulation objects in parallel using MPI.
+
+    Each simulation in the list is executed on an MPI rank. Optionally, scenario 
+    configuration files can be generated for each simulation.
+
+    Parameters
+    ----------
+    simlist : List[Simulation]
+        A list of pre-configured Simulation objects to run. Each simulation should 
+        contain exactly one scenario (no multi-parameters/states). Each simulation
+        must have a unique output file defined to prevent overwriting results.
+
+    create_scenario_files : bool, optional
+        If True, a YAML file containing the simulation configuration will be written 
+        for each simulation. Default is False.
+
+    Notes
+    -----
+    - Scenario files are named by taking the simulation's `_results_file` path, 
+      removing the extension, and appending "_simconfig.yaml".
+    """
+    
+    rank = MPI.COMM_WORLD.Get_rank()        # id of the MPI process executing this function
+    comm_size = MPI.COMM_WORLD.Get_size()   # number of MPI processes
+
+    # Distribute simulations among MPI processes
+    subset = _get_list_subset(simlist, rank, comm_size)
+
+    for sim in subset:
+        # Run the simulation
+        sim.run()
+
+        # Write scenario configuration YAML file
+        if create_scenario_files:
+            scenariofile = os.path.splitext(sim._results_file)[0] # _results_file without extension
+            scenariofile.append("_simconfig.yaml")
+            yaml = YAML()  
+            with open(scenariofile, 'w') as f:
+                yaml.dump(sim.config, f)
+            print(f"[Rank {rank}] created {scenariofile}")
+
     return
 
 
@@ -24,6 +62,9 @@ def run_parallel_file(scenario_file: str):
     print("Rank ", rank, " running on CPU core ", psutil.Process(os.getpid()))
     if rank == 0:
         print("Rank Zero: comm_size is ", comm_size)
+
+    # Check for valid syntax and multi paramter
+    # Unfold range
 
     # Load base configuration and remove parallel items
     base_config, removed_items = _remove_scenario_parallel_items(scenario_file)
@@ -172,7 +213,7 @@ def _generate_combinations_from_removed_items(removed_items, align = False):
     return result
 
 
-def _get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> List[dict]:
+def _get_list_subset(simulation_list: List[Any], rank: int, comm_size: int) -> List[dict]:
     """
     Distributes a list of simulations among MPI processes.
 
@@ -180,12 +221,12 @@ def _get_list_subset(simulation_list: List[dict], rank: int, comm_size: int) -> 
     If there are more MPI processes than simulations, only processes with rank less than the number of simulations get a simulation.
 
     Args:
-        simulation_list (List[dict]): The list of simulations to distribute.
+        simulation_list (List[Any]): The list of simulations to distribute.
         rank (int): The rank of the MPI process.
         comm_size (int): The total number of MPI processes.
 
     Returns:
-        List[dict]: The subset of the simulation list assigned to the MPI process.
+        List[Any]: The subset of the simulation list assigned to the MPI process.
     """
     # If we have more simulations than MPI processes
     if (comm_size <= len(simulation_list)):
