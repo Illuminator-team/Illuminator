@@ -73,6 +73,7 @@ class Controller_StoryMode(ModelConstructor):
         self.time = time
 
         connections, ids = self.determine_connectivity(input_data['physical_connections'])
+        print("story mode connections: ", connections, "ids: ", ids)
 
         to_EWI_LED = []
         to_Ext_LED = []
