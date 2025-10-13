@@ -91,14 +91,15 @@ class Dummy(ModelConstructor):
             The next simulation time step.
         """
         input_data = self.unpack_inputs(inputs)
-        if 'in1' in input_data:
-            self.state1 = input_data['in1']
+
+        # if 'in1' in input_data:
+        #     self.state1 = input_data['in1']
 
         
         # self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time
         #self.set_outputs({'out1': self.out1, 'out2': self.out2})
-        #self.set_states({'state1': self.state1})
-        self.set_states({'state1': 0.6})
+        self.set_states({'state1': self.state1})
+        #self.set_states({'state1': 0.6})
 
         return time + self._model.time_step_size
 
