@@ -168,6 +168,8 @@ connections:
 #   to: EWI_LED.speed
 # - from: Battery1.state1
 #   to: EWI_LED.speed
+- from: Load_EWI.state1
+  to: EWI_LED.speed
 - from: EWI_LED.connections
   to: Controller_story.physical_connections
 
