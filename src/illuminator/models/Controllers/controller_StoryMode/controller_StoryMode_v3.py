@@ -79,19 +79,23 @@ class Controller_StoryMode(ModelConstructor):
         to_house_LED = []
 
         story_phase = 0
+
         is_connected1, conn_id1 = check_connected('EWI_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
         is_connected2, conn_id2 = check_connected('house_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
-        if is_connected1 and not is_connected2:
+        if is_connected1:
             print("EWI and Ext connected")
-            print("House and Ext connected")
-            story_phase = 1
-            to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
             to_EWI_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'EWI_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
+            to_Ext_LED.append({'from': 'EWI_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+        
+        if is_connected2:
+            to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
             to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
-            to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
-
+            print("House and Ext connected")
+        
+        if is_connected1 and is_connected2:
+            story_phase = 1
+            print("Phase 1 connections")
             self.file_indeces['file_index_Load'] = 1
-
 
         self.set_states(self.file_indeces)
         self.set_states({'EWI_LED_mapping': to_EWI_LED, 'Ext_LED_mapping': to_Ext_LED, 'house_LED_mapping': to_house_LED})
