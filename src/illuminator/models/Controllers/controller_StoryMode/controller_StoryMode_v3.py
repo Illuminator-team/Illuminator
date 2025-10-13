@@ -85,7 +85,7 @@ class Controller_StoryMode(ModelConstructor):
         if is_connected1:
             print(f"EWI and Ext connected, id: {conn_id1}")
             to_EWI_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'EWI_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
-            to_Ext_LED.append({'from': 'EWI_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+            to_Ext_LED.append({'from': 'EWI_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
         
         if is_connected2:
             to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
