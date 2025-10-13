@@ -99,7 +99,7 @@ class Controller_StoryMode(ModelConstructor):
             self.file_indeces['file_index_Load'] = 1
 
         self.set_states(self.file_indeces)
-        self.set_states({'Grid_EWI_LED_mapping': to_EWI_LED, 'Load_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED})
+        self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Load_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED})
 
         sleep(1)  # simulate some calculation time
 
