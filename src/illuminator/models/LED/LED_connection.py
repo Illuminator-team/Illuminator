@@ -266,7 +266,7 @@ class LED_connection(ModelConstructor):
             led_id = str(item.get('id', '')).strip()
             if not led_id:
                 continue
-            print(f"Now checking item {item}, is it dict? {isinstance(item, dict)}, source model is {src_model}, led_id is {led_id}")
+            print(f"Now checking item {item}, source model is {src_model}, led_id is {led_id}")
 
             # per-item direction override or base
             try:
