@@ -311,8 +311,10 @@ class LED_connection(ModelConstructor):
 
             if current_id and current_id != "-1" and current_id in desired_by_id:
                 pct, dirn = desired_by_id[current_id]
+                print(f"[LED] device {device} has known id {current_id}, using desired pct={pct:.1f} dir={dirn}")
             else:
                 # Unknown/not-mapped id: send a light probe (0%) to elicit ID with white default state
+                print(f"[LED] device {device} has unknown or unmapped id '{current_id}', sending probe")
                 pct, dirn = (0.0, self.base_direction_param)
 
             observed = self.send_led_animation(device, pct, dirn)
