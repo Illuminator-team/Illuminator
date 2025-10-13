@@ -292,10 +292,9 @@ class LED_connection(ModelConstructor):
         print ("Here are the unpacked inputs:", inputs)
 
         speed_input = inp.get('speed', {})
-        mapping_list = inp.get('mapping', []) or []
+        mapping_list = inp.get('mapping', [])['sources'] or []
 
         print("Speed input:", speed_input)
-        print("Mapping list:", mapping_list['value'])
 
         speeds_by_source = self._speeds_by_source(speed_input)
         desired_by_id = self._desired_animation_by_id(mapping_list, speeds_by_source)
