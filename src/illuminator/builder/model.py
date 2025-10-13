@@ -234,7 +234,7 @@ class ModelConstructor(ABC, Simulator):
             Dictionary containing the requested output values for each entity
         """
         data = {}
-        # print(f"Here are your outputs: {outputs}")
+        print(f"Here are your outputs: {outputs}")
         # for eid, attrs in self._model.outputs.items():
         for eid, attrs in outputs.items():
             # print(f"eid: {eid}, attrs:{attrs}")
