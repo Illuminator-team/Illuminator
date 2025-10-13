@@ -63,7 +63,7 @@ class Dummy(ModelConstructor):
         result = super().init(*args, **kwargs)
         # self.out1 = self.parameters.get('out1', 0)
         # self.out2 = self.parameters.get('out2', 0)
-        self.state1 = self.get_state('state1', 0)
+        self.state1 = self.get_state('state1')
         print("Initialized Dummy with state1:", self.state1)
         # self.state2 = self.states.get('state2', 0)
         return result
