@@ -295,7 +295,7 @@ class LED_connection(ModelConstructor):
         mapping_list = inp.get('mapping', []) or []
 
         print("Speed input:", speed_input)
-        print("Mapping list:", mapping_list)
+        print("Mapping list:", mapping_list['value'])
 
         speeds_by_source = self._speeds_by_source(speed_input)
         desired_by_id = self._desired_animation_by_id(mapping_list, speeds_by_source)
