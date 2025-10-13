@@ -122,6 +122,7 @@ class Controller_StoryMode(ModelConstructor):
         -------
         list of connections
         """
+        print("physical connections: ", physical_connections)
         connections = []
         ids = []
         for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
