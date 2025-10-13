@@ -259,12 +259,14 @@ class LED_connection(ModelConstructor):
         """
         desired = {}
         for item in mapping_list:
+            
             if not isinstance(item, dict):
                 continue
             src_model = str(item.get('from', '')).strip()
             led_id = str(item.get('id', '')).strip()
             if not led_id:
                 continue
+            print(f"Now checking item {item}, is it dict? {isinstance(item, dict)}, source model is {src_model}, led_id is {led_id}")
 
             # per-item direction override or base
             try:
@@ -304,8 +306,8 @@ class LED_connection(ModelConstructor):
             if current_id and current_id != "-1" and current_id in desired_by_id:
                 pct, dirn = desired_by_id[current_id]
             else:
-                # Unknown/not-mapped id: send a light probe (10%) to elicit ID
-                pct, dirn = (10.0, self.base_direction_param)
+                # Unknown/not-mapped id: send a 0 to elicit ID
+                pct, dirn = (0.0, self.base_direction_param)
 
             observed = self.send_led_animation(device, pct, dirn)
 
@@ -315,7 +317,7 @@ class LED_connection(ModelConstructor):
         # Report list of currently connected LED IDs
         reported = []
         for dev, state in self._dev_state.items():
-            curr = state.get("current_id", "-1")
+            curr = state("current_id", "-1")
             if curr and curr != "-1":
                 reported.append(curr)
 
