@@ -260,10 +260,11 @@ class LED_connection(ModelConstructor):
         print ("Mapping List", mapping_list)
         desired = {}
         for item in mapping_list:
+            print ( "The Item is", item, "and it is type", type(item))
             if not isinstance(item, dict):
                 continue
             src_model = str(item.get('from', '')).strip()
-            led_id = str(item.get('id', '')).strip()
+            led_id = str(item.get('connection_id', '')).strip()
             if not led_id:
                 continue
 
