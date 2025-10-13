@@ -9,10 +9,10 @@ models:
 - name: Load_house
   type: Dummy
   states:
-    state1: 0.5
-  # connect:
-  #   ip: 10.197.217.121
-  #   port: 5124
+    state1: 0.6
+  connect:
+    ip: 10.197.217.121
+    port: 5124
 - name: Load_house_LED
   type: LED_connection
   parameters:
