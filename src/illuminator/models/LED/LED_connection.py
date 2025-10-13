@@ -232,6 +232,8 @@ class LED_connection(ModelConstructor):
         if isinstance(speed_input, dict):
             sources = speed_input.get('sources', [])
             values = speed_input.get('value', [])
+            if not isinstance(values, list):
+                values = [values]
             try:
                 n = min(len(sources), len(values))
                 for i in range(n):
