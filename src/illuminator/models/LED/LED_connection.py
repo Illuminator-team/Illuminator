@@ -292,7 +292,7 @@ class LED_connection(ModelConstructor):
         print ("Here are the unpacked inputs:", inputs)
 
         speed_input = inp.get('speed', {})
-        mapping_list = inp.get('mapping', [])['sources'] or []
+        mapping_list = inp.get('mapping', [])['value'] or []
 
         print("Speed input:", speed_input)
 
