@@ -264,13 +264,15 @@ class LED_connection(ModelConstructor):
             print ( "The Item is", item, "and it is type", type(item))
             if not isinstance(item, dict):
                 continue
-            src_model = str(item.get('from', '')).strip()
+
+            from_model = str(item.get('from', '')).strip().split('_LED')[0]
+            to_model = str(item.get('to', '')).strip().split('_LED')[0]
+
             led_id = str(item.get('connection_id', '')).strip()
             if not led_id:
                 continue
 
-            src_model = src_model.split('_LED')[0]  # find the base model name
-            print(f"Now checking item {item}, is it dict? {isinstance(item, dict)}, source model is {src_model}, led_id is {led_id}")
+            print(f"Now checking item {item}, is it dict? {isinstance(item, dict)}, from model is {from_model}, to model is {to_model}, led_id is {led_id}")
 
             # per-item direction override or base
             try:
@@ -279,7 +281,12 @@ class LED_connection(ModelConstructor):
                 item_dir = self.base_direction_param
 
             # get speed from the specific source model (fall back if missing)
-            raw_speed = speeds_by_source.get(src_model, speeds_by_source.get('__default__', 0.0))
+            # raw_speed = speeds_by_source.get(src_model, speeds_by_source.get('__default__', 0.0))
+            raw_speed = speeds_by_source.get(from_model, None)
+            if raw_speed is None:
+                raw_speed = speeds_by_source.get(to_model, speeds_by_source.get('__default__', 0.0))
+                item_dir = 1 - item_dir  # reverse direction if using "to" model speed
+
             pct, eff_dir = self.normalize_speed_and_direction(raw_speed, item_dir)
 
             desired[led_id] = (pct, eff_dir)
