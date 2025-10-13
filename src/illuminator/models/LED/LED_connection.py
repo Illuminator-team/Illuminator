@@ -257,6 +257,7 @@ class LED_connection(ModelConstructor):
 
         Returns: { "<id>": (percent_speed, direction) }
         """
+        print (mapping_list)
         desired = {}
         for item in mapping_list:
             if not isinstance(item, dict):
