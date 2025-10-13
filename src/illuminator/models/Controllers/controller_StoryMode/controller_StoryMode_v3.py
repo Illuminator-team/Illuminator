@@ -1,5 +1,5 @@
 from illuminator.builder import ModelConstructor
-import time.sleep as sleep
+from time import sleep
 
 def check_connected(model_name1, model_name2, connections, ids):
     for i, conn in enumerate(connections):
