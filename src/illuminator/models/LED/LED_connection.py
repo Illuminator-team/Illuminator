@@ -286,7 +286,7 @@ class LED_connection(ModelConstructor):
     # ---------- simulation step ----------
 
     def step(self, time: int, inputs: dict = None, max_advance: int = 900) -> int:
-        inp = self.unpack_inputs(inputs)
+        inp = self.unpack_inputs(inputs, return_sources=True)
         self.time = time
 
         print ("Here are the unpacked inputs:", inputs)
