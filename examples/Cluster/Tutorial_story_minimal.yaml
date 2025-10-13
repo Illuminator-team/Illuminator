@@ -112,7 +112,7 @@ models:
   type: LED_connection
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed:   # maximum speed for the LED connection (0-100%)
+    max_speed: 1  # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
