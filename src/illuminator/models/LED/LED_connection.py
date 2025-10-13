@@ -257,7 +257,7 @@ class LED_connection(ModelConstructor):
 
         Returns: { "<id>": (percent_speed, direction) }
         """
-        print (mapping_list)
+        print ("Mapping List", mapping_list)
         desired = {}
         for item in mapping_list:
             if not isinstance(item, dict):
@@ -287,6 +287,8 @@ class LED_connection(ModelConstructor):
     def step(self, time: int, inputs: dict = None, max_advance: int = 900) -> int:
         inp = self.unpack_inputs(inputs)
         self.time = time
+
+        print ("Here are the unpacked inputs:", inputs)
 
         speed_input = inp.get('speed', {})
         mapping_list = inp.get('mapping', []) or []
