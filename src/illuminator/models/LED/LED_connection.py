@@ -235,7 +235,7 @@ class LED_connection(ModelConstructor):
             try:
                 n = min(len(sources), len(values))
                 for i in range(n):
-                    src = str(sources[i])
+                    src = str(sources[i]).split('-.')[0]  # base model name
                     try:
                         val = float(values[i])
                     except Exception:
@@ -268,6 +268,7 @@ class LED_connection(ModelConstructor):
             if not led_id:
                 continue
 
+            src_model = src_model.split('_LED')[0]  # find the base model name
             print(f"Now checking item {item}, is it dict? {isinstance(item, dict)}, source model is {src_model}, led_id is {led_id}")
 
             # per-item direction override or base
