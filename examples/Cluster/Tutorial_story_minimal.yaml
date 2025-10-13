@@ -176,8 +176,8 @@ connections:
 # Grid Ext LED
 # - from: Wind1.state1
 #   to: Grid_Ext_LED.speed
-- from: Load_house.state1
-  to: Grid_Ext_LED.speed
+# - from: Load_house.state1
+#   to: Grid_Ext_LED.speed
 # - from: Load_EWI.state1
 #   to: Grid_Ext_LED.speed
 - from: Grid_Ext_LED.connections
