@@ -81,16 +81,16 @@ class Controller_StoryMode(ModelConstructor):
 
         story_phase = 0
 
-        is_connected1, conn_id1 = check_connected('EWI_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
-        is_connected2, conn_id2 = check_connected('house_LED-0.time-based_0', 'Ext_LED-0.time-based_0', connections, ids)
+        is_connected1, conn_id1 = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
+        is_connected2, conn_id2 = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         if is_connected1:
             print(f"EWI and Ext connected, id: {conn_id1}")
-            to_EWI_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'EWI_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
-            to_Ext_LED.append({'from': 'EWI_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
+            to_Ext_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
         
         if is_connected2:
-            to_house_LED.append({'from': 'Ext_LED-0.time-based_0', 'to': 'house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
-            to_Ext_LED.append({'from': 'house_LED-0.time-based_0', 'to': 'Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
+            to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
+            to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
             print(f"House and Ext connected, id: {conn_id2}")
         
         if is_connected1 and is_connected2:
@@ -99,7 +99,7 @@ class Controller_StoryMode(ModelConstructor):
             self.file_indeces['file_index_Load'] = 1
 
         self.set_states(self.file_indeces)
-        self.set_states({'EWI_LED_mapping': to_EWI_LED, 'Ext_LED_mapping': to_Ext_LED, 'house_LED_mapping': to_house_LED})
+        self.set_states({'Grid_EWI_LED_mapping': to_EWI_LED, 'Load_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED})
 
         sleep(1)  # simulate some calculation time
 
