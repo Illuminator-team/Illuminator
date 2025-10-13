@@ -2,105 +2,126 @@ scenario:
   name: "Tutorial story minimal" # in mosaik so called world
   start_time: '2012-06-21 07:45:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-21 18:00:00' # duration in seconds 
+  end_time: '2012-06-22 18:00:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
 - name: Load_house
   type: Dummy
   states:
-    state1: 0.15
+    state1: 0.0
+  connect:
+    ip: 10.197.217.121
+    port: 5122
 - name: house_LED
   type: LED_connection
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    max_speed: 1  # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
   states:
     connections: []
+  connect:
+    ip: 10.197.217.121
+    port: 5123
 
-- name: PV1
-  type: Dummy
-  states:
-    state1: 0
-- name: PV_LED
-  type: LED_connection
-  parameters:
-    min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
-    direction: 1  # direction of the LED connection (0=towards the white connector)
-  inputs:
-    speed: 0  # speed for the LED connection (0-100%)
-  states:
-    connections: []
+# - name: PV1
+#   type: Dummy
+#   states:
+#     state1: 0
+# - name: PV_LED
+#   type: LED_connection
+#   parameters:
+#     min_speed: 0  # minimum speed for the LED connection (0-100%)
+#     max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+#     direction: 1  # direction of the LED connection (0=towards the white connector)
+#   inputs:
+#     speed: 0  # speed for the LED connection (0-100%)
+#   states:
+#     connections: []
   
-- name: Wind1
-  type: Dummy
-  states:
-    state1: 0.1
-- name: Wind_LED
-  type: LED_connection
-  # connect:
-  #   ip: 10.89.147.122
-  #   port: 5124
-  parameters:
-    min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.2  # maximum speed for the LED connection (0-100%)
-    direction: 1  # direction of the LED connection (0=towards the white connector)
-  inputs:
-    speed: 0  # speed for the LED connection (0-100%)
-  states:
-    connections: []
+# - name: Wind1
+#   type: Dummy
+#   states:
+#     state1: 0.1
+# - name: Wind_LED
+#   type: LED_connection
+#   # connect:
+#   #   ip: 10.89.147.122
+#   #   port: 5124
+#   parameters:
+#     min_speed: 0  # minimum speed for the LED connection (0-100%)
+#     max_speed: 0.2  # maximum speed for the LED connection (0-100%)
+#     direction: 1  # direction of the LED connection (0=towards the white connector)
+#   inputs:
+#     speed: 0  # speed for the LED connection (0-100%)
+#   states:
+#     connections: []
 
-- name: Battery1
-  type: Dummy
-  states:
-    state1: 0
-- name: Bat_LED
-  type: LED_connection
-  # connect:
-  #   ip: 145.94.213.75
-  #   port: 5123
-  parameters:
-    min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.09  # maximum speed for the LED connection (0-100%)
-    direction: 0  # direction of the LED connection (0=towards the white connector)
-  inputs:
-    speed: 0  # speed for the LED connection (0-100%)
-  states:
-    connections: []
+# - name: Battery1
+#   type: Dummy
+#   states:
+#     state1: 0
+# - name: Bat_LED
+#   type: LED_connection
+#   # connect:
+#   #   ip: 145.94.213.75
+#   #   port: 5123
+#   parameters:
+#     min_speed: 0  # minimum speed for the LED connection (0-100%)
+#     max_speed: 0.09  # maximum speed for the LED connection (0-100%)
+#     direction: 0  # direction of the LED connection (0=towards the white connector)
+#   inputs:
+#     speed: 0  # speed for the LED connection (0-100%)
+#   states:
+#     connections: []
 
 - name: Load_EWI
   type: Dummy
   states:
-    state1: 0.45
+    state1: 0.99
+  # connect:
+  #   ip: 10.197.217.157
+  #   port: 5122
 - name: EWI_LED
   type: LED_connection
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    max_speed: 1  # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
   states:
     connections: []
+  # connect:
+  #   ip: 10.197.217.157
+  #   port: 5123
 
 - name: Grid_Ext
   type: Dummy
   states:
-    state1: 0
+    state1: 0.5
+  connect:
+    ip: 10.197.217.134
+    port: 5122
 - name: Ext_LED
   type: LED_connection
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
-    max_speed: 0.6  # maximum speed for the LED connection (0-100%)
+    max_speed:   # maximum speed for the LED connection (0-100%)
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
   states:
     connections: []
+  connect:
+    ip: 10.197.217.134
+    port: 5123
 
 
 - name: Controller_story
@@ -125,34 +146,34 @@ connections:
   to: Controller_story.physical_connections
 
 # PV panels
-- from: PV1.state1
-  to: PV_LED.speed
-- from: PV_LED.connections
-  to: Controller_story.physical_connections
+# - from: PV1.state1
+#   to: PV_LED.speed
+# - from: PV_LED.connections
+#   to: Controller_story.physical_connections
 
 # Wind turbine
-- from: Wind1.state1
-  to: Wind_LED.speed
-- from: Wind_LED.connections
-  to: Controller_story.physical_connections
+# - from: Wind1.state1
+#   to: Wind_LED.speed
+# - from: Wind_LED.connections
+#   to: Controller_story.physical_connections
 
 # Battery
-- from: Battery1.state1
-  to: Bat_LED.speed
-- from: Bat_LED.connections
-  to: Controller_story.physical_connections
+# - from: Battery1.state1
+#   to: Bat_LED.speed
+# - from: Bat_LED.connections
+#   to: Controller_story.physical_connections
 
 # EWI LED
-- from: PV1.state1
-  to: EWI_LED.speed
+# - from: PV1.state1
+#   to: EWI_LED.speed
 # - from: Battery1.state1
 #   to: EWI_LED.speed
 - from: EWI_LED.connections
   to: Controller_story.physical_connections
 
 # Grid Ext LED
-- from: Wind1.state1
-  to: Ext_LED.speed
+# - from: Wind1.state1
+#   to: Ext_LED.speed
 - from: Load_house.state1
   to: Ext_LED.speed
 - from: Load_EWI.state1
@@ -161,15 +182,15 @@ connections:
   to: Controller_story.physical_connections
 
 # Controller Story
-# - from: Controller_story.EWI_LED_mapping
-#   to: EWI_LED.mapping
-#   time_shifted: True
-# - from: Controller_story.Ext_LED_mapping
-#   to: Ext_LED.mapping
-#   time_shifted: True
-# - from: Controller_story.house_LED_mapping
-#   to: house_LED.mapping
-#   time_shifted: True
+- from: Controller_story.EWI_LED_mapping
+  to: EWI_LED.mapping
+  time_shifted: True
+- from: Controller_story.Ext_LED_mapping
+  to: Ext_LED.mapping
+  time_shifted: True
+- from: Controller_story.house_LED_mapping
+  to: house_LED.mapping
+  time_shifted: True
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
