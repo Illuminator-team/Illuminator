@@ -1,4 +1,5 @@
 from illuminator.builder import ModelConstructor
+import time
 
 def check_connected(model_name1, model_name2, connections, ids):
     for i, conn in enumerate(connections):
@@ -94,6 +95,8 @@ class Controller_StoryMode(ModelConstructor):
 
         self.set_states(self.file_indeces)
         self.set_states({'EWI_LED_mapping': to_EWI_LED, 'Ext_LED_mapping': to_Ext_LED, 'house_LED_mapping': to_house_LED})
+
+        time.sleep(1)  # simulate some calculation time
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
