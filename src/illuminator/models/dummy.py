@@ -63,7 +63,7 @@ class Dummy(ModelConstructor):
         result = super().init(*args, **kwargs)
         # self.out1 = self.parameters.get('out1', 0)
         # self.out2 = self.parameters.get('out2', 0)
-        self.state1 = self.get_state('state1')
+        self.state1 = self.parameters.get('param1', 0)
         print("Initialized Dummy with state1:", self.state1)
         # self.state2 = self.states.get('state2', 0)
         return result
@@ -93,8 +93,8 @@ class Dummy(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs)
 
-        # if 'in1' in input_data:
-        #     self.state1 = input_data['in1']
+        if 'in1' in input_data:
+            self.state1 = input_data['in1']
 
         
         # self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time

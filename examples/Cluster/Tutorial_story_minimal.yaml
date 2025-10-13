@@ -8,6 +8,8 @@ scenario:
 models: 
 - name: Load_house
   type: Dummy
+  parameters:
+    param1: 0.6
   states:
     state1: 0.6
   connect:
@@ -81,6 +83,8 @@ models:
 
 - name: Load_EWI
   type: Dummy
+  parameters:
+    param1: 0.99
   states:
     state1: 0.99
   # connect:
@@ -103,6 +107,8 @@ models:
 
 - name: Grid_Ext
   type: Dummy
+  parameters:
+    param1: 0.5
   states:
     state1: 0.5
   connect:
