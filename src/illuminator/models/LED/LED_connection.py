@@ -235,7 +235,7 @@ class LED_connection(ModelConstructor):
             try:
                 n = min(len(sources), len(values))
                 for i in range(n):
-                    src = str(sources[i]).split('-.')[0]  # base model name
+                    src = str(sources[i]).split('-0.')[0]  # base model name
                     print(f"base source model name: {src}")
                     try:
                         val = float(values[i])
