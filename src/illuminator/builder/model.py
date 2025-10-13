@@ -234,7 +234,7 @@ class ModelConstructor(ABC, Simulator):
             Dictionary containing the requested output values for each entity
         """
         data = {}
-        print(f"Here are your outputs: {outputs}")
+        # print(f"Here are your outputs: {outputs}")
         # for eid, attrs in self._model.outputs.items():
         for eid, attrs in outputs.items():
             # print(f"eid: {eid}, attrs:{attrs}")
@@ -242,6 +242,11 @@ class ModelConstructor(ABC, Simulator):
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
+                print(f"attr: {attr}")
+                print(f"model_instance: {model_instance}")
+                print(f"model_instance.outputs: {model_instance.outputs}")
+                print(f"model_instance.states: {model_instance.states}")
+                
                 if attr in model_instance.outputs:
                     data[eid][attr] = model_instance.outputs[attr]
                 elif attr in model_instance.states:
