@@ -264,7 +264,7 @@ class LED_connection(ModelConstructor):
             if not isinstance(item, dict):
                 continue
             src_model = str(item.get('from', '')).strip()
-            led_id = str(item.get('id', '')).strip()
+            led_id = str(item.get('connection_id', '')).strip()
             if not led_id:
                 continue
 
