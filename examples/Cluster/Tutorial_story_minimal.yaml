@@ -47,6 +47,7 @@ models:
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
   states:
     connections: []
   connect:
