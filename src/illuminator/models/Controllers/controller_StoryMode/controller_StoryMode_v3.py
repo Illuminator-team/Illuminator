@@ -112,7 +112,7 @@ class Controller_StoryMode(ModelConstructor):
             to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': 1})
             to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': -1})
             print(f"PV and Ext connected, id: {conn_id3}")
-            if sine == 1:
+            if self.sine == 1:
                 self.file_indeces['file_index_PV'] = 0.6
             else:
                 self.file_indeces['file_index_PV'] = 0.1
@@ -137,11 +137,13 @@ class Controller_StoryMode(ModelConstructor):
         if is_connected1 and is_connected2 and is_connected3:
             story_phase = 2
             print("Phase 2 connections")
-            self.file_indeces['file_index_Load_EWI'] = 0.6
+            if self.sine == 1:
+                self.file_indeces['file_index_Load_EWI'] = 0.6
         if is_connected1 and is_connected2 and is_connected3 and is_connected4:
             story_phase = 3
             print("Phase 3 connections")
-            self.file_indeces['file_index_Load_EWI'] = 0.3
+            if self.sine == 1:
+                self.file_indeces['file_index_Load_EWI'] = 0.3
 
 
         self.set_states(self.file_indeces)
