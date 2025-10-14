@@ -79,12 +79,14 @@ class Controller_StoryMode(ModelConstructor):
         to_Ext_LED = []
         to_house_LED = []
         to_PV_LED = []
+        to_Battery_LED = []
 
         story_phase = 0
 
         is_connected1, conn_id1 = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         is_connected2, conn_id2 = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         is_connected3, conn_id3 = check_connected('PV_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
+        is_connected4, conn_id4 = check_connected('Battery_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
 
         if is_connected1:
             print(f"EWI and Ext connected, id: {conn_id1}")
@@ -110,6 +112,14 @@ class Controller_StoryMode(ModelConstructor):
         else:
             self.file_indeces['file_index_PV'] = 0
         
+        if is_connected4:
+            to_Battery_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Battery_LED-0.time-based_0', 'connection_id': conn_id4, 'direction': 1})
+            to_EWI_LED.append({'from': 'Battery_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id4, 'direction': -1})
+            print(f"Battery and Ext connected, id: {conn_id4}")
+            self.file_indeces['file_index_Battery'] = 0.6
+        else:
+            self.file_indeces['file_index_Battery'] = 0
+        
         if is_connected1 and is_connected2:
             story_phase = 1
             print("Phase 1 connections")
@@ -117,10 +127,14 @@ class Controller_StoryMode(ModelConstructor):
             story_phase = 2
             print("Phase 2 connections")
             self.file_indeces['file_index_Load_EWI'] = 0.6
+        if is_connected1 and is_connected2 and is_connected3 and is_connected4:
+            story_phase = 3
+            print("Phase 3 connections")
+            self.file_indeces['file_index_Load_EWI'] = 0.3
 
 
         self.set_states(self.file_indeces)
-        self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED, 'PV_LED_mapping': to_PV_LED})
+        self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED, 'PV_LED_mapping': to_PV_LED, 'Battery_LED_mapping': to_Battery_LED})
 
         sleep(0.5)  # simulate some calculation time
 

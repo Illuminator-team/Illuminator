@@ -73,23 +73,29 @@ models:
 #   states:
 #     connections: []
 
-# - name: Battery1
-#   type: Dummy
-#   states:
-#     state1: 0
-# - name: Bat_LED
-#   type: LED_connection
-#   # connect:
-#   #   ip: 145.94.213.75
-#   #   port: 5123
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.09  # maximum speed for the LED connection (0-100%)
-#     direction: 0  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
-#   states:
-#     connections: []
+- name: Battery
+  type: Dummy
+  inputs:
+    in1: 0.6
+  states:
+    state1: 0.6
+  connect:
+    ip: 10.197.217.124
+    port: 5122
+- name: Battery_LED
+  type: LED_connection
+  connect:
+    ip: 10.197.217.124
+    port: 5123
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 1.0  # maximum speed for the LED connection (0-100%)
+    direction: 0  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
+  states:
+    connections: []
 
 - name: Load_EWI
   type: Dummy
@@ -152,6 +158,7 @@ models:
     Grid_Ext_LED_mapping: []
     Load_house_LED_mapping: []
     PV_LED_mapping: []
+    Battery_LED_mapping: []
 
 
 connections:
@@ -177,16 +184,16 @@ connections:
 #   to: Controller_story.physical_connections
 
 # Battery
-# - from: Battery1.state1
-#   to: Bat_LED.speed
-# - from: Bat_LED.connections
-#   to: Controller_story.physical_connections
+- from: Battery.state1
+  to: Battery_LED.speed
+- from: Battery_LED.connections
+  to: Controller_story.physical_connections
 
 # EWI LED
 - from: PV.state1
   to: Load_EWI_LED.speed
-# - from: Battery1.state1
-#   to: Load_EWI_LED.speed
+- from: Battery.state1
+  to: Load_EWI_LED.speed
 - from: Load_EWI.state1
   to: Load_EWI_LED.speed
 - from: Load_EWI_LED.connections
@@ -215,6 +222,9 @@ connections:
 - from: Controller_story.PV_LED_mapping
   to: PV_LED.mapping
   time_shifted: True
+- from: Controller_story.Battery_LED_mapping
+  to: Battery_LED.mapping
+  time_shifted: True
 
 # file indeces
 - from: Controller_story.file_index_Load_EWI
@@ -225,6 +235,9 @@ connections:
   time_shifted: True
 - from: Controller_story.file_index_PV
   to: PV.in1
+  time_shifted: True
+- from: Controller_story.file_index_Battery
+  to: Battery.in1
   time_shifted: True
 
 monitor:
