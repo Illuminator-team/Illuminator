@@ -154,6 +154,7 @@ models:
     file_index_Load_EWI: 0  # Index to select which load file to read from in the CSV model
     file_index_Load_house: 0  # Index to select which load file to read from in the CSV model
     file_index_PV: 0  # Index to select which load file to read from in the CSV model
+    file_index_Battery: 0  # Index to select which load file to read from in the CSV model
     Load_EWI_LED_mapping: []
     Grid_Ext_LED_mapping: []
     Load_house_LED_mapping: []
