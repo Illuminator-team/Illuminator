@@ -30,20 +30,22 @@ models:
     ip: 10.197.217.121
     port: 5123
 
-# - name: PV1
-#   type: Dummy
-#   states:
-#     state1: 0
-# - name: PV_LED
-#   type: LED_connection
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.6  # maximum speed for the LED connection (0-100%)
-#     direction: 1  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
-#   states:
-#     connections: []
+- name: PV
+  type: Dummy
+  inputs:
+    in1: 0.3
+  states:
+    state1: 0.3
+- name: PV_LED
+  type: LED_connection
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 1.0  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
   
 # - name: Wind1
 #   type: Dummy
@@ -153,10 +155,10 @@ connections:
   to: Controller_story.physical_connections
 
 # PV panels
-# - from: PV1.state1
-#   to: PV_LED.speed
-# - from: PV_LED.connections
-#   to: Controller_story.physical_connections
+- from: PV.state1
+  to: PV_LED.speed
+- from: PV_LED.connections
+  to: Controller_story.physical_connections
 
 # Wind turbine
 # - from: Wind1.state1
@@ -171,8 +173,8 @@ connections:
 #   to: Controller_story.physical_connections
 
 # EWI LED
-# - from: PV1.state1
-#   to: Load_EWI_LED.speed
+- from: PV.state1
+  to: Load_EWI_LED.speed
 # - from: Battery1.state1
 #   to: Load_EWI_LED.speed
 - from: Load_EWI.state1
@@ -200,6 +202,9 @@ connections:
 - from: Controller_story.Load_house_LED_mapping
   to: Load_house_LED.mapping
   time_shifted: True
+- from: Controller_story.PV_LED_mapping
+  to: PV_LED.mapping
+  time_shifted: True
 
 # file indeces
 - from: Controller_story.file_index_Load_EWI
@@ -207,6 +212,9 @@ connections:
   time_shifted: True
 - from: Controller_story.file_index_Load_house
   to: Load_house.in1
+  time_shifted: True
+- from: Controller_story.file_index_PV
+  to: PV.in1
   time_shifted: True
 
 monitor:
