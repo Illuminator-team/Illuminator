@@ -103,8 +103,8 @@ class Controller_StoryMode(ModelConstructor):
             self.file_indeces['file_index_Load_house'] = 0
         
         if is_connected3:
-            to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': 1})
-            to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': -1})
+            to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': -1})
+            to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': 1})
             print(f"PV and Ext connected, id: {conn_id3}")
             self.file_indeces['file_index_PV'] = 0.6
         else:
