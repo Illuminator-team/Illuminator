@@ -101,8 +101,8 @@ class Controller_StoryMode(ModelConstructor):
             self.file_indeces['file_index_Load_EWI'] = 0
         
         if is_connected2:
-            to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
-            to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
+            to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
+            to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
             print(f"House and Ext connected, id: {conn_id2}")
             self.file_indeces['file_index_Load_house'] = 0.6
         else:
