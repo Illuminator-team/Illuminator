@@ -66,7 +66,7 @@ class LED_connection(ModelConstructor):
         self.min_speed = float(p.get('min_speed', 0.0))
         self.max_speed = float(p.get('max_speed', 0.5))
         try:
-            self.base_direction_param = int(p.get('direction', 0)) & 1
+            self.base_direction_param = int(p.get('direction', 0))
         except Exception:
             self.base_direction_param = 0
 
@@ -189,7 +189,7 @@ class LED_connection(ModelConstructor):
             print(f"[{device}] pre-read error: {e}")
 
         delay, colour = self.decide_colour_and_delay(percent_speed)
-        payload = f"{delay}{colour}{(int(direction) & 1)}\n"
+        payload = f"{delay}{colour}{(int(direction))}\n"
         try:
             print(f"[{device}] send '{payload.strip()}' (pct={percent_speed:.1f} dir={direction})")
             ser.write(payload.encode('utf-8'))
@@ -278,7 +278,7 @@ class LED_connection(ModelConstructor):
 
             # per-item direction override or base
             try:
-                item_dir = int(item.get('direction', self.base_direction_param)) & 1
+                item_dir = int(item.get('direction', self.base_direction_param))
             except Exception:
                 item_dir = self.base_direction_param
 
