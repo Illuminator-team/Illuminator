@@ -72,7 +72,7 @@ class Controller_StoryMode(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs, return_sources=True)  # make input data easily accessible
         self.time = time
-        if time%10 == 0:
+        if time%5 == 0:
             self.sine = 1 - self.sine
             
 
