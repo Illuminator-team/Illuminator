@@ -204,8 +204,10 @@ connections:
 # file indeces
 - from: Controller_story.file_index_Load_EWI
   to: Load_EWI.in1
+  time_shifted: True
 - from: Controller_story.file_index_Load_house
   to: Load_house.in1
+  time_shifted: True
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
