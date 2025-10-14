@@ -210,5 +210,6 @@ connections:
 monitor:
   file: './out_Tutorial_cluster_story.csv'
   items:
-  - Grid_Ext_LED.connections
+  # - Grid_Ext_LED.connections
+  - Load_house.state1
     #- Controller1.flow2bState
