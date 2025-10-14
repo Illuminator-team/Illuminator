@@ -44,7 +44,7 @@ class LED_connection(ModelConstructor):
     # EXACT same parameters as before
     parameters = {
         'min_speed': 0.0,
-        'max_speed': 0.5,
+        'max_speed': 1.0,
         'direction': 0,
     }
 
