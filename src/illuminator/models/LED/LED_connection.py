@@ -287,7 +287,7 @@ class LED_connection(ModelConstructor):
             raw_speed = speeds_by_source.get(from_model, None)
             if raw_speed is None:
                 raw_speed = speeds_by_source.get(to_model, speeds_by_source.get('__default__', 0.0))
-                item_dir = 1 - item_dir  # reverse direction if using "to" model speed
+                #item_dir = 1 - item_dir  # reverse direction if using "to" model speed
 
             pct, eff_dir = self.normalize_speed_and_direction(raw_speed, item_dir)
 
