@@ -84,7 +84,7 @@ class Controller_StoryMode(ModelConstructor):
 
         is_connected1, conn_id1 = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         is_connected2, conn_id2 = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
-        is_connected3, conn_id3 = check_connected('PV_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
+        is_connected3, conn_id3 = check_connected('PV_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
 
         if is_connected1:
             print(f"EWI and Ext connected, id: {conn_id1}")
