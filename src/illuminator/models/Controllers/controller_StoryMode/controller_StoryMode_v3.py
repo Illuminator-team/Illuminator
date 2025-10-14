@@ -116,6 +116,7 @@ class Controller_StoryMode(ModelConstructor):
         if is_connected1 and is_connected2 and is_connected3:
             story_phase = 2
             print("Phase 2 connections")
+            self.file_indeces['file_index_Load_EWI'] = 0.6
 
 
         self.set_states(self.file_indeces)
