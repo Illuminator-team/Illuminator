@@ -62,7 +62,7 @@ class Controller_StoryMode(ModelConstructor):
         kwargs
         """
         super().__init__(**kwargs)
-        self.file_indeces = {'file_index_Load': 0}
+        self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0}
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -87,16 +87,22 @@ class Controller_StoryMode(ModelConstructor):
             print(f"EWI and Ext connected, id: {conn_id1}")
             to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
             to_Ext_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
+            self.file_indeces['file_index_Load_EWI'] = 0.9
+        else:
+            self.file_indeces['file_index_Load_EWI'] = 0
         
         if is_connected2:
             to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
             to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
             print(f"House and Ext connected, id: {conn_id2}")
+            self.file_indeces['file_index_Load_house'] = 0.6
+        else:
+            self.file_indeces['file_index_Load_house'] = 0
         
         if is_connected1 and is_connected2:
             story_phase = 1
             print("Phase 1 connections")
-            self.file_indeces['file_index_Load'] = 1
+
 
         self.set_states(self.file_indeces)
         self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED})

@@ -8,8 +8,8 @@ scenario:
 models: 
 - name: Load_house
   type: Dummy
-  parameters:
-    param1: 0.6
+  inputs:
+    in1: 0.6
   states:
     state1: 0.6
   connect:
@@ -83,8 +83,8 @@ models:
 
 - name: Load_EWI
   type: Dummy
-  parameters:
-    param1: 0.99
+  inputs:
+    in1: 0
   states:
     state1: 0.99
   # connect:
@@ -135,7 +135,8 @@ models:
   inputs:
     physical_connections: []  # List of physical connections with ID's of the LED strips
   states:
-    file_index_Load: 0  # Index to select which load file to read from in the CSV model
+    file_index_Load_EWI: 0  # Index to select which load file to read from in the CSV model
+    file_index_Load_house: 0  # Index to select which load file to read from in the CSV model
     Load_EWI_LED_mapping: []
     Grid_Ext_LED_mapping: []
     Load_house_LED_mapping: []
@@ -199,6 +200,12 @@ connections:
 - from: Controller_story.Load_house_LED_mapping
   to: Load_house_LED.mapping
   time_shifted: True
+
+# file indeces
+- from: Controller_story.file_index_Load_EWI
+  to: Load_EWI.in1
+- from: Controller_story.file_index_Load_house
+  to: Load_house.in1
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
