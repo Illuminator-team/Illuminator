@@ -107,7 +107,7 @@ class Controller_StoryMode(ModelConstructor):
         self.set_states(self.file_indeces)
         self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED})
 
-        sleep(1)  # simulate some calculation time
+        sleep(0.5)  # simulate some calculation time
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size

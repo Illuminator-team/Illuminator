@@ -2,7 +2,7 @@ scenario:
   name: "Tutorial story minimal" # in mosaik so called world
   start_time: '2012-06-21 07:45:00' # ISO 8601 start time of the simulation
   #end_time: '2012-01-01 01:00:00' # duration in seconds 
-  end_time: '2012-06-22 18:00:00' # duration in seconds 
+  end_time: '2012-06-23 18:00:00' # duration in seconds 
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 
 models: 
