@@ -5,7 +5,7 @@ name: Check Compatibility with Examples in educational_material Repository
 # b) when a new pull request is opened to merge a branch into main or develop
 on:
   push:
-    branches: [ "main", "dev", "211-example-compatibility-workflow"]
+    branches: [ "main", "dev"]
   pull_request:
     branches: [ "main", "dev"]
 
