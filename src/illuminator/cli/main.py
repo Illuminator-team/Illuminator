@@ -61,6 +61,5 @@ if __name__ == "__main__":
 
     # package_spec = importlib.util.find_spec("illuminator.models.Battery")
     # print(package_spec.origin)
-
-
-    app()
+    scenario_run_parallel("examples/Tutorial4/Tutorial4.yaml") # Can be removed. its just to run the code programatically.
+    # app()
