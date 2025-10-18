@@ -7,6 +7,7 @@ from typing import List, Dict, Any
 import itertools
 import os
 import csv
+import copy
 import psutil # Used for debugging! Remove before PR
 
 def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False):
@@ -265,9 +266,11 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
     Returns:
         dict: A new scenario dictionary with injected parameters/states and updated monitor file name.
     """
+    new_config = copy.deepcopy(base_config)
+
     # Remove align_parameters from base_config
-    if 'align_parameters' in base_config['scenario']:
-        base_config['scenario'].pop('align_parameters')
+    if 'align_parameters' in new_config['scenario']:
+        new_config['scenario'].pop('align_parameters')
 
     # Add item_to_add to the correct model
     for key, value in item_to_add.items():
@@ -277,7 +280,7 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
 
         # Find the correct model
         model_found = False
-        for model in base_config['models']:
+        for model in new_config['models']:
             if model['name'] == model_name:
                 model_found = True
                 # Add value under the correct section
@@ -294,11 +297,11 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
     simID = item_to_add.get('simulationID')
     if simID is None:
         raise ValueError(f"simulationID is missing in combination: {item_to_add}")
-    outputfile = base_config.get("monitor", {}).get("file")
+    outputfile = new_config.get("monitor", {}).get("file")
     of_base, of_ext = os.path.splitext(outputfile)
-    base_config["monitor"]["file"] = f"{of_base}_{simID}{of_ext}"
+    new_config["monitor"]["file"] = f"{of_base}_{simID}{of_ext}"
         
-    return base_config
+    return new_config
 
 
 def _write_lookup_table(simulation_list: List[dict], filepath: str):
