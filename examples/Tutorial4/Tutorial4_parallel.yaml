@@ -41,11 +41,23 @@ models:
     m_efficiency_stc: 0.198
     G_NOCT: 800  # W/m2
     P_STC: 250  # W
-    peak_power: 600  # W
-    m_tilt: 14  # degrees
-    m_az: 180  # degrees
-    cap: 500  # W
-    output_type: 'power'
+    m_az: 180  # degrees # string
+    cap: 500  # W # list
+    output_type: 'power' # String
+  multi_parameters:
+    # Incorrect examples:
+    # wrong: 'This is not a correct eval string' # The string has the incorrect format 
+    # "" : "this will throw out an error" # The name of the key is missing
+    # : [1,2,3,4,5] # Even though the value is correct, the name of the key is still missing
+    # peak_power0: {} # The datatype of the value is incorrect. It only accepts list or string
+    # example : "range(100, 150)" # Although the step size has a default value of 1, it must be explicitly declared. This is to avoid confusing the user.
+
+    # Correct examples:
+    # peak_power3: "range(0, 600, 100)"
+    # peak_power2: range(0, 6, 5)
+    # peak_power1: [1,2,3,4,5,6,7,8,9]
+    peak_power: "range(100, 600, 100)"
+    m_tilt: [10, 14, 20, 8, 120, 5]
   inputs: 
     G_Gh: null 
     G_Dh: null
