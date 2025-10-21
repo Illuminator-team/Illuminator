@@ -9,6 +9,7 @@ import os
 import csv
 import copy
 import psutil # Used for debugging! Remove before PR
+from illuminator.schema.simulation import load_config_file
 
 def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False):
     """
@@ -64,9 +65,7 @@ def run_parallel_file(scenario_file: str):
     if rank == 0:
         print("Rank Zero: comm_size is ", comm_size)
 
-    # Check for valid syntax and multi paramter
-    # Unfold range
-
+    _ = load_config_file(scenario_file) # Check if yaml has correct the correct format.
     # Load base configuration and remove parallel items
     base_config, removed_items = _remove_scenario_parallel_items(scenario_file)
     
@@ -136,24 +135,31 @@ def _remove_scenario_parallel_items(yaml_file_path: str):
         model_name = model.get('name')
 
         # Remove parameters that are lists or sets
-        if 'parameters' in model:
+        if 'multi_parameters' in model:
             to_remove = []
-            for key, value in model['parameters'].items():
-                if isinstance(value, (list, set)):
-                    to_remove.append(key)
+            for key, value in model['multi_parameters'].items():
+                if isinstance(value, (str)):
+                    # For cases "range(1, 10, 1)" -> range() -> list
+                    try:
+                        model['multi_parameters'][key] = list(eval(model['multi_parameters'][key]))
+                    except:
+                        return f"Error in evaluating {key}:{value} pair. Example syntax for multi_parameters range: 'param1':'range(1, 10, 2)'"
+                to_remove.append(key)
             for key in to_remove:
-                removed_items.append((model_name, 'parameter', key, model['parameters'][key]))
-                del model['parameters'][key]
+                removed_items.append((model_name, 'parameter', key, model['multi_parameters'][key]))
+                # del model['multi_parameters'][key] # We are removing the entire section.
+            
+            del model['multi_parameters']
 
-        # Remove states that are lists or ranges
-        if 'states' in model:
-            to_remove = []
-            for key, value in model['states'].items():
-                if isinstance(value, (list, set)):
-                    to_remove.append(key)
-            for key in to_remove:
-                removed_items.append((model_name, 'state', key, model['states'][key]))
-                del model['states'][key]
+        # Remove states that are lists or ranges # Also no longer needed since we are focusing on multi-parameters
+        # if 'states' in model:
+        #     to_remove = []
+        #     for key, value in model['states'].items():
+        #         if isinstance(value, (list, set)):
+        #             to_remove.append(key)
+        #     for key in to_remove:
+        #         removed_items.append((model_name, 'state', key, model['states'][key]))
+        #         del model['states'][key]
                 
     return yaml_data, removed_items
 
