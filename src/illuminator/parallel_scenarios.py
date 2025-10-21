@@ -22,7 +22,7 @@ def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False)
     ----------
     simlist : List[Simulation]
         A list of pre-configured Simulation objects to run. Each simulation should 
-        contain exactly one scenario (no multi-parameters/states). Each simulation
+        contain exactly one scenario (no multi-parameters). Each simulation
         must have a unique output file defined to prevent overwriting results.
 
     create_scenario_files : bool, optional
@@ -65,7 +65,9 @@ def run_parallel_file(scenario_file: str):
     if rank == 0:
         print("Rank Zero: comm_size is ", comm_size)
 
-    _ = load_config_file(scenario_file) # Check if yaml has correct the correct format.
+    # Check if yaml has correct the correct format and syntax
+    _ = load_config_file(scenario_file)
+    
     # Load base configuration and remove parallel items
     base_config, removed_items = _remove_scenario_parallel_items(scenario_file)
     
@@ -113,16 +115,16 @@ def run_parallel_file(scenario_file: str):
 
 def _remove_scenario_parallel_items(yaml_file_path: str):
     """
-    Reads a YAML file, removes parameters or states in models whose values
-    are lists or sets, and returns the cleaned YAML data and removed items.
+    Reads a YAML file, removes multi_parameters sections in models.
+    Returns the cleaned YAML data and removed items.
 
     Args:
         yaml_file_path (str): Path to the YAML file.
 
     Returns:
-        cleaned_data (dict): YAML data with list/set parameters/states removed.
+        cleaned_data (dict): YAML data without multi_parameters.
         removed_items (list of tuples): List of removed items in format 
-            (model_name, 'parameter'/'state', key, value)
+            (model_name, 'parameter', key, value)
     """
     # Load YAML
     yaml_parser = YAML()
@@ -147,19 +149,9 @@ def _remove_scenario_parallel_items(yaml_file_path: str):
                 to_remove.append(key)
             for key in to_remove:
                 removed_items.append((model_name, 'parameter', key, model['multi_parameters'][key]))
-                # del model['multi_parameters'][key] # We are removing the entire section.
             
+            # Remove section from model
             del model['multi_parameters']
-
-        # Remove states that are lists or ranges # Also no longer needed since we are focusing on multi-parameters
-        # if 'states' in model:
-        #     to_remove = []
-        #     for key, value in model['states'].items():
-        #         if isinstance(value, (list, set)):
-        #             to_remove.append(key)
-        #     for key in to_remove:
-        #         removed_items.append((model_name, 'state', key, model['states'][key]))
-        #         del model['states'][key]
                 
     return yaml_data, removed_items
 
@@ -171,7 +163,7 @@ def _generate_combinations_from_removed_items(removed_items, align = False):
 
     This function is meant to be used with the `removed_items` list returned
     by `remove_scenario_parallel_items`, where each removed item represents a
-    parameter or state whose value was a list in the scenaio YAML file.
+    multi_parameter in the scenaio YAML file.
 
     - If align=False (default), all combinations are generated using the
       Cartesian product of the value lists.
@@ -181,14 +173,14 @@ def _generate_combinations_from_removed_items(removed_items, align = False):
 
     Args:
         removed_items (list of tuples): 
-            Each tuple is (model_name, 'parameter' or 'state', key, list_of_values)
+            Each tuple is (model_name, 'parameter', key, list_of_values)
         align (bool, optional): If True, generate only aligned combinations.
             Defaults to False.
 
     Returns:
         List[dict]: Each dictionary represents one full combination.
-                    Keys are 3-tuples: (model_name, type, key), values are selected item.
-                    Each dict also has 'sim_number' counting from 1.
+                    Keys are 3-tuples: (model_name, 'paramter', key), values are selected item.
+                    Each dict also has 'simulationID' counting from 1.
     Raises:
         ValueError: If `align=True` but the value lists are not all the same length.
     """
@@ -257,7 +249,7 @@ def _get_list_subset(simulation_list: List[Any], rank: int, comm_size: int) -> L
 
 def _generate_scenario(base_config: dict, item_to_add: dict):
     """
-    Generates a complete scenario configuration by injecting a single combination of parameters/states
+    Generates a complete scenario configuration by injecting a single combination of parameters
     into the base configuration.
 
     It also updates the output file name to include the simulation ID.
@@ -266,11 +258,11 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
         base_config (dict): The base YAML configuration (as parsed from the scenario file).
         item_to_add (dict): A dictionary with:
             - 'simulationID' (int): Unique identifier for the simulation.
-            - (model_name, 'parameter' or 'state', key): Tuple keys indicating where to inject the value
+            - (model_name, 'parameter', key): Tuple keys indicating where to inject the value
               into the corresponding model section.
 
     Returns:
-        dict: A new scenario dictionary with injected parameters/states and updated monitor file name.
+        dict: A new scenario dictionary with injected parameters and updated monitor file name.
     """
     new_config = copy.deepcopy(base_config)
 
@@ -282,18 +274,14 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
     for key, value in item_to_add.items():
         if key == 'simulationID':
             continue
-        model_name, section, param_or_state = key
+        model_name, section, param = key
 
         # Find the correct model
         model_found = False
         for model in new_config['models']:
             if model['name'] == model_name:
                 model_found = True
-                # Add value under the correct section
-                if section == 'parameter':
-                    model.setdefault('parameters', {})[param_or_state] = value
-                elif section == 'state':
-                    model.setdefault('states', {})[param_or_state] = value
+                model.setdefault('parameters', {})[param] = value
                 break  # Model found, no need to continue
 
         if not model_found:
@@ -312,7 +300,7 @@ def _generate_scenario(base_config: dict, item_to_add: dict):
 
 def _write_lookup_table(simulation_list: List[dict], filepath: str):
     """
-    Writes a CSV file mapping each simulation ID to the combination of parameter/state values used.
+    Writes a CSV file mapping each simulation ID to the combination of parameter values used.
 
     Args:
         simulation_list (List[dict]): List of simulation configurations, each with a 'simulationID' and combination values.
