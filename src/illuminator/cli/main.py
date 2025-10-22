@@ -10,7 +10,6 @@ from pathlib import Path
 # from illuminator.cluster import build_runshfile 
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
-from illuminator.parallel_scenarios import run_parallel_file
 
 
 APP_NAME = "illuminator"
@@ -36,6 +35,8 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
 @scenario_app.command("run_parallel")
 def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path to base scenario configuration file.")] = "config.yaml"):
     "Runs a simulation scenario using a YAML file with multi_parameters and multi_states."
+    # We put the import here to avoid dependency on MPI system installation when using the other cli functions
+    from illuminator.parallel_scenarios import run_parallel_file
     run_parallel_file(config_file)
     
 
