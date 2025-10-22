@@ -130,6 +130,8 @@ schema = Schema(  # a mapping of mappings
                         Optional("time_resolution"): And(int, lambda n: n > 0,
                                                   error="time resolution must be a "
                                                   "positive integer"),
+                        Optional("align_parameters"): And(bool, lambda x: x in [True, False],
+                                                    error="align_parameters must be True or False"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
