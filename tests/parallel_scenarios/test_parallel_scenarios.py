@@ -1,7 +1,7 @@
-import pytest
-from ruamel.yaml import YAML
 from illuminator import parallel_scenarios
 from illuminator.engine import Simulation
+import pytest
+from ruamel.yaml import YAML
 import csv
 import copy
 from pathlib import Path

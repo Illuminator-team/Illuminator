@@ -1,15 +1,12 @@
 from illuminator.engine import Simulation
-
+from illuminator.schema.simulation import load_config_file
 from mpi4py import MPI
 from ruamel.yaml import YAML
-from collections.abc import Iterable
-from typing import List, Dict, Any
+from typing import List, Any
 import itertools
 import os
 import csv
 import copy
-import psutil # Used for debugging! Remove before PR
-from illuminator.schema.simulation import load_config_file
 
 def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False):
     """
@@ -60,10 +57,6 @@ def run_parallel(simlist: List[Simulation], create_scenario_files: bool = False)
 def run_parallel_file(scenario_file: str):
     rank = MPI.COMM_WORLD.Get_rank()        # id of the MPI process executing this function
     comm_size = MPI.COMM_WORLD.Get_size()   # number of MPI processes
-    print("Hello from rank ", rank)
-    print("Rank ", rank, " running on CPU core ", psutil.Process(os.getpid()))
-    if rank == 0:
-        print("Rank Zero: comm_size is ", comm_size)
 
     # Check if yaml has correct the correct format and syntax
     _ = load_config_file(scenario_file)
