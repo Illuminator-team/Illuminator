@@ -1,0 +1,5 @@
+simulationID,EV1.parameter.battery_cap,PV1.parameter.peak_power
+1,50,500
+2,60,500
+3,50,600
+4,60,600
