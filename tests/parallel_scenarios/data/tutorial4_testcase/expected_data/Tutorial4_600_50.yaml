@@ -9,7 +9,7 @@ models:
 - name: CSV_EV_presence
   type: CSV
   parameters:
-    file_path: './tests/parallel_scenarios/data/tutorial4_data/ev_presence.csv'
+    file_path: './tests/parallel_scenarios/data/tutorial4_testcase/ev_presence.csv'
     #file_path: './data/ev_presence.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
@@ -17,7 +17,7 @@ models:
 - name: CSVload
   type: CSV
   parameters:
-    file_path: './tests/parallel_scenarios/data/tutorial4_data/household_power_consumption_15min_complete.csv'
+    file_path: './tests/parallel_scenarios/data/tutorial4_testcase/household_power_consumption_15min_complete.csv'
     #file_path: './household_power_consumption_15min_complete.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
@@ -27,7 +27,7 @@ models:
 - name: CSV_pv1
   type: CSV
   parameters:
-    file_path: './tests/parallel_scenarios/data/tutorial4_data/pv_data_Rotterdam_NL_2007_15min.txt'
+    file_path: './tests/parallel_scenarios/data/tutorial4_testcase/pv_data_Rotterdam_NL_2007_15min.txt'
     #file_path: './pv_data_Rotterdam_NL_2007_15min.txt'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
@@ -76,7 +76,7 @@ models:
     end_mid_phase: 80         
     max_power: 11                        
     fast: False
-    battery_cap: 50                    
+    battery_cap: 50                      
   inputs:
     load_in: 0   
     presence: 0                
@@ -165,7 +165,7 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './tests/parallel_scenarios/data/expected_tutorial4_600_50.csv'
+  file: './tests/parallel_scenarios/data/tutorial4_testcase/tutorial4.csv'
   #file: './out_CSV.csv'
   items:
     - PV1.pv_gen

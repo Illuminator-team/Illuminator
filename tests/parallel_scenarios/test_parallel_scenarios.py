@@ -120,30 +120,30 @@ def scenario_multiparams_removed(scenario):
 
 def test_run_parallel_file():
     # Run simulations
-    parallel_scenarios.run_parallel_file('tests/parallel_scenarios/data/Tutorial4_parallel.yaml')
+    parallel_scenarios.run_parallel_file('tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_parallel.yaml')
 
     actual_files = [
-        "./tests/parallel_scenarios/data/tutorial4_1.csv",
-        "./tests/parallel_scenarios/data/tutorial4_2.csv",
-        "./tests/parallel_scenarios/data/tutorial4_3.csv",
-        "./tests/parallel_scenarios/data/tutorial4_4.csv"
+        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_1.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_2.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_3.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_4.csv"
     ]
     expected_files = [
-        "./tests/parallel_scenarios/data/expected_tutorial4_500_50.csv",
-        "./tests/parallel_scenarios/data/expected_tutorial4_500_60.csv",
-        "./tests/parallel_scenarios/data/expected_tutorial4_600_50.csv",
-        "./tests/parallel_scenarios/data/expected_tutorial4_600_60.csv"
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_500_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_500_60.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_600_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_600_60.csv"
     ]
     columns = [
-        #"PV1.pv_gen",
+        "PV1.pv_gen",
         "Load1.load_dem",
-        #"CSV_EV_presence.ev1",
-        #"EV1.demand",
-        #"Battery1.soc",
-        #"Battery1.p_out",
-        #"Controller1.flow2b",
-        #"Controller1.res_load",
-        #"Controller1.dump"
+        "CSV_EV_presence.ev1",
+        "EV1.demand",
+        "Battery1.soc",
+        "Battery1.p_out",
+        "Controller1.flow2b",
+        "Controller1.res_load",
+        "Controller1.dump"
     ]
 
     for i in range(0, 4):
