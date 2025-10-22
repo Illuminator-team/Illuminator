@@ -123,10 +123,10 @@ def test_run_parallel_file():
     parallel_scenarios.run_parallel_file('tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_parallel.yaml')
 
     actual_files = [
-        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_1.csv",
-        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_2.csv",
-        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_3.csv",
-        "./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_4.csv"
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_1.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_2.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_3.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_4.csv"
     ]
     expected_files = [
         "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_500_50.csv",
@@ -146,11 +146,26 @@ def test_run_parallel_file():
         "Controller1.dump"
     ]
 
+    # Check values in monitor files are equal
     for i in range(0, 4):
         actual = Path(actual_files[i])
         expected = Path(expected_files[i])
         compare_output_files(actual, expected, date_columns=["date"], float_columns=columns)
 
+    # Check scenario table
+    with open('./tests/parallel_scenarios/data/tutorial4_testcase/scenariotable.csv', 'r') as f:
+        # Read file lines and strip newline characters
+        actual_table = [line.strip() for line in f.readlines()]
+
+    expected_table = [
+        "simulationID,EV1.parameter.battery_cap,PV1.parameter.peak_power",
+        "1,50,500",
+        "2,60,500",
+        "3,50,600",
+        "4,60,600"
+    ]
+
+    assert actual_table == expected_table
 
 
 # Test _remove_scenario_parallel_items
