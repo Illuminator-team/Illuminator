@@ -1,6 +1,7 @@
 import pytest
 from ruamel.yaml import YAML
 from illuminator import parallel_scenarios
+from illuminator.engine import Simulation
 import csv
 import copy
 from pathlib import Path
@@ -115,9 +116,50 @@ def scenario_multiparams_removed(scenario):
     return new_scenario
     
 
+# Test run_parallel
+def test_run_parallel():
+    simlist = [
+        Simulation("./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_500_50.yaml"),
+        Simulation("./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_500_60.yaml"),
+        Simulation("./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_600_50.yaml"),
+        Simulation("./tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_600_60.yaml")
+    ]
+
+    parallel_scenarios.run_parallel(simlist)
+
+    actual_files = [
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_500_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_500_60.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_600_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_600_60.csv"
+    ]
+    expected_files = [
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_500_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_500_60.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_600_50.csv",
+        "./tests/parallel_scenarios/data/tutorial4_testcase/expected_data/expected_tutorial4_600_60.csv"
+    ]
+    columns = [
+        "PV1.pv_gen",
+        "Load1.load_dem",
+        "CSV_EV_presence.ev1",
+        "EV1.demand",
+        "Battery1.soc",
+        "Battery1.p_out",
+        "Controller1.flow2b",
+        "Controller1.res_load",
+        "Controller1.dump"
+    ]
+
+    # Check values in monitor files are equal
+    for i in range(0, 4):
+        actual = Path(actual_files[i])
+        expected = Path(expected_files[i])
+        compare_output_files(actual, expected, date_columns=["date"], float_columns=columns)
+
+
 
 # Test run_parallel_file
-
 def test_run_parallel_file():
     # Run simulations
     parallel_scenarios.run_parallel_file('tests/parallel_scenarios/data/tutorial4_testcase/tutorial4_parallel.yaml')
@@ -169,7 +211,6 @@ def test_run_parallel_file():
 
 
 # Test _remove_scenario_parallel_items
-
 def test_remove_scenario_parallel_items(scenario_multiparams_removed):
     cleaned_data, removed_items = parallel_scenarios._remove_scenario_parallel_items('tests/parallel_scenarios/data/parallel_scenario.yaml')
 
@@ -325,7 +366,6 @@ def test_get_list_subset_empty_list():
 
 
 # Test _generate_scenario
-
 def test_generate_scenario(scenario, scenario_multiparams_removed):
     """Test that parameters are correctly injected and simulationID appended to monitor file."""
     item_to_add = {
@@ -372,7 +412,6 @@ def test_generate_scenario(scenario, scenario_multiparams_removed):
 
 
 # Test _write_lookup_table
-
 def test_write_lookup_table(tmp_path):
     """Test that _write_lookup_table writes a correct CSV file with tuple keys."""
     filepath = tmp_path / "lookup.csv"
@@ -416,6 +455,7 @@ def test_write_lookup_table(tmp_path):
     assert rows[2] == ["2", "15", "25"] 
 
 
+# Utilities
 def compare_output_files(
         actual: Path,
         expected: Path,

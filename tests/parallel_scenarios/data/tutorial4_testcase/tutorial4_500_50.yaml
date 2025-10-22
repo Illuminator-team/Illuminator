@@ -76,7 +76,7 @@ models:
     end_mid_phase: 80         
     max_power: 11                        
     fast: False
-    battery_cap: 60                      
+    battery_cap: 50                   
   inputs:
     load_in: 0   
     presence: 0                
@@ -165,7 +165,7 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './tests/parallel_scenarios/data/tutorial4_testcase/tutorial4.csv'
+  file: './tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_500_50.csv'
   #file: './out_CSV.csv'
   items:
     - PV1.pv_gen

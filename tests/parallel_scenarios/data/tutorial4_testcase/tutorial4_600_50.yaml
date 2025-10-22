@@ -165,7 +165,7 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './tests/parallel_scenarios/data/tutorial4_testcase/tutorial4.csv'
+  file: './tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_600_50.csv'
   #file: './out_CSV.csv'
   items:
     - PV1.pv_gen

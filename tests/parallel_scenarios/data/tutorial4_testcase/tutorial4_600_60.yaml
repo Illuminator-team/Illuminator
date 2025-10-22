@@ -45,7 +45,7 @@ models:
     m_az: 180  # degrees
     cap: 500  # W
     output_type: 'power'
-    peak_power: 500  # W
+    peak_power: 600  # W
   inputs: 
     G_Gh: null 
     G_Dh: null
@@ -76,7 +76,7 @@ models:
     end_mid_phase: 80         
     max_power: 11                        
     fast: False
-    battery_cap: 50                   
+    battery_cap: 60                    
   inputs:
     load_in: 0   
     presence: 0                
@@ -165,7 +165,7 @@ connections:
   time_shifted: True
 
 monitor:
-  file: './tests/parallel_scenarios/data/tutorial4_testcase/tutorial4.csv'
+  file: './tests/parallel_scenarios/data/tutorial4_testcase/out_tutorial4_600_60.csv'
   #file: './out_CSV.csv'
   items:
     - PV1.pv_gen
