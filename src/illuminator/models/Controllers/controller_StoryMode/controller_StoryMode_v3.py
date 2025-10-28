@@ -63,7 +63,7 @@ class Controller_StoryMode(ModelConstructor):
         """
         super().__init__(**kwargs)
         self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0, 'file_index_PV': 0}
-        self.sine=0
+        self.day=0
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -72,8 +72,8 @@ class Controller_StoryMode(ModelConstructor):
         """
         input_data = self.unpack_inputs(inputs, return_sources=True)  # make input data easily accessible
         self.time = time
-        if time%5 == 0:
-            self.sine = 1 - self.sine
+        if time%10 == 0:
+            self.day = 1 - self.day
             
 
         connections, ids = self.determine_connectivity(input_data['physical_connections'])
@@ -112,7 +112,7 @@ class Controller_StoryMode(ModelConstructor):
             to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': 1})
             to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': -1})
             print(f"PV and Ext connected, id: {conn_id3}")
-            if self.sine == 1:
+            if self.day == 1:
                 self.file_indeces['file_index_PV'] = 0.6
             else:
                 self.file_indeces['file_index_PV'] = 0.1
@@ -121,7 +121,7 @@ class Controller_StoryMode(ModelConstructor):
         
         if is_connected4:
             dir = 1
-            if self.sine == 1:
+            if self.day == 1:
                 dir = -1
 
             to_Battery_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Battery_LED-0.time-based_0', 'connection_id': conn_id4, 'direction': dir})
@@ -137,15 +137,18 @@ class Controller_StoryMode(ModelConstructor):
         if is_connected1 and is_connected2 and is_connected3:
             story_phase = 2
             print("Phase 2 connections")
-            if self.sine == 1:
-                self.file_indeces['file_index_Load_EWI'] = 0.6
+            if self.day == 1:
+                self.file_indeces['file_index_Load_EWI'] = 0.3
+            else:
+                self.file_indeces['file_index_Load_EWI'] = 0.9
+
         if is_connected1 and is_connected2 and is_connected3 and is_connected4:
             story_phase = 3
             print("Phase 3 connections")
-            if self.sine == 1:
-                self.file_indeces['file_index_Load_EWI'] = 0.3
+            if self.day == 1:
+                self.file_indeces['file_index_Load_EWI'] = 0.1
             else:
-                self.file_indeces['file_index_Load_EWI'] = 0.3
+                self.file_indeces['file_index_Load_EWI'] = 0.1
 
 
         self.set_states(self.file_indeces)
