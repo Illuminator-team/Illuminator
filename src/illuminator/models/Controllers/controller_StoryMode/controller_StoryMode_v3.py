@@ -84,9 +84,11 @@ class Controller_StoryMode(ModelConstructor):
         to_house_LED = []
         to_PV_LED = []
         to_Battery_LED = []
+        to_Wind_LED = []
 
         story_phase = 0
 
+        wind_connected, conn_wind_grid = check_connected('Wind_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         grid_connected, conn_grid_ewi = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         house_connected, conn_house_grid = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
         PV_connected, conn_PV_ewi = check_connected('PV_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
@@ -100,6 +102,12 @@ class Controller_StoryMode(ModelConstructor):
         else:
             self.file_indeces['file_index_Load_EWI'] = 0
         
+        if wind_connected:
+            print(f"Wind and Ext connected, id: {conn_wind_grid}")
+            to_Ext_LED.append({'from': 'Wind_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': 1})
+            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Wind_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': -1})
+            self.file_indeces['file_index_Wind'] = 0.6
+
         if house_connected:
             to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_house_grid, 'direction': -1})
             to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_house_grid, 'direction': 1})
@@ -152,7 +160,7 @@ class Controller_StoryMode(ModelConstructor):
 
 
         self.set_states(self.file_indeces)
-        self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED, 'PV_LED_mapping': to_PV_LED, 'Battery_LED_mapping': to_Battery_LED})
+        self.set_states({'Load_EWI_LED_mapping': to_EWI_LED, 'Grid_Ext_LED_mapping': to_Ext_LED, 'Load_house_LED_mapping': to_house_LED, 'PV_LED_mapping': to_PV_LED, 'Battery_LED_mapping': to_Battery_LED, 'Wind_LED_mapping': to_Wind_LED})
 
         sleep(0.1)  # simulate some calculation time
 
