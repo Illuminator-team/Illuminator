@@ -87,31 +87,31 @@ class Controller_StoryMode(ModelConstructor):
 
         story_phase = 0
 
-        is_connected1, conn_id1 = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
-        is_connected2, conn_id2 = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
-        is_connected3, conn_id3 = check_connected('PV_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
-        is_connected4, conn_id4 = check_connected('Battery_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
+        grid_connected, conn_grid_ewi = check_connected('Load_EWI_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
+        house_connected, conn_house_grid = check_connected('Load_house_LED-0.time-based_0', 'Grid_Ext_LED-0.time-based_0', connections, ids)
+        PV_connected, conn_PV_ewi = check_connected('PV_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
+        battery_connected, conn_battery_ewi = check_connected('Battery_LED-0.time-based_0', 'Load_EWI_LED-0.time-based_0', connections, ids)
 
-        if is_connected1:
-            print(f"EWI and Ext connected, id: {conn_id1}")
-            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': -1})
-            to_Ext_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id1, 'direction': 1})
+        if grid_connected:
+            print(f"EWI and Ext connected, id: {conn_grid_ewi}")
+            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_grid_ewi, 'direction': -1})
+            to_Ext_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_grid_ewi, 'direction': 1})
             self.file_indeces['file_index_Load_EWI'] = 0.9
         else:
             self.file_indeces['file_index_Load_EWI'] = 0
         
-        if is_connected2:
-            to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': -1})
-            to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_id2, 'direction': 1})
-            print(f"House and Ext connected, id: {conn_id2}")
+        if house_connected:
+            to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_house_grid, 'direction': -1})
+            to_Ext_LED.append({'from': 'Load_house_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_house_grid, 'direction': 1})
+            print(f"House and Ext connected, id: {conn_house_grid}")
             self.file_indeces['file_index_Load_house'] = 0.6
         else:
             self.file_indeces['file_index_Load_house'] = 0
         
-        if is_connected3:
-            to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': 1})
-            to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id3, 'direction': -1})
-            print(f"PV and Ext connected, id: {conn_id3}")
+        if PV_connected:
+            to_PV_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'PV_LED-0.time-based_0', 'connection_id': conn_PV_ewi, 'direction': 1})
+            to_EWI_LED.append({'from': 'PV_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_PV_ewi, 'direction': -1})
+            print(f"PV and Ext connected, id: {conn_PV_ewi}")
             if self.day == 1:
                 self.file_indeces['file_index_PV'] = 0.6
             else:
@@ -119,22 +119,22 @@ class Controller_StoryMode(ModelConstructor):
         else:
             self.file_indeces['file_index_PV'] = 0
         
-        if is_connected4:
+        if battery_connected:
             dir = 1
             if self.day == 1:
                 dir = -1
 
-            to_Battery_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Battery_LED-0.time-based_0', 'connection_id': conn_id4, 'direction': dir})
-            to_EWI_LED.append({'from': 'Battery_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_id4, 'direction': -1*dir})
-            print(f"Battery and Ext connected, id: {conn_id4}")
+            to_Battery_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Battery_LED-0.time-based_0', 'connection_id': conn_battery_ewi, 'direction': dir})
+            to_EWI_LED.append({'from': 'Battery_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_battery_ewi, 'direction': -1*dir})
+            print(f"Battery and Ext connected, id: {conn_battery_ewi}")
             self.file_indeces['file_index_Battery'] = 0.6
         else:
             self.file_indeces['file_index_Battery'] = 0
         
-        if is_connected1 and is_connected2:
+        if grid_connected and house_connected:
             story_phase = 1
             print("Phase 1 connections")
-        if is_connected1 and is_connected2 and is_connected3:
+        if grid_connected and house_connected and PV_connected:
             story_phase = 2
             print("Phase 2 connections")
             if self.day == 1:
@@ -142,7 +142,7 @@ class Controller_StoryMode(ModelConstructor):
             else:
                 self.file_indeces['file_index_Load_EWI'] = 0.9
 
-        if is_connected1 and is_connected2 and is_connected3 and is_connected4:
+        if grid_connected and house_connected and PV_connected and battery_connected:
             story_phase = 3
             print("Phase 3 connections")
             if self.day == 1:
