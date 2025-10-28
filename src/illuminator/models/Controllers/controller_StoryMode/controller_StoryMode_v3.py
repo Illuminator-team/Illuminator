@@ -144,6 +144,8 @@ class Controller_StoryMode(ModelConstructor):
             print("Phase 3 connections")
             if self.sine == 1:
                 self.file_indeces['file_index_Load_EWI'] = 0.3
+            else:
+                self.file_indeces['file_index_Load_EWI'] = 0.3
 
 
         self.set_states(self.file_indeces)
