@@ -13,7 +13,7 @@ models:
   states:
     state1: 0.6
   connect:
-    ip: 10.197.217.121
+    ip: 192.168.1.193
     port: 5124
 - name: Load_house_LED
   type: LED_connection
@@ -27,7 +27,7 @@ models:
   states:
     connections: []
   connect:
-    ip: 10.197.217.121
+    ip: 192.168.1.193
     port: 5123
 
 - name: PV
@@ -37,7 +37,7 @@ models:
   states:
     state1: 0.3
   connect:
-    ip: 10.197.217.123
+    ip: 192.168.1.111
     port: 5122
 - name: PV_LED
   type: LED_connection
@@ -51,7 +51,7 @@ models:
   states:
     connections: []
   connect:
-    ip: 10.197.217.123
+    ip: 192.168.1.111
     port: 5123
 
   
@@ -80,12 +80,12 @@ models:
   states:
     state1: 0.6
   connect:
-    ip: 10.197.217.124
+    ip: 192.168.1.149
     port: 5122
 - name: Battery_LED
   type: LED_connection
   connect:
-    ip: 10.197.217.124
+    ip: 192.168.1.149
     port: 5123
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
@@ -128,7 +128,7 @@ models:
   states:
     state1: 0.5
   connect:
-    ip: 10.197.217.134
+    ip: 192.168.1.192
     port: 5122
 - name: Grid_Ext_LED
   type: LED_connection
@@ -142,7 +142,7 @@ models:
   states:
     connections: []
   connect:
-    ip: 10.197.217.134
+    ip: 192.168.1.192
     port: 5123
 
 
