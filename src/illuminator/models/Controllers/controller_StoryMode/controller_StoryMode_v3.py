@@ -62,7 +62,7 @@ class Controller_StoryMode(ModelConstructor):
         kwargs
         """
         super().__init__(**kwargs)
-        self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0, 'file_index_PV': 0}
+        self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0, 'file_index_PV': 0, 'file_index_Battery': 0, 'file_index_Wind': 0}
         self.day=0
 
 
