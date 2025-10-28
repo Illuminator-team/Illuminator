@@ -36,9 +36,9 @@ models:
     in1: 0.3
   states:
     state1: 0.3
-  connect:
-    ip: 192.168.1.111
-    port: 5122
+  # connect:
+  #   ip: 192.168.1.111
+  #   port: 5122
 - name: PV_LED
   type: LED_connection
   parameters:
@@ -85,9 +85,9 @@ models:
     in1: 0.6
   states:
     state1: 0.6
-  connect:
-    ip: 192.168.1.149
-    port: 5122
+  # connect:
+  #   ip: 192.168.1.149
+  #   port: 5122
 - name: Battery_LED
   type: LED_connection
   connect:
