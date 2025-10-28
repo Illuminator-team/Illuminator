@@ -62,12 +62,12 @@ models:
   states:
     state1: 0.1
   connect: 
-    ip: 192.168.1.192
+    ip: 192.168.1.182
     port: 5122  
 - name: Wind_LED
   type: LED_connection
   connect:
-    ip: 192.168.1.192
+    ip: 192.168.1.182
     port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
@@ -134,7 +134,7 @@ models:
   states:
     state1: 0.5
   connect:
-    ip: 192.168.1.182
+    ip: 192.168.1.192
     port: 5122
 - name: Grid_Ext_LED
   type: LED_connection
@@ -148,7 +148,7 @@ models:
   states:
     connections: []
   connect:
-    ip: 192.168.1.182
+    ip: 192.168.1.192
     port: 5123
 
 
