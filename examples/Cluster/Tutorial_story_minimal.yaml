@@ -67,7 +67,7 @@ models:
 - name: Wind_LED
   type: LED_connection
   connect:
-    ip: 10.89.147.150
+    ip: 192.168.1.150
     port: 5124
   parameters:
     min_speed: 0  # minimum speed for the LED connection (0-100%)
