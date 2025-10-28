@@ -104,8 +104,8 @@ class Controller_StoryMode(ModelConstructor):
         
         if wind_connected:
             print(f"Wind and Ext connected, id: {conn_wind_grid}")
-            to_Ext_LED.append({'from': 'Wind_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': 1})
-            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Wind_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': -1})
+            to_Ext_LED.append({'from': 'Wind_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': -1})
+            to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Wind_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': 1})
             self.file_indeces['file_index_Wind'] = 0.6
 
         if house_connected:
