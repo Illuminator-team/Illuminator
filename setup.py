@@ -31,9 +31,9 @@ print('generating ssh keys and sending it to the new Client')
 system(f"python cluster_setup/generate_ssh_key.py {USERNAME} {client_ip}")
 
 # setting static ip
-print('\n\n##########################################')
-print('making ip address static')
-subprocess.run(f"ssh {USERNAME}@{client_ip} 'sudo python Illuminator/cluster_setup/static_ip.py'", shell=True)
+# print('\n\n##########################################')
+# print('making ip address static')
+# subprocess.run(f"ssh {USERNAME}@{client_ip} 'sudo python Illuminator/cluster_setup/static_ip.py'", shell=True)
 # system('python cluster_setup/static_ip.py')
 
 # give executive permission to all files in runshfile/
