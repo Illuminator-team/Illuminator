@@ -55,23 +55,26 @@ models:
     port: 5123
 
   
-# - name: Wind1
-#   type: Dummy
-#   states:
-#     state1: 0.1
-# - name: Wind_LED
-#   type: LED_connection
-#   # connect:
-#   #   ip: 10.89.147.122
-#   #   port: 5124
-#   parameters:
-#     min_speed: 0  # minimum speed for the LED connection (0-100%)
-#     max_speed: 0.2  # maximum speed for the LED connection (0-100%)
-#     direction: 1  # direction of the LED connection (0=towards the white connector)
-#   inputs:
-#     speed: 0  # speed for the LED connection (0-100%)
-#   states:
-#     connections: []
+- name: Wind
+  type: Dummy
+  states:
+    state1: 0.1
+  connect: 
+    ip:192.168.1.111
+    port: 5122  
+- name: Wind_LED
+  type: LED_connection
+  connect:
+    ip: 10.89.147.111
+    port: 5124
+  parameters:
+    min_speed: 0  # minimum speed for the LED connection (0-100%)
+    max_speed: 1.0  # maximum speed for the LED connection (0-100%)
+    direction: 1  # direction of the LED connection (0=towards the white connector)
+  inputs:
+    speed: 0  # speed for the LED connection (0-100%)
+  states:
+    connections: []
 
 - name: Battery
   type: Dummy
@@ -155,11 +158,13 @@ models:
     file_index_Load_house: 0  # Index to select which load file to read from in the CSV model
     file_index_PV: 0  # Index to select which load file to read from in the CSV model
     file_index_Battery: 0  # Index to select which load file to read from in the CSV model
+    file_index_Wind: 0  # Index to select which load file to read from in the CSV model
     Load_EWI_LED_mapping: []
     Grid_Ext_LED_mapping: []
     Load_house_LED_mapping: []
     PV_LED_mapping: []
     Battery_LED_mapping: []
+    Wind_LED_mapping: []
 
 
 connections:
@@ -179,10 +184,10 @@ connections:
   to: Controller_story.physical_connections
 
 # Wind turbine
-# - from: Wind1.state1
-#   to: Wind_LED.speed
-# - from: Wind_LED.connections
-#   to: Controller_story.physical_connections
+- from: Wind.state1
+  to: Wind_LED.speed
+- from: Wind_LED.connections
+  to: Controller_story.physical_connections
 
 # Battery
 - from: Battery.state1
@@ -201,8 +206,8 @@ connections:
   to: Controller_story.physical_connections
 
 # Grid Ext LED
-# - from: Wind1.state1
-#   to: Grid_Ext_LED.speed
+- from: Wind.state1
+  to: Grid_Ext_LED.speed
 - from: Load_house.state1
   to: Grid_Ext_LED.speed
 - from: Load_EWI.state1
@@ -226,6 +231,9 @@ connections:
 - from: Controller_story.Battery_LED_mapping
   to: Battery_LED.mapping
   time_shifted: True
+- from: Controller_story.Wind_LED_mapping
+  to: Wind_LED.mapping
+  time_shifted: True
 
 # file indeces
 - from: Controller_story.file_index_Load_EWI
@@ -240,6 +248,8 @@ connections:
 - from: Controller_story.file_index_Battery
   to: Battery.in1
   time_shifted: True
+- from: Controller_story.file_index_Wind
+  to: Wind.in1
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
