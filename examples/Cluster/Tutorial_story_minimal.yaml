@@ -57,10 +57,12 @@ models:
   
 - name: Wind
   type: Dummy
+  inputs:
+    in1: 0.1
   states:
     state1: 0.1
   connect: 
-    ip:192.168.1.111
+    ip: 192.168.1.111
     port: 5122  
 - name: Wind_LED
   type: LED_connection
@@ -73,6 +75,7 @@ models:
     direction: 1  # direction of the LED connection (0=towards the white connector)
   inputs:
     speed: 0  # speed for the LED connection (0-100%)
+    mapping: []
   states:
     connections: []
 
