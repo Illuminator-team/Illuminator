@@ -253,6 +253,7 @@ connections:
   time_shifted: True
 - from: Controller_story.file_index_Wind
   to: Wind.in1
+  time_shifted: True
 
 monitor:
   file: './out_Tutorial_cluster_story.csv'
