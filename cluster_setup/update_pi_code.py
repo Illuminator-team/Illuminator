@@ -3,7 +3,7 @@ from os import system, getcwd
 
 USERNAME = 'Raspinator'
 
-ips = ['192.168.27.19', '192.168.27.161']
+ips = ['192.168.1.193', '192.168.1.111', '192.168.1.182', '192.168.1.149', '192.168.1.192']
 
 print('updating master')
 system('git pull')
