@@ -64,8 +64,8 @@ class Controller_StoryMode(ModelConstructor):
         super().__init__(**kwargs)
         self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0, 'file_index_PV': 0, 'file_index_Battery': 0, 'file_index_Wind': 0}
         self.day=0
-        self.winter = False
-        self.winter_history = [False, False, False, False, False]
+        self.winter = 0
+        #self.winter_history = [False, False, False, False, False]
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -82,9 +82,14 @@ class Controller_StoryMode(ModelConstructor):
         print("story mode connections: ", connections, "ids: ", ids)
 
 
-        for i in range(len(self.winter_history)-1, 0, -1):
-            self.winter_history[i] = self.winter_history[i-1]
-        
+        ### DETERMINE IF WINTER MODE ###
+        # for i in range(len(self.winter_history)-1, 0, -1):
+        #     self.winter_history[i] = self.winter_history[i-1]
+        # self.winter_history[0] = self.winter
+        # print("winter history: ", self.winter_history)
+        # if any(self.winter_history):
+        #     self.winter = True
+        ##################################
         
 
         to_EWI_LED = []
@@ -150,17 +155,21 @@ class Controller_StoryMode(ModelConstructor):
         else:
             self.file_indeces['file_index_Battery'] = 0
         
+        ## Phase 1, house, ewi, wind connected
         if grid_connected and house_connected:
             story_phase = 1
             print("Phase 1 connections")
+
+        ## Phase 2, PV added
         if grid_connected and house_connected and PV_connected:
             story_phase = 2
             print("Phase 2 connections")
-            if self.day == 1:
-                self.file_indeces['file_index_Load_EWI'] = 0.3
-            else:
+            if self.day == 1: # day
+                self.file_indeces['file_index_Load_EWI'] = 0.9
+            else: # night
                 self.file_indeces['file_index_Load_EWI'] = 0.9
 
+        ## Phase 3, battery added
         if grid_connected and house_connected and PV_connected and battery_connected:
             story_phase = 3
             print("Phase 3 connections")
@@ -168,6 +177,9 @@ class Controller_StoryMode(ModelConstructor):
                 self.file_indeces['file_index_Load_EWI'] = 0.1
             else:
                 self.file_indeces['file_index_Load_EWI'] = 0.1
+            
+            if self.winter > 0:
+                self.file_indeces['file_index_Wind'] = 0.9
 
 
         self.set_states(self.file_indeces)
@@ -201,9 +213,10 @@ class Controller_StoryMode(ModelConstructor):
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
                         # remove -1 before comparing
                 
-                self.winter = False
                 if id1 == 0 or id2 == 0:
-                    self.winter = True
+                    self.winter = 5
+                else:
+                    self.winter = self.winter - 1
 
                 set1 = set(id1) - {-1}
                 set2 = set(id2) - {-1}
