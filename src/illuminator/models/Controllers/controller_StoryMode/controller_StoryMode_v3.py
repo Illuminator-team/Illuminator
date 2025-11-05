@@ -211,22 +211,14 @@ class Controller_StoryMode(ModelConstructor):
         for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
             if id1 == 0 or id1 == '0':
                 self.winter = 5
-                raise "WINTER MODE ACTIVATED
+                # raise "WINTER MODE ACTIVATED
+                print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
+            else:
+                self.winter = self.winter - 1
             
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
                         # remove -1 before comparing
                 
-                if id1 == '0' or id2 == '0':
-                    self.winter = 5
-                    raise "WINTER MODE ACTIVATED BITCH CHAR"
-                    print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
-                if id1 == 0 or id2 == 0:
-                    self.winter = 5
-                    raise "WINTER MODE ACTIVATED BITCH CHAR"
-                    print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
-                else:
-                    self.winter = self.winter - 1
-
                 set1 = set(id1) - {-1}
                 set2 = set(id2) - {-1}
                 set1 = set(id1) - {'-1'}
