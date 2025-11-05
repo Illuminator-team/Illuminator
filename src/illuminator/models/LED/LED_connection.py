@@ -118,17 +118,17 @@ class LED_connection(ModelConstructor):
         colour = 'r' if delay >= 4 else 'g'
         return delay, colour
 
-    def _update_device_history(self, device: str, observed_id: str):
-        """3-strike disconnect logic per device path; update reverse index id->device."""
+    def _update_device_history(self, device: str, observed_id: str, num_strikes: int = 8):
+        """x-strike disconnect logic per device path; update reverse index id->device."""
         key = str(device)
         state = self._dev_state.setdefault(key, {"history": [], "current_id": "-1"})
         hist = state["history"]
         hist.append(observed_id if observed_id else "-1")
-        if len(hist) > 3:
+        if len(hist) > num_strikes:
             hist.pop(0)
 
-        if len(hist) >= 3 and hist[-1] == "-1" and hist[-2] == "-1" and hist[-3] == "-1":
-            # disconnected
+        if len(hist) >= num_strikes and all(x == "-1" for x in hist[-num_strikes:]):
+            # disconnected after num_strikes misses
             state["current_id"] = "-1"
         else:
             if hist[-1] != "-1":
