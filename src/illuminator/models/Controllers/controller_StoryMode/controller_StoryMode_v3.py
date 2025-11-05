@@ -206,28 +206,15 @@ class Controller_StoryMode(ModelConstructor):
         list of connections
         """
         print("physical connections: ", physical_connections)
-        if '0' in physical_connections['value']:
-            self.winter = 5
-            print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
-            raise "WINTER MODE ACTIVATED"
         if any('0' in sublist or 0 in sublist for sublist in physical_connections['value']):
             self.winter = 5
             print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
-            raise "WINTER MODE ACTIVATED sublist"
-        
-
+        else:
+            self.winter = self.winter - 1
             
         connections = []
         ids = []
-        for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
-
-            if id1 == 0 or id1 == '0':
-                self.winter = 5
-                print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
-                raise "WINTER MODE ACTIVATED"
-            else:
-                self.winter = self.winter - 1
-            
+        for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):            
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
                         # remove -1 before comparing
                 
