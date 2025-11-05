@@ -214,6 +214,11 @@ class Controller_StoryMode(ModelConstructor):
                 
                 if id1 == '0' or id2 == '0':
                     self.winter = 5
+                    raise "WINTER MODE ACTIVATED BITCH CHAR"
+                    print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
+                if id1 == 0 or id2 == 0:
+                    self.winter = 5
+                    raise "WINTER MODE ACTIVATED BITCH CHAR"
                     print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
                 else:
                     self.winter = self.winter - 1
