@@ -212,9 +212,9 @@ class Controller_StoryMode(ModelConstructor):
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
                         # remove -1 before comparing
                 
-                if id1 == 0 or id2 == 0:
+                if id1 == '0' or id2 == '0':
                     self.winter = 5
-                    print("BRACE YOURSELVES, WINTER IS COMING!!!!!!!!")
+                    print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n)
                 else:
                     self.winter = self.winter - 1
 
