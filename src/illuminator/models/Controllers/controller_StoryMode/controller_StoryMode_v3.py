@@ -171,7 +171,7 @@ class Controller_StoryMode(ModelConstructor):
             story_phase = 2
             print("Phase 2 connections")
             if self.day == 1: # day
-                self.file_indeces['file_index_Load_EWI'] = 0.9
+                self.file_indeces['file_index_Load_EWI'] = 0.6
             else: # night
                 self.file_indeces['file_index_Load_EWI'] = 0.9
 
@@ -180,9 +180,11 @@ class Controller_StoryMode(ModelConstructor):
             story_phase = 3
             print("Phase 3 connections")
             if self.day == 1:
-                self.file_indeces['file_index_Load_EWI'] = 0.1
+                self.file_indeces['file_index_Load_EWI'] = 0.3
             else:
-                self.file_indeces['file_index_Load_EWI'] = 0.1
+                self.file_indeces['file_index_Load_EWI'] = 0.3
+            if self.winter > 0: # winter
+                self.file_indeces['file_index_Load_EWI'] = 0.9
 
 
         self.set_states(self.file_indeces)
