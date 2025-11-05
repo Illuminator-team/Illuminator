@@ -123,6 +123,8 @@ class Controller_StoryMode(ModelConstructor):
             to_Ext_LED.append({'from': 'Wind_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': -1})
             to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Wind_LED-0.time-based_0', 'connection_id': conn_wind_grid, 'direction': 1})
             self.file_indeces['file_index_Wind'] = 0.6
+            if self.winter > 0:
+                self.file_indeces['file_index_Wind'] = 0.9
 
         if house_connected:
             to_house_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_house_LED-0.time-based_0', 'connection_id': conn_house_grid, 'direction': -1})
@@ -177,9 +179,6 @@ class Controller_StoryMode(ModelConstructor):
                 self.file_indeces['file_index_Load_EWI'] = 0.1
             else:
                 self.file_indeces['file_index_Load_EWI'] = 0.1
-            
-            if self.winter > 0:
-                self.file_indeces['file_index_Wind'] = 0.9
 
 
         self.set_states(self.file_indeces)
@@ -215,6 +214,7 @@ class Controller_StoryMode(ModelConstructor):
                 
                 if id1 == 0 or id2 == 0:
                     self.winter = 5
+                    print("BRACE YOURSELVES, WINTER IS COMING!!!!!!!!")
                 else:
                     self.winter = self.winter - 1
 
