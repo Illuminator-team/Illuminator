@@ -64,6 +64,8 @@ class Controller_StoryMode(ModelConstructor):
         super().__init__(**kwargs)
         self.file_indeces = {'file_index_Load_EWI': 0, 'file_index_Load_house': 0, 'file_index_PV': 0, 'file_index_Battery': 0, 'file_index_Wind': 0}
         self.day=0
+        self.winter = False
+        self.winter_history = [False, False, False, False, False]
 
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
@@ -78,6 +80,12 @@ class Controller_StoryMode(ModelConstructor):
 
         connections, ids = self.determine_connectivity(input_data['physical_connections'])
         print("story mode connections: ", connections, "ids: ", ids)
+
+
+        for i in range(len(self.winter_history)-1, 0, -1):
+            self.winter_history[i] = self.winter_history[i-1]
+        
+        
 
         to_EWI_LED = []
         to_Ext_LED = []
@@ -98,7 +106,10 @@ class Controller_StoryMode(ModelConstructor):
             print(f"EWI and Ext connected, id: {conn_grid_ewi}")
             to_EWI_LED.append({'from': 'Grid_Ext_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_grid_ewi, 'direction': -1})
             to_Ext_LED.append({'from': 'Load_EWI_LED-0.time-based_0', 'to': 'Grid_Ext_LED-0.time-based_0', 'connection_id': conn_grid_ewi, 'direction': 1})
-            self.file_indeces['file_index_Load_EWI'] = 0.9
+            if self.day == 1:
+                self.file_indeces['file_index_Load_EWI'] = 0.9
+            else: # night
+                self.file_indeces['file_index_Load_EWI'] = 0.3
         else:
             self.file_indeces['file_index_Load_EWI'] = 0
         
@@ -123,7 +134,7 @@ class Controller_StoryMode(ModelConstructor):
             if self.day == 1:
                 self.file_indeces['file_index_PV'] = 0.6
             else:
-                self.file_indeces['file_index_PV'] = 0.1
+                self.file_indeces['file_index_PV'] = 0.01
         else:
             self.file_indeces['file_index_PV'] = 0
         
@@ -189,6 +200,11 @@ class Controller_StoryMode(ModelConstructor):
         for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
             for id2, model2 in zip(physical_connections['value'][i+1:], physical_connections['sources'][i+1:]):
                         # remove -1 before comparing
+                
+                self.winter = False
+                if id1 == 0 or id2 == 0:
+                    self.winter = True
+
                 set1 = set(id1) - {-1}
                 set2 = set(id2) - {-1}
                 set1 = set(id1) - {'-1'}
