@@ -141,9 +141,9 @@ class Controller_StoryMode(ModelConstructor):
             if self.day == 1:
                 self.file_indeces['file_index_PV'] = 0.6
             else: # night
-                self.file_indeces['file_index_PV'] = 0.01
+                self.file_indeces['file_index_PV'] = 0.0
             if self.winter > 0: # winter
-                self.file_indeces['file_index_PV'] = 0.01
+                self.file_indeces['file_index_PV'] = 0.0
         else:
             self.file_indeces['file_index_PV'] = 0
         
@@ -157,7 +157,7 @@ class Controller_StoryMode(ModelConstructor):
             print(f"Battery and Ext connected, id: {conn_battery_ewi}")
             self.file_indeces['file_index_Battery'] = 0.6
             if self.winter > 0:
-                self.file_indeces['file_index_Battery'] = 0.01
+                self.file_indeces['file_index_Battery'] = 0.0
         else:
             self.file_indeces['file_index_Battery'] = 0
         
