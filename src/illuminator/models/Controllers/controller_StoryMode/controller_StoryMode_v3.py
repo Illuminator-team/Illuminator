@@ -209,10 +209,11 @@ class Controller_StoryMode(ModelConstructor):
         connections = []
         ids = []
         for i, (id1, model1) in enumerate(zip(physical_connections['value'], physical_connections['sources'])):
+
             if id1 == 0 or id1 == '0':
                 self.winter = 5
-                # raise "WINTER MODE ACTIVATED
                 print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
+                raise "WINTER MODE ACTIVATED"
             else:
                 self.winter = self.winter - 1
             
