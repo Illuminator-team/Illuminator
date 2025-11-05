@@ -140,7 +140,9 @@ class Controller_StoryMode(ModelConstructor):
             print(f"PV and Ext connected, id: {conn_PV_ewi}")
             if self.day == 1:
                 self.file_indeces['file_index_PV'] = 0.6
-            else:
+            else: # night
+                self.file_indeces['file_index_PV'] = 0.01
+            if self.winter > 0: # winter
                 self.file_indeces['file_index_PV'] = 0.01
         else:
             self.file_indeces['file_index_PV'] = 0
@@ -154,6 +156,8 @@ class Controller_StoryMode(ModelConstructor):
             to_EWI_LED.append({'from': 'Battery_LED-0.time-based_0', 'to': 'Load_EWI_LED-0.time-based_0', 'connection_id': conn_battery_ewi, 'direction': -1*dir})
             print(f"Battery and Ext connected, id: {conn_battery_ewi}")
             self.file_indeces['file_index_Battery'] = 0.6
+            if self.winter > 0:
+                self.file_indeces['file_index_Battery'] = 0.01
         else:
             self.file_indeces['file_index_Battery'] = 0
         
