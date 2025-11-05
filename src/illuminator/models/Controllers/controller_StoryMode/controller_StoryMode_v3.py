@@ -206,7 +206,7 @@ class Controller_StoryMode(ModelConstructor):
         list of connections
         """
         print("physical connections: ", physical_connections)
-        if '0' in physical_connections['value'] 
+        if '0' in physical_connections['value']:
             self.winter = 5
             print("\n\n\nBRACE YOURSELVES, WINTER IS COMING!!!!!!!!\n\n\n")
             raise "WINTER MODE ACTIVATED"
