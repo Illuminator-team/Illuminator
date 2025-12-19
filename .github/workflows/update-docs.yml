@@ -1,9 +1,8 @@
 name: Start docs update for website # Name of the whole Action. However when the job runs on github it will take the name of last Commit message.
 
 on: # run ON
-  push: # a PUSH action
-    branches: # on the branch:
-      - main
+  release: # a github release action
+    types: [published] # The relase must be of type PUBLISHED
   workflow_dispatch: # a MANUAL START action and on ANY branch since its NOT defined.
 
 
