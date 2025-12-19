@@ -178,7 +178,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 if 'start' not in model_parameters.keys():
                     model_parameters['start'] = world._start_time
                 
-                simulator = world.start(sim_name=model_name,
+                simulator = world.start(model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
@@ -191,7 +191,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 #                     sim_params= {model_name: model} # This value gets picked up in the init() function
                 #                     # Some items must be passed here, and some other at create()
                 #                     )
-                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
+                simulator = world.start(model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
