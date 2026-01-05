@@ -439,9 +439,15 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
 class Simulation:
     """A simplified interface to run simulations with Illuminator."""
 
-    def __init__(self, config_file:str) -> None:
-        """Loads and validates the configuration file for the simulation."""
-        self.config_file = load_config_file(config_file)
+    def __init__(self, config) -> None:
+        """Loads and validates the configuration for the simulation.
+        
+        Parameters
+        ----------
+        config: str, dict
+            Contains the path to the simulation or the simulation config dict object
+        """
+        self.config_file = load_config_file(config) if type(config) == str else config
 
 
     def run(self):

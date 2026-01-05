@@ -1,0 +1,39 @@
+scenario:
+  name: "random_scenario"
+  start_time: '2007-07-02 00:00:00'
+  end_time: '2007-07-02 23:45:00'
+  time_resolution: 900
+  align_parameters: True
+
+models:
+  - name: model1
+    parameters:
+      p1: 10
+      p2: 7
+    multi_parameters:
+      p3: [0.1, 2]
+    states:
+      s1: 0.5
+      s2: 0.3
+      s3: 'active'
+
+  - name: model2
+    parameters:
+      pA: 42
+      pB: 'text'
+    multi_parameters:
+      pC: ['file1.txt', 'data/file2.txt']
+    states:
+      sY: True
+
+connections:
+  - from: CSVload.load1
+    to: Load1.load
+  - from: Load1.load_dem
+    to: Controller1.load_dem
+
+monitor:
+  file: './out_tutorial4_parallel.csv'
+  items:
+    - PV1.pv_gen
+    - Load1.load_dem
