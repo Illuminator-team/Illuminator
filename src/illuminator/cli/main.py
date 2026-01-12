@@ -31,6 +31,15 @@ def scenario_run(config_file: Annotated[str, typer.Argument(help="Path to scenar
     simulation = Simulation(config_file)
     simulation.run()
 
+
+@scenario_app.command("run_parallel")
+def scenario_run_parallel(config_file: Annotated[str, typer.Argument(help="Path to base scenario configuration file.")] = "config.yaml"):
+    "Runs a simulation scenario using a YAML file with multi_parameters and multi_states."
+    # We put the import here to avoid dependency on MPI system installation when using the other cli functions
+    from illuminator.parallel_scenarios import run_parallel_file
+    run_parallel_file(config_file)
+    
+
 @cluster_app.command("build")
 def cluster_build(config_file: Annotated[str, typer.Argument(help="Path to scenario configuration file.")] = "config.yaml"):
     """Builds the run.sh files for a cluster of Raspberry Pi's."""

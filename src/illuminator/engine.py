@@ -178,7 +178,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 if 'start' not in model_parameters.keys():
                     model_parameters['start'] = world._start_time
                 
-                simulator = world.start(sim_name=model_name,
+                simulator = world.start(model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
@@ -191,7 +191,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 #                     sim_params= {model_name: model} # This value gets picked up in the init() function
                 #                     # Some items must be passed here, and some other at create()
                 #                     )
-                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
+                simulator = world.start(model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -439,9 +439,15 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
 class Simulation:
     """A simplified interface to run simulations with Illuminator."""
 
-    def __init__(self, config_file:str) -> None:
-        """Loads and validates the configuration file for the simulation."""
-        self.config_file = load_config_file(config_file)
+    def __init__(self, config) -> None:
+        """Loads and validates the configuration for the simulation.
+        
+        Parameters
+        ----------
+        config: str, dict
+            Contains the path to the simulation or the simulation config dict object
+        """
+        self.config_file = load_config_file(config) if type(config) == str else config
 
 
     def run(self):
@@ -561,6 +567,11 @@ class Simulation:
         for connection in self.config_file['connections']:
             if connection['from'].startswith(model_name + '.') or connection['to'].startswith(model_name + '.'):
                 self.config_file['connections'].remove(connection)
+        
+        # remove monitor items related to the model
+        for item in self.config_file['monitor']['items']:
+            if item.startswith(model_name + '.'):
+                self.config_file['monitor']['items'].remove(item)
 
 
 
