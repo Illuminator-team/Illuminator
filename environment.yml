@@ -14,5 +14,7 @@ dependencies:
   - setuptools=68.0.0
   - pip:
     - mosaik==3.3.3 
+    - mpi4py
+    - pytest
     - illuminator>=3.0.0-alpha
     # - mosaik-api==3.0.3 # If mosaik != 3.1.1 then - mosaik-api==3.0.3 is needed

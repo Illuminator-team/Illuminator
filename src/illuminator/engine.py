@@ -10,6 +10,7 @@ from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
 from illuminator.schema.simulation import load_config_file
+import os
 
 current_model = {}
 
@@ -118,7 +119,12 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     # print(default_collector)
 
     if collector is None:
-        _collector = "%(python)s " +default_collector+ " %(addr)s"
+        if os.name == 'nt':
+            # Windows
+            _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
+        else:
+            # Linux (GitHub Actions) / macOS
+            _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
     else:
         _collector = collector
 
@@ -178,7 +184,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 if 'start' not in model_parameters.keys():
                     model_parameters['start'] = world._start_time
                 
-                simulator = world.start(sim_name=model_name,
+                simulator = world.start(model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
@@ -191,7 +197,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 #                     sim_params= {model_name: model} # This value gets picked up in the init() function
                 #                     # Some items must be passed here, and some other at create()
                 #                     )
-                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
+                simulator = world.start(model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -258,8 +264,14 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             raise ValueError(f"Multiple models found with name '{from_model}'.")
 
         # retrieve the first model from the models list whose name matches from_model (assumes 1 model per Simulator).
-        from_model_config = next((m for m in models if m['name'] == from_model))
-        to_model_config = next((m for m in models if m['name'] == to_model))
+        try:
+            from_model_config = next(m for m in models if m['name'] == from_model)
+        except StopIteration:
+            raise ValueError(f"Model with name '{from_model}' not found in models list.")
+        try:
+            to_model_config = next(m for m in models if m['name'] == to_model)
+        except StopIteration:
+            raise ValueError(f"Model with name '{to_model}' not found in models list.")
         time_shifted = connection['time_shifted']
             
         # check if the connection is a physical split
@@ -433,9 +445,15 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
 class Simulation:
     """A simplified interface to run simulations with Illuminator."""
 
-    def __init__(self, config_file:str) -> None:
-        """Loads and validates the configuration file for the simulation."""
-        self.config_file = load_config_file(config_file)
+    def __init__(self, config) -> None:
+        """Loads and validates the configuration for the simulation.
+        
+        Parameters
+        ----------
+        config: str, dict
+            Contains the path to the simulation or the simulation config dict object
+        """
+        self.config_file = load_config_file(config) if type(config) == str else config
 
 
     def run(self):
@@ -490,6 +508,120 @@ class Simulation:
         """Returns the configuration file for the simulation."""
         return self.config_file
     
+    def add_model(self, model: dict)-> None:
+        """
+        Adds a model to the simulation configuration.
+
+        Parameters
+        ----------
+        model : dict
+            A dictionary representing the model to be added.
+            Must follow Illuminator's schema for models.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        ValueError
+            If the model does not follow the Illuminator's schema.
+        """
+
+        if 'name' not in model or 'type' not in model:
+            raise ValueError("Model must have 'name' and 'type' keys.")
+        
+        # check if the name is already in the configuration
+        if any(m['name'] == model['name'] for m in self.config_file['models']):
+            raise ValueError(f"Model with name '{model['name']}' already exists in the configuration.")
+        
+        self.config_file['models'].append(model)
+    
+
+    def remove_model(self, model_name: str)-> None:
+        """
+        Removes a model from the simulation configuration.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to be removed.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        KeyError
+            If the model with the specified name does not exist in the configuration.
+        """
+
+        found = False
+        for i, model in enumerate(self.config_file['models']):
+            if model['name'] == model_name:
+                del self.config_file['models'][i]
+                found = True
+                break
+        
+        if not found:
+            raise KeyError(f"Model '{model_name}' not found in the configuration.")
+        
+        # remove connections related to the model based on 'from' and 'to' keys
+        for connection in self.config_file['connections']:
+            if connection['from'].startswith(model_name + '.') or connection['to'].startswith(model_name + '.'):
+                self.config_file['connections'].remove(connection)
+        
+        # remove monitor items related to the model
+        for item in self.config_file['monitor']['items']:
+            if item.startswith(model_name + '.'):
+                self.config_file['monitor']['items'].remove(item)
+
+
+
+    def add_connection(self, connection: dict)-> None:
+        """
+        Adds a connection to the simulation configuration.
+
+        Parameters
+        ----------
+        connection : dict
+            A dictionary representing the connection to be added.
+            Must follow Illuminator's schema for connections.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        ValueError
+            If the connection does not follow the Illuminator's schema.
+        """
+
+        if 'from' not in connection or 'to' not in connection:
+            raise ValueError("add_connection(): Connection must have 'from' and 'to' keys.")
+
+        if 'time_shifted' not in connection:
+            connection['time_shifted'] = False
+        
+        self.config_file['connections'].append(connection)
+
+
+    def remove_connection(self, connection: dict)-> None:
+        if 'from' not in connection or 'to' not in connection:
+            raise ValueError("remove_connection(): Connection must have 'from' and 'to' keys.")
+    
+        # find the connection in the configuration based on 'from' and 'to'
+        for conn in self.config_file['connections']:
+            if conn['from'] == connection['from'] and conn['to'] == connection['to']:
+                self.config_file['connections'].remove(conn)
+                return
+   
+
     def set_scenario_param(self, parameter: str, value)-> None:
         """
         Sets a parameter value in the scenario section of the simulation configuration.

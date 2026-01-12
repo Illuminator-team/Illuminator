@@ -7,6 +7,9 @@ def tutorial1():
     simulation = Simulation(CONFIG_FILE)
     simulation.set_monitor_param(parameter='file', value='tests/outputs/out_e2e_T1.csv')
 
+    # simulation.set_model_param(model_name='Load1', parameter='input_type', value='energy')
+    # simulation.set_model_param(model_name='Load1', parameter='output_type', value='power')
+
     # run the simulation
     simulation.run()
     return

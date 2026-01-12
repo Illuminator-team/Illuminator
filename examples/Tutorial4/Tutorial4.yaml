@@ -1,0 +1,200 @@
+scenario:
+  name: "Neighborhood_sencario1" # in mosaik so called world
+  start_time: '2007-07-02 00:00:00' # ISO 8601 start time of the simulation
+  #end_time: '2012-01-01 01:00:00' # duration in seconds 
+  end_time: '2007-07-02 23:45:00' # duration in seconds 
+  time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+models: 
+- name: CSV_EV_presence
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial4/data/ev_presence.csv'
+    #file_path: './data/ev_presence.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSVload
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial4/data/household_power_consumption_15min_complete.csv'
+    #file_path: './household_power_consumption_15min_complete.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+### Dataset Source: https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption
+
+## -- PV CSVs --
+- name: CSV_pv1
+  type: CSV
+  parameters:
+    file_path: './examples/Tutorial4/data/pv_data_Rotterdam_NL_2007_15min.txt'
+    #file_path: './pv_data_Rotterdam_NL_2007_15min.txt'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+## -- House 1 --
+- name: PV1
+  type: PV # models can reuse the same type
+  parameters:
+    m_area: 60  # m2
+    NOCT: 44  # Celcius
+    m_efficiency_stc: 0.198
+    G_NOCT: 800  # W/m2
+    P_STC: 250  # W
+    peak_power: 600  # W
+    m_tilt: 14  # degrees
+    m_az: 180  # degrees
+    cap: 500  # W
+    output_type: 'power'
+  inputs: 
+    G_Gh: null 
+    G_Dh: null
+    G_Bn: null
+    Ta: null
+    hs: null
+    FF: null
+    Az: null
+  outputs:
+    pv_gen:
+    g_aoi:
+
+- name: Load1
+  type: Load
+  parameters:
+    houses: 1  # number of houses that determine the total load demand
+    output_type: 'energy'  # type of output for consumption calculation ('energy' or 'power')
+  inputs:
+    load: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
+  outputs:
+    load_dem:  # total energy or power consumption for all houses (kWh) over the time step
+    consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+
+- name: EV1
+  type: EV
+  parameters:
+    end_initial_phase: 2    
+    end_mid_phase: 80         
+    max_power: 11             
+    battery_cap: 60           
+    fast: False                      
+  inputs:
+    load_in: 0   
+    presence: 0                
+  outputs:
+    demand: 0                   
+  states:
+    soc: 0                       
+    desired_soc: 100  
+
+## -- Battery --
+- name: Battery1
+  type: Battery # models can reuse the same type
+  parameters:
+    max_p: 500  # maximum charging power limit (kW)
+    min_p: -500  # maximum discharging power limit (kW)
+    max_energy: 1000  # maximum energy storage capacity of the battery (kWh)
+    charge_efficiency: 90  # efficiency of charging the battery (%)
+    discharge_efficiency: 90  # efficiency of discharging the battery (%)
+    soc_min: 10  # minimum allowable state of charge for the battery (%)
+    soc_max: 90  # maximum allowable state of charge for the battery (%)
+  inputs:
+    flow2b: 0  # power flow to/from the battery. Positive for charging, negative for discharging (kW)
+  outputs:
+    p_out: 0  # output power from the battery after discharge/charge decision (Kw)
+    p_in: 0  # input power to the battery (kW)
+  states:
+    mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
+    soc: 50  # state of charge of the battery (%)
+    flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+
+## -- Controller --
+- name: Controller1
+  type: Controller_T4 # models can reuse the same type
+  parameters:
+    soc_min: 10  # Minimum state of charge of the battery before discharging stops
+    soc_max: 90  # Maximum state of charge of the battery before charging stops
+    max_p: 500  # Maximum power flow to/from the battery (kW)
+
+  inputs:
+    wind_gen: 0  # Wind power generation
+    pv_gen: 0  # Solar power generation
+    load_dem: 0  # Electrical load demand
+    soc: 0  # State of charge of the battery
+    load_EV: 0  # Electrical vehicle load demand
+  outputs:
+    flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
+    res_load:  # Residual load after considering the generation and load demand (kW)
+    dump:  # Excess power that cannot be stored or used (kW)
+
+
+connections:
+## -- House 1 Connections -- 
+- from: CSVload.load1
+  to: Load1.load
+- from: Load1.load_dem
+  to: Controller1.load_dem
+
+- from: PV1.pv_gen
+  to: Controller1.pv_gen
+- from: CSV_pv1.G_Gh 
+  to: PV1.G_Gh
+- from: CSV_pv1.G_Dh
+  to: PV1.G_Dh
+- from: CSV_pv1.G_Bn
+  to: PV1.G_Bn
+- from: CSV_pv1.Ta
+  to: PV1.Ta
+- from: CSV_pv1.hs
+  to: PV1.hs
+- from: CSV_pv1.FF
+  to: PV1.FF
+- from: CSV_pv1.Az
+  to: PV1.Az
+
+- from: CSV_EV_presence.ev1
+  to: EV1.presence
+- from: EV1.demand
+  to: Controller1.load_EV
+
+## -- Battery connections
+- from: Battery1.soc
+  to: Controller1.soc
+
+- from: Controller1.flow2b
+  to: Battery1.flow2b
+  time_shifted: True
+
+monitor:
+  file: './examples/Tutorial4/out_CSV.csv'
+  #file: './out_CSV.csv'
+  items:
+    - PV1.pv_gen
+    # - PV2.pv_gen
+    # - PV3.pv_gen
+    # - PV4.pv_gen
+    # - PV5.pv_gen
+
+    - Load1.load_dem
+    # - Load2.load_dem
+    # - Load3.load_dem
+    # - Load4.load_dem
+    # - Load5.load_dem
+
+    - CSV_EV_presence.ev1
+    # - CSV_EV_presence.ev2
+    # - CSV_EV_presence.ev3
+    # - CSV_EV_presence.ev4
+    # - CSV_EV_presence.ev5
+
+    - EV1.demand
+    # - EV2.demand
+    # - EV3.demand
+    # - EV4.demand
+    # - EV5.demand
+
+    - Battery1.soc
+    - Battery1.p_out
+    - Controller1.flow2b
+    - Controller1.res_load
+    - Controller1.dump
+     

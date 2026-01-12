@@ -8,7 +8,7 @@ import re
 import os
 import json as json_module
 from ruamel.yaml import YAML
-from schema import Schema, And, Use, Regex, Optional, SchemaError, SchemaUnexpectedTypeError
+from schema import Schema, And, Use, Regex, Optional, SchemaError, SchemaUnexpectedTypeError, Or
 
 # valid format for start and end times: YYYY-MM-DD HH:MM:SS"
 valid_start_time = r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
@@ -18,6 +18,9 @@ ipv4_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
 # <model>.<input/output/state>
 valid_model_item_format = r'^\w+\.\w+$'
 # valid_model_item_format = r'^([\w-]+\.?)+$' # This is kept here as an alternative. I believe this might be useful later on
+valid_key_format = r'^.+$'
+valid_range_format = r'^(range\([-\s\d]+,[-\s\d]+,[-\s\d]+\))$' # range(1,2,3)
+# valid_range_format = r'^(range\([-\s\d]+,[-\s\d]+[,]?[-\s\d]*\))$' # range(1,2,) # Alternative to allow range without step size
 
 
 
@@ -42,15 +45,13 @@ def load_config_file(config_file: str, json:bool=False) -> dict | str:
         with open(config_file, 'r', encoding='utf-8') as _file:
             yaml = YAML(typ='safe')
             data = yaml.load(_file)
-    except FileNotFoundError:
-        print(f"Error: The file {config_file} was not found.")
-        return None
-    
-    try:
         valid_data = schema.validate(data)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Error: The file {config_file} was not found.")
+    except PermissionError:
+        raise PermissionError(f"Error: You do not have permission to read the file {config_file}.")
     except SchemaUnexpectedTypeError as exc:
-        print(f"Error while parsing YAML file. \n Are you passing a file written in YAML?: {exc}")
-        return None
+        raise SchemaUnexpectedTypeError(f"Error while parsing YAML file. \n Are you passing a file written in YAML?: {exc}")
   
     if json:
         return json_module.dumps(valid_data, indent=4)
@@ -129,6 +130,8 @@ schema = Schema(  # a mapping of mappings
                         Optional("time_resolution"): And(int, lambda n: n > 0,
                                                   error="time resolution must be a "
                                                   "positive integer"),
+                        Optional("align_parameters"): And(bool, lambda x: x in [True, False],
+                                                    error="align_parameters must be True or False"),
                     }
                 ),
                 "models": Schema(  # a sequence of mappings
@@ -144,6 +147,15 @@ schema = Schema(  # a mapping of mappings
                         Optional("parameters"): And(dict,
                                                     len,
                                                     error="if 'parameters' is used, it must contain at least one key-value pair"),
+                        # Optional("multi_parameters"): And(dict,
+                        #                             len,
+                        #                             error="if 'multi_parameters' is used, it must contain at least one key-value pair"),
+                        Optional("multi_parameters"): Schema( # a mapping of mappings
+                            {
+                                Regex(valid_key_format): And(Or
+                                                            (Regex(valid_range_format, error="invalid range format. Range must contain start, stop and step size (i.e. range(1, 100, 1))"), list), 
+                                                            len, error="invalid input type for multi_parameters. Allowed types are 'string' and [list]")
+                        }, error="if 'multi_parameters' is used it must contain at least one valid key-value pair (i.e. 'param1':[1,2,3,4])."),
                         Optional("states"): And(dict, len, error="if 'states' is used, it must contain at least one key-value pair"),
                         Optional("triggers"): And(list, len, error="if 'trigger' is used, it must contain at least one key-value pair"),
                         Optional("connect"): Schema( # a mapping of mappings
