@@ -10,7 +10,7 @@ from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
 from illuminator.schema.simulation import load_config_file
-import shlex
+import os
 
 current_model = {}
 
