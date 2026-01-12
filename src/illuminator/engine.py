@@ -10,6 +10,7 @@ from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
 from illuminator.schema.simulation import load_config_file
+import os
 
 current_model = {}
 
@@ -118,7 +119,12 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     # print(default_collector)
 
     if collector is None:
-        _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
+        if os.name == 'nt':
+            # Windows
+            _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
+        else:
+            # Linux (GitHub Actions) / macOS
+            _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
     else:
         _collector = collector
 
