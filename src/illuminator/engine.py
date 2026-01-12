@@ -120,8 +120,9 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
 
     if collector is None:
         #_collector = '"%(python)s" "{}" %(addr)s'.format(default_collector.replace('\\', '/'))
-        _path = default_collector.replace('\\', '/')
-        _collector = f'"%(python)s" {shlex.quote(_path) if os.name != "nt" else f'"{_path}"'} %(addr)s'
+        #_path = default_collector.replace('\\', '/')
+        #_collector = f'"%(python)s" {shlex.quote(_path) if os.name != "nt" else f'"{_path}"'} %(addr)s'
+        _collector = '"%(python)s" "{}" %(addr)s'.format(default_collector.replace('\\', '/'))
     else:
         _collector = collector
 
