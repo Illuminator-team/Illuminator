@@ -118,7 +118,7 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     # print(default_collector)
 
     if collector is None:
-        _collector = '%(python)s "' + default_collector.replace('\\', '/') + '" %(addr)s'
+        _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
     else:
         _collector = collector
 
