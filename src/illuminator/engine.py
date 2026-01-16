@@ -426,7 +426,6 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
     for item in monitor_config['items']:
             from_model, from_attr =  item.split('.')
 
-            to_attr = from_attr # enforce connecting attributes have the same name  # TODO, what if its not?
             try:
                 model_entity = model_entities[from_model][0]
             except KeyError as e:
@@ -437,7 +436,7 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
             try:
                 world.connect(model_entity, 
                               monitor, 
-                              (from_attr, to_attr)
+                              (from_attr, from_model + '.' + from_attr)
                             )
             except Exception as e:
                 print(f"Error: {e}. Connection could not be established for {from_model} and the monitor.")
