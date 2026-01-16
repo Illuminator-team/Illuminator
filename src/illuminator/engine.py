@@ -115,24 +115,24 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
 
     mosaik_configuration = {}
 
-    default_collector = get_collector_path()
-    # print(default_collector)
+    # default_collector = get_collector_path()
+    # # print(default_collector)
 
-    if collector is None:
-        if os.name == 'nt':
-            # Windows
-            _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
-        else:
-            # Linux (GitHub Actions) / macOS
-            _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
-    else:
-        _collector = collector
+    # if collector is None:
+    #     if os.name == 'nt':
+    #         # Windows
+    #         _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
+    #     else:
+    #         # Linux (GitHub Actions) / macOS
+    #         _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
+    # else:
+    #     _collector = collector
 
-    mosaik_configuration.update({'Collector':
-                                 {
-                                     'cmd': _collector
-                                 }
-                                 })
+    # mosaik_configuration.update({'Collector':
+    #                              {
+    #                                  'cmd': _collector
+    #                              }
+    #                              })
 
     
     for model in config_simulation['models']:
@@ -469,22 +469,22 @@ class Simulation:
         _end_time = config['scenario']['end_time']
         _time_resolution = config['scenario']['time_resolution']
         # output file with forecast results
-        _results_file = config['monitor']['file']
+        # _results_file = config['monitor']['file']
 
         # Initialize the Mosaik worlds
         world = create_world(sim_config, time_resolution=_time_resolution, start_time=_start_time)
         # TODO: collectors are also customisable simulators, define in the same way as models.
         # A way to define custom collectors should be provided by the Illuminator.
-        collector = world.start('Collector', 
-                                time_resolution=_time_resolution, 
-                                start_date=_start_time,
-                                items = config['monitor']['items'],  
-                                results_show={'write2csv':True, 'dashboard_show':False, 
-                                            'Finalresults_show':False,'database':False, 'mqtt':False}, 
-                                output_file=_results_file)
+        # collector = world.start('Collector', 
+        #                         time_resolution=_time_resolution, 
+        #                         start_date=_start_time,
+        #                         items = config['monitor']['items'],  
+        #                         results_show={'write2csv':True, 'dashboard_show':False, 
+        #                                     'Finalresults_show':False,'database':False, 'mqtt':False}, 
+        #                         output_file=_results_file)
         
         # initialize monitor
-        monitor = collector.Monitor()
+        # monitor = collector.Monitor()
 
         # Dictionary to keep track of created model entities
         model_entities = start_simulators(world, config['models'])
@@ -575,9 +575,9 @@ class Simulation:
                 self.config_file['connections'].remove(connection)
         
         # remove monitor items related to the model
-        for item in self.config_file['monitor']['items']:
-            if item.startswith(model_name + '.'):
-                self.config_file['monitor']['items'].remove(item)
+        # for item in self.config_file['monitor']['items']:
+        #     if item.startswith(model_name + '.'):
+        #         self.config_file['monitor']['items'].remove(item)
 
 
 
