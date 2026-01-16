@@ -4,7 +4,8 @@
 
 from .adder import Adder
 
-from .collector import Collector
+#from .Collector.collector import Collector
+from .Collector.collector_v3 import Collector
 from .CSV_reader_v3 import CSV
 
 from .Gridconnection.grid_connection_v3 import GridConnection
