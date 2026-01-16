@@ -130,19 +130,6 @@ models:
     res_load:  # Residual load after considering the generation and load demand (kW)
     dump:  # Excess power that cannot be stored or used (kW)
 
-- name: Collector1
-  type: Collector
-  parameters:
-    file_path: './examples/Tutorial1/collector_output.txt'
-    delimiter: ','
-    date_format: 'YYYY-MM-DD HH:mm:ss'
-  inputs:
-    data: 0
-  outputs:
-    out: 0
-  states:
-    state: 0
-
 
 connections:
 - from: CSVload.load
@@ -185,17 +172,12 @@ connections:
   to: Battery1.flow2b
   time_shifted: True
 
-- from: Battery1.soc
-  to: Collector1.data
-- from: Controller1.res_load
-  to: Collector1.data
-
-# monitor:
-#   file: './out_Tutorial1.csv'
-#   items:
-#     #- CSV_pv.G_Gh
-#     # - Controller1.dump
-#     # - PV1.pv_gen
+monitor:
+  file: './out_Tutorial1.csv'
+  items:
+    - CSV_pv.G_Gh
+    - Controller1.dump
+    - PV1.pv_gen
 #     # - Wind1.wind_gen
 #     # - Load1.load_dem
 
