@@ -38,19 +38,6 @@ def create_world(sim_config: dict, time_resolution: int, start_time: str) -> Mos
     return world
 
 
-# def get_collector_path() -> str:
-#     """Returns the path to the default collector script."""
-
-#     # find the module specification for the collector module
-#     specifiction = importlib.util.find_spec('illuminator.models.collector')
-#     if specifiction is None or specifiction.origin is None:
-#         raise ImportError('The collector module was not found.')
-    
-#     collector_path=specifiction.origin
-#     return collector_path
-#     # TODO: write a unit test for this
-
-
 def apply_default_values(config_simulation: dict) -> dict:
     """Applies Illuminator default values to the configuration if they are not
     specified. 
@@ -114,26 +101,6 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     """
 
     mosaik_configuration = {}
-
-    # default_collector = get_collector_path()
-    # # print(default_collector)
-
-    # if collector is None:
-    #     if os.name == 'nt':
-    #         # Windows
-    #         _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
-    #     else:
-    #         # Linux (GitHub Actions) / macOS
-    #         _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
-    # else:
-    #     _collector = collector
-
-    # mosaik_configuration.update({'Collector':
-    #                              {
-    #                                  'cmd': _collector
-    #                              }
-    #                              })
-
     
     for model in config_simulation['models']:
         model_config = {model['name']:
@@ -479,18 +446,6 @@ class Simulation:
 
         # Initialize the Mosaik worlds
         world = create_world(sim_config, time_resolution=_time_resolution, start_time=_start_time)
-        # TODO: collectors are also customisable simulators, define in the same way as models.
-        # A way to define custom collectors should be provided by the Illuminator.
-        # collector = world.start('Collector', 
-        #                         time_resolution=_time_resolution, 
-        #                         start_date=_start_time,
-        #                         items = config['monitor']['items'],  
-        #                         results_show={'write2csv':True, 'dashboard_show':False, 
-        #                                     'Finalresults_show':False,'database':False, 'mqtt':False}, 
-        #                         output_file=_results_file)
-        
-        # initialize monitor
-        # monitor = collector.Monitor()
 
         # Dictionary to keep track of created model entities
         model_entities = start_simulators(world, config['models'])
