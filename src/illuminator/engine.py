@@ -38,19 +38,6 @@ def create_world(sim_config: dict, time_resolution: int, start_time: str) -> Mos
     return world
 
 
-def get_collector_path() -> str:
-    """Returns the path to the default collector script."""
-
-    # find the module specification for the collector module
-    specifiction = importlib.util.find_spec('illuminator.models.collector')
-    if specifiction is None or specifiction.origin is None:
-        raise ImportError('The collector module was not found.')
-    
-    collector_path=specifiction.origin
-    return collector_path
-    # TODO: write a unit test for this
-
-
 def apply_default_values(config_simulation: dict) -> dict:
     """Applies Illuminator default values to the configuration if they are not
     specified. 
@@ -114,26 +101,6 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     """
 
     mosaik_configuration = {}
-
-    default_collector = get_collector_path()
-    # print(default_collector)
-
-    if collector is None:
-        if os.name == 'nt':
-            # Windows
-            _collector = '"%(python)s" "' + default_collector.replace('\\', '/') + '" %(addr)s'
-        else:
-            # Linux (GitHub Actions) / macOS
-            _collector = '%(python)s ' + default_collector.replace('\\', '/') + ' %(addr)s'
-    else:
-        _collector = collector
-
-    mosaik_configuration.update({'Collector':
-                                 {
-                                     'cmd': _collector
-                                 }
-                                 })
-
     
     for model in config_simulation['models']:
         model_config = {model['name']:
@@ -176,7 +143,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
             else:
                 model_parameters = {}
 
-            if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
+            if model_type == 'CSV' or model_type == 'Collector':  # the CVS model is a special model used to read data from a CSV file
                 
                 if 'file_path' not in model_parameters.keys():
                     raise ValueError("The CSV model requires 'file_path' parameters. Check your YAML configuration file.")
@@ -272,6 +239,11 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             to_model_config = next(m for m in models if m['name'] == to_model)
         except StopIteration:
             raise ValueError(f"Model with name '{to_model}' not found in models list.")
+        
+        if to_model_config['type'] == 'Collector':
+            world.connect(model_entities[from_model][0], model_entities[to_model][0], (from_attr, from_model + '.' + from_attr))
+            continue
+        
         time_shifted = connection['time_shifted']
             
         # check if the connection is a physical split
@@ -421,7 +393,6 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
     for item in monitor_config['items']:
             from_model, from_attr =  item.split('.')
 
-            to_attr = from_attr # enforce connecting attributes have the same name  # TODO, what if its not?
             try:
                 model_entity = model_entities[from_model][0]
             except KeyError as e:
@@ -432,7 +403,7 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
             try:
                 world.connect(model_entity, 
                               monitor, 
-                              (from_attr, to_attr)
+                              (from_attr, from_model + '.' + from_attr)
                             )
             except Exception as e:
                 print(f"Error: {e}. Connection could not be established for {from_model} and the monitor.")
@@ -459,6 +430,8 @@ class Simulation:
     def run(self):
         """Runs a simulation scenario"""
 
+        self.add_collector()
+
         config = apply_default_values(self.config_file)
         
         # Define the Mosaik simulation configuration
@@ -469,22 +442,10 @@ class Simulation:
         _end_time = config['scenario']['end_time']
         _time_resolution = config['scenario']['time_resolution']
         # output file with forecast results
-        _results_file = config['monitor']['file']
+        # _results_file = config['monitor']['file']
 
         # Initialize the Mosaik worlds
         world = create_world(sim_config, time_resolution=_time_resolution, start_time=_start_time)
-        # TODO: collectors are also customisable simulators, define in the same way as models.
-        # A way to define custom collectors should be provided by the Illuminator.
-        collector = world.start('Collector', 
-                                time_resolution=_time_resolution, 
-                                start_date=_start_time,
-                                items = config['monitor']['items'],  
-                                results_show={'write2csv':True, 'dashboard_show':False, 
-                                            'Finalresults_show':False,'database':False, 'mqtt':False}, 
-                                output_file=_results_file)
-        
-        # initialize monitor
-        monitor = collector.Monitor()
 
         # Dictionary to keep track of created model entities
         model_entities = start_simulators(world, config['models'])
@@ -493,6 +454,7 @@ class Simulation:
         world = build_connections(world, model_entities, connections=config['connections'], models=config['models'])
 
         # Connect monitor
+        monitor = model_entities['Collector'][0]
         world = connect_monitor(world, model_entities, monitor, config['monitor'])
         
         # Run the simulation until the specified end time
@@ -507,6 +469,23 @@ class Simulation:
     def config(self)-> dict:
         """Returns the configuration file for the simulation."""
         return self.config_file
+    
+
+    def add_collector(self)-> None:
+        """Adds a collector to the simulation configuration."""
+        file_path = self.config_file['monitor']['file']
+        delimiter = self.config_file['monitor'].get('delimiter', ',')
+        date_format = self.config_file['monitor'].get('date_format', 'YYYY-MM-DD HH:mm:ss')
+
+        collector_config = {
+            'name': 'Collector',
+            'type': 'Collector',
+            'parameters': {'file_path': file_path, 'delimiter': delimiter, 'date_format': date_format},
+            }
+
+        self.add_model(collector_config)
+        return
+
     
     def add_model(self, model: dict)-> None:
         """
@@ -573,7 +552,7 @@ class Simulation:
         for connection in self.config_file['connections']:
             if connection['from'].startswith(model_name + '.') or connection['to'].startswith(model_name + '.'):
                 self.config_file['connections'].remove(connection)
-        
+
         # remove monitor items related to the model
         for item in self.config_file['monitor']['items']:
             if item.startswith(model_name + '.'):

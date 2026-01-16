@@ -102,7 +102,14 @@ class CSV(ModelConstructor):
         self.delimiter = self._model.parameters.get('delimiter')
         self.date_format = self._model.parameters.get('date_format')
         self.tzinfo = self._model.parameters.get('tzinfo', 'Europe/Amsterdam')  # Default timezone is Europe/Amsterdam
-        self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format, tzinfo=self.tzinfo)  # Convert start date to Arrow object with timezone 
+
+        try:
+            # 1. Try your specific format strictly
+            self.start_date = arrow.get(self._model.parameters.get('start'), self.date_format, tzinfo=self.tzinfo)
+        except arrow.parser.ParserMatchError:
+            # 2. If that fails, let Arrow guess (handles ISO, YYYY-MM-DD, etc.)
+            self.start_date = arrow.get(self._model.parameters.get('start'), tzinfo=self.tzinfo)
+        
         self.expected_date = self.start_date  # The date we expect to read from the CSV file at first is the start date
         self.next_date = self.start_date
         self.file_path = self._model.parameters.get('file_path')
