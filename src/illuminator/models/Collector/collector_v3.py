@@ -103,16 +103,18 @@ class Collector(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
     
         df = self.inputs2df(inputs)
-        df['datetime'] = current_date.format('YYYY-MM-DD HH:mm:ss')
-        df = df.set_index('datetime')
-        # df = df[self.items]  # put in the order as defined in the yaml file
         
         if time == 0:
             mode = 'w'
             header = True
+            df['date'] = current_date.format('YYYY-MM-DD') # REMOVE!!! THIS IS TEMPORARY TO PASS E2E TESTS
         else:
             mode = 'a'
             header = False
+            df['date'] = current_date.format('YYYY-MM-DD HH:mm:ss')
+        
+        df = df.set_index('date')
+        # df = df[self.items]  # put in the order as defined in the yaml file
 
         df.to_csv(self.file_path, sep=self.delimiter, mode=mode, header=header, index=True)
 
