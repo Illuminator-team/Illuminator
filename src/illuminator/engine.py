@@ -38,17 +38,17 @@ def create_world(sim_config: dict, time_resolution: int, start_time: str) -> Mos
     return world
 
 
-def get_collector_path() -> str:
-    """Returns the path to the default collector script."""
+# def get_collector_path() -> str:
+#     """Returns the path to the default collector script."""
 
-    # find the module specification for the collector module
-    specifiction = importlib.util.find_spec('illuminator.models.collector')
-    if specifiction is None or specifiction.origin is None:
-        raise ImportError('The collector module was not found.')
+#     # find the module specification for the collector module
+#     specifiction = importlib.util.find_spec('illuminator.models.collector')
+#     if specifiction is None or specifiction.origin is None:
+#         raise ImportError('The collector module was not found.')
     
-    collector_path=specifiction.origin
-    return collector_path
-    # TODO: write a unit test for this
+#     collector_path=specifiction.origin
+#     return collector_path
+#     # TODO: write a unit test for this
 
 
 def apply_default_values(config_simulation: dict) -> dict:
@@ -493,7 +493,7 @@ class Simulation:
         world = build_connections(world, model_entities, connections=config['connections'], models=config['models'])
 
         # Connect monitor
-        world = connect_monitor(world, model_entities, monitor, config['monitor'])
+        # world = connect_monitor(world, model_entities, monitor, config['monitor'])
         
         # Run the simulation until the specified end time
         mosaik_end_time =  compute_mosaik_end_time(_start_time,
