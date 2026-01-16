@@ -458,11 +458,12 @@ class Simulation:
             Contains the path to the simulation or the simulation config dict object
         """
         self.config_file = load_config_file(config) if type(config) == str else config
-        self.add_collector()
 
 
     def run(self):
         """Runs a simulation scenario"""
+
+        self.add_collector()
 
         config = apply_default_values(self.config_file)
         
