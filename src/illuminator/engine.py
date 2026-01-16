@@ -552,11 +552,11 @@ class Simulation:
         for connection in self.config_file['connections']:
             if connection['from'].startswith(model_name + '.') or connection['to'].startswith(model_name + '.'):
                 self.config_file['connections'].remove(connection)
-        
+
         # remove monitor items related to the model
-        # for item in self.config_file['monitor']['items']:
-        #     if item.startswith(model_name + '.'):
-        #         self.config_file['monitor']['items'].remove(item)
+        for item in self.config_file['monitor']['items']:
+            if item.startswith(model_name + '.'):
+                self.config_file['monitor']['items'].remove(item)
 
 
 
