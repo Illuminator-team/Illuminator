@@ -176,7 +176,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
             else:
                 model_parameters = {}
 
-            if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
+            if model_type == 'CSV' or model_type == 'Collector':  # the CVS model is a special model used to read data from a CSV file
                 
                 if 'file_path' not in model_parameters.keys():
                     raise ValueError("The CSV model requires 'file_path' parameters. Check your YAML configuration file.")
@@ -272,6 +272,11 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             to_model_config = next(m for m in models if m['name'] == to_model)
         except StopIteration:
             raise ValueError(f"Model with name '{to_model}' not found in models list.")
+        
+        if to_model_config['type'] == 'Collector':
+            world.connect(model_entities[from_model][0], model_entities[to_model][0], (from_attr, from_model + '.' + from_attr))
+            continue
+        
         time_shifted = connection['time_shifted']
             
         # check if the connection is a physical split
