@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "3.0.0-beta.10"
+version = "3.0.0-beta.11"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "readme.md"
@@ -61,7 +61,7 @@ dev = [
 illuminator = "illuminator.cli.main:app"
 
 [project.urls]
-Documentation = "https://illuminator-team.github.io/Illuminator/"
+Documentation = "https://illuminator-team.github.io/website/"
 Repository = "https://github.com/Illuminator-team/Illuminator.git"
 "Bug Tracker" = "https://github.com/Illuminator-team/Illuminator/issues"
 Changelog = "https://github.com/Illuminator-team/Illuminator/blob/main/CHANGELOG.md"
