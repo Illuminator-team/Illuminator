@@ -21,6 +21,23 @@ from .ElectricVehicle.EV import EV
 
 from .Battery.battery_v3 import Battery
 
+# Hydrogen models
+from .Buffer.buffer import H2Buffer
+from .Electrolyzer.electrolyzer_v3 import Electrolyzer
+from .Electrolyzer.ZZE_v3 import ZZE
+from .Thermolyzer.thermolyzer_v3 import Thermolyzer
+from .Compressor.compressor_v3 import Compressor
+from .H2demand.h2demand_v3 import H2demand
+from .H2pipeline.h2pipeline import Pipeline
+from .H2storage.h2storage_v3 import H2Storage
+from .H2valve.h2valve_v3 import H2Valve
+from .H2_joint.H2_joint_v3 import H2Joint
+from .H2controller.H2_controller_v3 import H2Controller
+from .H2controller.H2_controller2 import H2Controller2
+from .H2controller.H2_controller_example import H2ControllerExample
+from .H2PSA.PSA_v3 import H2PSA
+
+# controllers
 from .Controllers.default_controller.controller_v3 import Controller
 from .Controllers.controller_T1.controller_T1_v3 import Controller_T1
 from .Controllers.controller_T3Congestion.controller_T3Congestion_v3 import ControllerT3Congestion
@@ -28,6 +45,7 @@ from .Controllers.controller_ev.controller_EV import ControllerEV
 from .Controllers.controller_ev.controller_T4 import Controller_T4
 from .Controllers.controller_StoryMode.controller_StoryMode_v3 import Controller_StoryMode
 
+# agents
 from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgent
 from .Agents.operators.operator_v3 import Operator_Market
 from .Agents.justice_agent.justice_agent_v3 import JusticeAgent
@@ -41,6 +59,20 @@ __all__ = [ 'Adder',
             'Load',
             'LoadEV',
             'LoadHeatpump',
+            'Battery',
+            'Electrolyzer', 
+            'Thermolyzer',
+            'Compressor',
+            'H2demand',
+            'Pipeline',
+            'H2Storage',
+            'H2Valve',
+            'H2Joint',
+            'H2Controller',
+            'H2Controller2',
+            'H2ControllerExample',
+            'H2Buffer',
+            'H2PSA',
             'EV',
             'Battery', 
             'Controller',
