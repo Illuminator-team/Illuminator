@@ -174,13 +174,13 @@ schema = Schema(  # a mapping of mappings
                 Optional("time_shifted", default=False): bool
             }]
         ),
-        # "monitor":  Schema(
-        #     {
-        #         Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'file' does not exists..."), error="you must provide a non-empty string for 'file'"),
-        #         "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
-        #                 error="you must provide at least one item to monitor")
-        #     }
-        # )
+        "monitor":  Schema(
+            {
+                Optional("file"): And(str, len, Use(validate_directory_path, error="Path for 'file' does not exists..."), error="you must provide a non-empty string for 'file'"),
+                "items": And(list, len, Use(validate_model_item_format, error="Items in 'monitor' must have the format: <model>.<item>"), 
+                        error="you must provide at least one item to monitor")
+            }
+        )
     }
 )
 

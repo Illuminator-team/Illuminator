@@ -459,6 +459,7 @@ class Simulation:
             Contains the path to the simulation or the simulation config dict object
         """
         self.config_file = load_config_file(config) if type(config) == str else config
+        self.add_collector()
 
 
     def run(self):
@@ -498,7 +499,8 @@ class Simulation:
         world = build_connections(world, model_entities, connections=config['connections'], models=config['models'])
 
         # Connect monitor
-        # world = connect_monitor(world, model_entities, monitor, config['monitor'])
+        monitor = model_entities['Collector'][0]
+        world = connect_monitor(world, model_entities, monitor, config['monitor'])
         
         # Run the simulation until the specified end time
         mosaik_end_time =  compute_mosaik_end_time(_start_time,
@@ -512,6 +514,23 @@ class Simulation:
     def config(self)-> dict:
         """Returns the configuration file for the simulation."""
         return self.config_file
+    
+
+    def add_collector(self)-> None:
+        """Adds a collector to the simulation configuration."""
+        file_path = self.config_file['monitor']['file']
+        delimiter = self.config_file['monitor'].get('delimiter', ',')
+        date_format = self.config_file['monitor'].get('date_format', 'YYYY-MM-DD HH:mm:ss')
+
+        collector_config = {
+            'name': 'Collector',
+            'type': 'Collector',
+            'parameters': {'file_path': file_path, 'delimiter': delimiter, 'date_format': date_format},
+            }
+
+        self.add_model(collector_config)
+        return
+
     
     def add_model(self, model: dict)-> None:
         """
