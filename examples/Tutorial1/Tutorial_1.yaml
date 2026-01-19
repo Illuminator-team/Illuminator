@@ -175,20 +175,20 @@ connections:
 monitor:
   file: './out_Tutorial1.csv'
   items:
-    #- CSV_pv.G_Gh
-    # - Controller1.dump
-    # - PV1.pv_gen
-    # - Wind1.wind_gen
-    # - Load1.load_dem
-
-    - Controller1.flow2b
-    - Controller1.res_load
+    - CSV_pv.G_Gh
     - Controller1.dump
-    - Battery1.p_out
-    - Battery1.soc
     - PV1.pv_gen
-    - Wind1.wind_gen
-    - Load1.load_dem
+#     # - Wind1.wind_gen
+#     # - Load1.load_dem
+
+#     - Controller1.flow2b
+#     - Controller1.res_load
+#     - Controller1.dump
+#     - Battery1.p_out
+#     - Battery1.soc
+#     - PV1.pv_gen
+#     - Wind1.wind_gen
+#     - Load1.load_dem
   #    - Wind1.u60
 
   #- CSVload.load
