@@ -88,7 +88,7 @@ class H2Valve(ModelConstructor):
     
         # Ensure the ratios sum to 100%
         total_ratio = self.ratio1 + self.ratio2 + self.ratio3
-        if total_ratio != 100:
+        if round(total_ratio, 3) != 100:
             raise ValueError(f"Ratios must sum to 100%, but got {total_ratio}%. Please adjust the ratios accordingly.")
 
 
