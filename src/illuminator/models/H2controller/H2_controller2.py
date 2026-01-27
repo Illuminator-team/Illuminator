@@ -62,6 +62,10 @@ class H2Controller2(ModelConstructor):
             and fuel cell efficiency.
         """
         super().__init__(**kwargs)
+        self.demand1 = self._model.inputs.get('demand1', 0)
+        self.demand2 = self._model.inputs.get('demand2', 0)
+        self.thermolyzer_out = self._model.inputs.get('thermolyzer_out', 0)
+
 
     def step(self, time: int, inputs: dict=None, max_advance: int=900) -> None:  # step function always needs arguments self, time, inputs and max_advance. Max_advance needs an initial value.
         """
@@ -88,12 +92,16 @@ class H2Controller2(ModelConstructor):
             Next simulation time.
         """
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
+        self.demand1 = input_data['demand1'] if 'demand1' in input_data else self.demand1
+        self.demand2 = input_data['demand2'] if 'demand2' in input_data else self.demand2
+        self.thermolyzer_out = input_data['thermolyzer_out'] if 'thermolyzer_out' in input_data else self.thermolyzer_out
+
         self.time = time
         self.current_time = time * self.time_resolution
         # print('from controller %%%%%%%%%%%', self.current_time)
-        results = self.control(input_data['demand1'],
-                                input_data['demand2'],
-                                thermolyzer_out=input_data['thermolyzer_out'],
+        results = self.control(self.demand1,
+                                self.demand2,
+                                self.thermolyzer_out,
                                 buffer_available_h2=input_data['buffer_available_h2'], 
                                 buffer_free_capacity=input_data['buffer_free_capacity']
                                 )
