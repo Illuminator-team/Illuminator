@@ -1,4 +1,5 @@
 from illuminator.engine import Simulation
+from illuminator.models.import_custom_model import import_custom_model
 
 # initialize simulation according to tutorial1 yaml
 
@@ -37,5 +38,22 @@ def tutorial3():
     # run the simulation
     simulation.run()
 
-tutorial1()
-tutorial3()
+
+def hydrogen():
+    from illuminator.models.import_custom_model import import_custom_model
+    from data.Custom_hydrogen_controller import Hydrogen_production_controller
+    import_custom_model(Hydrogen_production_controller)
+
+    CONFIG_FILE = 'tests/data/Hydrogen_production.yaml'
+    OUT_FILE = f"tests/outputs/out_e2e_hydrogen.csv"
+
+    simulation = Simulation(CONFIG_FILE)
+    simulation.set_monitor_param('file', OUT_FILE)
+
+    simulation.run()
+    return
+
+
+# tutorial1()
+# tutorial3()
+hydrogen()
