@@ -1,8 +1,8 @@
 import os
-import illuminator.models
+from illuminator.models.import_custom_model import import_custom_model
 from Hydrogen_production_controller import Hydrogen_production_controller
-setattr(illuminator.models, 'Hydrogen_production_controller', Hydrogen_production_controller)
-illuminator.models.__all__.append('Hydrogen_production_controller')
+import_custom_model(Hydrogen_production_controller)
+
 
 from illuminator.engine import Simulation
 # from illuminator_system_visualization import generate_hydrogen_system_diagram
