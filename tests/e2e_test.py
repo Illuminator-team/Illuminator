@@ -54,6 +54,6 @@ def hydrogen():
     return
 
 
-tutorial1()
-tutorial3()
+# tutorial1()
+# tutorial3()
 hydrogen()

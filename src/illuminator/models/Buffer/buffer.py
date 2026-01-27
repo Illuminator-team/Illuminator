@@ -116,7 +116,7 @@ class H2Buffer(ModelConstructor):
         h2_discharge_cap, h2_charge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
 
         self.set_outputs({'h2_out': results['h2_out'], 'actual_h2_in': results['actual_h2_in'], 'overflow': results['overflow']})
-        self.set_states({'soc': self.soc, 'flag': self.flag,'available_h2': h2_discharge_cap, 'free_capacity': h2_charge_cap})
+        self.set_states({'soc': round(self.soc,2), 'flag': self.flag,'available_h2': round(h2_discharge_cap, 3), 'free_capacity': round(h2_charge_cap, 3)})
 
         return time + self.time_step_size  # Return the next simulation time step
     

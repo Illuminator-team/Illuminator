@@ -122,7 +122,7 @@ class ZZE(ModelConstructor):
         h2_discharge_cap, h2_charge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
 
         self.set_states({
-            'soc': self.soc,
+            'soc': round(self.soc, 2),
             'flag': self.flag,
             'available_h2': self.kg_to_kwh(h2_discharge_cap),
             'free_capacity': self.kg_to_kwh(h2_charge_cap)

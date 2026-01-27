@@ -81,7 +81,8 @@ class H2Joint(ModelConstructor):
         result = self.calc_flow(h2_in_1=self.h2_in_1,
                                 h2_in_2=self.h2_in_2
                             )
-        self.set_outputs(result)
+        out = round(result['out'], 3)
+        self.set_outputs({'out': out})
 
         return time + self.time_step_size
 

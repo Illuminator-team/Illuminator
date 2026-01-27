@@ -56,7 +56,7 @@ class Electrolyzer(ModelConstructor):
         h_flow, power_consumption = self.generate_setpoint(desired_out=desired_out)
 
         self.set_outputs({
-            'h_gen': h_flow, 
+            'h_gen': round(h_flow, 3), 
             'power_consumption': power_consumption
         })
         
