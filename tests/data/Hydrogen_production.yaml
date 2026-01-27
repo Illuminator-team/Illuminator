@@ -85,6 +85,20 @@ models:
 
 # # Additional hydrogen system components (buffers, valves, demands, compressor, controller)
 
+- name: H2_demand1
+  type: CSV
+  parameters:
+    file_path: 'tests/data/H2_demand1.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: H2_demand2
+  type: CSV
+  parameters:
+    file_path: 'tests/data/H2_demand2.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
 - name: Electrolyzer1
   type: Electrolyzer
   parameters:
@@ -102,8 +116,8 @@ models:
   parameters:
     dummy: 0
   inputs:
-    demand1: 10
-    demand2: 10
+    demand1: 0
+    demand2: 0
     thermolyzer_out: 0
     buffer_available_h2: 0
     buffer_free_capacity: 0
@@ -264,6 +278,12 @@ connections:
 - from: H2Buffer1.free_capacity
   to: H2_controller.buffer_free_capacity
 
+# from demand CSVs to controller
+- from: H2_demand1.demand
+  to: H2_controller.demand1
+- from: H2_demand2.demand
+  to: H2_controller.demand2
+
 # from controller to electrolyzer
 - from: H2_controller.desired_out
   to: Electrolyzer1.desired_out
@@ -308,4 +328,3 @@ monitor:
     - H2valve1.out1
     - H2valve1.out2
     - H2valve1.out3
-
