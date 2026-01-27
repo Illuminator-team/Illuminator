@@ -1,0 +1,286 @@
+scenario:
+  name: "Hydrogen_system_4" # in mosaik so called world
+  start_time: '2025-01-01 00:00:00' # ISO 8601 start time of the simulation
+  end_time: '2025-02-01 00:00:00' # duration in seconds 
+  time_resolution: 3600 # time step in seconds (optional). Defaults to 15 minutes (900 s)
+
+
+
+models: 
+- name: CSVdayahead
+  type: CSV
+  parameters:
+    file_path: './data/dayahead.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+- name: CSVbiomass
+  type: CSV
+  parameters:
+    file_path: './data/biomass3.csv'
+    delimiter: ','
+    date_format: 'YYYY-MM-DD HH:mm:ss'
+
+
+### Hydrogen production system components ###
+- name: thermolyzer1
+  type: Thermolyzer
+  parameters:
+    eff: 90             # thermolyzer effficiency [%]  
+    C_bio_h2 : 50       # conversion factor from biomass to hydrogen [kg/kg] 
+    C_CO_2 : 20         # absorption factor carbondioxide per h2 produced [kg/kg] 
+    C_Eelec_h2: 11.5    # conversion factor electrical energy to hydrogen mass [kWh/kg]    
+    max_ramp_up : 200   # maximum ramp up in power per timestep [kW/timestep]  
+    max_p_in : 8000    # maximum input power [kW]
+  inputs:
+    biomass_in : 0      # biomass input [kg/timestep]
+    desired_out : 5   # desired output flow of hydrogen [kg/h]
+  outputs:
+    h_gen : 0           # hydrogen generation [kg]
+    power_consumption : 0   # power consumption [kWh]
+    CO2_out : 0         # CO2 output [kg]
+
+- name: ZZE1
+  type: ZZE
+  parameters: 
+    e_eff: 90       # electrolyzer effficiency [%]
+    max_p_in: 500 # maximum charging power [kW]
+    max_p_out: 100  # maximum output power [kW]
+    h2_capacity_tot: 2000  # total hydrogen capacity [kg]
+    h2_soc_min: 0
+    h2_soc_max: 100
+  inputs:
+    setpoint: 2  # charge setpoint [kg/h]
+  outputs:
+    # electrolyzer part
+    power_consumption: 0   # power_consumption power [kWh]
+    # buffer part
+    h2_out: 30
+    overflow: 0
+  states:
+    soc: 0
+    flag: 0
+    available_h2: 0
+    free_capacity: 0
+
+- name: Joint1
+  type: H2Joint
+  parameters:
+    joint_eff: 100             # joint efficiency [%]
+  inputs:
+    h2_in_1: 0               # input flow [kg/timestep]
+    h2_in_2: 0               # input flow [kg/timestep]
+  outputs:
+    out: 0               # output flow [kg/timestep]
+
+- name: PSA1
+  type: H2PSA
+  parameters:
+    eff: 100             # PSA efficiency [%]
+  inputs:
+    h2_in: 0             # hydrogen input [kg/timestep]
+  outputs:
+    h2_out: 0            # hydrogen output [kg/timestep]
+
+
+# # Additional hydrogen system components (buffers, valves, demands, compressor, controller)
+
+# - name: Electrolyzer1
+#   type: Electrolyzer
+#   parameters:
+#     e_eff: 90
+
+# - name: H2_controller
+#   type: H2Controller2
+#   parameters:
+#     dummy: 0
+#   inputs:
+#     demand1: 0
+#     demand2: 0
+#     thermolyzer_out: 0
+#     buffer_available_h2: 0
+#     buffer_free_capacity: 0
+#   outputs:
+#     dump: 0
+#   states:
+#     buffer_in: 0
+#     desired_out: 0
+#     valve1_ratio1: 0 
+#     valve1_ratio2: 0
+#     valve1_ratio3: 0
+
+# - name: H2Buffer1
+#   type: H2Buffer
+#   parameters: 
+#     h2_soc_min: 0
+#     h2_soc_max: 100
+#     h2_charge_eff: 100
+#     h2_discharge_eff: 100
+#     max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
+#     min_flow_rate_in: 0
+#     max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
+#     min_flow_rate_out: 0
+#     h2_capacity_tot: 100
+#   inputs:
+#     h2_in: 0
+#     desired_out: 29
+#   outputs:
+#     h2_out: 20
+#     actual_h2_in: 0
+#     overflow: 0
+#   states:
+#     soc: 0
+#     flag: 0
+#     available_h2: 0
+#     free_capacity: 0 
+
+# - name: compressor1
+#   type: Compressor
+#   parameters:
+#     p_in: 30
+#     p_out: 500
+#     T_amb: 293.15
+#     compressor_eff: 100
+#     max_power_in: 10000
+#   inputs:
+#     flow2c: 0
+#   outputs:
+#     flow_from_c: 0
+#   states:
+#     volume_flow_out: 0
+#     power_req: 0
+
+# - name: H2Buffer2
+#   type: H2Buffer
+#   parameters: 
+#     h2_soc_min: 0
+#     h2_soc_max: 100
+#     h2_charge_eff: 100
+#     h2_discharge_eff: 100
+#     max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
+#     min_flow_rate_in: 0
+#     max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
+#     min_flow_rate_out: 0
+#     h2_capacity_tot: 1000
+#   inputs:
+#     h2_in: 0
+#     desired_out: 0
+#   outputs:
+#     h2_out: 0
+#     actual_h2_in: 0
+#     overflow: 0
+#   states:
+#     soc: 80
+#     flag: 0
+#     available_h2: 0
+#     free_capacity: 0  
+
+# - name: H2valve1
+#   type: H2Valve
+#   parameters:
+#     valve_eff: 100
+#     # max_flow: 100
+#   inputs:
+#     h2_in: 0
+#     ratio1: 33
+#     ratio2: 33
+#     ratio3: 34
+#   outputs:
+#     out1: 0
+#     out2: 0
+#     out3: 0
+
+# - name: H2demand1
+#   type: H2demand
+#   parameters:
+#     units: 1
+#   inputs:
+#     demand: 0
+#   states:
+#     tot_dem: 0
+
+# - name: H2demand2
+#   type: H2demand
+#   parameters:
+#     units: 1
+#   inputs:
+#     demand: 0
+#   states:
+#     tot_dem: 0
+
+- name: controller
+  type: Hydrogen_production_controller
+  parameters:
+    dummy: 0
+  inputs:
+    ZZE_soc : 0
+    DayAhead_price: 0
+  states:
+    Thermolyzer_setpoint: 0
+    ZZE_setpoint: 0
+
+connections:
+
+# - from: CSVdemand1.demand
+#   to: H2demand1.demand
+# - from: CSVdemand2.demand
+#   to: H2demand2.demand
+
+# from biomass to thermolyzer
+- from: CSVbiomass.biomass
+  to: thermolyzer1.biomass_in
+
+# from thermolyzer to joint
+- from: thermolyzer1.h_gen
+  to: Joint1.h2_in_1
+
+### ZZE ELECTROLYZER ###
+- from: ZZE1.h2_out
+  to: Joint1.h2_in_2
+###########################
+
+# from joint to PSA
+- from: Joint1.out
+  to: PSA1.h2_in
+
+# from PSA to small buffer
+# - from: PSA1.h2_out
+#   to: H2Buffer1.h2_in
+
+# from buffer to compressor
+# - from: H2Buffer1.h2_out
+#   to: compressor1.flow2c
+
+# from compressor to big buffer
+# - from: compressor1.flow_from_c
+#   to: H2Buffer2.h2_in
+
+# from big buffer to fuel station
+# - from: H2Buffer2.h2_out
+#   to: H2valve1.h2_in
+
+
+# control connections
+- from: ZZE1.soc
+  to: controller.ZZE_soc
+  time_shifted: True
+- from: controller.ZZE_setpoint
+  to: ZZE1.setpoint
+  # time_shifted: True
+- from: controller.Thermolyzer_setpoint
+  to: thermolyzer1.desired_out
+
+- from: CSVdayahead.price
+  to: controller.DayAhead_price
+
+monitor:
+  file: './h2_system_example4_3.csv'
+  items:
+
+    - ZZE1.h2_out
+    - ZZE1.soc
+    - controller.ZZE_setpoint
+    - controller.Thermolyzer_setpoint
+    - thermolyzer1.h_gen
+    - Joint1.out
+    - CSVdayahead.price
