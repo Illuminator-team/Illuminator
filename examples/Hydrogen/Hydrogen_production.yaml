@@ -85,128 +85,117 @@ models:
 
 # # Additional hydrogen system components (buffers, valves, demands, compressor, controller)
 
-# - name: Electrolyzer1
-#   type: Electrolyzer
-#   parameters:
-#     e_eff: 90
+- name: Electrolyzer1
+  type: Electrolyzer
+  parameters:
+    e_eff: 70                # electrolyzer efficiency [%]
+    max_p_in: 10             # maximum input power [kW]
+    max_p_ramp_rate: 10      # maximum rampup power [kW/s]
+  inputs:
+    desired_out: 30          # desired output flow of the electrolyzer [kg/h]
+  outputs:
+    h_gen: 0                 # hydrogen generation [kg/timestep]
+    power_consumption: 0     # power consumption of the electrolyzer [kW]
 
-# - name: H2_controller
-#   type: H2Controller2
-#   parameters:
-#     dummy: 0
-#   inputs:
-#     demand1: 0
-#     demand2: 0
-#     thermolyzer_out: 0
-#     buffer_available_h2: 0
-#     buffer_free_capacity: 0
-#   outputs:
-#     dump: 0
-#   states:
-#     buffer_in: 0
-#     desired_out: 0
-#     valve1_ratio1: 0 
-#     valve1_ratio2: 0
-#     valve1_ratio3: 0
+- name: H2_controller
+  type: H2Controller2
+  parameters:
+    dummy: 0
+  inputs:
+    demand1: 10
+    demand2: 10
+    thermolyzer_out: 0
+    buffer_available_h2: 0
+    buffer_free_capacity: 0
+  outputs:
+    dump: 0
+  states:
+    buffer_in: 0
+    desired_out: 0
+    valve1_ratio1: 0 
+    valve1_ratio2: 0
+    valve1_ratio3: 0
 
-# - name: H2Buffer1
-#   type: H2Buffer
-#   parameters: 
-#     h2_soc_min: 0
-#     h2_soc_max: 100
-#     h2_charge_eff: 100
-#     h2_discharge_eff: 100
-#     max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
-#     min_flow_rate_in: 0
-#     max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
-#     min_flow_rate_out: 0
-#     h2_capacity_tot: 100
-#   inputs:
-#     h2_in: 0
-#     desired_out: 29
-#   outputs:
-#     h2_out: 20
-#     actual_h2_in: 0
-#     overflow: 0
-#   states:
-#     soc: 0
-#     flag: 0
-#     available_h2: 0
-#     free_capacity: 0 
+- name: H2Buffer1
+  type: H2Buffer
+  parameters: 
+    h2_soc_min: 0
+    h2_soc_max: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
+    min_flow_rate_in: 0
+    max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
+    min_flow_rate_out: 0
+    h2_capacity_tot: 100
+  inputs:
+    h2_in: 0
+    desired_out: 29
+  outputs:
+    h2_out: 20
+    actual_h2_in: 0
+    overflow: 0
+  states:
+    soc: 0
+    flag: 0
+    available_h2: 0
+    free_capacity: 0 
 
-# - name: compressor1
-#   type: Compressor
-#   parameters:
-#     p_in: 30
-#     p_out: 500
-#     T_amb: 293.15
-#     compressor_eff: 100
-#     max_power_in: 10000
-#   inputs:
-#     flow2c: 0
-#   outputs:
-#     flow_from_c: 0
-#   states:
-#     volume_flow_out: 0
-#     power_req: 0
+- name: compressor1
+  type: Compressor
+  parameters:
+    p_in: 30
+    p_out: 500
+    T_amb: 293.15
+    compressor_eff: 100
+    max_power_in: 10000
+  inputs:
+    flow2c: 0
+  outputs:
+    flow_from_c: 0
+  states:
+    volume_flow_out: 0
+    power_req: 0
 
-# - name: H2Buffer2
-#   type: H2Buffer
-#   parameters: 
-#     h2_soc_min: 0
-#     h2_soc_max: 100
-#     h2_charge_eff: 100
-#     h2_discharge_eff: 100
-#     max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
-#     min_flow_rate_in: 0
-#     max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
-#     min_flow_rate_out: 0
-#     h2_capacity_tot: 1000
-#   inputs:
-#     h2_in: 0
-#     desired_out: 0
-#   outputs:
-#     h2_out: 0
-#     actual_h2_in: 0
-#     overflow: 0
-#   states:
-#     soc: 80
-#     flag: 0
-#     available_h2: 0
-#     free_capacity: 0  
+- name: H2Buffer2
+  type: H2Buffer
+  parameters: 
+    h2_soc_min: 0
+    h2_soc_max: 100
+    h2_charge_eff: 100
+    h2_discharge_eff: 100
+    max_flow_rate_in: 200 # maximum hydrogen input rate [kg/h]
+    min_flow_rate_in: 0
+    max_flow_rate_out: 200 # maximum hydrogen output rate [kg/h]
+    min_flow_rate_out: 0
+    h2_capacity_tot: 1000
+  inputs:
+    h2_in: 0
+    desired_out: 0
+  outputs:
+    h2_out: 0
+    actual_h2_in: 0
+    overflow: 0
+  states:
+    soc: 80
+    flag: 0
+    available_h2: 0
+    free_capacity: 0  
 
-# - name: H2valve1
-#   type: H2Valve
-#   parameters:
-#     valve_eff: 100
-#     # max_flow: 100
-#   inputs:
-#     h2_in: 0
-#     ratio1: 33
-#     ratio2: 33
-#     ratio3: 34
-#   outputs:
-#     out1: 0
-#     out2: 0
-#     out3: 0
-
-# - name: H2demand1
-#   type: H2demand
-#   parameters:
-#     units: 1
-#   inputs:
-#     demand: 0
-#   states:
-#     tot_dem: 0
-
-# - name: H2demand2
-#   type: H2demand
-#   parameters:
-#     units: 1
-#   inputs:
-#     demand: 0
-#   states:
-#     tot_dem: 0
+- name: H2valve1
+  type: H2Valve
+  parameters:
+    valve_eff: 100
+    # max_flow: 100
+  inputs:
+    h2_in: 0
+    ratio1: 33
+    ratio2: 33
+    ratio3: 34
+  outputs:
+    out1: 0
+    out2: 0
+    out3: 0
 
 - name: controller
   type: Hydrogen_production_controller
@@ -221,11 +210,6 @@ models:
 
 connections:
 
-# - from: CSVdemand1.demand
-#   to: H2demand1.demand
-# - from: CSVdemand2.demand
-#   to: H2demand2.demand
-
 # from biomass to thermolyzer
 - from: CSVbiomass.biomass
   to: thermolyzer1.biomass_in
@@ -237,28 +221,10 @@ connections:
 ### ZZE ELECTROLYZER ###
 - from: ZZE1.h2_out
   to: Joint1.h2_in_2
-###########################
 
 # from joint to PSA
 - from: Joint1.out
   to: PSA1.h2_in
-
-# from PSA to small buffer
-# - from: PSA1.h2_out
-#   to: H2Buffer1.h2_in
-
-# from buffer to compressor
-# - from: H2Buffer1.h2_out
-#   to: compressor1.flow2c
-
-# from compressor to big buffer
-# - from: compressor1.flow_from_c
-#   to: H2Buffer2.h2_in
-
-# from big buffer to fuel station
-# - from: H2Buffer2.h2_out
-#   to: H2valve1.h2_in
-
 
 # control connections
 - from: ZZE1.soc
@@ -272,6 +238,52 @@ connections:
 
 - from: CSVdayahead.price
   to: controller.DayAhead_price
+
+
+### START hydrogen system additional components ###
+
+# from electrolyzer to buffer
+- from: Electrolyzer1.h_gen
+  to: H2Buffer1.h2_in
+
+# from buffer to compressor
+- from: H2Buffer1.h2_out
+  to: compressor1.flow2c
+
+# from compressor to big buffer
+- from: compressor1.flow_from_c
+  to: H2Buffer2.h2_in
+
+# from big buffer to fuel station
+- from: H2Buffer2.h2_out
+  to: H2valve1.h2_in
+
+# from buffer to controller
+- from: H2Buffer1.available_h2
+  to: H2_controller.buffer_available_h2
+- from: H2Buffer1.free_capacity
+  to: H2_controller.buffer_free_capacity
+
+# from controller to electrolyzer
+- from: H2_controller.desired_out
+  to: Electrolyzer1.desired_out
+  time_shifted: True
+
+
+# from controller to valve
+- from: H2_controller.valve1_ratio1
+  to: H2valve1.ratio1
+  time_shifted: True
+- from: H2_controller.valve1_ratio2
+  to: H2valve1.ratio2
+  time_shifted: True
+- from: H2_controller.valve1_ratio3
+  to: H2valve1.ratio3
+  time_shifted: True
+
+
+
+### END hydrogen system additional components ###
 
 monitor:
   file: './h2_system_example4_3.csv'
