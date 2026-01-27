@@ -88,14 +88,14 @@ models:
 - name: H2_demand1
   type: CSV
   parameters:
-    file_path: 'tests/data/H2_demand1.csv'
+    file_path: 'tests/data/h2_demand1.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
 - name: H2_demand2
   type: CSV
   parameters:
-    file_path: 'tests/data/H2_demand2.csv'
+    file_path: 'tests/data/h2_demand2.csv'
     delimiter: ','
     date_format: 'YYYY-MM-DD HH:mm:ss'
 
