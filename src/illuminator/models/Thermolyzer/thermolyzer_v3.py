@@ -133,9 +133,15 @@ class Thermolyzer(ModelConstructor):
 
         CO2_out = -h_gen * self.C_CO_2
 
-        self.set_outputs({'h_gen': round(h_gen, 3),
-                          'power_consumption': round(power_consumption, 3),
-                          'CO2_out': round(CO2_out, 3)})
+        h_gen = round(h_gen, 3)
+        power_consumption = round(power_consumption, 3)
+        CO2_out = round(CO2_out, 3)
+
+        #print(f'hgen: {h_gen}, power_consumption: {power_consumption}, CO2_out: {CO2_out}')
+
+        self.set_outputs({'h_gen': h_gen,
+                          'power_consumption': power_consumption,
+                          'CO2_out': CO2_out})
 
         return time + self.time_step_size
 

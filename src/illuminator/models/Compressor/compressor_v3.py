@@ -125,9 +125,9 @@ class Compressor(ModelConstructor):
                                    T_amb=self.T_amb
                                     )
         volume_flow_out = input_data['flow2c'] / self.new_density(p=self.p_out, T=self.T_amb)
-        self.set_outputs({'flow_from_c': power_params['output_flow']})
-        self.set_states({'power_req': power_params['power_req']})
-        self.set_states({'volume_flow_out': volume_flow_out})
+        self.set_outputs({'flow_from_c': round(power_params['output_flow'], 3)})
+        self.set_states({'power_req': round(power_params['power_req'], 3)})
+        self.set_states({'volume_flow_out': round(volume_flow_out, 3)})
         # self._model.outputs['flow_from_c'] = input_data['flow2c']
         # self._model.outputs['power_req'] = power_req
         # self._model.outputs['volume_flow_out'] = volume_flow_out

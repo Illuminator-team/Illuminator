@@ -170,9 +170,9 @@ class H2Controller2(ModelConstructor):
                              
         # print(f'DEBUG: This is dump as seen from controller: {dump}')
         results = { 'dump': dump,
-                    'valve1_ratio1': valve1_ratio1,
-                    'valve1_ratio2': valve1_ratio2,
-                    'valve1_ratio3': valve1_ratio3,
+                    'valve1_ratio1': round(valve1_ratio1,3),
+                    'valve1_ratio2': round(valve1_ratio2,3),
+                    'valve1_ratio3': round(valve1_ratio3,3),
                     'buffer_in': buffer_in,
                     'desired_out': desired_out
                     }
