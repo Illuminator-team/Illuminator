@@ -82,6 +82,17 @@ models:
   outputs:
     h2_out: 0            # hydrogen output [kg/timestep]
 
+- name: controller
+  type: Hydrogen_production_controller
+  parameters:
+    dummy: 0
+  inputs:
+    ZZE_soc : 0
+    DayAhead_price: 0
+  states:
+    Thermolyzer_setpoint: 0
+    ZZE_setpoint: 0
+
 
 # # Additional hydrogen system components (buffers, valves, demands, compressor, controller)
 
@@ -210,17 +221,6 @@ models:
     out1: 0
     out2: 0
     out3: 0
-
-- name: controller
-  type: Hydrogen_production_controller
-  parameters:
-    dummy: 0
-  inputs:
-    ZZE_soc : 0
-    DayAhead_price: 0
-  states:
-    Thermolyzer_setpoint: 0
-    ZZE_setpoint: 0
 
 connections:
 
