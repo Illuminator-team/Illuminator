@@ -49,7 +49,7 @@ models:
     tolerance_limit: 0.67 # a load on the connection between 67% and 90% is tolerable but causes a warning
     critical_limit: 0.9 # a load on the connection over 90% of the connection capacity is critical
   inputs:
-    dump: 0
+    power_flow: 0
   outputs:
     residual:
   states:
@@ -239,7 +239,7 @@ connections:
   time_shifted: True
 
 - from: Controller1.dump
-  to: Grid1.dump
+  to: Grid1.power_flow
 
 - from: Grid1.flag_warning
   to: Controller1.flag_warning
