@@ -38,6 +38,8 @@ models:
   outputs:
     load_dem:  # total energy or power consumption for all houses (kWh) over the time step
     consumption:  # Current energy or power consumption based on the number of houses and input load (kWh)
+  states:
+    load_dem_state: 0  # incoming energy or power demand per house (kWh) for each time step (15 minutes)
 
 - name: Load2
   type: Load
@@ -74,6 +76,8 @@ models:
   outputs:
     pv_gen:
     g_aoi:
+  states:
+    pv_genState: 0
 
 - name: Wind1
   type: Wind # models can reuse the same type
@@ -92,6 +96,7 @@ models:
     u:  # Adjusted wind speed (m/s) at 25m height after converting from the original height (e.g., 100m or 60m).
   states:
     u60: 0  # Wind speed at 60m height (m/s) used to calculate the wind power generation.
+    wind_genState: 0  # State variable to track the current power output or energy generation of the wind turbine.
 
 - name: Battery1
   type: Battery # models can reuse the same type
@@ -109,6 +114,8 @@ models:
     p_out: 0  # output power from the battery after discharge/charge decision (Kw)
     p_in: 0  # input power to the battery (kW)
   states:
+    p_in_state: 0  # data on current power input to the battery (kW)
+    p_out_state: 0  # data on current power output of the battery (kW)
     mod: 0 # operation mode: 0=no action, 1=charge, -1=discharge
     soc: 10  # state of charge of the battery (%)
     flag: 0  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
@@ -130,6 +137,8 @@ models:
     flow2b:  # Power flow to/from battery (positive for charging, negative for discharging)
     res_load:  # Residual load after considering the generation and load demand (kW)
     dump:  # Excess power that cannot be stored or used (kW)
+  states:
+    flow2bState: 0  # State variable to track the current power flow to/from the battery (kW)
 
 
 connections:
