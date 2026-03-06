@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: illuminator-team/educational_material
+          ref: dev
           path: educational_material
 
       # Create conda environment called illuminator
