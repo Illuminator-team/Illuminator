@@ -80,7 +80,8 @@ class IlluminatorModel():
                 self.model_type: { # This must be the name of he model 
                     'public': True,
                     'params': list(self.parameters.keys()),
-                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys()) + list(self.states.keys())
+                    'attrs': list(self.inputs.keys()) + list(self.outputs.keys()) + list(self.states.keys()),
+                    'any_inputs': True if self.model_type == 'Collector' else False,
                 }
             }}
         return meta

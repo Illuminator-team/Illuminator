@@ -8,7 +8,7 @@ def create_merit_order_curve(all_bids_sorted_csv, demand, market_result_csv, dat
     all_bids_sorted = pd.read_csv(all_bids_sorted_csv, header = 0)
     all_bids_sorted['Cumulative Capacity (MW)'] = all_bids_sorted['Bid Capacity (MW)'].cumsum()
     market_result = pd.read_csv(market_result_csv, header = 0, index_col = 0)
-    market_clearing_price = market_result.loc[date, 'Operator1-0.time-based_0-market_clearing_price']
+    market_clearing_price = market_result.loc[date, 'Operator1.market_clearing_price']
     companies = all_bids_sorted['Company'].unique().tolist()
     colors = sns.color_palette("Set1", len(companies))
     company_colors = {company: color for company, color in zip(companies, colors)}

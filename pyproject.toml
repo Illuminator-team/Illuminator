@@ -6,15 +6,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "3.0.0-beta.6"
+version = "3.1-beta.0"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "readme.md"
 requires-python = ">=3.8"
 authors = [
     { name = "Jort Groen"},
-    { name = "Despoina Georgiadi"},
+    { name = "Despoina Kassandra Georgiadi"},
     { name = "Josip Grguric"},
+    { name = "Yasel Quintero Lares"},
     { name = "Joan Pijpker"},
     { name = "Manuel Garcia Alvarez"},
     { name = "Mano Rom"},
@@ -33,7 +34,8 @@ dependencies = [
     "mosaik>=3.3.3",
     "ruamel.yaml>= 0.18.5",
     "schema>=0.7.7", 
-    "typer>=0.12.5"
+    "typer>=0.12.5",
+    "mpi4py"
 ]
 keywords = [
     "energy",
@@ -60,7 +62,7 @@ dev = [
 illuminator = "illuminator.cli.main:app"
 
 [project.urls]
-Documentation = "https://illuminator-team.github.io/Illuminator/"
+Documentation = "https://illuminator-team.github.io/website/"
 Repository = "https://github.com/Illuminator-team/Illuminator.git"
 "Bug Tracker" = "https://github.com/Illuminator-team/Illuminator/issues"
 Changelog = "https://github.com/Illuminator-team/Illuminator/blob/main/CHANGELOG.md"
