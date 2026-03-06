@@ -189,10 +189,10 @@ class ControllerT3Congestion(ModelConstructor):
         """
         # reset flow2b
         self.flow_b = 0
-        print('flag warning: ' + str(flag_warning))
-        print('Load dem: ' + str(load_dem))
-        print('pv: ' + str(pv_gen))
-        print('wind: ' + str(wind_gen))
+        # print('flag warning: ' + str(flag_warning))
+        # print('Load dem: ' + str(load_dem))
+        # print('pv: ' + str(pv_gen))
+        # print('wind: ' + str(wind_gen))
 
         # still need to include how load_shift gets added if flag does not give warning
 
@@ -216,7 +216,7 @@ class ControllerT3Congestion(ModelConstructor):
             if self.res_load < self.limit_grid_connect:
                 extra_load_allowed = min(self.limit_grid_connect-self.res_load,self.limit_grid_connect)
                 additional_load = min(extra_load_allowed, self.load_shift)
-                print('additional load: ' + str(additional_load))
+                #print('additional load: ' + str(additional_load))
                 self.res_load = self.res_load + additional_load
                 self.load_shift -= additional_load
 
@@ -224,25 +224,25 @@ class ControllerT3Congestion(ModelConstructor):
             if self.res_load > 0:
                 # demand not satisfied -> discharge battery if possible
                 if soc > self.soc_min:  # checking if soc is above minimum
-                    print('Discharge Battery')
+                    #print('Discharge Battery')
                     max_discharge = (soc - self.soc_min) / 100 * self.max_p
-                    print(f'max discharge: {max_discharge}')
-                    print(f'res load: {self.res_load}')
+                    #print(f'max discharge: {max_discharge}')
+                    #print(f'res load: {self.res_load}')
                     self.flow_b = -min(self.res_load, max_discharge)
-                    print('Flow Bat: ' + str(self.flow_b))
+                    #print('Flow Bat: ' + str(self.flow_b))
                     # self.soc_b = self.soc_b + self.flow_b soc is not updated in controller
 
             elif self.res_load < 0:
 
                 if soc < self.soc_max:
-                    print('Charge Battery')
+                    #print('Charge Battery')
                     max_flow2b = ((self.soc_max - soc) / 100) * self.max_p  # Energy flow in kW
                     self.flow_b = min((-self.res_load), max_flow2b)
-                    print('Flow Bat: ' + str(self.flow_b))
-                    print('Excess generation that cannot be stored: ' + str(-self.res_load - self.flow_b))
+                    #print('Flow Bat: ' + str(self.flow_b))
+                    #print('Excess generation that cannot be stored: ' + str(-self.res_load - self.flow_b))
 
             else: # in the case self.res_load == 0
-                print('No Residual Load, RES production exactly covers demand')
+                #print('No Residual Load, RES production exactly covers demand')
                 self.flow_b = 0
                 # demand_res = residual_load
 
@@ -253,17 +253,17 @@ class ControllerT3Congestion(ModelConstructor):
             self.dump = - self.res_load
 
         if self.load_shift_active == True and flag_warning == 1:
-            print('enter flag condition')
+            #print('enter flag condition')
             overload = (-self.dump) - self.limit_grid_connect
             self.load_shift += min(overload, load_HP + load_EV)
-            print('load_not_yet: ' + str(self.load_shift))
+            #print('load_not_yet: ' + str(self.load_shift))
             if overload > 0:
-                print('update dump')
+                #print('update dump')
                 self.dump = -self.limit_grid_connect
 
-        print('residual load: ' + str(self.res_load))
-        print('battery flow: ' + str(self.flow_b))
-        print('dump: ' + str(self.dump))
+        #print('residual load: ' + str(self.res_load))
+        #print('battery flow: ' + str(self.flow_b))
+        #print('dump: ' + str(self.dump))
         # if self.bat_active == 1:
         re_params = {'flow2b': self.flow_b, 'res_load': self.res_load, 'dump': self.dump}
         # else:
