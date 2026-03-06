@@ -1,7 +1,7 @@
 """
 API for buildiing simulations with Illuminator. It
 serves as a wrapper for the Mosaik API.
-By: M. Rom & M. Garcia Alvarez
+By: M. Rom, M. Garcia Alvarez, J. Groen and D. Georgiadi
 """
 
 import math
@@ -10,6 +10,7 @@ from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
 from illuminator.schema.simulation import load_config_file
+import os
 
 current_model = {}
 
@@ -34,19 +35,6 @@ def create_world(sim_config: dict, time_resolution: int, start_time: str) -> Mos
     world = MosaikWorld(sim_config, time_resolution=time_resolution)
     world._start_time = start_time
     return world
-
-
-def get_collector_path() -> str:
-    """Returns the path to the default collector script."""
-
-    # find the module specification for the collector module
-    specifiction = importlib.util.find_spec('illuminator.models.collector')
-    if specifiction is None or specifiction.origin is None:
-        raise ImportError('The collector module was not found.')
-    
-    collector_path=specifiction.origin
-    return collector_path
-    # TODO: write a unit test for this
 
 
 def apply_default_values(config_simulation: dict) -> dict:
@@ -112,21 +100,6 @@ def generate_mosaik_configuration(config_simulation:dict,  collector:str =None) 
     """
 
     mosaik_configuration = {}
-
-    default_collector = get_collector_path()
-    # print(default_collector)
-
-    if collector is None:
-        _collector = "%(python)s " +default_collector+ " %(addr)s"
-    else:
-        _collector = collector
-
-    mosaik_configuration.update({'Collector':
-                                 {
-                                     'cmd': _collector
-                                 }
-                                 })
-
     
     for model in config_simulation['models']:
         if 'connect' in model:
@@ -175,7 +148,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
             else:
                 model_parameters = {}
 
-            if model_type == 'CSV':  # the CVS model is a special model used to read data from a CSV file
+            if model_type == 'CSV' or model_type == 'Collector':  # the CVS model is a special model used to read data from a CSV file
                 
                 if 'file_path' not in model_parameters.keys():
                     raise ValueError("The CSV model requires 'file_path' parameters. Check your YAML configuration file.")
@@ -183,7 +156,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 if 'start' not in model_parameters.keys():
                     model_parameters['start'] = world._start_time
                 
-                simulator = world.start(sim_name=model_name,
+                simulator = world.start(model_name,
                                          sim_start=model_parameters['start'], datafile=model_parameters['file_path'], sim_params={model_name: model})
                 
                 model_factory = getattr(simulator, model_type)
@@ -196,7 +169,7 @@ def start_simulators(world: MosaikWorld, models: list) -> dict:
                 #                     sim_params= {model_name: model} # This value gets picked up in the init() function
                 #                     # Some items must be passed here, and some other at create()
                 #                     )
-                simulator = world.start(sim_name=model_name, sim_params={model_name: model})
+                simulator = world.start(model_name, sim_params={model_name: model})
         
                 # TODO: make all parameters in create() **kwargs
                 # TODO: model_type must match model name in META for the simulator
@@ -276,6 +249,11 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             to_model_config = next(m for m in models if m['name'] == to_model)
         except StopIteration:
             raise ValueError(f"Model with name '{to_model}' not found in models list.")
+        
+        if to_model_config['type'] == 'Collector':
+            world.connect(model_entities[from_model][0], model_entities[to_model][0], (from_attr, from_model + '.' + from_attr))
+            continue
+        
         time_shifted = connection['time_shifted']
             
         # check if the connection is a physical split
@@ -425,7 +403,6 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
     for item in monitor_config['items']:
             from_model, from_attr =  item.split('.')
 
-            to_attr = from_attr # enforce connecting attributes have the same name  # TODO, what if its not?
             try:
                 model_entity = model_entities[from_model][0]
             except KeyError as e:
@@ -436,7 +413,7 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
             try:
                 world.connect(model_entity, 
                               monitor, 
-                              (from_attr, to_attr)
+                              (from_attr, from_model + '.' + from_attr)
                             )
             except Exception as e:
                 print(f"Error: {e}. Connection could not be established for {from_model} and the monitor.")
@@ -449,13 +426,21 @@ def connect_monitor(world: MosaikWorld,  model_entities: dict[MosaikEntity],
 class Simulation:
     """A simplified interface to run simulations with Illuminator."""
 
-    def __init__(self, config_file:str) -> None:
-        """Loads and validates the configuration file for the simulation."""
-        self.config_file = load_config_file(config_file)
+    def __init__(self, config) -> None:
+        """Loads and validates the configuration for the simulation.
+        
+        Parameters
+        ----------
+        config: str, dict
+            Contains the path to the simulation or the simulation config dict object
+        """
+        self.config_file = load_config_file(config) if type(config) == str else config
 
 
     def run(self):
         """Runs a simulation scenario"""
+
+        self.add_collector()
 
         config = apply_default_values(self.config_file)
         
@@ -467,22 +452,10 @@ class Simulation:
         _end_time = config['scenario']['end_time']
         _time_resolution = config['scenario']['time_resolution']
         # output file with forecast results
-        _results_file = config['monitor']['file']
+        # _results_file = config['monitor']['file']
 
         # Initialize the Mosaik worlds
         world = create_world(sim_config, time_resolution=_time_resolution, start_time=_start_time)
-        # TODO: collectors are also customisable simulators, define in the same way as models.
-        # A way to define custom collectors should be provided by the Illuminator.
-        collector = world.start('Collector', 
-                                time_resolution=_time_resolution, 
-                                start_date=_start_time,
-                                items = config['monitor']['items'],  
-                                results_show={'write2csv':True, 'dashboard_show':False, 
-                                            'Finalresults_show':False,'database':False, 'mqtt':False}, 
-                                output_file=_results_file)
-        
-        # initialize monitor
-        monitor = collector.Monitor()
 
         # Dictionary to keep track of created model entities
         model_entities = start_simulators(world, config['models'])
@@ -491,6 +464,7 @@ class Simulation:
         world = build_connections(world, model_entities, connections=config['connections'], models=config['models'])
 
         # Connect monitor
+        monitor = model_entities['Collector'][0]
         world = connect_monitor(world, model_entities, monitor, config['monitor'])
         
         # Run the simulation until the specified end time
@@ -506,6 +480,137 @@ class Simulation:
         """Returns the configuration file for the simulation."""
         return self.config_file
     
+
+    def add_collector(self)-> None:
+        """Adds a collector to the simulation configuration."""
+        file_path = self.config_file['monitor']['file']
+        delimiter = self.config_file['monitor'].get('delimiter', ',')
+        date_format = self.config_file['monitor'].get('date_format', 'YYYY-MM-DD HH:mm:ss')
+
+        collector_config = {
+            'name': 'Collector',
+            'type': 'Collector',
+            'parameters': {'file_path': file_path, 'delimiter': delimiter, 'date_format': date_format},
+            }
+
+        self.add_model(collector_config)
+        return
+
+    
+    def add_model(self, model: dict)-> None:
+        """
+        Adds a model to the simulation configuration.
+
+        Parameters
+        ----------
+        model : dict
+            A dictionary representing the model to be added.
+            Must follow Illuminator's schema for models.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        ValueError
+            If the model does not follow the Illuminator's schema.
+        """
+
+        if 'name' not in model or 'type' not in model:
+            raise ValueError("Model must have 'name' and 'type' keys.")
+        
+        # check if the name is already in the configuration
+        if any(m['name'] == model['name'] for m in self.config_file['models']):
+            raise ValueError(f"Model with name '{model['name']}' already exists in the configuration.")
+        
+        self.config_file['models'].append(model)
+    
+
+    def remove_model(self, model_name: str)-> None:
+        """
+        Removes a model from the simulation configuration.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to be removed.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        KeyError
+            If the model with the specified name does not exist in the configuration.
+        """
+
+        found = False
+        for i, model in enumerate(self.config_file['models']):
+            if model['name'] == model_name:
+                del self.config_file['models'][i]
+                found = True
+                break
+        
+        if not found:
+            raise KeyError(f"Model '{model_name}' not found in the configuration.")
+        
+        # remove connections related to the model based on 'from' and 'to' keys
+        for connection in self.config_file['connections']:
+            if connection['from'].startswith(model_name + '.') or connection['to'].startswith(model_name + '.'):
+                self.config_file['connections'].remove(connection)
+
+        # remove monitor items related to the model
+        for item in self.config_file['monitor']['items']:
+            if item.startswith(model_name + '.'):
+                self.config_file['monitor']['items'].remove(item)
+
+
+
+    def add_connection(self, connection: dict)-> None:
+        """
+        Adds a connection to the simulation configuration.
+
+        Parameters
+        ----------
+        connection : dict
+            A dictionary representing the connection to be added.
+            Must follow Illuminator's schema for connections.
+
+        Returns
+        -------
+        None
+            Updates the configuration in place.
+
+        Raises
+        ------
+        ValueError
+            If the connection does not follow the Illuminator's schema.
+        """
+
+        if 'from' not in connection or 'to' not in connection:
+            raise ValueError("add_connection(): Connection must have 'from' and 'to' keys.")
+
+        if 'time_shifted' not in connection:
+            connection['time_shifted'] = False
+        
+        self.config_file['connections'].append(connection)
+
+
+    def remove_connection(self, connection: dict)-> None:
+        if 'from' not in connection or 'to' not in connection:
+            raise ValueError("remove_connection(): Connection must have 'from' and 'to' keys.")
+    
+        # find the connection in the configuration based on 'from' and 'to'
+        for conn in self.config_file['connections']:
+            if conn['from'] == connection['from'] and conn['to'] == connection['to']:
+                self.config_file['connections'].remove(conn)
+                return
+   
+
     def set_scenario_param(self, parameter: str, value)-> None:
         """
         Sets a parameter value in the scenario section of the simulation configuration.

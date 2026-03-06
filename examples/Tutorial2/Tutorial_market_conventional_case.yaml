@@ -9,7 +9,7 @@ models:
 - name: CSV_operator
   type: CSV
   parameters:
-    file_path: 'demand_data_conventional.csv'
+    file_path: 'examples/Tutorial2/demand_data_conventional.csv'
     delimiter: ';'
     date_format: 'YYYY-MM-DD HH:mm:ss'
 

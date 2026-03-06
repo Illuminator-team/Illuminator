@@ -37,7 +37,7 @@ def plot_results_connection(results_file, connection_cap, critical_limit, tolera
 
     result_pd_df = pd.read_csv(results_file, index_col=0)
     result_pd_df.index = pd.to_datetime(result_pd_df.index)
-    load_on_connection = -result_pd_df['Controller1-0.time-based_0-dump']
+    load_on_connection = -result_pd_df['Controller1.dump']
 
     connection_cap = connection_cap
     critical_limit = critical_limit

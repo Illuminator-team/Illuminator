@@ -171,3 +171,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .github/workflows/e2e_tests.yml
+
+# The tests in tests/parallel_scenarios produce a lot of .csv and .yaml files
+# that should not be commited to the repository
+tests/parallel_scenarios/data/tutorial4_testcase/*.csv
+tests/parallel_scenarios/data/tutorial4_testcase/*.yml
+tests/parallel_scenarios/data/tutorial4_testcase/*.yaml
