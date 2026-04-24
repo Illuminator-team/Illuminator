@@ -161,7 +161,7 @@ class Compressor(ModelConstructor):
         # calculates the power required to compress the hydrogen in the compressor
         w_isentropic = (self.gamma / (self.gamma - 1)) * self.R * T_amb * ((p_out / p_in) ** ((self.gamma - 1) / self.gamma) - 1) # [J/mol]
         w_real = w_isentropic / (self.compressor_eff / 100)
-        flow_ps = flow / self.time_resolution   # input hydrogen per second [kg/s]
+        flow_ps = flow / self.time_step_size * self.time_resolution   # input hydrogen per second [kg/s]
         power_in = w_real * flow_ps / self.mmh2 / 1000   # [kW]
         output_flow = flow
         # take max power input into consideration
