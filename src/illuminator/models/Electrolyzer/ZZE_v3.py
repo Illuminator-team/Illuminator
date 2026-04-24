@@ -14,7 +14,7 @@ class ZZE(ModelConstructor):
         'min_flow_rate_in': 0,               # minimal flow in [kg/h]
         'max_flow_rate_out': 10,               # maximal flow out [kg/h]
         'min_flow_rate_out': 0,               # minimal flow out [kg/h]
-        'h2_capacity_tot': 100,      # total capacity of the hydrogen buffer [kg]
+        'h2_capacity_tot': 100,      # total hydrogen energy capacity of the buffer [kWh_HHV]
 
         ## electrolyzer part ##
         'e_eff' : 70,       # electrolyzer effficiency [%]
@@ -25,21 +25,22 @@ class ZZE(ModelConstructor):
     inputs={
         ## buffer part ##
         'h2_in': 0,            # input to H2 buffer [kg/timestep]
-        'desired_out': 0,   # demanded hydrogen output flow [kg/h]
+        #'desired_out': 0,   # demanded hydrogen output flow [kg/h]
 
         ## electrolyzer part ##
         # 'flow2e' : 0        # power flow to the electrolyzer [kW]
-        'desired_out': 30,      # desired output flow of the electrolyzer [kg/h]
+        #'desired_out': 30,      # desired output flow of the electrolyzer [kg/h]
+        'setpoint': 30
             
 
     }
     outputs={
         'h2_out': 0,       # flow out of the H2 buffer [kg/timestep]
-        'actual_h2_in': 0,  # The input that is processed in the buffer [kg/timestep]
+        # 'actual_h2_in': 0,  # The input that is processed in the buffer [kg/timestep]
         'overflow': 0,  # Overflow of the buffer [kg/timestep]
 
         ## electrolyzer part ##
-        'h_gen' : 0,            # hydrogen generation [kg/timestep]
+        'h2_out' : 0,            # hydrogen generation [kg/timestep]
         'power_consumption' : 0    # power consumption of the electrolyzer [kW]
         # 'water_used' : 0    # water required for H2 prodcution [kg/timestep]
     }
@@ -74,7 +75,7 @@ class ZZE(ModelConstructor):
         self.p_in_last = 0               # the initial power is initialised to 0 [kW]
         self.e_eff = self._model.parameters.get('e_eff') # electrolyzer efficiency [%]
         self.max_p_in = self._model.parameters.get('max_p_in')  # maximum input power [kW] set to infinity to allow for any input power
-        self.max_p_ramp_rate = self._model.parameters.get('max_p_in', inf)  # maximum ramp up rate [kW/s]
+        self.max_p_ramp_rate = self._model.parameters.get('max_p_ramp_rate', inf)  # maximum ramp up rate [kW/s]
 
         self.max_p_out = self._model.parameters.get('max_p_out', inf)  # maximum output power [kW] set to infinity to allow for any output power
         self.max_flow_rate_out = self._model.parameters.get('max_flow_rate_out', inf)
@@ -83,8 +84,8 @@ class ZZE(ModelConstructor):
         ## Buffer part
         self.h2_soc_min = self._model.parameters.get('h2_soc_min')
         self.h2_soc_max = self._model.parameters.get('h2_soc_max')
-        self.h2_charge_eff = 1
-        self.h2_discharge_eff = 1
+        self.h2_charge_eff = self._model.parameters.get('h2_charge_eff', 100) / 100
+        self.h2_discharge_eff = self._model.parameters.get('h2_discharge_eff', 100) / 100
         self.max_flow_rate_in = self._model.parameters.get('max_flow_rate_in', inf)
         self.min_flow_rate_in = self._model.parameters.get('min_flow_rate_in', 0)  # Default to 0 if not provided
         self.min_flow_rate_out = self._model.parameters.get('min_flow_rate_out', 0)  # Default to 0 if not provided
@@ -119,7 +120,7 @@ class ZZE(ModelConstructor):
         
         #TODO slow loss of hydrogen due to leakage, no charging or discharging ###
 
-        h2_discharge_cap, h2_charge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
+        h2_charge_cap, h2_discharge_cap = self.cap_calc()  # calculate the amount of hydrogen that can be charged and discharged
 
         self.set_states({
             'soc': round(self.soc, 2),
@@ -275,7 +276,7 @@ class ZZE(ModelConstructor):
         flow2e = min(flow2e, self.max_p_in)
         power_in = self.ramp_lim(flow2e)
         h_out = (power_in*(self.e_eff/100) * self.mmh2) / self.hhv / 1000  # [kg/s]
-        h_out = h_out * self.time_resolution  # Convert to kg/timestep (?TODO? times stepssize?)
+        h_out = h_out * self.time_step_size * self.time_resolution  # Convert to kg/timestep (?TODO? times stepssize?)
         residual_power = flow2e - power_in  # residual power that is not used for H2 production [kW]
 
         return h_out, residual_power
@@ -323,7 +324,7 @@ class ZZE(ModelConstructor):
 
         # convert the output to kg/timestep
         h_out = h_out * self.time_step_size*self.time_resolution  # [kg/timestep] = [kg/s] * [s/timestep]
-        power_consumption = power_in * self.time_step_size * self.time_resolution * 1/3600  # [kWh/timestep] = [kw] * [s/timestep] * [h/s]
+        power_consumption = power_in # [kW]
 
         return h_out, power_consumption
 
