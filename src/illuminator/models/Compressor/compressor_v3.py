@@ -161,12 +161,12 @@ class Compressor(ModelConstructor):
         w_isentropic = (self.gamma / (self.gamma - 1)) * self.R * T_amb * ((p_out / p_in) ** ((self.gamma - 1) / self.gamma) - 1) # [J/mol]
         w_real = w_isentropic / (self.compressor_eff / 100)
         flow_ps = flow / self.time_resolution   # input hydrogen per second [kg/s]
-        power_in = w_real * flow_ps / self.mmh2    # [kW]
+        power_in = w_real * flow_ps / self.mmh2 / 1000   # [kW]
         output_flow = flow
         # take max power input into consideration
         if power_in > self.max_power_in:
             power_in = self.max_power_in                                    # power is limited by its upper bound
-            output_flow = power_in * self.mmh2 / w_real * self.time_resolution     # The output flow is now limited by the power
+            output_flow = (power_in * 1000) * self.mmh2 / w_real * self.time_resolution     # The output flow is now limited by the power
         power_params = {'power_req' : power_in,
                         'output_flow' : output_flow}
         return power_params
