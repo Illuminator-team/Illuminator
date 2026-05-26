@@ -10,7 +10,7 @@ The kit utilises Raspberry Pi's as individual components of an energy system emu
 and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 
 ## Installation
-
+ 
 **Requirements** 
 - Python >= 3.8 & < 3.12
 - Miniconda (optional)
