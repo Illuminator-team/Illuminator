@@ -12,7 +12,8 @@ and the simulation engine is based on [Mosaik](https://mosaik.offis.de/).
 ## Installation
 
 **Requirements** 
-- Python >= 3.8 & < 3.12
+- Python >= 3.14
+- pandas >= 3.0
 - Miniconda (optional)
 - A Rasberry Pi cluster, for cluster deployment (optional)
 
