@@ -3,18 +3,16 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - arrow=1.2.3
-  - lxml=4.9.3
-  - matplotlib=3.7.2
-  - paho-mqtt=1.6.1
-  - pandapower=2.13.1
-  - pandas=1.5.3
+  - arrow>=1.4.0
+  - lxml>=6.1.1
+  - matplotlib>=3.10.9
+  - paho-mqtt>=2.1.0
+  - pandas>=3.0.3
   - pip
-  - python>=3.11
-  - setuptools=68.0.0
+  - python>=3.14.5
+  - numpy>=2.3.5
   - pip:
-    - mosaik==3.3.3 
-    - mpi4py
-    - pytest
+    - mosaik>=3.6.0
+    - mpi4py>=4.1.2
+    - pytest>=9.0.3
     - illuminator>=3.0.0-alpha
-    # - mosaik-api==3.0.3 # If mosaik != 3.1.1 then - mosaik-api==3.0.3 is needed

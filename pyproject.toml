@@ -10,7 +10,7 @@ version = "3.1-beta.0"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "readme.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 authors = [
     { name = "Jort Groen"},
     { name = "Despoina Kassandra Georgiadi"},
@@ -24,18 +24,17 @@ maintainers = [
     { name = "Illuminator Team", email = "illuminator@tudelft.nl"}
     ]
 dependencies = [
-    "arrow==1.2.3",
-    "lxml==4.9.3",
-    "matplotlib==3.7.2",
-    "paho-mqtt==1.6.1",
-    "pandapower==2.13.1",
-    "pandas==1.5.3",
-    "numpy==1.26.4",
-    "mosaik>=3.3.3",
-    "ruamel.yaml>= 0.18.5",
+    "arrow>=1.4.0",
+    "lxml>=6.1.1",
+    "matplotlib>=3.10.9",
+    "paho-mqtt>=2.1.0",
+    "pandas>=3.0.3",
+    "numpy>=2.3.5",
+    "mosaik>=3.6.0",
+    "ruamel.yaml>=0.19.1",
     "schema>=0.7.7", 
-    "typer>=0.12.5",
-    "mpi4py"
+    "typer>=0.25.1",
+    "mpi4py>=4.1.2"
 ]
 keywords = [
     "energy",
