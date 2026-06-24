@@ -189,7 +189,6 @@ class ModelConstructor(ABC, Simulator):
     def init(self, sid, time_resolution=1, **sim_params):  # can be use to update model parameters set in __init__
         # TODO: from engine.py, time_resolution is never passed. hint: check engine self.start call
 
-        print(f"running extra init")
         # This is the standard Mosaik init method signature
         self.sid = sid
         self.time_resolution = time_resolution
@@ -220,7 +219,7 @@ class ModelConstructor(ABC, Simulator):
         # TODO: implement this method
         return
 
-    def get_data(self, outputs) -> Dict: # TODO remove the print statements here
+    def get_data(self, outputs) -> Dict:
         """
         Gets data from model outputs based on requested attributes. Used by MOSAIK.
 
@@ -235,11 +234,7 @@ class ModelConstructor(ABC, Simulator):
             Dictionary containing the requested output values for each entity
         """
         data = {}
-        # print(f"Here are your outputs: {outputs}")
-        # for eid, attrs in self._model.outputs.items():
         for eid, attrs in outputs.items():
-            # print(f"eid: {eid}, attrs:{attrs}")
-            # print(f"self.model_entities: {self.model_entities}")
             model_instance = self.model_entities[eid]
             data[eid] = {}
             for attr in attrs:
@@ -251,7 +246,6 @@ class ModelConstructor(ABC, Simulator):
                     raise RuntimeError(f"'{attr}' is an input of {self.sid}.{eid}, connection reversed?")
                 else:
                     raise RuntimeError(f"{self.sid}.{eid} does not have '{attr}' as input, output or state")
-            # print(f"data: {data}")
         return data
     
     

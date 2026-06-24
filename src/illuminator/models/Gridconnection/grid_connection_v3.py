@@ -19,7 +19,7 @@ class GridConnection(ModelConstructor):
     
     Inputs
     ----------
-    dump : float
+    residual : float
         Power flow through grid connection (kW, negative for export)
     
     Outputs
@@ -38,8 +38,8 @@ class GridConnection(ModelConstructor):
                 'tolerance_limit': None,  #
                 'critical_limit': None
                 }
-    inputs={'dump': 0}  #
-    outputs={}
+    inputs={'power_flow': 0}  #
+    outputs={'residual': 0}  #
     states={'flag_critical': None,
             'flag_warning': None
             }
@@ -75,7 +75,7 @@ class GridConnection(ModelConstructor):
         time : float
             Current simulation time in seconds
         inputs : dict
-            Dictionary containing input values including 'dump' (power flow to grid)
+            Dictionary containing input values including 'power_flow' (power flow to grid)
         max_advance : int, optional
             Maximum time step advancement, defaults to 900
             
@@ -88,14 +88,16 @@ class GridConnection(ModelConstructor):
         input_data = self.unpack_inputs(inputs)
         self.time = time
 
-        dump = input_data.get('dump', 0)
-        results = self.check_limits(dump=dump)
+        power_flow = input_data.get('power_flow', 0)
+        results = self.check_limits(power_flow=power_flow)
         self.set_states(results)
+
+        self.set_outputs({'residual': power_flow})
 
         return time + self._model.time_step_size
 
 
-    def check_limits(self, dump) -> dict:
+    def check_limits(self, power_flow) -> dict:
         """
         Checks if power flow exceeds grid connection limits and sets warning flags.
 
@@ -109,14 +111,14 @@ class GridConnection(ModelConstructor):
         re_params : dict
             Dictionary containing warning flag states
         """
-        #dump = power to the grid in kW
+        #power_flow = power to the grid in kW
 
-        if (-dump >= (self.critical_limit * self.connection_capacity) or
-                dump <= -(self.critical_limit * self.connection_capacity)):
+        if (-power_flow >= (self.critical_limit * self.connection_capacity) or
+                power_flow <= -(self.critical_limit * self.connection_capacity)):
             flag_critical = 1
             flag_warning = 1
-        elif (-dump >= (self.tolerance_limit * self.connection_capacity) or
-              dump <= -(self.tolerance_limit * self.connection_capacity)):
+        elif (-power_flow >= (self.tolerance_limit * self.connection_capacity) or
+              power_flow <= -(self.tolerance_limit * self.connection_capacity)):
             flag_critical = 0
             flag_warning = 1
         else:

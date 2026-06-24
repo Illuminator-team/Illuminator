@@ -12,6 +12,7 @@ dependencies:
   - pip
   - python>=3.11
   - setuptools=68.0.0
+  - pyserial=3.5
   - pip:
     - mosaik==3.3.3 
     - mpi4py

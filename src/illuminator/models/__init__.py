@@ -1,7 +1,7 @@
 # This is a temporary  fix to make models more accessible
 # In the future, a model will be contained in a single file, where the
 # name of the file matches the name of the model
-
+from .dummy import Dummy
 from .adder import Adder
 
 #from .Collector.collector import Collector
@@ -50,7 +50,10 @@ from .Agents.generators.generation_company_agent_v3 import GenerationCompanyAgen
 from .Agents.operators.operator_v3 import Operator_Market
 from .Agents.justice_agent.justice_agent_v3 import JusticeAgent
 
-__all__ = [ 'Adder', 
+from .LED.LED_connection import LED_connection
+
+__all__ = [ 'Dummy',
+            'Adder', 
             'Collector', 
             'CSV',
             'GridConnection',
@@ -82,5 +85,6 @@ __all__ = [ 'Adder',
             'Controller_StoryMode',
             'GenerationCompanyAgent',
             'Operator_Market',
-            'JusticeAgent'
+            'JusticeAgent',
+            'LED_connection'
             ]

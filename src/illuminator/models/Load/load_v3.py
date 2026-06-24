@@ -1,4 +1,6 @@
 from illuminator.builder import ModelConstructor
+import mosaik_api_v3 as mosaik_api
+
 
 class Load(ModelConstructor):
     """
@@ -40,7 +42,8 @@ class Load(ModelConstructor):
              'consumption': 0,  # Current energy or power consumption based on the number of houses and input load (kWh)
              }
     states={'time': None,
-            'forecast': None
+            'forecast': None,
+            'load_dem_state': 0,  # total energy or power consumption state for all houses (kWh)
             }
     time_step_size=1
     time=None
@@ -95,6 +98,7 @@ class Load(ModelConstructor):
         load_in = input_data.get('load', 0)
         results = self.demand(load=load_in)
         self.set_outputs(results)
+        self.set_states({'load_dem_state': results['load_dem']})
 
         return time + self._model.time_step_size
 
@@ -130,3 +134,7 @@ class Load(ModelConstructor):
 
         re_params = {'load_dem': self.consumption}
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Load(), 'Load Simulator')

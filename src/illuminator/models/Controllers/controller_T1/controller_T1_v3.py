@@ -1,4 +1,5 @@
 from illuminator.builder import ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # construct the model
 class Controller_T1(ModelConstructor):
@@ -59,7 +60,8 @@ class Controller_T1(ModelConstructor):
              'res_load': 0,
              'dump': 0  # Excess power that cannot be stored or used
              }
-    states={}
+    states={'flow2bState': 0,  # Internal state representing the power flow to/from battery
+            }
 
     # define other attributes
     time_step_size = 1
@@ -106,6 +108,9 @@ class Controller_T1(ModelConstructor):
         input_data = self.unpack_inputs(inputs)  # make input data easily accessible
         self.time = time
 
+        if 'wind_gen' not in input_data:
+            input_data['wind_gen'] = 0
+
         if self.battery_active:
             results = self.control(
             wind_gen=input_data['wind_gen'],
@@ -122,6 +127,7 @@ class Controller_T1(ModelConstructor):
             )
 
         self.set_outputs(results)
+        self.set_states({'flow2bState': results['flow2b']})
 
         # return the time of the next step (time untill current information is valid)
         return time + self._model.time_step_size
@@ -185,3 +191,7 @@ class Controller_T1(ModelConstructor):
         else:
             re_params = {'res_load': self.res_load,'dump': self.dump}
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Controller_T1(), 'Controller_T1 Simulator')

@@ -7,7 +7,7 @@ import typer
 from typing_extensions import Annotated
 import illuminator.engine as engine
 from pathlib import Path
-# from illuminator.cluster import build_runshfile 
+from illuminator.cluster import build_runshfile 
 from illuminator.schema.simulation import load_config_file
 from illuminator.engine import Simulation
 
