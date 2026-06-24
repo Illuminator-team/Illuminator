@@ -87,9 +87,10 @@ class PV(ModelConstructor):
     outputs={
         "pv_gen": 0,  # Generated PV power output (kW) or energy (kWh) based on the chosen output type (power or energy).
         "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
-        "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
+        "g_aoi": 0,  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
+        "pv_signal": 0
         }
-    states={'pv_gen': 0}
+    #states={'pv_signal': 0}
     time_step_size=1
     time=None
 
@@ -156,6 +157,8 @@ class PV(ModelConstructor):
         results = self.output()
 
         self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        self.set_outputs({'pv_signal': np.round(results['pv_gen'], 3)})
+        #self.set_states({'pv_signal': np.round(results['pv_gen'], 3)})
 
         return time + self._model.time_step_size
 
