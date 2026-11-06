@@ -1,8 +1,8 @@
-name: End-to-End Test on PR to dev
+name: End-to-End Test on PRs to dev and main
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, main]
 
 jobs:
   e2e-test:
