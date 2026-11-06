@@ -1,4 +1,5 @@
-from illuminator.builder import ModelConstructor
+from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 
 # Define the model parameters, inputs, outputs...
 # TODO: Currently if a value or category isn't defined in the yaml
@@ -49,13 +50,15 @@ class Battery(ModelConstructor):
              }
     states={'mod': 0, # operation mode: 0=no action, 1=charge, -1=discharge
             'soc': 0,  # updated state of charge after battery operation (%)
-            'flag': -1  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+            'flag': -1,  # flag indicating battery status: 1=fully charged, -1=fully discharged, 0=available for control
+            'p_out_state': 0, # power output state (kW)
+            'p_in_state': 0 # power input state (kW)
         }
     time_step_size=1
     time=None
 
 
-    def __init__(self, **kwargs):
+    def init(self, *args, **kwargs):
         """
         Initialize the battery model with specified parameters.
 
@@ -79,7 +82,7 @@ class Battery(ModelConstructor):
         -------
         None
         """
-        super().__init__(**kwargs)
+        result = super().init(*args, **kwargs)
         self.soc = self._model.states.get('soc')
         self.flag = self._model.states.get('flag')
         self.mod = self._model.states.get('mod')
@@ -91,6 +94,7 @@ class Battery(ModelConstructor):
         self.soc_min = self._model.parameters.get('soc_min')
         self.soc_max = self._model.parameters.get('soc_max')
         self.powerout = 0
+        return result
 
 
 
@@ -125,6 +129,7 @@ class Battery(ModelConstructor):
         self.mod = results.pop('mod')
         self.set_states({'soc': self.soc, 'flag': self.flag, 'mod': self.mod}) # set the state of charge and remove it from the results at the same time
         self.set_outputs(results)
+        self.set_states({'p_out_state': results['p_out'], 'p_in_state': results['p_in']})
 
         return time + self._model.time_step_size
 
@@ -303,3 +308,7 @@ class Battery(ModelConstructor):
 
 
         return re_params
+
+
+if __name__ == '__main__':
+    mosaik_api.start_simulation(Battery(), 'Battery Simulator')

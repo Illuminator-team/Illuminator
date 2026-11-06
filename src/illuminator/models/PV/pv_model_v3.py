@@ -1,4 +1,5 @@
-from illuminator.builder import IlluminatorModel, ModelConstructor
+from illuminator.builder import ModelConstructor
+import mosaik_api_v3 as mosaik_api
 import numpy as np
 
 # construct the model
@@ -89,7 +90,8 @@ class PV(ModelConstructor):
         "total_irr": 0,  # Total irradiance (W/m²) received on the PV module, considering direct, diffuse, and reflected components.
         "g_aoi": 0  # Total irradiance (W/m²) accounting for angle of incidence, diffuse, and reflected irradiance.
         }
-    states={'pv_gen': 0}
+    states={'pv_genState': 0
+            }
     time_step_size=1
     time=None
 
@@ -156,6 +158,7 @@ class PV(ModelConstructor):
         results = self.output()
 
         self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        self.set_states({'pv_genState': np.round(results['pv_gen'], 3)})
 
         return time + self._model.time_step_size
 
@@ -360,3 +363,7 @@ class PV(ModelConstructor):
                     self.Temp_effect() * inv_eff * mppt_eff * losses) ) / 1000  # kW
 
         return {'pv_gen': p_ac, 'total_irr': self.g_aoi}
+    
+
+    if __name__ == '__main__':
+        mosaik_api.start_simulation(PV(), 'PV Simulator')

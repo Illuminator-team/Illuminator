@@ -1,4 +1,5 @@
 from illuminator.builder import IlluminatorModel, ModelConstructor
+import mosaik_api_v3 as mosaik_api
 import arrow
 from illuminator.engine import current_model
 
@@ -251,7 +252,6 @@ class CSV(ModelConstructor):
         """
         self.datafile.close()
 
-# if __name__ == '__main__':
-#     csv_model = CSV(csv)
 
-#     print(csv_model.step(1))
+if __name__ == '__main__':
+    mosaik_api.start_simulation(CSV(), 'CSVreader Simulator')
