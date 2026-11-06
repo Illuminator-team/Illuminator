@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "illuminator"
-version = "3.1-beta.0"
+version = "3.1-beta.1"
 description = "A development toolkit for simulating energy systems"
 license = {file = "LICENSE"}
 readme = "readme.md"
@@ -25,7 +25,7 @@ maintainers = [
     ]
 dependencies = [
     "arrow==1.2.3",
-    "lxml==4.9.3",
+    "lxml>=6.1.0,<7",
     "matplotlib==3.7.2",
     "paho-mqtt==1.6.1",
     "pandapower==2.13.1",
