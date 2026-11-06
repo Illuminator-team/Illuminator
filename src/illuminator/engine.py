@@ -4,8 +4,10 @@ serves as a wrapper for the Mosaik API.
 By: M. Rom, M. Garcia Alvarez, J. Groen and D. Georgiadi
 """
 
+import asyncio
 import math
 import importlib.util
+from concurrent.futures import ThreadPoolExecutor
 from mosaik.scenario import Entity as MosaikEntity
 from mosaik.scenario import World as MosaikWorld
 from datetime import datetime
@@ -429,7 +431,16 @@ class Simulation:
 
     def run(self):
         """Runs a simulation scenario"""
+        # Mosaik runs its own asyncio event loop. If a loop is already running in
+        # this thread (e.g. in Jupyter), run the simulation in a separate thread.
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return self._run()
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            return executor.submit(self._run).result()
 
+    def _run(self):
         self.add_collector()
 
         config = apply_default_values(self.config_file)

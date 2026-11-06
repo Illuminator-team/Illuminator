@@ -7,9 +7,10 @@ dependencies:
   - lxml>=6.1.1
   - matplotlib>=3.10.9
   - paho-mqtt>=2.1.0
+  - nest-asyncio
   - pandas>=3.0.3
   - pip
-  - python>=3.14.5
+  - python>=3.11
   - numpy>=2.3.5
   - pip:
     - mosaik>=3.6.0

@@ -57,7 +57,7 @@ def plot_load_profile(load_df, day_of_year, number_houses, outputtype = 'power')
 def summarize_results(outputfile, battery_active):
     # residual load plot
     result_pd_df = pd.read_csv(outputfile, index_col=0)
-    result_pd_df.index = pd.to_datetime(result_pd_df.index)
+    result_pd_df.index = result_pd_df.index.map(pd.Timestamp)
     day_of_year = result_pd_df.index[0].day
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(result_pd_df.index, result_pd_df['Controller1.res_load'],
@@ -84,7 +84,7 @@ def summarize_results(outputfile, battery_active):
     # table with averages and sums for each hour
     # SOC is value after every hour, rest is sum
 
-    results_hourly = result_pd_df.resample('H').sum()
+    results_hourly = result_pd_df.resample('h').sum()
 
     results_hourly = results_hourly.rename(columns={'Controller1.res_load': 'Residual Load (kW)',
                                                     'Controller1.dump': 'Power to Grid (kW)',
@@ -118,7 +118,7 @@ def summarize_results(outputfile, battery_active):
     pd.options.display.float_format = '{:.2f}'.format
 
     # Display the DataFrame as an HTML table
-    formatted_df = results_hourly.applymap(
+    formatted_df = results_hourly.map(
     lambda x: f'{x:g}' if isinstance(x, float) else x
     )
     html_table = f"<h3>Hourly Simulation results</h3>{formatted_df.to_html(index=True)}"
@@ -142,7 +142,7 @@ def summarize_results(outputfile, battery_active):
 def plot_soc(outputfile, soc_min= 10, soc_max= 90):
     fig, ax = plt.subplots(figsize=(10, 6))
     result_pd_df = pd.read_csv(outputfile, index_col=0)
-    result_pd_df.index = pd.to_datetime(result_pd_df.index)
+    result_pd_df.index = result_pd_df.index.map(pd.Timestamp)
     ax.plot(result_pd_df.index, result_pd_df['Battery1.soc'],
             color='mediumslateblue', linestyle='-', marker='o', markersize=4, linewidth=2)
     ax.hlines(y=soc_min, xmin=min(result_pd_df.index), xmax=max(result_pd_df.index), color='grey', linestyles='--', label = 'Minimum')
