@@ -16,4 +16,4 @@ dependencies:
     - mosaik>=3.6.0
     - mpi4py>=4.1.2
     - pytest>=9.0.3
-    - illuminator>=3.0.0-alpha
+    - -e .  # Illuminator from this checkout; run conda from the repo root
