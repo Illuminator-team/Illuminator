@@ -4,9 +4,10 @@ channels:
   - defaults
 dependencies:
   - arrow>=1.4.0
-  - lxml>=6.1.1
+  - lxml>=6.1.0,<7
   - matplotlib>=3.10.9
   - paho-mqtt>=2.1.0
+  - nest-asyncio
   - pandas>=3.0.3
   - pip
   - python>=3.11
