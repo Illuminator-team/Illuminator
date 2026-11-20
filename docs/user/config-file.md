@@ -21,7 +21,7 @@ Optinal keywords can be ommitted, in those cases the defaults will be used.
 scenario:
   name: "WindTest" # in mosaik so called world
   start_time: '2012-01-01 00:00:00' # ISO 8601 start time of the simulation
-  end_time: '2012-01-01 01:00:00' # ISO 8601 end time of the simulation 
+  end_time: '2012-01-01 01:00:00' # ISO 8601 end time of the simulation (exclusive: the last step is 00:45)
   time_resolution: 900 # time step in seconds (optional). Defaults to 15 minutes (900 s)
 models: # list of models for the energy network
 - name: CSVB # name for the model (must be unique)
@@ -65,7 +65,7 @@ monitor:
 | **scenario:** | a set of global values <br>for a simulation. |  |  |
 |`name` | A name for the simulation, internally <br>this name will be asssigned to what <br>the Mosaik World created during runtime. |  |  |
 | `start_time` | start time for the simulation.<br>Must be a timestamp in ISO 8601 format |  |  |
-| `end_time` | end time for the simulation. <br>Must be a timestamp in ISO 8601 format.  |  |  |
+| `end_time` | end time for the simulation. <br>Must be a timestamp in ISO 8601 format. <br>Exclusive: no step is simulated at `end_time`. <br>To include a whole day, use the next day at 00:00. |  |  |
 | `time_resolution` | number of seconds between <br>simulation steps | &#9745; | 900 (15 min)
 | **models:** | a list of models for <br>the simulation | |  |
 |  `name` | a name for the model. Must <br>be unique for each simulation |  |   |

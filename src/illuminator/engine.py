@@ -308,7 +308,7 @@ def compute_mosaik_end_time(start_time:str, end_time:str, time_resolution:int = 
         Start time as ISO 8601 time stamp. Example: '2012-01-01 00:00:00'.
 
     end_time: str
-        Start time as ISO 8601 time stamp. Example: '2012-01-01 00:00:00'.
+        End time as ISO 8601 time stamp, exclusive: no step is simulated at end_time. Example: '2012-01-02 00:00:00'.
     
     time_resolution: number of seconds that correspond to one mosaik time step in this situation. Default is 900 secondd (15 min).
 
