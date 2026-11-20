@@ -27,7 +27,7 @@ class PV(ModelConstructor):
     m_az : float
         Module azimuth angle in degrees 
     cap : float
-        Installed capacity in kW
+        Installed capacity in W
     output_type : str
         Output type ('power' or 'energy')
     
@@ -71,7 +71,7 @@ class PV(ModelConstructor):
         "peak_power": 0,  # Peak power output of the module (W).
         "m_tilt": 0,
         'm_az': 0,
-        'cap': 0,  # installed capacity
+        'cap': 0,  # installed capacity (W)
         'output_type': 'power',
         'sim_start': 0
         }
