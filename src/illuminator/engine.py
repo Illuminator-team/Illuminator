@@ -55,18 +55,9 @@ def apply_default_values(config_simulation: dict) -> dict:
         Illuminator's simulation configuration with default values applied.
     """
 
-    # defaults
-    # time_resolution = {'time_resolution': 900} # 15 minutes
-    # out_file = {'file': './out.csv'}
-    # # TODO: set other default values
-
-    # if 'time_resolution' not in config_simulation['scenario']:
-    #     config_simulation.update(time_resolution)
-    # # file to store the results
-    # if 'file' not in config_simulation['monitor']:
-    #     config_simulation.update(out_file)
-
-    #TODO: Write a unit test for this
+    # defaults as documented in docs/user/config-file.md
+    config_simulation['scenario'].setdefault('time_resolution', 900)  # 15 minutes
+    config_simulation['monitor'].setdefault('file', './out.csv')  # file to store the results
     return config_simulation
 
 
@@ -441,9 +432,8 @@ class Simulation:
             return executor.submit(self._run).result()
 
     def _run(self):
+        config = apply_default_values(self.config_file)  # before add_collector(), which reads monitor['file']
         self.add_collector()
-
-        config = apply_default_values(self.config_file)
         
         # Define the Mosaik simulation configuration
         sim_config = generate_mosaik_configuration(config)
