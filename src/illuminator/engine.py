@@ -246,8 +246,14 @@ def build_connections(world:MosaikWorld, model_entities: dict[MosaikEntity], con
             world.connect(model_entities[from_model][0], model_entities[to_model][0], (from_attr, from_model + '.' + from_attr))
             continue
         
+        # a connection must end in an input (or state) of the receiving model, not in one of its outputs
+        to_attrs = {k: to_model_config.get(k) or {} for k in ('inputs', 'outputs', 'states')}
+        if to_attr in to_attrs['outputs'] and to_attr not in to_attrs['inputs'] and to_attr not in to_attrs['states']:
+            raise ValueError(f"Connection {connection['from']} -> {connection['to']}: '{to_attr}' is an output of "
+                             f"model '{to_model}', not an input. Connect to one of its inputs: {list(to_attrs['inputs'])}")
+
         time_shifted = connection['time_shifted']
-            
+
         # check if the connection is a physical split
         if connection['from'] in from_list:
             if from_attr in from_model_config.get('outputs', {}):
