@@ -156,6 +156,9 @@ class PV(ModelConstructor):
         results = self.output()
 
         self.set_outputs({'pv_gen': np.round(results['pv_gen'], 3)})  # rounding to 3 decimal places is needed for e2e tests
+        # irradiance outputs, only when the scenario declares them
+        irradiance = {'total_irr': results['total_irr'], 'g_aoi': results['total_irr']}
+        self.set_outputs({k: v for k, v in irradiance.items() if k in self._model.outputs})
 
         return time + self._model.time_step_size
 
