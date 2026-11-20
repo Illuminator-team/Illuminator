@@ -94,6 +94,8 @@ class Load(ModelConstructor):
 
         load_in = input_data.get('load', 0)
         results = self.demand(load=load_in)
+        if 'consumption' in self._model.outputs:  # same value as load_dem, for scenarios that list it
+            results['consumption'] = results['load_dem']
         self.set_outputs(results)
 
         return time + self._model.time_step_size
