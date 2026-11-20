@@ -4,7 +4,7 @@ Unit tests for main.py of CLI package.
 
 import pytest
 import mosaik
-from illuminator.engine import start_simulators, compute_mosaik_end_time
+from illuminator.engine import start_simulators, compute_mosaik_end_time, apply_default_values
 
 
 @pytest.fixture
@@ -55,6 +55,20 @@ def start_timestamp():
 @pytest.fixture
 def end_timestamp():
     return '2012-01-01 04:00:00'
+
+
+class TestApplyDefaultValues:
+    """Tests for apply_default_values() in engine.py"""
+
+    def test_defaults_applied_when_missing(self):
+        config = apply_default_values({'scenario': {}, 'monitor': {}})
+        assert config['scenario']['time_resolution'] == 900
+        assert config['monitor']['file'] == './out.csv'
+
+    def test_given_values_kept(self):
+        config = apply_default_values({'scenario': {'time_resolution': 60}, 'monitor': {'file': 'x.csv'}})
+        assert config['scenario']['time_resolution'] == 60
+        assert config['monitor']['file'] == 'x.csv'
 
 
 class TestMosaikEndTime:
