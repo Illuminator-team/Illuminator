@@ -34,7 +34,7 @@ class Battery(ModelConstructor):
     None
     """
     parameters={'max_p': 150,  # maximum charging power limit (kW)
-                'min_p': 250,  # maximum discharging power limit (kW)
+                'min_p': -250,  # maximum discharging power limit (kW), negative
                 'max_energy': 50,  # maximum energy storage capacity of the battery (kWh)
                 'charge_efficiency': 90,  # efficiency of charging the battery (%)
                 'discharge_efficiency': 90,  # efficiency of discharging the battery (%)
