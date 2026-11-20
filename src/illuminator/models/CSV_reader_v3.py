@@ -206,7 +206,9 @@ class CSV(ModelConstructor):
         data = self.next_row
         # print("NEW CSV DATA: ", data)
         if data is None:
-            raise IndexError('End of CSV file reached.')
+            missing_date = self.start_date.shift(seconds=time * self.time_step_size * self.time_resolution)
+            raise IndexError(f'End of CSV file reached: "{self.file_path}" has no data for {missing_date}, '
+                             f'but the simulation has not ended yet.')
 
         # Check date
         date = data[0]
@@ -229,10 +231,9 @@ class CSV(ModelConstructor):
         self.set_states(self.cache)
 
         self._read_next_row()
-        if self.next_row is not None:
-            return time + self.time_step_size  # int((self.next_row[0].int_timestamp - date.int_timestamp) / self.time_step_size)
-        else:
-            return max_advance
+        # Always ask for the next step: if the file has ended but the simulation continues,
+        # that step raises an error instead of silently repeating the last values.
+        return time + self.time_step_size
 
 
     def _read_next_row(self) -> None:
